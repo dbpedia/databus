@@ -2,13 +2,20 @@
 
 ## Deployment
 
+In order to build and run the On-Premise Databus Application you will need `npm`, `docker` and `docker-compose` installed on your machine.
+* `npm`: 7.24.0 or higher
+* `docker`: 20.10.2 or higher
+* `docker-compose`: 1.25.0 or higher
+
 ### Building the Docker Image
 
 ```
 git clone https://github.com/holycrab13/databus-beta.git
 cd databus-beta
-docker build -t databus .
+bash install.sh
 ```
+
+The `install.sh` script will install all npm dependencies for the server and webclient and build the docker image for the Databus application.
 
 ### Redeploying a new Beta Version
 
