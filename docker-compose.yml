@@ -15,7 +15,7 @@ services:
       - ./data/keypair/:/databus/server/keypair
       - ./data/users/:/databus/server/users
   gstore:
-    image: gstore
+    image: "dbpedia/gstore"
     environment: 
       VIRT_USER: ${VIRTUOSO_USER}
       VIRT_PASS: ${VIRTUOSO_PASSWORD}
