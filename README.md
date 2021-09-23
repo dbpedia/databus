@@ -85,34 +85,36 @@ services:
   databus:
     image: databus
     ports:
-      - 3000:3000 # Port of the databus
-      - 3001:8080 # OPTIONAL: exposes search
+      - 3000:3000 
+      - 3001:8080 # exposes search
     environment: 
-      - "DATABUS_RESOURCE_BASE_URL=https://dev.databus.dbpedia.org" # Resource base URL
-      - "DATABUS_DATABASE_URL=http://172.17.0.01:3002"
-      - "DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com"
-      - "DATABUS_OIDC_CLIENT_ID=K5PCEOr7OJGBGU9xN7SvBrX1RWDs4S4n"
-      - "DATABUS_OIDC_SECRET=LiL_X1tzwRmReU3RO7kBlBdDopmVEGf4gj5Ve8No16kifyi3weXK7u6IS1Ttpl_q"
+      DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
+      DATABUS_DATABASE_URL: http://172.17.0.01:3002
+      DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
+      DATABUS_OIDC_CLIENT_ID: ${DATABUS_OIDC_CLIENT_ID}
+      DATABUS_OIDC_SECRET: ${DATABUS_OIDC_SECRET}
     volumes:
-      - ./keypair/:/databus/server/keypair
-      - ./users/:/databus/server/users
+      - ./data/keypair/:/databus/server/keypair
+      - ./data/users/:/databus/server/users
   gstore:
     image: gstore
     environment: 
-      VIRT_USER: "dba"
-      VIRT_PASS: "everyoneknows"
+      VIRT_USER: ${VIRTUOSO_USER}
+      VIRT_PASS: ${VIRTUOSO_PASSWORD}
       VIRT_URI: "http://172.17.0.01:3003"
     ports:
       - "3002:80"
+    volumes:
+      - ./data/repo:/databus/git-root
   virtuoso:
-    image: "tenforce/virtuoso:1.3.2-virtuoso7.2.5.1"
+    image: "openlink/virtuoso-opensource-7"
     environment:
-      DBA_PASSWORD: "everyoneknows"
+      DBA_PASSWORD: ${VIRTUOSO_PASSWORD}
       SPARQL_UPDATE: "true"
-      DEFAULT_GRAPH: "https://dev.databus.dbpedia.org"
+      DEFAULT_GRAPH: ${DATABUS_RESOURCE_BASE_URL}
     ports:
       - "3003:8890"
-    volumes: 
+    volumes:
       - ./data/virtuoso:/data
 ```
 
