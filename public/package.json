@@ -1,0 +1,31 @@
+{
+  "name": "databus-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@iamadamjowett/angular-click-outside": "^2.10.1",
+    "angular": "^1.7.8",
+    "angular-content-editable": "^1.2.3",
+    "angular-drag-and-drop-lists": "^2.1.0",
+    "bulma": "^0.7.4",
+    "bulma-carousel": "^4.0.4",
+    "bulma-checkradio": "^1.1.1",
+    "bulma-divider": "^0.2.0",
+    "bulma-extensions": "^6.2.7",
+    "bulma-steps": "^2.2.1",
+    "bulma-timeline": "^3.0.4",
+    "jquery": "^3.6.0",
+    "js-sha256": "^0.9.0",
+    "jstable-editor": "^3.15.45",
+    "markdown-it": "^8.4.2",
+    "moment": "^2.24.0",
+    "requirejs": "^2.3.6",
+    "sass": "^1.22.9",
+    "stream-file": "^0.2.4",
+    "codemirror": "^5.63.0",
+    "yasgui-yasqe": "^2.11.22"
+  }
+}

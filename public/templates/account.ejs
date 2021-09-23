@@ -1,0 +1,505 @@
+<% include header %>
+  <div ng-controller="AccountPageController">
+    <style>
+      .profile-picture {
+        background-color: white;
+        margin-bottom: 1em;
+        display: flex;
+      }
+
+      .profile-picture img {
+        width: 500px;
+        height: auto;
+      }
+
+      .profile-banner {
+        display: flex;
+        width: 100%;
+        align-items: flex-end;
+        padding: 1em 0em;
+      }
+
+      .profile-banner .title {
+        color: white;
+      }
+    </style>
+
+    <script src="/node_modules/fuse.js/dist/fuse.min.js"></script>
+    <!-- Banner Section-->
+    <section class="hero is-medium-small databus-banner is-consumer">
+      <div class="hero-body">
+        <div class="container has-text-left">
+          <div style="display: flex; align-items: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+              <path class="is-white" fill="#fff"
+                d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z" />
+            </svg>
+            <div style="margin-left: 24px;">
+              <h1 class="title is-2 has-text-left is-marginless">{{ profileData.label }}</h1>
+              <uri-breadcrumbs class="header-breadcrumbs" uri="profileData.uri"></uri-breadcrumbs>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="open-beta">Open Beta</div>
+
+    </section>
+
+    <!--Navbar -->
+
+    <div class="collection-editor-header" ng-if="profileData != undefined">
+      <div class="container">
+        <!--About text-->
+
+        <!--Tabs-->
+        <div class="collection-editor-tabs">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 0 }"
+            ng-click="tabViewModel.activeTab=0;">
+            <div class="section-label">Overview</div>
+          </div>
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 1 }"
+            ng-click="tabViewModel.activeTab=1;">
+            <div class="section-label">Data</div>
+          </div>
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 2 }"
+            ng-click="tabViewModel.activeTab=2;">
+            <div class="section-label">Collections</div>
+          </div>
+          <!--<div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 3 }"
+            ng-click="tabViewModel.activeTab=3;">
+            <div class="section-label">Apps & Services</div>
+          </div>-->
+          <div ng-if="profileData.isOwn" class="collection-editor-tab"
+            ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="tabViewModel.activeTab=4;">
+            <div class="section-label">Settings</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section" ng-if="profileData == undefined" ng-controller="ProfileController"
+      style="min-height: 600px; display: flex;">
+      <div class="container">
+        <p class="collection-editor-info-text">You do not have a user profile yet. Create a profile by entering an
+          account name (your publishing namespace) and clicking the
+          button below. Choose your account name carefully as you will not be able to change it later.</p>
+        <br /> <br />
+        <div class="collection-editor-info-text" style="justify-content: center; display: flex;">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" style="width: 400px;" ng-model="preferredDatabusUsername" type="text"
+                placeholder="Enter a username...">
+            </div>
+            <div class="control">
+              <a class="button is-info" ng-click="createProfile()">
+                Create Profile
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="collection-editor-info-text" style="color: red;" ng-if="createAccountError">
+          {{ createAccountError }}
+
+          <ul ng-if="showAccountNameHints">
+            <li>At least 3 characters</li>
+            <li>At most 10 characters</li>
+            <li>Starts and ends with a lowercase letter</li>
+            <li>Only lowercase letters, underscores and dashes allowed</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <style>
+      .dashboard-card {
+        margin-bottom: 1em;
+        padding: 1em 0em;
+      }
+
+      .dashboard-card-title {
+        margin-bottom: 0.75em;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .hierarchy-card-element {
+        display: flex;
+        align-items: center;
+      }
+
+      .hierarchy-card-cell {
+        min-width: 500px;
+      }
+
+      .upload-info li {
+        padding: 1em;
+      }
+
+      .upload-info h1 {
+        margin-top: 0.5em;
+        margin-bottom: 0;
+      }
+
+      .columns .column {
+        padding: 0.5em;
+      }
+    </style>
+
+    <div class="section" style="min-height: 500px;" ng-if="profileData != undefined">
+
+      <!-- DASHBOARD -->
+      <div class="container" ng-if="tabViewModel.activeTab == 0">
+        <div class="columns">
+          <div class="column is-3" style="padding-right: 2em;">
+
+            <div class="profile-picture">
+              <img ng-src="{{ getImageUrl() }}"></img>
+            </div>
+
+            <div class="dashboard-card">
+              <div class="dashboard-card-title">About</div>
+              <p>{{ profileData.about }}</p>
+            </div>
+          </div>
+          <div class="column main" style="padding-left: 2em;">
+
+            <div class="dashboard-card">
+              <div class="dashboard-card-title">Popular Content</div>
+
+              <div>
+                <div ng-if="artifactData.isLoading" style="text-align:center">
+                  <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+
+                <div ng-if="!artifactData.isLoading" ng-repeat="content in featuredContent" style="padding: 1em 0.5em;">
+                  <entity-card type="content.type" label="content.label" uri="content.uri" desc="content.abstract">
+                  </entity-card>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="dashboard-card">
+              <div class="dashboard-card-title">Publisher Activity</div>
+              <div ng-if="activityData.isLoading" style="text-align:center">
+                <div class="lds-ellipsis">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+              <div ng-if="!activityData.isLoading" style="display: flex;">
+                <activity-chart data="activityData.entries" height="400"></activity-chart>
+
+                <div style="min-width: 40%;">
+                  <div ng-if="artifactData.isLoading" style="text-align:center">
+                    <div class="lds-ellipsis">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
+                  <div ng-if="!artifactData.isLoading" class="timeline" style="padding: 1em 0.5em;">
+                    <div ng-repeat="dataset in recentUploads">
+
+                      <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
+                        <span class="tag is-medium is-primary">Now</span>
+                      </header>
+
+                      <header class="timeline-header"
+                        ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
+                        <span class="tag is-primary">{{ recentUploads[$index - 1].year }}</span>
+                      </header>
+
+                      <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
+                  && recentUploads[$index - 1].month != dataset.month">
+                        <span class="tag is-primary">{{ recentUploads[$index - 1].month }}</span>
+                      </header>
+
+                      <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                          <p class="has-text-weight-semibold is-4">{{ dataset.label }}</p>
+                          <uri-breadcrumbs class="subtitle is-6 has-text-link" uri="dataset.artifactUri">
+                          </uri-breadcrumbs>
+                          <p style="margin-top: 0.5em" class="subtitle has-text-grey-light is-6">{{
+                            formatDate(dataset.date)
+                            }}</p>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="timeline-header is-clickable" ng-click="toggleTimelineShowMore()">
+                      <span ng-if="!timeLineShowMore" class="tag is-medium is-primary">More..</span>
+                      <span ng-if="timeLineShowMore" class="tag is-medium is-primary">Less..</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA -->
+      <div ng-if="tabViewModel.activeTab == 1" class="container">
+
+        <div class="field is-grouped" style="margin-bottom: 1.5em;">
+          <p class="control" style="flex: 1;">
+            <input class="input" placeholder="Find data..." input="searchInput" filters="searchFilters">
+          </p>
+          <p class="control">
+            <a href="/system/publish" class="button is-primary">
+              Publish Data
+            </a>
+          </p>
+        </div>
+
+        <div ng-if="searchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
+          <div ng-repeat="artifact in group.artifacts">
+            <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
+              <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'" desc="artifact.abstract">
+              </entity-card>
+            </div>
+            <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+          </div>
+        </div>
+
+        <!--
+
+        <div ng-if="searchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
+          <div class="node" style="padding-right:1em;">
+            <expandable-arrow expanded="group.expanded"></expandable-arrow>
+            <entity-card label="group.label" uri="group.uri" type="'Group'"></entity-card>
+          </div>
+          <div class="node-children" ng-if="group.expanded">
+            <div ng-repeat="artifact in group.artifacts">
+              <div class="node" style="padding: 1.5em;">
+                <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'"
+                  desc="artifact.abstract"></entity-card>
+
+                <artifact-card artifact="uploadsByPublisher[index]"></artifact-card>
+              </div>
+              <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+-->
+      </div>
+      <!-- COLLECTIONS -->
+      <div class="container" ng-if="tabViewModel.activeTab == 2">
+
+        <div class="field is-grouped">
+          <p class="control" style="flex: 1;">
+            <input class="input" placeholder="Find collections..." input="searchInput" filters="searchFilters">
+          </p>
+          <p class="control">
+            <a href="/system/collection-editor" class="button is-primary">
+              Manage Collections
+            </a>
+          </p>
+        </div>
+
+        <div class="hierarchy" ng-repeat="collection in collectionsData.collections">
+          <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
+            <entity-card label="collection.label" uri="collection.uri" type="'Collection'" desc="collection.abstract">
+            </entity-card>
+          </div>
+          <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+        </div>
+
+      </div>
+
+
+      <div class="container" ng-if="tabViewModel.activeTab == 4">
+        <% include profile %>
+      </div>
+
+      <!--
+
+    <div class="container">
+      <h1 class="title is-1"></h1>
+      <div id="publisher-info"></div>
+      <div class="columns">
+        <div class="column side is-4">
+
+         <div class="publisher-info" style="margin-top: -350px; background-color: white; text-align:center;
+              box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);">
+              <div><a target="_blank" href="{{ getImageUrl() }}"><img class="profile-image" style="width: 512px; margin-bottom: 0; vertical-align: middle" ng-src="{{ getImageUrl() }}"></img></a></div>
+              <div class="publisher-data" style="padding: 1.5em; border: 1px solid #dbdbdb;">
+                <h2 class="title is-4">{{ profileData.label }}</h2>
+
+                <h2 class="subtitle is-6">@{{ publisherData.account }}</h2>
+                <h2 ng-if="publisherData.homepage" class="subtitle is-6">
+                  <a ng-href="{{ publisherData.homepage }}" target="_blank">{{ publisherData.homepage }}</a></h2>
+
+                <ul class="upload-info">
+                  <li>
+                    <h1>Artifacts</h1>
+                    <p>{{ publisherData.numUploads }}</p>
+                  </li>
+                  <li>
+                    <h1>Uploaded Data</h1>
+                    <p>{{ formatUploadSize(publisherData.uploadSize / (1024 * 1024 * 1024)) }} GB</p>
+                  </li>
+
+                </ul>
+
+                  </div>
+            </div
+
+          <div ng-if="aboutEntries.length > 0">
+            <br />
+            <br />
+            <p class="section-label">
+              About
+            </p>
+            <table class="table is-fullwidth">
+              <tr ng-repeat="entry in aboutEntries">
+                <td><b>{{ entry.key }}</b></td>
+                <td>{{ entry.value }}</td>
+              </tr>
+            </table>
+          </div>
+          <br />
+          <br />
+          <p class="section-label">
+            Recent Uploads
+          </p>
+          <br />
+
+          <div class="timeline">
+            <div ng-repeat="dataset in recentUploads">
+
+              <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
+                <span class="tag is-medium is-primary">Now</span>
+              </header>
+
+              <header class="timeline-header"
+                ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
+                <span class="tag is-primary">{{ recentUploads[$index - 1].year }}</span>
+              </header>
+
+
+              <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
+                && recentUploads[$index - 1].month != dataset.month">
+                <span class="tag is-primary">{{ recentUploads[$index - 1].month }}</span>
+              </header>
+
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <p class="has-text-weight-semibold is-4">{{ dataset.label }}</p>
+                  <uri-breadcrumbs class="subtitle is-6 has-text-link" uri="dataset.artifactUri"></uri-breadcrumbs>
+                  <p style="margin-top: 0.5em" class="subtitle has-text-grey-light is-6">{{ dataset.date }}</p>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="timeline-header is-clickable" ng-click="toggleTimelineShowMore()">
+              <span ng-if="!timeLineShowMore" class="tag is-medium is-primary">More..</span>
+              <span ng-if="timeLineShowMore" class="tag is-medium is-primary">Less..</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="column main">
+
+          <div class="tabs">
+            <ul>
+              <li ng-repeat="tab in tabViewModel.tabs" ng-click="selectTab($index)" ng-if="tab.data.length > 0"
+                ng-class="{ 'is-active' : tabViewModel.activeTab == $index }">
+                <a>{{ tab.label }}</a>
+              </li>
+            </ul>
+          </div>
+
+          <div style="margin-top: 2em;">
+
+            <div ng-if="tabViewModel.activeTab == 1">
+              <div ng-repeat="service in tabViewModel.tabs[1].data">
+                <entity-card type="'Service'" label="service.title" uri="service.uri" desc="service.abstract">
+                </entity-card>
+                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
+              </div>
+            </div>
+
+            <div ng-if="tabViewModel.activeTab == 2">
+              <div ng-repeat="app in tabViewModel.tabs[2].data">
+                <entity-card type="'Service'" label="app.title" uri="app.uri" desc="app.abstract">
+                </entity-card>
+                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
+              </div>
+            </div>
+            <div ng-if="tabViewModel.activeTab == 3">
+              <div ng-repeat="collection in tabViewModel.tabs[3].data">
+                <entity-card type="'Collection'" label="collection.label" uri="collection.uri"
+                  desc="collection.abstract">
+                </entity-card>
+                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
+              </div>
+            </div>
+
+            <div ng-if="tabViewModel.activeTab == 0" class="hierarchy">
+
+              <div class="field" style="display: flex; line-height: 1;">
+                <div class="control" style="flex:1;margin-right: 0.5em;">
+                  <input class="input" type="text" ng-model="$parent.searchInput" ng-change="invokeSearch();"
+                    placeholder="Search...">
+                </div>
+              </div>
+              <div ng-if="$parent.searchInput != ''" class="dataset-name" ng-repeat="result in results">
+                <div style="display: flex; align-items: center;">
+                  <entity-card style="flex: 1;" label="result.label" type="result.type" uri="result.uri"
+                    desc="result.desc">
+                  </entity-card>
+                </div>
+                <div ng-if="!$last" class="is-divider"></div>
+              </div>
+
+              <div ng-if="$parent.searchInput == ''" ng-repeat="group in tabViewModel.tabs[0].data">
+                <div class="node" style="padding-right:1em;">
+                  <expandable-arrow expanded="group.expanded"></expandable-arrow>
+                  <div class="node-label">{{ group.label }}</div>
+                  <databus-icon shape="'goto'" size="24" on-click="goToResource(group.uri)"></databus-icon>
+                </div>
+                <div class="node-children" ng-if="group.expanded">
+                  <div ng-repeat="index in group.indices">
+                    <div class="node" style="padding: 1.5em;">
+                      <entity-card label="uploadsByPublisher[index].label" uri="uploadsByPublisher[index].artifactUri"
+                        desc="uploadsByPublisher[index].desc" date="uploadsByPublisher[index].date">
+                      </entity-card>
+
+                     <artifact-card artifact="uploadsByPublisher[index]"></artifact-card>
+                    </div>
+                    <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>-->
+      </section>
+    </div>
+    <% include footer %>

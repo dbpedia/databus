@@ -1,0 +1,31 @@
+
+<% include header %>
+<div ng-controller="SearchController" ng-cloak>
+
+
+  <section class="hero is-medium-small databus-banner">
+    <div class="hero-body">
+      <div class="container has-text-left">
+        <h1 class="is-2 title">Databus Search</h1>
+      </div>
+    </div>
+
+    <div class="open-beta">Open Beta</div>
+  </section>
+
+  <section>
+      <div class="container">
+        <div class="content" style="padding: 4em 0; min-height: 500px;">
+          <p class="section-label">Search</p>
+          <div>This search index has been built using the generic
+             <a href="https://github.com/dbpedia/lookup-application" target="_blank">DBpedia RDF Lookup Application</a>.
+           </div>
+           <br />
+
+          <search></search>
+        </div>
+    </div>
+  </section>
+</div>
+
+<% include footer %>

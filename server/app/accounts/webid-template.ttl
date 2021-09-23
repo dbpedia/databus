@@ -1,0 +1,21 @@
+@base <%USER_URI%> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix cert: <http://www.w3.org/ns/auth/cert#> .
+@prefix rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+
+<> a foaf:PersonalProfileDocument ;
+    foaf:maker <#this> ;
+    foaf:primaryTopic <#this> .
+
+<#this> a foaf:Person ;
+    foaf:name "%USER_NAME%" ;
+    foaf:img "%USER_IMG_URL%" ;
+    a dbo:DBpedian ;
+    cert:key [ 
+        a cert:RSAPublicKey;
+        rdfs:label "Shared Databus Public Key" ;
+        cert:modulus "%USER_PUB_KEY_MOD%"^^xsd:hexBinary ;
+        cert:exponent "%USER_PUB_KEY_EXP%"^^xsd:integer ;
+    ] .

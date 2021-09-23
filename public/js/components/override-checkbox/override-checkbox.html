@@ -1,0 +1,11 @@
+<div class="field override-checkbox" ng-class="{ 'is-override' : $ctrl.isOverride }">
+  <input
+    id="check--{{ $ctrl.label }}"
+    name="check--{{ $ctrl.label }}"
+    class="is-checkradio"
+    ng-disabled="$ctrl.readonly"
+    type="checkbox"
+    ng-change="$ctrl.change()"
+    ng-model="$ctrl.checkValue">
+  <label for="check--{{ $ctrl.label }}">{{ $ctrl.label }}</label>
+</div>

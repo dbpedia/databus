@@ -1,0 +1,19 @@
+<div>
+  <div class="field" style="display: flex; line-height: 1;">
+    <div class="control has-icons-left has-icons-right" style="flex:1;">
+      <input class="input" type="text" ng-model="$ctrl.input" ng-change="$ctrl.invokeSearch();"
+      placeholder="Search...">
+      <span class="icon is-small is-left">
+        <i class="fas fa-search"></i>
+      </span>
+    </div>
+  </div>
+  <div ng-if="$ctrl.input != ''" class="dataset-name" ng-repeat="result in $ctrl.searchResults">
+    <div style="display: flex; align-items: center;">
+      <entity-card style="flex: 1;" label="result.label" type="result.type" uri="result.uri"
+        desc="result.desc">
+      </entity-card>
+    </div>
+    <div ng-if="!$last" class="is-divider"></div>
+  </div>
+</div>

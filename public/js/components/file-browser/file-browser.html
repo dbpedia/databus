@@ -1,0 +1,53 @@
+<div>
+  <div class="tabs" style="position: relative;">
+    <ul>
+      <li ng-click="$ctrl.activeTab = 0" ng-class="{ 'is-active' : $ctrl.activeTab == 0 }"><a>Distributions</a></li>
+      <li ng-click="$ctrl.activeTab = 1" ng-class="{ 'is-active' : $ctrl.activeTab == 1 }"><a>List</a></li>
+      <li ng-click="$ctrl.activeTab = 2" ng-class="{ 'is-active' : $ctrl.activeTab == 2 }"><a>Query</a></li>
+    </ul>
+
+    <div ng-if="!$ctrl.isLoading" style="position: absolute; top: 7px; right: 0;" >{{ $ctrl.numFiles }} file(s)  /  {{ $ctrl.totalSize }} MB</div>
+
+  </div>
+
+  <!-- Table view tab -->
+  <div ng-if="$ctrl.activeTab == 0">
+    <div  ng-if="$ctrl.isLoading" style="text-align:center" >
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <div ng-if="!$ctrl.isLoading">
+      <table class="table is-fullwidth" style="table-layout: fixed;">
+        <tr style="cursor:pointer;">
+
+          <th ng-repeat='column in $ctrl.config.columns' ng-style="{ 'width' : column.width }" ng-click="$ctrl.sortBy(column.field + '.value')">{{ column.label }}</th>
+          <th ng-click="$ctrl.sortBy('size.numericalValue')" style="text-align: right;">Download</th>
+        </tr>
+        <tr style="position:relative;" ng-repeat-start="binding in $ctrl.queryResult.bindings | limitTo:$ctrl.tableLimit | orderBy:$ctrl.sortProperty:$ctrl.sortReverse" >
+          
+          <td ng-repeat='column in $ctrl.config.columns' style="cursor:pointer" ng-click="binding.epxanded = !binding.epxanded"><div ng-if="$first" style="margin-right:1em;  cursor:pointer;" ng-class="{ right : !binding.epxanded, down : binding.epxanded }" class="arrow"></div>{{ $ctrl.getCellValues(binding, column); }}</td>
+          <td style="text-align: right;">
+            {{ $ctrl.formatUploadSize(binding.size.numericalValue) }}
+            <!--div class="group-info" style="margin-right: 1em;"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path fill="#b5b5b5" d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm.5 17h-1v-9h1v9zm-.5-12c.466 0 .845.378.845.845 0 .466-.379.844-.845.844-.466 0-.845-.378-.845-.844 0-.467.379-.845.845-.845z"/></svg></div>-->
+            <a target="_blank" href="{{ $ctrl.createRelativeUri(binding.file.value) }}"><svg style="margin-left:1em;margin-bottom:-.4em;" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M6 16h-5v6h22v-6h-5v-1h6v8h-24v-8h6v1zm14 2c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1zm-7.5-17v14.884l4.736-5.724.764.645-5.979 7.195-6.021-7.205.765-.644 4.735 5.732v-14.883h1z"/></svg></a>
+          </td>
+        </tr>
+        <tr ng-repeat-end ng-if="binding.epxanded">
+          <td colspan="5" style="padding:0;">
+            <div><pre>{{ binding.preview.value }}</pre></div>
+          </td>
+        </tr>
+      </table>
+      <div style="text-align:center; color:#999; cursor:pointer;" ng-click="$ctrl.tableLimit=null"><div style="border:1px solid #dbdbdb; padding: 0.2em" ng-if="$ctrl.tableLimit!=null && $ctrl.queryResult.bindings.length > $ctrl.tableLimit">Show All</div></div>
+    </div>
+  </div>
+
+  <div class="distribution-list" ng-if="$ctrl.activeTab == 1">
+    <textarea class="textarea" rows="40">{{ $ctrl.queryResult.uriList }}</textarea>
+  </div>
+
+  <div class="distribution-query" ng-if="$ctrl.activeTab == 2">
+    <div class="disabled-yasqe">
+      <yasqe-text query="$ctrl.fileQuery"></yasqe-text>
+    </div>
+  </div>
+</div>

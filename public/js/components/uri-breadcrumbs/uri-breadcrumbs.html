@@ -1,0 +1,6 @@
+<div>
+  <span ng-repeat="entry in $ctrl.entries">
+      <a ng-href="{{ entry.uri }}">{{ entry.label }}</a>
+      <span ng-if="!$last" > » </span>
+  </span>
+</div>

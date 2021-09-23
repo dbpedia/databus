@@ -1,0 +1,34 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# Get all files
+SELECT DISTINCT 
+  ?versionUri
+  ?dataset
+  ?distribution
+  ?label    
+  ?comment
+  (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?downloadURLs)
+  ?license
+  ?size
+  ?version
+  ?format
+  (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant)
+  ?preview
+WHERE { 
+  %COLLECTION_QUERY%
+  ?distribution dcat:downloadURL ?file .
+  ?distribution dataid:formatExtension ?format .
+  OPTIONAL { ?distribution dataid:contentVariant ?var . }
+  OPTIONAL { ?distribution dct:license ?license . }
+  OPTIONAL { ?distribution dcat:byteSize ?size . }
+  OPTIONAL { ?distribution dataid:preview ?preview . }
+  ?distribution dct:hasVersion ?version .
+  ?dataset dcat:distribution ?distribution .
+  ?dataset dataid:version ?versionUri .
+  ?dataset rdfs:label ?label .
+  ?dataset rdfs:comment ?comment.
+}
+GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview

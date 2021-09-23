@@ -1,0 +1,14 @@
+<div
+  ng-class="{ 'is-clickable hover-icon' : $ctrl.isClickable }""
+  class="databus-icon"
+  ng-click="$ctrl.onClick()">
+  <svg
+    viewBox="0 0 24 24" 
+    ng-attr-width="{{ $ctrl.size }}"
+    ng-attr-height="{{ $ctrl.size }}"
+    xmlns="http://www.w3.org/2000/svg"
+    fill-rule="evenodd"
+    clip-rule="evenodd">
+    <path ng-attr-fill="{{ $ctrl.color }}" ng-attr-d="{{ $ctrl.path }}"/>
+  </svg>
+</div>

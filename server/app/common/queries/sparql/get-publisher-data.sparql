@@ -1,0 +1,34 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX databus: <https://databus.dbpedia.org/>
+
+# publisher with number and size of versions
+SELECT DISTINCT ?webid ?name ?imageUrl ?basedNear ?homepage ?status ?numUploads ?uploadSize WHERE {
+  ?webid foaf:account <%PUBLISHER_URI%>.
+  OPTIONAL { ?webid foaf:name ?name }
+  OPTIONAL { ?webid foaf:img ?imageUrl }
+  OPTIONAL { ?webid foaf:based_near ?basedNear }
+  OPTIONAL { ?webid foaf:homepage ?homepage }
+  OPTIONAL { ?webid foaf:status ?status }
+
+  OPTIONAL {
+    SELECT (count(?version) as ?numUploads) WHERE {
+      ?webid foaf:account <%PUBLISHER_URI%> .
+      ?dataset dct:publisher ?webid.
+      ?dataset dataid:version ?version .
+    }
+  }
+  OPTIONAL {
+    SELECT (sum(?size) as ?uploadSize) WHERE {
+      ?webid foaf:account <%PUBLISHER_URI%> .
+      ?dataset dct:publisher ?webid.
+      ?dataset dcat:distribution ?distribution .
+      ?distribution dcat:byteSize ?size .
+    }
+  }
+
+}

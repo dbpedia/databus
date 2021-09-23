@@ -1,0 +1,30 @@
+<div>
+  <div class="dropdown" ng-class="{ 'is-active' : $ctrl.showDrop }" >
+    <div class="dropdown-trigger">
+
+      <div style="position: relative;">
+        <input class="input" ng-focus='$ctrl.showAll()' ng-change="$ctrl.change()"
+          ng-disabled="$ctrl.isDisabled"
+          ng-model="$ctrl.input" type="text" 
+          placeholder="{{ $ctrl.placeholder }}" ng-keydown="$ctrl.handleKey($event)">
+
+        <span style="position: absolute; right: 12px; top: 6px; pointer-events: none;">
+          <i class="fas fa-angle-down"></i>
+        </span>
+      </div>
+
+      <div class="dropdown-menu" style="width: 100%;">
+        <div style="position: fixed; top: 0; right: 0; left: 0; bottom: 0;" ng-click="$ctrl.showDrop = false"
+          ng-if="$ctrl.showDrop"></div>
+
+        <div class="dropdown-content">
+          <div ng-repeat="value in $ctrl.displayValues track by value" class="dropdown-item" ng-click="$ctrl.input = value; $ctrl.showDrop = false; $ctrl.change()">
+            <p>{{ value }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

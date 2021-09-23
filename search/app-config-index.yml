@@ -1,0 +1,122 @@
+version: "1.0"
+indexConfig:
+  indexPath: ./../search/index
+  cacheSize: 1000000
+  cleanIndex: true
+  indexMode: INDEX_SPARQL
+  sparqlEndpoint: http://172.17.0.1:3003/sparql
+  commitInterval: 1000
+  indexFields:
+    - fieldName: label
+      resourceName: resource
+      query: >
+        SELECT DISTINCT ?resource ?label WHERE {
+          ?resource a <https://databus.dbpedia.org/system/ontology#Collection> .
+          ?resource <http://purl.org/dc/terms/title> ?label.
+        }
+    - fieldName: label
+      resourceName: resource
+      query: >
+        SELECT DISTINCT ?resource ?label WHERE {
+          ?dataset <http://dataid.dbpedia.org/ns/core#group> ?resource .
+          ?resource <http://purl.org/dc/terms/title> ?label.
+        }
+    - fieldName: label
+      resourceName: artifact
+      query: >
+        SELECT DISTINCT ?artifact ?label WHERE {
+          ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+          ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
+          ?dataset <http://purl.org/dc/terms/title> ?label.
+          {
+            SELECT ?artifact (max(?version) as ?maxVersion) WHERE {
+              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
+            }
+            GROUP BY ?artifact
+          }
+        }
+    - fieldName: comment
+      resourceName: artifact
+      query: >
+        SELECT DISTINCT ?artifact ?comment WHERE {
+          ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+          ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
+          ?dataset <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+          {
+            SELECT ?artifact (max(?version) as ?maxVersion) WHERE {
+              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
+            }
+            GROUP BY ?artifact
+          }
+        }
+    - fieldName: label
+      resourceName: account
+      query: >
+        SELECT DISTINCT ?account ?label WHERE {
+          ?person <http://xmlns.com/foaf/0.1/account> ?account .
+          ?person <http://xmlns.com/foaf/0.1/name> ?label.
+        }
+    - fieldName: comment
+      resourceName: resource
+      query: >
+        SELECT DISTINCT ?resource ?comment WHERE {
+          ?dataset <http://dataid.dbpedia.org/ns/core#group> ?resource .
+          ?resource <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
+        }
+    - fieldName: part
+      resourceName: artifact
+      query: >
+       SELECT ?artifact ?part WHERE {
+          VALUES ?n { 1 2 3 } 
+          {
+            SELECT DISTINCT ?artifact WHERE {
+              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+            }
+          }
+          BIND (replace(str(?artifact), "^((.*?)\\/){3}", "pre/") as ?suffix) 
+          BIND (concat("^([^\\/]+\\/){", str(?n) ,"}") AS ?reg)
+          BIND (replace(replace(str(?suffix), ?reg, ""), "\\/.*$", "") AS ?part)
+        }
+    - fieldName: part
+      resourceName: group
+      query: >
+        SELECT ?group ?part WHERE {
+          VALUES ?n { 1 2 } 
+          {
+            SELECT DISTINCT ?group WHERE {
+              ?dataset <http://dataid.dbpedia.org/ns/core#group> ?group.
+            }
+          }
+          BIND (replace(str(?group), "^((.*?)\\/){3}", "pre/") as ?suffix) 
+          BIND (concat("^([^\\/]+\\/){", str(?n) ,"}") AS ?reg)
+          BIND (replace(replace(str(?suffix), ?reg, ""), "\\/.*$", "") AS ?part)
+        }
+    - fieldName: part
+      resourceName: collection
+      query: >
+        SELECT ?collection ?part WHERE {
+          VALUES ?n { 1 3 } 
+          {
+            SELECT DISTINCT ?collection WHERE {
+              ?collection a <https://databus.dbpedia.org/system/ontology#Collection> .
+            }
+          }
+          BIND (replace(str(?collection), "^((.*?)\\/){3}", "pre/") as ?suffix) 
+          BIND (concat("^([^\\/]+\\/){", str(?n) ,"}") AS ?reg)
+          BIND (replace(replace(str(?suffix), ?reg, ""), "\\/.*$", "") AS ?part)
+        }
+    - fieldName: part
+      resourceName: profile
+      query: >
+        SELECT DISTINCT ?profile (REPLACE(STR(?profile), "(.*)(/|#)", "") AS ?part) WHERE {
+          ?profile a <http://xmlns.com/foaf/0.1/PersonalProfileDocument> .
+        }
+    - fieldName: typeName
+      resourceName: resource
+      query: >
+        SELECT DISTINCT ?resource (REPLACE(STR(?type), "(.*)(/|#)", "") AS ?typeName) WHERE {
+          ?resource a ?type.
+          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <https://databus.dbpedia.org/system/ontology#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+        }

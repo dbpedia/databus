@@ -1,0 +1,28 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX databus: <https://databus.dbpedia.org/>
+
+SELECT DISTINCT ?artifactUri ?dataset ?label ?desc ?license ?publisher ?groupUri ?date ?maxVersion AS ?version WHERE {
+
+    ?dataset dataid:artifact ?artifactUri.
+    ?dataset dct:hasVersion ?maxVersion.
+    ?dataset dct:title ?label.
+    ?dataset dct:abstract ?desc.
+    ?dataset dct:issued ?date.
+    ?dataset dct:publisher ?publisher.
+    ?dataset dct:license ?license.
+    {
+    SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
+        ?artifact a dataid:Artifact .
+        ?dataset dataid:artifact ?artifactUri.
+        ?dataset dataid:group <%GROUP_URI%> .
+        ?dataset dct:hasVersion ?version .
+    }
+    GROUP BY ?artifactUri
+    }
+    BIND(<%GROUP_URI%> AS ?groupUri)
+}
+ORDER BY ?groupUri desc(?date)

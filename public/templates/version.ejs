@@ -1,0 +1,272 @@
+<% include header %>
+<div ng-controller="VersionPageController">
+<section class="hero is-medium-small databus-banner">
+  <div class="hero-body">
+    <div class="container has-text-left">
+    <h2 ng-if="versionData.groupLabel" class="title is-5 is-marginless">{{ versionData.groupLabel }}</h2>
+    <h1 class="title is-2">{{ versionData.label }}</h1>
+    <uri-breadcrumbs class="header-breadcrumbs" uri="versionData.uri"></uri-breadcrumbs>
+  </div>
+</div>
+<div class="open-beta">Open Beta</div>
+</section>
+
+  <section class="section" >
+
+    <div class="container">
+
+      <div id="artifact-info">
+
+        <p class="is-size-6 menu-label">
+          Version Info
+        </p>
+        <div class="columns">
+          <div class="column" >
+          <table class="table is-size-6 is-fullwidth">
+            <col width="20%">
+            <col width="80%">
+            <tbody>
+              <tr>
+                <td>Comment</td>
+                <td>{{ versionData.comment }}</td>
+              </tr>
+
+              <tr ng-if="actions != null">
+                <td>Actions</td>
+                <td>
+                  <div style="display:flex; align-items:center">
+                  <div ng-if="actions.codeReference"><a ng-href="{{ actions.codeReference }}" target="_blank">View Code</a></div><div class="action-separator"></div>
+                  <div ng-if="actions.issueTracker"><a ng-href="{{ actions.issueTracker }}" target="_blank">Report errors</a></div><div class="action-separator"></div>
+                  <div ng-if="actions.documentationLocation"><a ng-href="{{ actions.documentationLocation }}" target="_blank">Edit documentation</a></div><div class="action-separator"></div>
+                  <div ng-if="actions.feedbackChannel"><a ng-href="{{ actions.feedbackChannel }}" target="_blank">Discuss data</a></div>
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Consumer</td>
+                <td><a href="{{ versionData.publisherUri }}">{{ versionData.publisher }}</a></td>
+              </tr>
+              <tr>
+                <td>Artifact</td>
+                <td><a href="{{ versionData.artifactUri }}">{{ versionData.artifact }}</a></td>
+              </tr>
+              <tr>
+                <td>Issued Date</td>
+                <td>{{ formatDate(versionData.date) }}</td>
+              </tr>
+              <tr>
+                <td>License</td>
+                <td><a class="hyphens" href="{{ versionData.license }}">{{ versionData.license }}</a></td>
+              </tr>
+
+              <tr>
+                <td>Data Id</td>
+                <td><a class="hyphens" href="{{ versionData.dataset }}">{{ versionData.dataset }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div ng-if="versionData.description">
+    <br/>
+        <br/>
+
+        <p class="is-size-6 menu-label">
+          dct&#8239;:&#8239;description
+        </p>
+
+    <div class="content description-markdown">
+      <div class="hyphens description-markdown" ng-bind-html="markdownToHtml(versionData.description)"></div>
+    </div>
+  </div>
+
+  <div ng-if="versionData.groupdocu">
+    <br/>
+    <br/>
+    <p class="is-size-6 menu-label">
+      dataid&#8239;:&#8239;groupdocu
+    </p>
+    <div class="content description-markdown">
+      <div class="hyphens description-markdown" ng-bind-html="markdownToHtml(versionData.groupdocu)"></div>
+    </div>
+  </div>
+
+
+  <div ng-if="serviceData.shared.length > 0">
+    <br />
+    <br/>
+    <p class="section-label">
+      Shared Services <a href="https://github.com/dbpedia/databus-content/blob/master/services.ttl#L8" target="_blank">(?)</a>
+    </p>
+    <div class="sliderboy">
+      <div ng-repeat="data in serviceData.shared" class="carousel-item" style="padding: 16px;">
+        <entity-card 
+          label="data.title"
+          image-url="data.icon"
+          uri="data.uri"
+          desc="data.abstract">
+        </entity-card>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="serviceData.dedicated.length > 0">
+    <br/>
+    <p class="section-label">
+      Dedicated Services
+    </p>
+    <div class="sliderboy" >
+      <div ng-repeat="data in serviceData.dedicated" class="carousel-item">
+        <entity-card 
+        label="data.title"
+        image-url="data.icon"
+        uri="data.uri"
+        desc="data.abstract">
+      </entity-card>
+      </div>
+    </div>
+    <br/>
+    <br />
+    <br/>
+  </div>
+
+
+
+    <div ng-if="modsData.length > 0">
+
+      <br/>
+      <br/>
+      <div class="section-label">Mods</div>
+
+        Learn <a href=https://github.com/dbpedia/databus-mods/>how to create a new mod.</a>
+        <br/>
+        <br/>
+      <table ng-if="!modsCollapsed" class="table is-fullwidth" style="margin-bottom:.5em;">
+        <tr>
+          <th>File</th>
+          <th>Mods</th>
+        </tr>
+        <tr ng-repeat="mod in modsData  | limitTo:modsMaxAmount">
+          <td><a ng-href="{{ mod.file }}" target="_blank2">{{ formatModFile(mod.file) }}</a></td>
+          <td ng-bind-html="formatMods(mod.results)"></td>
+        </tr>
+      </table>
+      <div ng-if="modsMaxAmount == modsAmountMinimized" style="text-align:center; color:#999; cursor:pointer;" ng-click="showAllMods()"><div style="border:1px solid #dbdbdb; padding: 0.2em" >Show All</div></div>
+      <div ng-if="modsMaxAmount > modsAmountMinimized" style="text-align:center; color:#999; cursor:pointer;" ng-click="hideAllMods()"><div style="border:1px solid #dbdbdb; padding: 0.2em">Hide All</div></div>
+
+    </div>
+
+    <br/>
+        <br/>
+    <div class="file-browser">
+    
+       
+      <div  style="margin-bottom: 3em;" ng-if="authenticated">
+        <collection-editor-widget selection='collectionWidgetSelectionData.groupNode' collection="collectionManager.activeCollection"></collection-editor-widget>
+      </div>
+
+      <div class="columns">
+        <div class="column side is-3">
+      
+
+          <facets-view node="artifactNode" resource-type="version" on-change="onFacetSettingsChanged()">
+          </facets-view>
+          <!--br />
+          <a class="button is-primary" style="width:100%" ng-click="showCollectionModal()">
+            <span class="icon" style="margin-right: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path
+                  d="M11.499 12.03v11.971l-10.5-5.603v-11.835l10.5 5.467zm11.501 6.368l-10.501 5.602v-11.968l10.501-5.404v11.77zm-16.889-15.186l10.609 5.524-4.719 2.428-10.473-5.453 4.583-2.499zm16.362 2.563l-4.664 2.4-10.641-5.54 4.831-2.635 10.474 5.775z" />
+              </svg>
+            </span>
+            <span>
+              Add to Collection
+            </span>
+          </a>-->
+        </div>
+        <div class="column main">
+
+  
+            <file-browser full-query="fileSelector.fullQuery" query="fileSelector.query" 
+              config="fileSelector.config"></file-browser>
+     
+        </div>
+      </div>
+
+     <!-- <div class="columns">
+        <div class="column side is-3">
+          <facets-view
+            settings="fileSelector.settings"
+            parent-settings="fileSelector.parentSettings"
+            resource-uri="fileSelector.resourceUri"
+            resource-type="version">
+          </facets-view>
+
+          <br/>
+          <a class="button is-primary" style="width:100%" ng-click="showCollectionModal()">
+            <span class="icon" style="margin-right: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"></path></svg>
+            </span>
+            <span>
+              Add Query to Collection
+            </span>
+          </a>
+        </div>
+        <div class="column main">
+          <file-browser
+            settings="fileSelector.settings"
+            parent-settings="fileSelector.parentSettings"
+            resource-uri="fileSelector.resourceUri"
+            resource-type="version"
+            on-selection-changed="onFileSelectionChanged(numFiles, totalSize, query)">
+          </file-browser>
+        </div>
+      </div>-->
+
+      <div id="add-to-collection-modal" class="modal" ng-class="{ 'is-active' : collectionModalVisible }">
+        <div class="modal-background" ng-click="hideCollectionModal()" style="background-color: rgba(0, 0, 0, 0.4)"></div>
+        <div class="modal-card" style="max-width: 80%; width:initial">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Add Query to Collection</p>
+            <button ng-click="hideCollectionModal()" class="delete" aria-label="close"></button>
+          </header>
+          <section class="modal-card-body">
+
+            <div class="title is-6">Version Query</div>
+            <yasqe-text query="addToCollectionQuery"></yasqe-text>
+
+            <div>
+              <br/>
+                <br/>
+              <div class="title is-6">Add to Collection</div>
+                <div style="max-height:200px; overflow-y:scroll;">
+                  <div
+                   ng-click="collectionManager.setActive(collection.id)"
+                   ng-class="{ 'is-active' : collection.id == collectionManager.activeCollection.id }"
+                   ng-repeat="collection in collectionManager.collections" href="#" class="is-list-item is-clickable">
+                   {{ collection.label }} ({{ formatId(collection.id) }})
+                </div>
+              </div>
+            </div>
+          </section>
+          <footer class="modal-card-foot">
+            <button ng-click="addQueryToCollection()" class="button is-primary is-active">
+              <span class="icon has-text-primary has-margin-right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"/></svg>
+              </span>
+                Add to Collection
+            </button>
+            <button ng-click="hideCollectionModal()" class="button">Cancel</button>
+          </footer>
+        </div>
+      </div>
+
+      
+  </div>
+</section>
+
+</div>
+<% include footer %>

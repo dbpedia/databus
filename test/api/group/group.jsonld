@@ -1,0 +1,16 @@
+{
+  "@id": "https://dev.databus.dbpedia.org/janni/test",
+  "@type": "http://dataid.dbpedia.org/ns/core#Group",
+  "http://purl.org/dc/terms/title": {
+    "@value": "Test Group",
+    "@language": "en"
+  },
+  "http://purl.org/dc/terms/abstract": {
+    "@value": "Lorem ipsum dolor sit amet. The test has been successful.",
+    "@language": "en"
+  },
+  "http://purl.org/dc/terms/description": {
+    "@value": "Lorem ipsum dolor sit amet. The test has been successful.",
+    "@language": "en"
+  }
+}

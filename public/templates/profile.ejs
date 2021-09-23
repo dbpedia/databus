@@ -1,0 +1,114 @@
+<div ng-controller="ProfileController">
+  <div class="content">
+
+    <div class="title is-3">Welcome, {{ profileData.label }}</div>
+
+
+    <div class="title is-4">Edit Profile</div>
+
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control has-icons-left has-icons-right">
+        <input class="input" type="text" placeholder="Name" ng-model="editData.label">
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Profile Picture URL</label>
+      <div class="control has-icons-left has-icons-right">
+        <input class="input" type="text" placeholder="Profile Picture URL" ng-model="editData.imageUrl">
+        <span class="icon is-small is-left">
+          <i class="fas fa-image"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">About</label>
+      <div class="control has-icons-left has-icons-right">
+        <textarea class="input" type="text" placeholder="About" style="min-height: 10em;"
+          ng-model="editData.about"></textarea>
+        <span class="icon is-small is-left">
+          <i class="fas fa-question"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">WebId URI</label>
+      <div class="control has-icons-left has-icons-right">
+        <input class="input" type="text" placeholder="WebId URI" ng-model="editData.webIdURI">
+        <span class="icon is-small is-left">
+          <i class="fas fa-id-card"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Promoted Content</label>
+      <div class="control">
+        <textarea class="input" type="text" placeholder="Featured Content" style="min-height: 10em;"
+          ng-model="editData.featuredContent"></textarea>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-consumer" ng-click="saveProfile()">Save</button>
+      </div>
+      <div class="control">
+        <button ng-click="resetEdits()" class="button">Reset</button>
+      </div>
+    </div>
+
+
+    <br />
+
+    <br />
+
+    <br />
+
+    <div class="title is-4">API Keys</div>
+    <div class=content>
+      <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a x-api-key header</p>
+      <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
+    </div>
+    <label class="label">Create New API Key</label>
+    <div class="field is-grouped" style="margin-bottom: 1.5em;">
+      <p class="control">
+        <input class="input" placeholder="Enter key name..." input="searchInput" ng-model="createApiKeyName"
+          filters="searchFilters">
+      </p>
+      <p class="control">
+        <a ng-click="addApiKey()" class="button is-primary">
+          Create
+        </a>
+      </p>
+    </div>
+
+    <div>
+      <label class="label">API Keys</label>
+      <div ng-repeat="key in apiKeys">
+        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+          align-items: center;">
+          <div><b>{{ key.name }}: </b>{{ key.key }}</div>
+          <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(key.key)" width="24" height="24"
+            xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+            <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
+          </svg>
+          <div style="flex: 1;"></div>
+          <a ng-click="removeApiKey(key.key)" class="button is-error">
+            Delete
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

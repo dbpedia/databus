@@ -1,0 +1,212 @@
+// Hoverable Icon
+
+.hover-icon::before {
+  content: '';
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  margin: -8px;
+  background-color: $icon-circle-hover;
+  opacity: 0;
+  transition: 0.1s;
+  transition-timing-function: ease-in-out;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hover-icon.small::before {
+  height: 32px;
+  width: 32px;
+  margin: -4px -10px;
+}
+
+.hover-icon svg {
+  z-index: 10;
+}
+
+.hover-icon:hover::before {
+  opacity: 1;
+}
+
+.hover-icon:active::before {
+  background-color: $icon-circle-active;
+}
+
+
+// Expandable Arrow
+
+.expandable-arrow {
+  padding: 10px 20px;
+}
+
+.arrow {
+  border: solid $icon;
+  border-width: 0 1px 1px 0;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin: 1px;
+}
+
+.arrow.right {
+  transition: all .5s;
+  transform: translateX(-3px) rotate(-45deg);
+  -webkit-transform: translateX(-3px) rotate(-45deg);
+}
+
+.arrow.left {
+  transition: all .5s;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.arrow.up {
+  transition: all .5s;
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.arrow.down {
+  transition: all .5s;
+  transform: translateY(-3px) rotate(45deg);
+  -webkit-transform: translateY(-3px) rotate(45deg);
+}
+
+// Icon
+
+.no-icon-padding .databus-icon {
+  padding: 0px;
+}
+
+.databus-icon {
+  display: flex;
+  //padding: 12px;
+}
+
+.databus-icon svg {
+  fill: $icon;
+}
+
+// HIerarchy
+
+
+.hierarchy {
+
+  .node {
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: $highlight;
+    }
+
+
+    &.has-label-padding .node-label {
+      padding-left: 20px;
+    }
+
+    .node-label {
+      padding-left: 0px;
+      padding-top: 1em;
+      padding-bottom: 1em;
+      flex:1;
+    }
+  }
+
+  .node-children {
+    margin-left: 26px;
+    border-left: 1px solid $hierarchy-lines;
+    transition-duration: 0.5s;
+  }
+}
+
+.entity-card {
+
+  .entity-card-icon {
+    width: auto;
+    height: 52px;
+    margin-right: 10px;
+  }
+
+  .entity-card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .entity-card-content {
+    margin-top: 0.5em;
+  }
+
+  .entity-card-footer {
+    margin-top: 0.5em;
+  }
+}
+
+.hero.databus-banner {
+  background-image: url("../img/banner.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: $banner;
+  text-align: center;
+  min-height: 200px;
+
+  .title {
+    color: white;
+  }
+
+  
+
+  .hero-body {
+    display: flex;
+    align-items: center;
+  }
+
+  &.no-bg {
+    background-image: none;
+    min-height: 200px;
+  }
+}
+
+.section.is-dimmed {
+  background-color: $background;
+  border-bottom: 1px solid $hierarchy-lines;
+}
+
+.services-card {
+  background-color: $white;
+  border: 1px solid $hierarchy-lines;
+  padding: 1em 2em;
+  padding-bottom: 2em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.sliderboy {
+  padding-top: 0.5em;
+}
+.sliderboy-fix .slick-track {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.topic {
+
+  &:not(:last-child) {
+    margin-bottom: 3em;
+  }
+  
+  .topic-label {
+    color: $topic-header;
+    font-size: 1em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase; 
+    margin-bottom: 1em;
+  }
+}
+
+// NAVBAR
+
+.navbar-db {
+  background-color: $navbar-background;
+}

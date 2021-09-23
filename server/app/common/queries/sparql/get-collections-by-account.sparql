@@ -1,0 +1,15 @@
+PREFIX databus:  <https://databus.dbpedia.org/system/ontology#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT * WHERE
+{
+   ?uri a databus:Collection .
+   ?uri dct:publisher <%ACCOUNT_URI%> .
+   ?uri dct:title ?label .
+   ?uri dct:abstract ?abstract .
+   ?uri dct:description ?description .
+   ?uri databus:content ?content .
+   OPTIONAL { ?uri dct:issued ?issued . }
+   OPTIONAL { ?uri dct:created ?created . }
+}

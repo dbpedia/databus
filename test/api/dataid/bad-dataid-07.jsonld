@@ -1,0 +1,204 @@
+{
+  "@context": {
+    "dataid": "http://dataid.dbpedia.org/ns/core#",
+    "databus": "https://databus.dbpedia.org/system/ontology#",
+    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "dct": "http://purl.org/dc/terms/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "cert": "http://www.w3.org/ns/auth/cert#",
+    "dbo": "http://dbpedia.org/ontology/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "sec": "https://w3id.org/security#",
+    "maker": {
+      "@id": "foaf:maker",
+      "@type": "@id"
+    },
+    "primaryTopic": {
+      "@id": "foaf:primaryTopic",
+      "@type": "@id"
+    },
+    "name": {
+      "@id": "foaf:name",
+      "@type": "xsd:string"
+    },
+    "account": {
+      "@id": "foaf:account",
+      "@type": "@id"
+    },
+    "img": {
+      "@id": "foaf:img",
+      "@type": "@id"
+    },
+    "key": {
+      "@id": "cert:key"
+    },
+    "modulus": {
+      "@id": "cert:modulus"
+    },
+    "exponent": {
+      "@id": "cert:exponent"
+    },
+    "title": {
+      "@id": "dct:title",
+      "@type": "xsd:string"
+    },
+    "label": {
+      "@id": "rdfs:label",
+      "@type": "xsd:string"
+    },
+    "comment": {
+      "@id": "rdfs:comment",
+      "@type": "xsd:string"
+    },
+    "abstract": {
+      "@id": "dct:abstract",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "dct:description",
+      "@type": "xsd:string"
+    },
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:dateTime"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:dateTime"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "publisher": {
+      "@id": "dct:publisher",
+      "@type": "@id"
+    },
+    "distribution": {
+      "@id": "dcat:distribution",
+      "@type": "@id"
+    },
+    "downloadURL": {
+      "@id": "dcat:downloadURL",
+      "@type": "@id"
+    },
+    "file": {
+      "@id": "dataid:file",
+      "@type": "@id"
+    },
+    "byteSize": {
+      "@id": "dcat:byteSize",
+      "@type": "xsd:decimal"
+    },
+    "group": {
+      "@id": "dataid:group",
+      "@type": "@id"
+    },
+    "Group": "dataid:Group",
+    "Dataset": "dataid:Dataset",
+    "Artifact": "dataid:Artifact",
+    "artifact": {
+      "@id": "dataid:artifact",
+      "@type": "@id"
+    },
+    "version": {
+      "@id": "dataid:version",
+      "@type": "@id"
+    },
+    "hasVersion": {
+      "@id": "dct:hasVersion",
+      "@type": "xsd:string"
+    },
+    "formatExtension": {
+      "@id": "dataid:formatExtension",
+      "@type": "xsd:string"
+    },
+    "format": {
+      "@id": "dataid:formatExtension",
+      "@type": "xsd:string"
+    },
+    "compression": {
+      "@id": "dataid:compression",
+      "@type": "xsd:string"
+    },
+    "sha256sum": {
+      "@id": "dataid:sha256sum",
+      "@type": "xsd:string"
+    },
+    "signature": {
+      "@id": "dataid:signature",
+      "@type": "xsd:string"
+    },
+    "tractate": {
+      "@id": "databus:tractate",
+      "@type": "xsd:string"
+    }
+  },
+  "@graph": [
+    {
+      "@type": "dataid:Dataset",
+      "@id": "https://databus.janni.org/azureman/test/success/2021-08-04/dataid.jsonld#Dataset",
+      "version": "https://databus.janni.org/azureman/test/success/2021-08-04",
+      "artifact": "https://databus.janni.org/azureman/test/success",
+      "group": "https://databus.janni.org/azureman/test",
+      "publisher": "https://databus.janni.org/azureman#this",
+      "hasVersion": "2021-08-04",
+      "issued": "2021-08-04T14:10:41.281Z",
+      "label": {
+        "@value": "Test Dataset",
+        "@language": "en"
+      },
+      "title": {
+        "@value": "Test Dataset",
+        "@language": "en"
+      },
+      "comment": {
+        "@value": "Test Dataset Abstract for Testing.",
+        "@language": "en"
+      },
+      "abstract": {
+        "@value": "Test Dataset Abstract for Testing.",
+        "@language": "en"
+      },
+      "description": {
+        "@value": "asdfasdfasdfasdfasdfasdfasdfasdf",
+        "@language": "en"
+      },
+      "license": {
+        "@id": "http://creativecommons.org/licenses/by/4.0/"
+      },
+      "distribution": [
+        {
+          "@id": "https://raw.githubusercontent.com/holycrab13/holycrab13.github.io/master/webid.ttl",
+          "@type": "dataid:SingleFile",
+          "issued": "2021-08-04T14:10:41.281Z",
+          "format": "ttl",
+          "compression": "none",
+          "downloadURL": "https://raw.githubusercontent.com/holycrab13/holycrab13.github.io/master/webid.ttl",
+          "byteSize": "2631",
+          "sha256sum": "9b34e464ccd5b0bcb1ec819d3e330cfb14b1f7ae412e2d010eb65c2d9beb3ac6",
+          "hasVersion": "2021-08-04",
+          "dataid-cv:asdf": "maybe"
+        }
+      ]
+    },
+    {
+      "@type": "dataid:Artifact",
+      "@id": "https://databus.janni.org/azureman/test/success"
+    },
+    {
+      "@type": "dataid:Version",
+      "@id": "https://databus.janni.org/azureman/test/success/2021-08-04"
+    },
+    {
+      "@type": "rdf:Property",
+      "@id": "http://dataid.dbpedia.org/ns/cv#asdf",
+      "rdfs:subPropertyOf": {
+        "@id": "dataid:contentVariant"
+      }
+    }
+  ]
+}

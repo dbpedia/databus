@@ -1,0 +1,1097 @@
+<% include header %>
+  <div ng-controller="PublishWizardController" ng-cloak>
+
+
+    <script src="/js/components/table-editor/table-editor.js"></script>
+    <script src="/node_modules/bulma-steps/dist/js/bulma-steps.min.js"></script>
+    <script src="/node_modules/stream-file/dist/stream-file.min.js"></script>
+    <script src="/node_modules/js-sha256/build/sha256.min.js"></script>
+    <script src="https://databus.dbpedia.org/auth/js/keycloak.js"></script>
+
+    <link rel="stylesheet" href="/node_modules/bulma-steps/dist/css/bulma-steps.min.css" type="text/css" />
+
+    <script type="text/ng-template" id="file.html">
+    <div class="upload-token distribution">
+      <div class="token-header">
+        <expandable-arrow expanded="fileGroup.expanded"></expandable-arrow>
+        <div style="margin-left: 6px">{{fileGroup.name}}</div>
+        <div ng-if="!fileGroup.expanded" class="content-variant-tag" 
+          ng-repeat="variant in fileGroup.contentVariants">{{ variant }}
+        </div>
+        <div style="flex:1; display:flex; justify-content: flex-end; margin-right: 12px;">
+          <databus-icon shape="'delete'" on-click="removeFile(fileGroup)" size="24"></databus-icon>
+        </div>
+      </div>
+      <div ng-if="fileGroup.expanded" class="token-extension content" >
+
+        <ul ng-repeat="file in fileGroup.files" style="margin-top: 0.1em;">
+          <li><b>Format</b> {{ file.format }} / <b>Compression</b> {{ file.compression }}</li>
+        </ul>
+      </div>
+    </div>
+  </script>
+
+    <style>
+      .upload-token {
+        margin-top: 4px;
+        background-color: #f9f9f9;
+      }
+
+      .upload-token .token-header {
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        position: relative;
+      }
+
+      .token-header .token-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 100;
+        background-color: white;
+        border: 1px solid #dbdbdb;
+      }
+
+      .upload-token .token-header .icons {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 12px;
+      }
+
+      .upload-token.group {
+        border-left: 4px solid #496272;
+      }
+
+      .upload-token.artifact {
+        margin-left: 16px;
+        border-left: 4px solid #7ba0bb;
+      }
+
+      .upload-token.distribution {
+        border-left: 4px solid #bbb;
+      }
+
+      .upload-token .token-extension {
+        margin-top: 0;
+        padding: 5px;
+        border-top: solid 1px #dbdbdb
+      }
+
+      .expandable-arrow {
+        padding: 4px 8px;
+      }
+
+      .upload-token.dataset {
+        background-color: #f3f3f3;
+      }
+
+      .included .upload-token {
+        background-color: #fafbfc;
+      }
+
+      .upload-token.preview {
+        opacity: 0.5;
+      }
+
+      .included .upload-token.dataset {
+        background-color: #ccddcc;
+      }
+
+      .content-variant-tag {
+        color: #aaa;
+        margin-left: 5px;
+      }
+
+      .artifact-icon {
+        margin-left: 20px;
+      }
+
+      .content-variants-panel {
+        width: 100%;
+      }
+
+      .content-variants-panel .content-variant {
+        padding: 0.35em 0.75em;
+        border: 1px solid #dbdbdb;
+        margin-bottom: 4px;
+        display: flex;
+      }
+
+      .token-progress {
+        position: absolute;
+        background-color: rgba(100, 255, 100, 0.2);
+        top: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .token-error {
+        position: absolute;
+        background-color: rgba(255, 100, 100, 0.2);
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+
+      .deselect-panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 49;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      .focus-content {
+        position: relative;
+        z-index: 50;
+      }
+
+      .content-header {
+        padding: 2.15rem 2rem 1.75rem 2rem;
+        border-bottom: 1px solid #e1e4e8;
+        background-color: #fafbfc;
+      }
+
+      .upload-type-container {
+        display: flex;
+        justify-content: center;
+        padding: 2em;
+      }
+
+      .upload-type-box {
+        border: 1px solid #dbdbdb;
+        text-align: center;
+        height: 240px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 1em;
+        padding: 2em;
+        cursor: pointer;
+        color: #bbb;
+      }
+
+      .upload-type-box.is-active {
+        color: #2bcbba;
+        border: 1px solid #2bcbba;
+        background-color: #fafbfc;
+      }
+
+      .upload-type-box.is-active p {
+        color: #2bcbba;
+      }
+
+      .upload-type-box div {
+        text-align: center;
+      }
+
+      .upload-type-box h1 {
+        font-size: 1.75em;
+        font-weight: 500;
+        margin: 0.5em;
+      }
+
+      .upload-type-box p {
+        font-size: 1em;
+        color: #aaa;
+      }
+
+      .step-footer {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .distributions-box {
+        border: 1px solid #dbdbdb;
+        flex-grow: 0;
+        min-height: 700px;
+        padding: 0.45em 0.75em;
+      }
+
+      .distributions-box.minimized {
+        min-height: initial;
+        width: 150px;
+        height: 36px;
+        padding: 0.3em 0.75em;
+        margin-right: .75em;
+      }
+
+      .distributions-box.minimized h3 {
+        margin-bottom: 0em;
+      }
+
+      .distributions-box h3 {
+        color: #bbb;
+        text-transform: uppercase;
+        margin-bottom: 1em;
+      }
+
+      .token-type-label {
+        color: #bbb;
+        text-transform: uppercase;
+        margin-right: .5em;
+      }
+
+      .hint-box {
+        text-align: center;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 2em;
+        cursor: pointer;
+        color: #bbb;
+        font-size: 1.1em;
+
+      }
+
+      .hover-note {
+        cursor: pointer;
+        display: flex;
+      }
+
+      .hover-dropdown {
+        display: none;
+      }
+
+      .hover-note:hover .hover-dropdown {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        display: block;
+        position: absolute;
+        top: 48px;
+        right: 8px;
+        z-index: 10005;
+        background-color: rgba(255, 255, 255, 1);
+        color: #888;
+        border: 1px solid #dbdbdb;
+        padding: 0.75em;
+        min-width: 600px;
+        width: 600px;
+        max-width: 600px;
+        white-space: initial;
+      }
+
+      .hover-dropdown.has-error {
+        background-color: rgba(255, 245, 245, 1) !important;
+        color: red !important;
+      }
+
+      .content-box {
+        border: 1px solid #e1e4e8;
+        padding: 0.5em;
+        position: relative;
+        margin-bottom: 1.5em;
+      }
+
+      .content-box h3 {
+        color: #bbb;
+        text-transform: uppercase;
+        margin-bottom: 1em;
+        flex: 1;
+      }
+
+      .content-box .box-header {
+
+        margin: 0.08em 0.3em;
+        display: flex;
+      }
+
+      .content-box .row {
+        display: flex;
+        padding: .0em.5em;
+        align-items: center;
+        margin-bottom: 0.5em;
+      }
+
+      .content-box .row .row-label {
+        min-width: 240px;
+        display: flex;
+      }
+    </style>
+
+
+
+
+
+    <div class="section" ng-if="!authenticated" style="min-height: 400px;">
+      <div class="container">
+        <p class="collection-editor-info-text">You need to be logged in to use the Databus Collection Editor.</p>
+        <br />
+        <p class="collection-editor-info-text">Don't have an account yet? Create one now!</p>
+        <br /> <br />
+        <div class="collection-editor-info-text">
+          <button class="button is-consumer" ng-click="logMeIn()" style="width: 100px; height: 40px">
+            <span class="icon has-text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path class="is-white"
+                  d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-5l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
+              </svg>
+            </span>
+            <span>
+              Login
+            </span>
+          </button>
+          <a class="button is-secondary button-margin-left" style="width: 120px; height: 40px"
+            href="https://databus.dbpedia.org/auth/realms/databus/protocol/openid-connect/registrations?client_id=website&response_type=code&scope=openidemail&redirect_uri=https://databus.dbpedia.org&kc_locale=en">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path
+                  d="M10 2v2h12v16h-12v2h14v-20h-14zm0 7.408l2.963 2.592-2.963 2.592v-1.592h-8v-2h8v-1.592zm-2-4.408v4h-8v6h8v4l8-7-8-7z" />
+              </svg> </span>
+            </span>
+            <span>
+              Register
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <section ng-if="authenticated" style="min-height: 600px;">
+      <div class="container">
+
+        <div ng-if="!isWizardReady" style="text-align:center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <!-- FILE SETUP-->
+        <div ng-if="isWizardReady" style="padding: 2em;">
+
+          <!-- PREV / NEXT-->
+          <h1 class="title">Publish Data</h1>
+          <p class="content">This form will help you set up a DataId. A DataId is a metadata document containing
+            important information about your files. This metadata document will make your data more understandable and
+            reusable for you and other users.</p>
+          <p class="content">Please fill out the form below and follow the instructions in the infoboxes. You can read
+            the infoboxes by hovering the info icons. Also make sure to fix all errors (denoted by a red explamation
+            mark). You can read the error description by hovering the red error icons.</p>
+
+          <div>
+            <!-- GROUP INFO BOX-->
+            <div class="content-box" ng-init="group=session.data.group">
+              <div class="box-header">
+                <h3>GROUP INFO</h3>
+
+                <div class="hover-note">
+                  <svg ng-if="group.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                    fill-rule="evenodd" clip-rule="evenodd">
+                    <path fill="red"
+                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                  </svg>
+                  <div class="hover-dropdown has-error content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="error in group.errors">
+                        {{ errorMessages[error] }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="hover-note">
+                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                  </databus-icon>
+                  <div class="hover-dropdown content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="hint in hints.group">{{ hint }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="box-content">
+                <div class="row">
+                  <div class="row-label">Create New Group</div>
+
+                  <input id="createnewgroup" type="checkbox" ng-model="group.createNew"
+                    ng-change="setCreateNewGroup(group.createNew);">
+                </div>
+
+                <div class="row" ng-if="!group.createNew">
+                  <div class="row-label">Id</div>
+                  <div style="flex: 1">
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span>{{ group.id }}</span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+
+                          <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData"
+                            ng-click="selectGroup(grp)">
+                            {{ grp.id }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label">Id</div>
+                  <div style="flex: 1">
+                    <input class="input" type="text" ng-model="group.id">
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_id')" class="help is-danger">{{
+                      errorMessages['err_invalid_group_id'] }}</span>
+                  </div>
+                </div>
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label">Label</div>
+                  <div style="flex: 1">
+                    <input class="input" type="text" ng-model="group.label">
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_label')" class="help is-danger">{{
+                      errorMessages['err_invalid_group_label'] }}</span>
+                  </div>
+                </div>
+
+                <div class="row" ng-if="group.createNew">
+                  <div class="" style="min-width: 240px">Abstract</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 80px;" class="input" type="text"
+                      ng-model="group.abstract"></textarea>
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_abstract')" class="help is-danger">{{
+                      errorMessages['err_invalid_group_abstract'] }}</span>
+                  </div>
+                </div>
+
+                <div class="row" ng-if="group.createNew">
+                  <div class="" style="min-width: 240px">Description</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 180px;" class="input" type="text"
+                      ng-model="group.description"></textarea>
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_description')" class="help is-danger">{{
+                      errorMessages['err_invalid_group_description'] }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- ARTIFACT INFO BOX-->
+            <div class="content-box" ng-init="artifact=session.data.artifact">
+              <div class="box-header">
+                <h3>ARTIFACT INFO</h3>
+
+                <div class="hover-note">
+                  <svg ng-if="artifact.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                    fill-rule="evenodd" clip-rule="evenodd">
+                    <path fill="red"
+                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                  </svg>
+                  <div class="hover-dropdown has-error content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="error in artifact.errors">
+                        {{ errorMessages[error] }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="hover-note">
+                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                  </databus-icon>
+                  <div class="hover-dropdown content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="hint in hints.artifact">{{ hint }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="box-content">
+                <div class="box-content">
+
+                  <div class="row">
+                    <div class="row-label">Create New Artifact</div>
+
+                    <input id="createnewartifact" type="checkbox" ng-disabled="group.createNew"
+                      ng-model="artifact.createNew" ng-change="setCreateNewArtifact(artifact.createNew);">
+                  </div>
+
+                  <div class="row" ng-if="!artifact.createNew">
+                    <div class="row-label">Id</div>
+                    <div style="flex: 1">
+                      <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span>{{ artifact.id }}</span>
+                            <span class="icon is-small">
+                              <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+
+                            <div class="dropdown-item" style="cursor: pointer;"
+                              ng-repeat="art in session.accountGroup.artifacts" ng-click="selectArtifact(art)">
+                              {{ art.id }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="row" ng-if="artifact.createNew">
+                    <div class="row-label">Id</div>
+                    <div style="flex: 1">
+                      <input class="input" type="text" ng-model="artifact.id">
+                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_id')" class="help is-danger">{{
+                        errorMessages['err_invalid_artifact_id'] }}</span>
+                    </div>
+                  </div>
+                  <div class="row" ng-if="artifact.createNew">
+                    <div class="row-label">Label</div>
+                    <div style="flex: 1">
+                      <input class="input" type="text" ng-model="artifact.label">
+                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
+                        errorMessages['err_invalid_artifact_label'] }}</span>
+                    </div>
+                  </div>
+
+                  <div class="row" ng-if="artifact.createNew">
+                    <div class="" style="min-width: 240px">Abstract</div>
+                    <div style="flex: 1">
+                      <textarea wrap="hard" style="min-height: 80px;" class="input" type="text"
+                        ng-model="artifact.abstract"></textarea>
+                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_abstract')" class="help is-danger">{{
+                        errorMessages['err_invalid_artifact_abstract'] }}</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+            <!-- VERSION INFO BOX-->
+            <div class="content-box" ng-init="version=session.data.version">
+
+              <div class="box-header">
+                <h3>VERSION INFO</h3>
+
+                <div class="hover-note">
+                  <svg ng-if="version.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                    fill-rule="evenodd" clip-rule="evenodd">
+                    <path fill="red"
+                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                  </svg>
+                  <div class="hover-dropdown has-error content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="error in version.errors">
+                        {{ errorMessages[error] }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="hover-note">
+                  <databus-icon shape="'info'" class='artifact-icon' size="24">
+                  </databus-icon>
+                  <div class="hover-dropdown content">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="hint in hints.version">{{ hint }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="" style="min-width: 240px">Version</div>
+                <div style="width: 100%;">
+                  <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                    <input class="control input" type="text" ng-model="version.id">
+                    <div class="control">
+                      <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                          <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span>Presets</span>
+                            <span class="icon is-small">
+                              <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                          </a>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                            <a class="dropdown-item" ng-click="session.data.createVersionId(0)">
+                              Date YYYY-MM-DD
+                            </a>
+                            <a class="dropdown-item" ng-click="session.data.createVersionId(1)">
+                              Date YYYY-MM-DDTHH
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span ng-if="hasError(version.errors, 'err_invalid_version_id')" class="help is-danger">{{
+                    errorMessages['err_invalid_version_id'] }}</span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="row-label">License URI</div>
+                <div style="flex: 1">
+                  <div style="width: 100%;">
+                    <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                      <input class="control input" type="text" ng-model="version.license">
+                      <div class="control">
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                              <span>Select License</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </a>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                              <a class="dropdown-item"
+                                ng-click="version.license='http://creativecommons.org/licenses/by/4.0/'">
+                                CCBY 4.0
+                              </a>
+                              <a class="dropdown-item"
+                                ng-click="version.license='https://www.gnu.org/licenses/lgpl-3.0.html'">
+                                LGPL v3
+                              </a>
+                              <a class="dropdown-item"
+                                ng-click="version.license='http://creativecommons.org/licenses/by-nc/4.0/'">
+                                CCBY-NC 4.0
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
+                      errorMessages['err_invalid_version_license'] }}</span>
+                  </div>
+                </div>
+
+
+              </div>
+
+              <div class="row">
+                <div class="" style="min-width: 240px">Documentation</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 180px;" class="input" type="text"
+                    ng-model="version.description"></textarea>
+                  <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
+                    errorMessages['err_invalid_version_description'] }}</span>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="content-box">
+
+              <div class="box-header">
+                <h3>Files</h3>
+                <div class="hover-note">
+
+                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                  </databus-icon>
+                  <div class="hover-dropdown content"
+                    style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
+                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                      <li ng-repeat="hint in hints.files">{{ hint }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="row-label">Add Files</div>
+                <div class="content-box" style="flex: 1; padding: 1em; margin-bottom: 0.5em;">
+                  <div class="field has-addons">
+                    <div class="control" style="width: 100%;">
+                      <input ng-model="session.fetchFilesInput" class="input" type="text"
+                        placeholder="Enter a resource page URL">
+                    </div>
+                    <div class="control">
+                      <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
+                        Fetch URLs
+                      </a>
+                    </div>
+                  </div>
+                  <div class="is-divider" data-content="OR" style="margin: 18px 0;"></div>
+                  <div class="field has-addons">
+                    <div class="control" style="width: 100%;">
+                      <input ng-model="session.addFileInput" class="input" type="text" placeholder="Enter a file URL">
+                    </div>
+                    <div class="control">
+                      <a class="button" ng-click="addFile(session.addFileInput)">
+                        Add URL
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="row-label">
+                  <div>Content Variants</div>
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown content"
+                      style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="hint in hints.variants">{{ hint }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="content-variants-panel">
+                  <div class="content-variant" ng-repeat="variant in version.contentVariants">
+                    <div style="flex: 1;">{{ variant.label }}</div>
+                    <databus-icon shape="'delete'" class='artifact-icon'
+                      on-click="session.data.removeContentVarant(variant)" size="24"></databus-icon>
+
+                  </div>
+
+                  <div class="field has-addons">
+                    <div class="control" style="width: 100%;">
+                      <input ng-model="session.contentVariantInput" class="input" type="text"
+                        placeholder="Enter a content variant tag">
+                    </div>
+                    <div class="control">
+                      <a class="button"
+                        ng-click="session.data.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
+                        Add Content Variant
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <table-editor ng-if="objSize(version.files) > 0" model="version"
+                  analysis-processes="session.shasumClient.processes" on-analyze-file="analyzeFile(file)"
+                  on-remove-file="removeFile(file)">
+                </table-editor>
+
+                <div ng-if="objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: 1em;
+                border-top: solid 1px #dbdbdb;">
+                  <div class="hint-box">
+                    <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
+                      and clicking the respective button.</div>
+                  </div>
+                </div>
+
+              </div>
+
+
+            </div>
+          </div>
+
+
+          <!-- ARTIFACT INFO BOX-->
+          <div class="content-box" ng-init="artifact=session.data.artifact">
+            <div class="box-header">
+              <h3>SIGNATURE</h3>
+            </div>
+
+
+            <div class="box-content">
+              <div class="row">
+                <div style="min-width: 240px">Publisher</div>
+                <div style="width: 100%;">
+                  <div class="field">
+                    <div class="control">
+                      <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                          <button style="justify-content: space-between; min-width: 400px;" class="button"
+                            aria-haspopup="true" aria-controls="dropdown-menu4">
+                            <span>{{ session.data.signature.selectedPublisherUri}}</span>
+                            <span class="icon is-small">
+                              <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                            <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
+                              ng-repeat="uri in session.data.signature.publisherUris">
+                              {{ uri }}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div style="min-width: 240px">Signature</div>
+                <div style="width: 100%;">
+                  <div class="field">
+                    <div class="control">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-disabled="session.data.signature.autoGenerateSignatureLocked"
+                          ng-model="session.data.signature.autoGenerateSignature">
+                        Auto-generate Signature
+                      </label>
+                    </div>
+                    <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
+                      <pre style="margin-bottom: 4px;">TRACTATE</pre>
+                      <textarea ng-model="session.data.signature.userSignature" class="textarea"
+                        placeholder="Signature"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <div class="content-box" ng-init="artifact=session.data.artifact">
+            <div class="box-header">
+              <h3>Publish</h3>
+            </div>
+
+            <div class="box-content">
+              <div class="row">
+
+                <div style="min-width: 240px">Context</div>
+                <pre ng-if="result.isReadyForUpload && session.showContext" style="width: 100%; position: relative;">
+                  <div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>
+                  {{ result.groupUpdate["@context"] | json }}
+                </pre> 
+                <pre ng-if="result.isReadyForUpload && !session.showContext" style="width: 100%; position: relative;"><div ng-click="session.showContext = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre> 
+                 
+                  
+
+                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                  Fix all errors to preview the DataId
+                </pre>
+              </div>
+              <div class="row">
+
+                <div style="min-width: 240px">Group Metadata</div>
+                <pre ng-if="result.isReadyForUpload" style="width: 100%;">
+                  {{ result.groupUpdate["@graph"] | json }}
+                </pre> 
+                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                  Fix all errors to preview the DataId
+                </pre>
+              </div>
+              <div class="row">
+                <div style="min-width: 240px">Artifact / Version Metadata</div>
+
+                <pre ng-if="result.isReadyForUpload"  style="width: 100%;">
+                  {{ result.versionUpdate["@graph"] | json }}
+                </pre>
+                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                  Fix all errors to preview the DataId
+                </pre>
+              </div>
+              <div class="row">
+
+                <p class="control" style="width: 100%; margin-top: 1em;">
+                  <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : session.isPublishing }"
+                    ng-disabled="!result.isReadyForUpload" class="button is-primary" ng-click="publish()">
+                    <span>Publish</span>
+                  </button>
+                </p>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="content-box" ng-init="artifact=session.data.artifact">
+            <div class="box-header">
+              <h3>Result</h3>
+            </div>
+
+            <div class="box-content">
+              <div class="row">
+
+
+                <div style="width: 100%; font-family: monospace; padding: 1.5em; background-color: #f5f5f5;">
+                  
+                  <p ng-repeat="entry in result.publishLog">
+                    {{ entry.message }}
+                  </p>
+                </div>
+
+               
+              </div>
+              <div class="row">
+
+                <p class="control" style="width: 100%; margin-top: 1em;">
+                  <button style="width: 100%; height: 3em;" class="button" ng-click="startNewUpload()">
+                    <span>Reset Form</span>
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div ng-if="session.activeStepIndex == 2" style="padding: 2em;">
+
+          <div style="display: flex; margin-bottom: 2em;">
+            <p class="control">
+              <button class="button is-primary" ng-click="previousStep()">
+                <span>Previous Step</span>
+              </button>
+            </p>
+            <div style="flex-grow: 1;"></div>
+            <p class="control" style="margin-left: 0.5em;">
+              <button ng-disabled="!session.shasumClient.isDone()" class="button is-primary" ng-click="nextStep()">
+                <span>Next Step</span>
+              </button>
+            </p>
+          </div>
+
+          <h1 style="margin-top: 2em;" class="title is-5">File Analysis</h1>
+
+          <div ng-repeat="fileGroup in session.data.version.files">
+            <div class="upload-token" style="border: 1px solid #dbdbdb; margin-bottom: 1em;">
+
+              <div class="token-header" style="position: relative; padding: .7em">
+                <div class="token-error" ng-if="session.shasumClient.hasError(fileGroup)"></div>
+                <div class="token-progress" style="right:0" ng-if="session.shasumClient.isSuccess(fileGroup)">
+                </div>
+                <div style="margin-left: 6px">{{fileGroup.name}}</div>
+                <div class="content-variant-tag" ng-repeat="variant in fileGroup.contentVariants">
+                  {{ variant }}</div>
+              </div>
+
+              <div ng-repeat="dist in fileGroup.distributions" class="token-extension"
+                style="position: relative; padding: .3em .7em; color: #aaa; display: flex">
+                <div style="margin-left: 6px">{{dist.uri}}</div>
+
+                <div ng-if="session.shasumClient.processes[dist.uri].hasError"
+                  style="text-align: right; flex-grow: 1; color:darkred">
+                  {{ session.shasumClient.processes[dist.uri].result.message }}</div>
+
+                <div ng-if="session.shasumClient.processes[dist.uri].isSuccess"
+                  style="text-align: right; flex-grow: 1; color: darkgreen">
+                  {{ session.shasumClient.processes[dist.uri].result.sha256sum }}</div>
+
+                <div class="token-error"
+                  ng-if="session.sha256[file.uri] != undefined && session.sha256[file.uri].error != undefined">
+                </div>
+                <div class="token-progress" ng-if="!session.shasumClient.processes[dist.uri].hasError" ng-style="{ 'right' : session.shasumClient.processes[dist.uri].result == undefined ? 
+                (100 - session.shasumClient.processes[dist.uri].progress) + '%' : '0' }"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="button">Analyze Files</div>
+
+          <h1 style="margin-top: 2em;" class="title is-5">Signature</h1>
+
+          <div class="field">
+            <label class="label">Publisher</label>
+            <div class="control">
+              <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                  <button style="justify-content: space-between; min-width: 400px;" class="button" aria-haspopup="true"
+                    aria-controls="dropdown-menu4">
+                    <span>{{ session.data.signature.selectedPublisherUri}}</span>
+                    <span class="icon is-small">
+                      <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                  <div class="dropdown-content">
+                    <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
+                      ng-repeat="uri in session.data.signature.publisherUris">
+                      {{ uri }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Signature</label>
+            <div class="control">
+              <label class="checkbox">
+                <input type="checkbox" ng-disabled="session.data.signature.autoGenerateSignatureLocked"
+                  ng-model="session.data.signature.autoGenerateSignature">
+                Auto-generate Signature
+              </label>
+            </div>
+            <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
+              <pre style="margin-bottom: 4px;">TRACTATE</pre>
+              <textarea ng-model="session.data.signature.userSignature" class="textarea"
+                placeholder="Signature"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="session.activeStepIndex == 3" style="padding: 2em;">
+
+          <div style="display: flex; margin-bottom: 2em;">
+            <p class="control">
+              <button class="button is-primary" ng-click="previousStep()">
+                <span>Previous Step</span>
+              </button>
+            </p>
+            <div style="flex-grow: 1;"></div>
+          </div>
+
+
+          <h1 style="margin-top: 2em;" class="title is-5">Group Metadata</h1>
+
+          <pre>
+          {{ result.groupUpdate["@graph"] | json }}
+        </pre>
+
+          <h1 style="margin-top: 2em;" class="title is-5">Artifact / Version Metadata</h1>
+
+          <pre>
+          {{ result.versionUpdate | json }}
+        </pre>
+
+          <p class="control" style="margin-left: 0.5em; margin-top: 2em;">
+            <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : session.isPublishing }"
+              ng-disabled="!result.isReadyForUpload" class="button is-primary" ng-click="publish()">
+              <span>Publish</span>
+            </button>
+          </p>
+
+
+        </div>
+      </div>
+    </section>
+    
+  </div>
+  <% include footer %>

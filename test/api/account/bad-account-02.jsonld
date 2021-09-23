@@ -1,0 +1,20 @@
+{
+  "@graph": [
+    {
+      "@id": "https://databus.janni.org/azure#this",
+      "@type": [
+        "http://dbpedia.org/ontology/DBpedian",
+        "http://xmlns.com/foaf/0.1/Person"
+      ],
+      "http://xmlns.com/foaf/0.1/account": { "@id" : "https://databus.janni.org/azureman" },
+      "http://xmlns.com/foaf/0.1/img":  { "@id" : "https://via.placeholder.com/150" }, 
+      "http://xmlns.com/foaf/0.1/name": "azureman"
+    },
+    {
+      "@id": "https://databus.janni.org/azureman",
+      "@type": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
+      "http://xmlns.com/foaf/0.1/maker": "https://databus.janni.org/azureman#this",
+      "http://xmlns.com/foaf/0.1/primaryTopic": { "@id" : "https://databus.janni.org/azure#this" }
+    }
+  ]
+}

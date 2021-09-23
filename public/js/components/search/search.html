@@ -1,0 +1,37 @@
+<div>
+
+
+  <div class="field" style="display: flex;">
+    <div class="control" style="flex:1;">
+      <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()" placeholder="Search the Databus...">
+    </div>
+    <div class="field" style="display:flex; align-items: center; line-height: 1;">
+      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterArtifact=!filters.filterArtifact;$ctrl.search();" class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterArtifact }" type="'Artifact'"></type-tag>
+      </div>
+      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterGroup=!filters.filterGroup;$ctrl.search();" class="is-clickable">
+        <type-tag width="36" height="36"  ng-class="{ 'grey-out' : !filters.filterGroup }" type="'Group'"></type-tag>
+      </div>
+      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterPublisher=!filters.filterPublisher;$ctrl.search();" class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterPublisher }" type="'PersonalProfileDocument'"></type-tag>
+      </div>
+      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterCollection=!filters.filterCollection;$ctrl.search();" class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterCollection }" type="'Collection'"></type-tag>
+      </div>
+      
+    </div>
+  </div>
+ 
+  <br ng-if="results.docs.length > 0" />  <br ng-if="$ctrl.results.docs.length > 0" />
+
+  <div class="dataset-name" ng-repeat="result in $ctrl.results.docs">
+
+    <entity-card label="result.label[0]" 
+    type="result.typeName[0]" uri="result.resource[0]"
+    desc="result.comment[0]">
+  </entity-card>
+
+   
+  <div ng-if="!$last" class="is-divider"></div>
+</div>
+</div>

@@ -1,0 +1,36 @@
+version: "3.0"
+services:
+  databus:
+    image: databus
+    ports:
+      - 3000:3000 
+      - 3001:8080 # exposes search
+    environment: 
+      DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
+      DATABUS_DATABASE_URL: http://172.17.0.01:3002
+      DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
+      DATABUS_OIDC_CLIENT_ID: ${DATABUS_OIDC_CLIENT_ID}
+      DATABUS_OIDC_SECRET: ${DATABUS_OIDC_SECRET}
+    volumes:
+      - ./data/keypair/:/databus/server/keypair
+      - ./data/users/:/databus/server/users
+  gstore:
+    image: gstore
+    environment: 
+      VIRT_USER: ${VIRTUOSO_USER}
+      VIRT_PASS: ${VIRTUOSO_PASSWORD}
+      VIRT_URI: "http://172.17.0.01:3003"
+    ports:
+      - "3002:80"
+    volumes:
+      - ./data/repo:/databus/git-root
+  virtuoso:
+    image: "openlink/virtuoso-opensource-7"
+    environment:
+      DBA_PASSWORD: ${VIRTUOSO_PASSWORD}
+      SPARQL_UPDATE: "true"
+      DEFAULT_GRAPH: ${DATABUS_RESOURCE_BASE_URL}
+    ports:
+      - "3003:8890"
+    volumes:
+      - ./data/virtuoso:/data

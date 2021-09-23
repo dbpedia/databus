@@ -1,0 +1,17 @@
+PREFIX databus-sys: <https://databus.dbpedia.org/system/voc/>
+PREFIX databus: <https://databus.dbpedia.org/>
+PREFIX dct:   <http://purl.org/dc/terms/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?service as ?uri ?title ?icon ?abstract ?banner ?desc ?homepage ?publisherUri WHERE {
+  ?service a databus-sys:Service .
+  ?service databus-sys:publisher <%PUBLISHER_URI%> .
+  ?service databus-sys:icon ?icon .
+  ?service databus-sys:banner ?banner .
+  ?service databus-sys:homepage ?homepage .
+  ?service dct:title ?title .
+  OPTIONAL { ?service dct:abstract ?abstract . }
+  ?service dct:description ?desc .
+  BIND(<%PUBLISHER_URI%> AS ?publisherUri)
+}

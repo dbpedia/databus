@@ -1,0 +1,39 @@
+<div style="display: flex;">
+  <div class="dropdown" style="width: 100%;" ng-class="{ 'is-active' : $ctrl.showDrop }">
+    <div style="position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 1000;" ng-click="$ctrl.showDrop = false"
+    ng-if="$ctrl.showDrop"></div>
+    <div class="dropdown-trigger" style="width: 100%; cursor: pointer;">
+
+      <div style="position: relative; display: flex; width: 100%;">
+
+        <databus-icon style="margin-right:16px;" shape="$ctrl.icon" size="24" ng-click="$ctrl.showDrop = true"></databus-icon>
+        
+      
+      </div>
+
+      <div class="dropdown-menu" style="min-width: 400px; left:initial; right: 0; z-index: 1001">
+
+        <div class="dropdown-content" style="position:relative; cursor: pointer;">
+          <div ng-repeat="value in $ctrl.data.artifacts" class="dropdown-item" ng-click="$ctrl.toggle(value)">
+
+            <div style="display: flex; align-items: center;">
+              <div style="min-width: 18px; min-height: 1px; margin-right: 8px; display: flex; align-items: center;">
+                <svg ng-if="$ctrl.isChecked(value)"
+                  style="fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                  viewBox="0 0 24 24">
+                  <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+                </svg>
+              </div>
+
+              <div style="flex: 1; white-space: nowrap;">{{ value.label }} ({{ value.artifactUri }})</div>
+       
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

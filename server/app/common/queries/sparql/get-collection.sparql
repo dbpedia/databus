@@ -1,0 +1,17 @@
+PREFIX databus:  <https://databus.dbpedia.org/system/ontology#>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+SELECT * WHERE
+{
+  GRAPH ?g {
+    <%COLLECTION_URI%> a databus:Collection .
+    <%COLLECTION_URI%> dct:title ?label .
+    <%COLLECTION_URI%> dct:publisher ?publisher . 
+    <%COLLECTION_URI%> dct:abstract ?abstract .
+    <%COLLECTION_URI%> dct:description ?description .
+    <%COLLECTION_URI%> databus:content ?content .
+    #<%COLLECTION_URI%> dct:created ?created .
+    #<%COLLECTION_URI%> dct:modified ?modified .
+    OPTIONAL { <%COLLECTION_URI%> dct:issued ?issued . }
+  }
+}

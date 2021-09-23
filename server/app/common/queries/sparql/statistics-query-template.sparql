@@ -1,0 +1,17 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT 
+  (COUNT(?file) AS ?fileCount)
+  (GROUP_CONCAT(DISTINCT ?license; SEPARATOR=", ") AS ?licenses)
+  (SUM(?size) AS ?fileSize) WHERE {
+
+  ?d dcat:downloadURL ?file .
+  ?d dct:license ?license .
+  ?d dataid:uncompressedByteSize ?size .
+  {
+    %COLLECTION_QUERY%
+  }
+} 

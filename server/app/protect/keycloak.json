@@ -1,0 +1,11 @@
+{
+  "realm" : "databus",
+  "realm-public-key" : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvHBQoFGF2zEnPicJeliAg7gK9HvvD8ohKezdg75+A4bPTEcMpLSiq03dP2uEclykQjLNESYz7PwGV/doP22gcmc3O9V8PRIvd7JON9zrvq59XY83IdHvLw1MEeQLZmtcC1gOKQV3MRAsnp0cJpN98Ge0fDG6zQRmN+pAEv7NuChW6Yma2OaQzwx6bbqZH8CE9RBdxmdeeCQuOsWuECte4oI8AQL6bmbxRKFFVK7mSRxB2VMah+vG/gwfgRUT273auHMr0op0O6Z3Z2mh801sfIxIbr7JSO3Demyvjqjqu0Q+LPZZmiIiKjPbX1p6Rajk5Fjvb08skO0MOxlqh25YkwIDAQAB",
+  "resource" : "website",
+  "auth-server-url" : "https://databus.dbpedia.org/auth",
+  "ssl-required" : "external",
+  "enable-basic-auth" : "true",
+  "credentials": {
+      "secret": "f3de81dd-ad95-4c72-970e-8178f4f1cb65"
+  }
+}

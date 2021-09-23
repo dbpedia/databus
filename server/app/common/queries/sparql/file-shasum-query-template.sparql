@@ -1,0 +1,11 @@
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+# Get all files
+SELECT DISTINCT 
+  ?file
+  ?version
+WHERE { 
+  %COLLECTION_QUERY%
+  ?distribution dcat:downloadURL ?file .
+  ?distribution dct:hasVersion ?version .
+}

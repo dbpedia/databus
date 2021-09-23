@@ -1,0 +1,257 @@
+
+.hero.databus-banner.is-green {
+  background-color: $banner-green;
+}
+
+.collection-summary.table {
+  background-color: transparent;
+}
+.collection-summary.table td {
+  vertical-align: middle;
+}
+
+.collection-summary.table input {
+  border-radius: 0px;
+  box-shadow: none;
+}
+
+//.file-browser .dropdown-content {
+//  position: absolute;
+//  z-index: 1000;
+//  left:0;
+//  right:0;
+//}
+
+.collections .node:hover {
+  background-color: $highlight;
+}
+
+// Tab Columns CSS
+
+.tab-columns {
+  width:100%;
+  overflow: hidden;
+}
+
+.tab-columns-container {
+  width:200%;
+  display: flex;
+  transition: 0.4s;
+  transition-timing-function: ease-in-out;
+}
+
+.tab-columns-container.moved {
+  transform: translateX(-50%);
+}
+
+.tab-columns-container .tab-column {
+  width: 100%;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+  opacity: 1;
+}
+
+.tab-columns-container .tab-column:last-child {
+  opacity: 0;
+}
+
+.tab-columns-container.moved .tab-column:first-child {
+  opacity: 0;
+}
+
+.tab-columns-container.moved .tab-column:last-child {
+  opacity: 1;
+}
+
+.flex-one {
+  flex: 1;
+}
+
+.node-icon {
+  padding: 12px;
+  display: flex;
+  cursor: pointer;
+}
+
+.node-icon svg {
+  z-index: 10;
+}
+
+.node-icon::before {
+  content: '';
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  margin: -8px;
+  background-color: $icon-circle-hover;
+  opacity: 0;
+  transition: 0.1s;
+  transition-timing-function: ease-in-out;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.node-icon:hover::before {
+  opacity: 1;
+}
+
+.node-icon:active::before {
+  background-color: $icon-circle-active;
+}
+
+// Collection Hierarchy Node CSS
+
+.hierarchy {
+
+  .node {
+    display: flex;
+    align-items: center;
+
+    .node-arrow {
+      padding: 10px 20px;
+    }
+
+    .node-arrow::before {
+      content: '';
+      position: absolute;
+      height: 32px;
+      width: 32px;
+      margin: -4px -10px;
+      background-color: $icon-circle-hover;
+      opacity: 0;
+      transition: 0.1s;
+      transition-timing-function: ease-in-out;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .node-arrow:hover::before {
+      opacity: 1;
+    }
+
+    .node-arrow:active::before {
+      background-color: $icon-circle-active;
+    }
+
+    &.has-label-padding .node-label {
+      padding-left: 20px;
+    }
+
+    .node-label {
+      padding-left: 0px;
+      padding-top: 1em;
+      padding-bottom: 1em;
+      flex:1;
+    }
+
+
+
+    .node-row {
+      display: flex;
+      align-items: center;
+      padding: 0.8em;
+    }
+
+    .has-error {
+      color: red;
+    }
+  }
+
+  .node-children {
+    margin-left: 26px;
+    border-left: 1px solid #dbdbdb;
+    transition-duration: 0.5s;
+  }
+
+
+  .node.is-active {
+
+  }
+}
+
+.masked-view {
+  width: 100%;
+  overflow: hidden;
+}
+
+.masked-view .content-panel {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.masked-view .page {
+  width: 100%;
+  flex:none;
+}
+
+.masked-view .content-panel {
+    transform: translateX(0%);
+    -webkit-transition: transform .3s; /* Safari prior 6.1 */
+    transition: transform .3s;
+}
+
+.masked-view .content-panel.moved {
+  transform: translateX(-100%);
+}
+
+.masked-view .content-panel .page {
+  -webkit-transition: opacity .3s; /* Safari prior 6.1 */
+  transition: opacity .3s;
+}
+
+.masked-view .content-panel.moved .page.outer {
+  opacity: 1;
+}
+
+.masked-view .content-panel.moved .page.inner {
+  opacity: 0;
+}
+
+.masked-view .content-panel .page.outer {
+  opacity: 0;
+}
+
+.masked-view .content-panel .page.inner {
+  opacity: 1;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+}
+
+.back-button:hover {
+  background-color: $highlight;
+}
+
+.collection-editor-header {
+  padding: 1.5rem 1.5rem 0rem 1.5rem;
+  border-bottom: 1px solid #e1e4e8;
+  background-color: #fafbfc;
+}
+
+.collection-editor-tab {
+  padding-left: 1.5em;
+  padding-right:1.5em;
+  cursor: pointer;
+}
+
+.collection-editor-tab.is-active {
+  background-color: #fff;
+  border-top: 1px solid #e1e4e8;
+  border-left: 1px solid #e1e4e8;
+  border-right: 1px solid #e1e4e8;
+}
+
+.collection-editor-tabs {
+  display: flex;
+  margin-bottom: -1px;
+  margin-top: 2em;
+}
+
+.collection-editor-info-text {
+  text-align: center;
+  color: $icon;
+  font-size: 1.1em;
+}

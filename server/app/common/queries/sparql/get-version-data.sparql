@@ -1,0 +1,26 @@
+
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX databus: <https://databus.dbpedia.org/>
+
+# Get the information of the latest dataset for a specific artifact
+SELECT DISTINCT ?dataset ?label ?comment ?groupdocu ?groupLabel ?description ?license ?date ?version ?uri ?artifactUri ?publisherUri WHERE {
+
+  ?dataset dataid:version <%VERSION_URI%> .
+  ?dataset dataid:group ?group.
+  Optional {  ?group rdfs:label ?groupLabel. }
+  ?dataset dct:hasVersion ?version.
+  ?dataset dct:title ?label.
+  ?dataset dct:abstract ?comment.
+  ?dataset dct:issued ?date.
+  ?dataset dct:license ?license.
+  ?dataset dct:description ?description.
+  OPTIONAL { ?dataset dataid:groupdocu ?groupdocu . }
+  ?dataset dataid:artifact ?artifactUri.
+  ?dataset dct:publisher ?publisher.
+  OPTIONAL { ?publisher foaf:account ?publisherUri. }
+  BIND(<%VERSION_URI%> AS ?uri)
+}

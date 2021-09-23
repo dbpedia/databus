@@ -1,0 +1,43 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
+PREFIX sec: <https://w3id.org/security#>
+
+# Creates a collection
+CONSTRUCT
+{
+  ?dataset a dataid:Dataset .
+  ?dataset ?p ?o .
+  ?proof ?q ?r .
+  ?version a dataid:Version .
+  ?artifact a dataid:Artifact .
+  ?distribution a dataid:SingleFile .
+  ?distribution ?e ?f .
+  ?cvProperty ?j ?k .
+}
+WHERE
+{
+  ?dataset a dataid:Dataset .
+  ?dataset ?p ?o .
+
+  ?dataset sec:proof ?proof .
+  ?proof ?q ?r .
+
+  ?dataset dataid:version ?version .
+  ?version a dataid:Version .
+
+  ?dataset dataid:artifact ?artifact .
+  ?artifact a dataid:Artifact .
+
+  ?dataset dcat:distribution ?distribution .
+  ?distribution a dataid:SingleFile .
+  ?distribution ?e ?f .
+
+  ?distribution ?cvProperty ?cvLiteral .
+  ?cvProperty ?j ?k .
+  ?cvProperty rdfs:subPropertyOf dataid:contentVariant .
+}

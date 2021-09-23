@@ -1,0 +1,308 @@
+<style>
+  .ce-content-artifact {
+    padding: 0;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+    margin-left: 4em;
+    margin-top: 16px;
+    position: relative;
+  }
+
+  .ce-content-files-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #dbdbdb;
+  }
+
+  .ce-content-file {
+    padding: 0;
+    border: 1px solid #dbdbdb;
+    border-bottom: none;
+    background-color: white;
+    margin-left: 8em;
+    margin-top: 1em;
+  }
+
+  .ce-content-filter-dropdown-button {
+    border-radius: 0;
+
+  }
+
+  .ce-content-filter-dropdown-button.is-facet {
+    background-color: #f6f6f6;
+    border: 1px solid #dbdbdb;
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    border-right: none;
+  }
+
+
+  .ce-content-filter-dropdown-button.is-delete {
+    border: 1px solid #dbdbdb;
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    text-align: center;
+    width: 36px;
+    border-left: none;
+    justify-content: center;
+    fill: #a7a7a7;
+  }
+
+  .ce-content-filter-dropdown-button.is-delete:hover {
+    background-color: #f6f6f6;
+  }
+
+  .ce-artifact-tree-line {
+    width: 32px;
+    margin-left: -33px;
+    margin-top: -18px;
+    height: 48px;
+    position: absolute;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+    border-right: 0;
+  }
+
+  .file-row:first-child .ce-file-tree-line {
+    margin-top: -18px;
+    height: 40px;
+  }
+
+  .ce-file-tree-line {
+    width: 32px;
+    margin-left: -33px;
+    margin-top: -26px;
+    height: 49px;
+    position: absolute;
+    border: 1px solid #dbdbdb;
+    border-top: none;
+    border-right: 0;
+  }
+
+  .ce-file-to-artifact-tree-line {
+    width: 96px;
+    margin-left: -97px;
+    height: 48px;
+    position: absolute;
+    border-left: 1px solid #dbdbdb;
+  }
+
+  .ce-artifact-to-artifact-tree-line {
+    width: 32px;
+    margin-left: -33px;
+    top: 16px;
+    bottom: -18px;
+    position: absolute;
+    border-left: 1px solid #dbdbdb;
+  }
+</style>
+
+
+<div class="ce-content-group" ng-repeat-start="groupNode in $ctrl.root.childNodes track by groupNode.uri"
+  ng-init="groupView = $ctrl.view.groups[groupNode.uri]">
+
+  <div class=" ce-content-group-header">
+    <type-tag width="48" height="48" style="margin-right:18px" type="'Group'"></type-tag>
+    <div style="flex: 1;">{{ groupNode.uri }}</div>
+    <multiselect-artifact-dropdown style="display: flex;" icon="'add-artifact'" data="$ctrl.view.groups[groupNode.uri]"
+      node="groupNode" on-change="$ctrl.onArtifactDropdownChanged(groupNode)">
+    </multiselect-artifact-dropdown>
+    <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.expanded" shape="'max'" size="24"
+      on-click="groupView.expanded = true"></databus-icon>
+    <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24"
+      on-click="groupView.expanded = false"></databus-icon>
+    <databus-icon style="margin-right:16px;cursor: pointer;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+      on-click="$ctrl.removeNode(groupNode)"></databus-icon>
+  </div>
+
+  <div class="ce-content-group-body" ng-if="groupView.expanded">
+
+    <div ng-if="$ctrl.objSize(groupNode.facetSettings) > 0">
+      <p style="margin-bottom: 0.5em;"><b>Active Filters:</b></p>
+      <div style="display: flex; flex-wrap: wrap;">
+        <div ng-repeat="(uri, setting) in groupNode.facetSettings" style="margin-right: 1em; margin-bottom: 1em;">
+          <div class="field has-addons">
+            <div class="ce-content-filter-dropdown-button is-facet" aria-haspopup="true" aria-controls="dropdown-menu">
+              <svg style="margin-right: 8px; fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24">
+                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+              </svg>
+
+              <span>{{ groupView.facets[uri].label}}</span>
+            </div>
+
+            <multiselect-dropdown style="min-width: 250px" placeholder="Enter value..." input="setting"
+              values="groupView.facets[uri].values" on-change="$ctrl.onActiveFilterChanged(groupNode)">
+            </multiselect-dropdown>
+
+
+            <div class="ce-content-filter-dropdown-button is-delete" ng-click="$ctrl.removeFilter(groupNode, uri)">
+              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
+                clip-rule="evenodd">
+                <path
+                  d="M12 11.293l10.293-10.293.707.707-10.293 10.293 10.293 10.293-.707.707-10.293-10.293-10.293 10.293-.707-.707 10.293-10.293-10.293-10.293.707-.707 10.293 10.293z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-bottom: 0.5em;"><b>Add Filters:</b></p>
+    <div style="display: flex;">
+      <autofill-dropdown style="margin-right: 0.5em;" placeholder="Enter facet..." input="groupView.addFilterFacetInput"
+        on-change="$ctrl.onAddFilterFacetInputChanged(groupView)" values="$ctrl.getFacetLabels(groupView)">
+      </autofill-dropdown>
+
+      <multiselect-dropdown style="margin-right: 0.5em; min-width: 350px" placeholder="Select values..."
+        input="groupView.addFilterValue" is-disabled="groupView.addFilterFacet == null"
+        values="groupView.facets[groupView.addFilterFacet].values">
+      </multiselect-dropdown>
+      <div class="button is-primary" ng-disabled="groupView.addFilterFacet == null || groupView.addFilterValue == null"
+        ng-click="$ctrl.addFilter(groupNode, groupView.addFilterFacet, groupView.addFilterValue, true)">
+        <databus-icon style="margin-right:8px;" color="'white'" shape="'add-button'" size="12"></databus-icon>Add
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div>
+  <div class="ce-content-artifact" ng-repeat-start="artifactNode in groupNode.childNodes track by artifactNode.uri"
+    ng-init="artifactView = $ctrl.view.artifacts[artifactNode.uri]">
+
+    <div class="ce-artifact-tree-line">
+    </div>
+    <div ng-if="!$ctrl.isLastChild(groupNode, artifactNode)" class="ce-artifact-to-artifact-tree-line"></div>
+    <div class=" ce-content-group-header">
+      <type-tag width="48" height="48" style="margin-right:18px" type="'Artifact'"></type-tag>
+
+      <div style="flex: 1;">{{ artifactNode.uri }}</div>
+
+      <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24"
+        on-click="artifactView.expanded = true"></databus-icon>
+      <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"
+        on-click="artifactView.expanded = false"></databus-icon>
+
+
+      <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+        on-click="$ctrl.removeNode(artifactNode)"></databus-icon>
+    </div>
+
+    <div class="ce-content-group-body " ng-if="artifactView.expanded">
+
+
+      <div ng-if="$ctrl.objSize(groupNode.facetSettings) + $ctrl.objSize(artifactNode.facetSettings) > 0">
+
+
+        <p style="margin-bottom: 0.5em;"><b>Active Filters:</b></p>
+
+        <div style="display: flex; flex-wrap: wrap;">
+
+          <!-- Active filters on the group node -->
+          <div ng-repeat="uri in $ctrl.getAllFilters(groupNode, artifactNode)"
+            style="margin-right: 1em; margin-bottom: 1em;">
+            <div class="field has-addons" style="height: 36px; color: #aaa">
+              <div class="ce-content-filter-dropdown-button is-facet">
+                <svg style="margin-right: 8px; fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                  viewBox="0 0 24 24">
+                  <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+                </svg>
+                <span>{{ groupView.facets[uri].label}}</span><span ng-if='groupNode.facetSettings[uri] != undefined'>
+                  (from parent)</span>
+              </div>
+              <multiselect-dropdown style="min-width: 250px" placeholder="Enter value..."
+                parent-input="groupNode.facetSettings[uri]" input="artifactNode.facetSettings[uri]"
+                values="artifactView.facets[uri].values" on-change="$ctrl.onActiveFilterChanged(artifactNode)">
+              </multiselect-dropdown>
+              <div class="ce-content-filter-dropdown-button is-delete" ng-if="artifactNode.facetSettings[uri]"
+                ng-click="$ctrl.removeFilter(artifactNode, uri)">
+                <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
+                  clip-rule="evenodd">
+                  <path
+                    d="M12 11.293l10.293-10.293.707.707-10.293 10.293 10.293 10.293-.707.707-10.293-10.293-10.293 10.293-.707-.707 10.293-10.293-10.293-10.293.707-.707 10.293 10.293z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active filters on the artifact node 
+        <div ng-repeat="(uri, setting) in artifactNode.facetSettings" ng-if="groupNode.facetSettings[uri] == undefined"
+          style="margin-right: 1em; margin-bottom: 1em;">
+          <div class="field has-addons">
+            <div class="ce-content-filter-dropdown-button is-facet">
+              <svg style="margin-right: 8px; fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24">
+                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+              </svg>
+              <span>{{ artifactView.facets[uri].label}}</span>
+            </div>
+            <multiselect-dropdown style="min-width: 250px" placeholder="Enter value..."
+              parent-input="groupNode.facetSettings[uri]" input="artifactNode.facetSettings[uri]"
+              values="artifactView.facets[uri].values" on-change="$ctrl.onActiveFilterChanged(groupNode)">
+            </multiselect-dropdown>
+            <div class="ce-content-filter-dropdown-button is-delete" ng-click="$ctrl.removeFilter(artifactNode, uri)">
+              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
+                clip-rule="evenodd">
+                <path
+                  d="M12 11.293l10.293-10.293.707.707-10.293 10.293 10.293 10.293-.707.707-10.293-10.293-10.293 10.293-.707-.707 10.293-10.293-10.293-10.293.707-.707 10.293 10.293z" />
+              </svg>
+            </div>
+          </div>
+        </div>-->
+
+
+        </div>
+      </div>
+
+
+      <p style="margin-bottom: 0.5em;"><b>Add Filters:</b></p>
+      <div style="display: flex;">
+        <autofill-dropdown style="margin-right: 0.5em;" placeholder="Enter facet..."
+          input="artifactView.addFilterFacetInput" on-change="$ctrl.onAddFilterFacetInputChanged(artifactView)"
+          values="$ctrl.getFacetLabels(artifactView)">
+        </autofill-dropdown>
+
+        <multiselect-dropdown style="margin-right: 0.5em; min-width: 350px" placeholder="Enter value..."
+          input="artifactView.addFilterValue" values="groupView.facets[artifactView.addFilterFacet].values">
+        </multiselect-dropdown>
+
+
+        <div class="button is-primary"
+          ng-disabled="artifactView.addFilterFacet == null || artifactView.addFilterValue == null || artifactView.addFilterValue.length == 0"
+          ng-click="$ctrl.addFilter(artifactNode, artifactView.addFilterFacet, artifactView.addFilterValue, true)">
+          <databus-icon style="margin-right:8px;" color="'white'" shape="'add-button'" size="12"></databus-icon>Add
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  <div class="ce-content-file" ng-if="artifactNode.files && artifactNode.files.length > 0">
+    <div ng-repeat="file in artifactNode.files" class="file-row">
+      <div class="ce-file-tree-line"></div>
+      <div ng-if="!$ctrl.isLastChild(groupNode, artifactNode)" class="ce-file-to-artifact-tree-line"></div>
+      <div class="ce-content-files-header">
+        <div style="flex:1; margin-left: 16px;">{{ file.file }}</div>
+        <div style="margin-right: 16px;">{{ $ctrl.formatFileSize(file.size) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-repeat-end style="margin-bottom: 1em;"></div>
+</div>
+<div class="ce-content-file" ng-if="groupNode.files && groupNode.files.length > 0">
+  <div ng-repeat="file in groupNode.files" class="file-row">
+    <div class="ce-file-tree-line"></div>
+    <div class="ce-content-files-header">
+      <div style="flex:1; margin-left: 16px;">{{ file.file }}</div>
+      <div style="margin-right: 16px;">{{ $ctrl.formatFileSize(file.size) }}</div>
+    </div>
+  </div>
+</div>
+<div ng-repeat-end style="margin-bottom: 1em;"></div>

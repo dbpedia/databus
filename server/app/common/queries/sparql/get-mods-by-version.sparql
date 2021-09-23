@@ -1,0 +1,20 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataiddebug: <http://dataid.dbpedia.org/ns/debug.ttl#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+
+SELECT ?file (group_concat(STR(?result);separator=",") as ?results) WHERE {
+  ?dataset dataid:version <%VERSION_URI%> .
+  ?singlefile dataid:isDistributionOf ?dataset .
+  ?singlefile dataid:file ?file .
+  SERVICE <https://mods.tools.dbpedia.org/sparql> { 
+    {
+      SELECT DISTINCT ?mod WHERE {
+    	?mod <http://www.w3.org/ns/prov#used> ?file .
+      }
+    }
+    ?svg <http://dataid.dbpedia.org/ns/mods/core#svgDerivedFrom> ?mod .
+    BIND (CONCAT("<a href=\"",?svg, "\"> <img src=\"",?svg,"\"></a>" ) AS ?result )
+  }
+} GROUP BY ?file

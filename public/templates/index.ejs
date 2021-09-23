@@ -1,0 +1,65 @@
+<% include header %>
+  <div ng-controller="FrontPageController">
+    <section style="background: #81b8b2; background-image: url(../img/banner-background.png);
+    text-align: left; color: white; padding: 100px; position: relative; background-repeat: repeat;
+    background-position: center; background-size: 150px;">
+      <div class="container">
+        <h1 style="font-size: 2em; font-weight: bolder; margin-bottom: .5em;">WELCOME TO THE</h1>
+        <div style="display: flex; align-items: center; margin-bottom: 3em;">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
+            viewBox="0 0 40.326191 46.198502" version="1.1" id="svg5" style="margin-right: 1.5em; margin-top: 7px">
+            <defs id="defs2" />
+            <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
+              <path id="path42117"
+                style="fill:#fff;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
+            </g>
+          </svg>
+          <h1 style="font-size: 6em; font-weight: bolder; margin: 0;">DATABUS</h1>
+        </div>
+        <div style="display: flex;">
+          <a href="/system/account">
+            <div class="button call-to-action colored">My Account</div>
+          </a>
+          <a href="/system/documentation">
+            <div class="button call-to-action">Documentation</div>
+          </a>
+        </div>
+      </div>
+      <div class="open-beta">Open Beta</div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-4 stats">
+            <p class="section-label">Recent Activity</p>
+            <activity-chart data="activityChartData" height="400"></activity-chart>
+            <br />
+            <br />
+            <p class="section-label">Most Active Users</p>
+            <uploader-ranking data="uploadRankingData"></uploader-ranking>
+            <br />
+          </div>
+          <div class="column main">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <p class="section-label">Search</p>
+              <a href="/system/documentation#toc-1" style="line-height: 1;">
+                <databus-icon shape="'help'" size="'24'"></databus-icon>
+              </a>
+            </div>
+            <search></search>
+            <br />
+            <p class="section-label">New Artifacts</p>
+            <br />
+            <div ng-repeat="dataset in recentUploadsData">
+              <entity-card style="flex: 1;" label="dataset.label" type="'Artifact'" uri="dataset.artifactUri"
+                desc="dataset.desc" date="dataset.date">
+              </entity-card>
+              <div ng-if="!$last" class="is-divider"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <% include footer %>

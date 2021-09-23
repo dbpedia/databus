@@ -1,0 +1,36 @@
+# Starts everything except the databus
+# Start databus with:
+# DATABUS_RESOURCE_BASE_URL=https://databus.dbpedia.org DATABUS_DATABASE_URL=http://172.17.0.1:3002 npm start
+version: "3.0"
+services:
+  lookup-servlet:
+    image: lookup-servlet
+    container_name: test_lookup
+    ports:
+      - 8080:8080
+    volumes: 
+      - ../search/app-config-servlet.yml:/root/app-config.yml
+      - ../search/index:/databus/search/index
+  gstore:
+    image: gstore
+    environment: 
+      VIRT_USER: "dba"
+      VIRT_PASS: "everyoneknows"
+      VIRT_URI: "http://172.17.0.01:3003"
+    ports:
+      - "3002:80"
+    volumes:
+      - ./data/repo:/databus/git-root
+  virtuoso:
+    logging:
+      driver: none
+    image: "tenforce/virtuoso:1.3.2-virtuoso7.2.5.1"
+    container_name: test_virtuoso
+    environment:
+      DBA_PASSWORD: "everyoneknows"
+      SPARQL_UPDATE: "true"
+      DEFAULT_GRAPH: "https://databus.janni.org"
+    ports:
+      - "3003:8890"
+    volumes: 
+      - ./data/virtuoso:/data

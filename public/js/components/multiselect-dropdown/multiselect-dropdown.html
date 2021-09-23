@@ -1,0 +1,59 @@
+<div>
+  <div class="dropdown" style="width: 100%;" ng-class="{ 'is-active' : $ctrl.showDrop }">
+    <div class="dropdown-trigger" style="width: 100%;">
+
+      <div style="position: relative;" style="width: 100%;">
+
+        <button style="width: 100%; border: 1px solid #dbdbdb; border-radius: 0;" class="button"
+          ng-focus="$ctrl.showDrop = true" ng-disabled="$ctrl.isDisabled" ng-keydown="$ctrl.handleKey($event)"
+          ng-click="$ctrl.showDrop = true">
+          <span ng-if="$ctrl.hasContent()" style="flex:1; text-align:left" ng-bind-html="$ctrl.list()"></span>
+          <span ng-if="!$ctrl.hasContent()" style="flex:1; text-align:left; color: #bbb">{{ $ctrl.placeholder }}</span>
+          <span class="icon is-small">
+            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+
+      <div class="dropdown-menu" style="width: 100%;">
+        <div style="position: fixed; top: 0; right: 0; left: 0; bottom: 0;" ng-click="$ctrl.showDrop = false"
+          ng-if="$ctrl.showDrop"></div>
+
+        <div class="dropdown-content">
+          <div ng-repeat="value in $ctrl.values" class="dropdown-item" ng-click="$ctrl.toggle(value)">
+
+            <div style="display: flex; align-items: center;">
+              <div style="flex: 1">{{ value }}</div>
+
+              <svg
+                ng-if="$ctrl.parentInput != undefined && $ctrl.includesValue($ctrl.parentInput, value) && $ctrl.isChecked($ctrl.parentInput, value)
+                && !$ctrl.includesValue($ctrl.input, value)"
+                style="margin-right: 8px; fill: #ccc;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24">
+                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+              </svg>
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                ng-if="$ctrl.includesValue($ctrl.input, value) && !$ctrl.isChecked($ctrl.input, value)"
+                style="margin-right: 8px; fill:red;">
+                <path
+                  d="M23 20.168l-8.185-8.187 8.185-8.174-2.832-2.807-8.182 8.179-8.176-8.179-2.81 2.81 8.186 8.196-8.186 8.184 2.81 2.81 8.203-8.192 8.18 8.192z" />
+              </svg>
+
+
+              <svg ng-if="$ctrl.includesValue($ctrl.input, value) && $ctrl.isChecked($ctrl.input, value)"
+                style="margin-right: 8px; fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24">
+                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+              </svg>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

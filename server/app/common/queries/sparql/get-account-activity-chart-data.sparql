@@ -1,0 +1,18 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX databus: <https://databus.dbpedia.org/>
+
+SELECT ?ym SUM(?size) as ?filesize WHERE {
+?file a dataid:SingleFile .
+?file dcat:byteSize ?size .
+?file dct:issued ?date .
+?dataset dcat:distribution ?file .
+?dataset dct:publisher ?publisher .
+?publisher foaf:account <%ACCOUNT_URI%> .
+
+BIND (substr(xsd:String(?date), 1, 7) AS ?ym)
+}
+GROUP BY ?ym
+ORDER BY ?ym

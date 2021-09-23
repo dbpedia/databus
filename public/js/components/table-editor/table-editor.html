@@ -1,0 +1,193 @@
+<div style="display: grid;">
+  <style>
+    .edit-table .selected {
+      background-color: lightcyan;
+    }
+
+
+    .edit-table {
+      table-layout: fixed;
+      background-color: white;
+      white-space: nowrap;
+      width: fit-content;
+    }
+
+    .edit-table-wrapper {
+      margin: -0.5em;
+      overflow-x: auto;
+      margin-top: 1em;
+      border-top: solid 1px #dbdbdb;
+    }
+
+    .edit-table td {
+      border-right: solid 1px #dbdbdb;
+    }
+
+    .edit-table td:last-child {
+      margin: 0;
+      padding: 0;
+      background-color: rgba(0, 0, 0, 0.05);
+      position: absolute;
+      height: 43px;
+      pointer-events: none;
+      border: none;
+    }
+
+    .edit-table tr {
+      border-top: solid 1px #dbdbdb;
+      border-bottom: none;
+    }
+
+    .edit-table tr:first-child {
+      border-bottom: none;
+      border-top: none;
+    }
+
+
+    .edit-table thead td {
+      background-color: #f6f6f6;
+      padding: 0.75em 0.75em;
+      border-bottom: solid 1px #dbdbdb;
+      border-right: solid 1px #dbdbdb;
+    }
+
+    .edit-table .edit {
+      width: 100%;
+      border: none;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+      padding: 0.75em 0.75em;
+    }
+
+    .table-content td {
+      box-sizing: border-box;
+      padding: 0;
+    }
+
+    .table-content .has-error td {
+      background-color: #f6dddd;
+    }
+
+
+    .table-content .has-error td.readonly {
+      background-color: #f6d0d0;
+    }
+
+
+    .table-content td.readonly {
+      background-color: #f6f6f6;
+    }
+
+    .edit-table .edit:focus {
+      outline: none;
+    }
+  </style>
+
+  <div class="edit-table-wrapper">
+    <table class="edit-table" click-outside="$ctrl.deselect()">
+      <colgroup>
+        <col width="45px">
+        <col ng-repeat="column in $ctrl.columns" width="{{column.width}}">
+      </colgroup>
+      <thead>
+        <tr>
+          <td></td>
+          <td>
+            <div style="display: flex;">
+              <div style="flex: 1">Files</div>
+              <div style="cursor: pointer; color: #aaa;" ng-click=$ctrl.toggleGroupMode()>[GROUP]</div>
+            </div>
+          </td>
+          <td>Format</td>
+          <td>Compression</td>
+          <td ng-repeat="cv in $ctrl.model.contentVariants">{{ cv.label }}</td>
+          <td>Size</td>
+          <td>Sha256</td>
+          <td>Status / Actions</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody class="table-content">
+
+        <tr style="position:relative;" ng-repeat="file in $ctrl.model.files" ng-init="outerIndex=$index">
+
+
+          <td class="readonly" style="padding: .5em; text-align: center;">{{ $index + 1 }}</td>
+          <td style="padding: .5em; cursor: pointer" class="readonly"
+            ng-class="{ 'selected' : $index == $ctrl.selection.x && $parent.$index == $ctrl.selection.y }">
+            <a ng-href="{{ file.uri }}">{{ file.name }}</a>
+          </td>
+          <td class="readonly" style="padding: .5em;">{{ file.format }}</td>
+          <td class="readonly" style="padding: .5em;">{{ file.compression }}</td>
+          <td ng-if="file.rowspan > 0" style="vertical-align:middle;" ng-repeat="cv in $ctrl.model.contentVariants"
+            rowspan="{{ file.rowspan }}"
+            ng-class="{ 'selected' : $index == $ctrl.selection.x && outerIndex == $ctrl.selection.y }"
+            ng-click="$ctrl.selectCell($event, $index, outerIndex)">
+            <input focus-me="$index == $ctrl.edit.x && outerIndex == $ctrl.edit.y"
+              ng-change="$ctrl.onChangeCv(file, cv)" ng-model="file.contentVariants[cv.label]" class='edit'
+              ng-readonly="$index != $ctrl.edit.x || outerIndex != $ctrl.edit.y">
+          </td>
+          <td class="readonly" style="padding: .5em;">{{ file.byteSize }}</td>
+          <td class="readonly" style="padding: .5em;">{{ file.sha256sum.substr(0, 20) }}...</td>
+          <td class="readonly">
+            <div style="display: flex; padding: .55em; justify-content: flex-end;">
+              <div ng-if="file.errors != null && file.errors.length > 0" style="display: flex;" class="hover-note">
+                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                  <path fill="red"
+                    d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                </svg>
+                <div class="hover-dropdown has-error content"
+                  style="transform: translateX(-533px) translateY(30px); top: initial; right: initial;">
+                  <ul style="margin-top: 0; margin-left: 1.5em;">
+                    <li ng-repeat="error in file.errors">
+                      {{ error.message }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+                <databus-icon shape="'eye'" style="margin-left: 12px;" on-click="$ctrl.analyzeFile(file)"
+                size="24"></databus-icon>
+                <databus-icon shape="'delete'" style="margin-left: 12px;" on-click="$ctrl.removeFileFromArtifact(file)"
+                size="24"></databus-icon>
+            </div>
+          </td>
+          <td ng-style="{ 'width' : $ctrl.progressWidth, 'left' : $ctrl.progressPosition,
+            'opacity' : ($ctrl.analysisProcesses[file.uri] != undefined
+              && !$ctrl.analysisProcesses[file.uri].isDone) ? 1 : 0 }">
+
+            <div
+              style="background-color:rgba(0, 200, 0, 0.2); height: 43px; width: 0%;"
+              ng-style="{ 'width' :  $ctrl.analysisProcesses[file.uri].progress + '%' }"
+            ></div>
+
+          </td>
+        </tr>
+
+        <!--
+      <tr ng-repeat-end  ng-repeat="dist in file.distributions">
+        <td></td>
+        <td style="padding:0.5em;">
+          <div><a ng-href="{{ dist.uri }}">{{ dist.uri.substr(0, 50) }}...</a></div>
+        </td>
+        <td style="padding:0.5em;">{{ dist.format }}</td>
+        <td style="padding:0.5em;">{{ dist.compression }}</td>
+        <td 
+        ng-repeat="cv in $ctrl.model.contentVariants"></td>
+      </tr>
+-->
+
+
+      </tbody>
+
+
+
+    </table>
+
+
+
+
+  </div>
+
+
+</div>

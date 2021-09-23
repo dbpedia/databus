@@ -1,0 +1,9 @@
+{
+  "authRequired" : false,
+  "auth0Logout" : true,
+  "routes" : {
+    "login": false,
+    "callback": "system/callback",
+    "logout": "system/logout"
+  }
+}

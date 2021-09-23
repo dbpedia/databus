@@ -1,0 +1,63 @@
+<div>
+
+  <div class="field" style="display: flex;">
+    <div class="control" style="flex:1;">
+      <input class="input" focus-me="$ctrl.autoFocus" type="text" ng-model="$ctrl.searchInput"
+        ng-change="$ctrl.search()" placeholder="Search the Databus...">
+    </div>
+    <div class="field" style="display:flex; align-items: center; line-height: 1;">
+      <div style="margin-left:4px;"
+        ng-click="$ctrl.filters.filterArtifact=!$ctrl.filters.filterArtifact;$ctrl.search();" class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'">
+        </type-tag>
+      </div>
+      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterGroup=!$ctrl.filters.filterGroup;$ctrl.search();"
+        class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'">
+        </type-tag>
+      </div>
+
+    </div>
+  </div>
+
+  <div ng-if="$ctrl.results.length == 0 && $ctrl.searchInput.length > 0"
+    style="padding: 3em; background-color: #f2f2f2; color: #aaa; text-align: center;">
+    Unable to find any Groups or Artifacts matching your search.
+  </div>
+
+  <div ng-if="$ctrl.searchInput.length ==  0" 
+  style="padding: 3em; background-color: #f2f2f2; color: #aaa; text-align: center;">
+    Enter a search term to find Groups and Artifacts.</div>
+
+  <div style="margin-top: 2em;" ng-if="$ctrl.searchInput.length > 0">
+
+    <div class="dataset-name" ng-repeat="result in $ctrl.results">
+      <div style="display:flex; align-items:flex-end;">
+        <entity-card style="flex: 1;" label="result.label[0].highlight" type="result.typeName[0].value"
+          uri="result.resource[0].value" desc="result.comment[0].highlight">
+        </entity-card>
+
+        <div>
+  
+
+          <div class="is-clickable button" ng-click="$ctrl.addToCollection(result)"
+            ng-class="{ 'is-success' : result.inCollection }">
+            <span  ng-if="result.inCollection" class="icon is-small">
+              <i class="fas fa-check"></i>
+            </span>
+
+            <span ng-if="!result.inCollection" class="icon is-small">
+              <i class="fas fa-plus"></i>
+            </span>
+            
+            <span ng-if="!result.inCollection" >Add to Collection</span>
+            <span ng-if="result.inCollection">Added</span>
+
+          </div>
+
+        </div>
+      </div>
+      <div ng-if="!$last" class="is-divider"></div>
+    </div>
+  </div>
+</div>

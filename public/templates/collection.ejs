@@ -1,0 +1,223 @@
+
+<% include header %>
+<div ng-controller="CollectionController" ng-cloak>
+
+  <!-- Header -->
+  <section class="hero is-medium-small is-collection databus-banner">
+    <div class="hero-body">
+      <div class="container has-text-left">
+        <div style="display: flex; align-items: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path class="is-white" fill="#fff" d="M11.499 12.03v11.971l-10.5-5.603v-11.835l10.5 5.467zm11.501 6.368l-10.501 5.602v-11.968l10.501-5.404v11.77zm-16.889-15.186l10.609 5.524-4.719 2.428-10.473-5.453 4.583-2.499zm16.362 2.563l-4.664 2.4-10.641-5.54 4.831-2.635 10.474 5.775z"/></svg>
+          <div style="margin-left: 24px;">
+            <h1 class="is-2 title is-marginless">{{ collection.label }}</h1>
+            <uri-breadcrumbs class="header-breadcrumbs" uri="collection.uri"></uri-breadcrumbs>
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+    <div class="open-beta">Open Beta</div>
+  </section>
+
+
+  <div class="collection-editor-header">
+    <div class="container">
+      <div id="root-view" style="margin-bottom: 2.25em; width: 100%;">
+        <div class="section-label">Summary</div>
+
+        <collection-statistics collection="collection"> </collection-statistics>
+       
+
+      </div>
+
+      <div style="display: flex;">
+      <div class="collection-editor-tabs">
+        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab = 0">
+          <div class="section-label">Data</div>
+        </div>
+        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab = 1">
+          <div class="section-label">Query</div>
+        </div>
+        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 2 }" ng-click="activeTab = 2">
+          <div class="section-label">Download URLs</div>
+        </div>
+        </div>
+        <div style="flex: 1;"></div>
+        <div class="control">
+          <div class="dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <span>Actions</span>
+                <span class="icon is-small">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </a>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                <a href="#" class="dropdown-item" ng-click="queryToClipboard()">
+                  Copy Query to Clipboard
+                </a>
+                <a href="#" class="dropdown-item" ng-click="filesToClipboard()">
+                  Copy Download URLs to Clipboard
+                </a>
+                <a class="dropdown-item" ng-click="downloadAsJson()">
+                  Download Collection JSON
+                </a>
+                <a ng-if="authenticated" class="dropdown-item" ng-click="editCopy()">
+                  Edit Copy
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="section" style="min-height: 700px;">
+   
+    <!-- DATA-->
+    <div class="container" ng-if="activeTab == 0">
+     
+      <div style="display: flex; justify-content: flex-end; margin-bottom: .5em;">
+        <div class="button" ng-click="bashScriptToClipboard()">
+          Copy Bash Script to Clipboard
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5em;"class="hyphens description-markdown" ng-bind-html="markdownToHtml(collectionViewModel.downloadManual)"></div>
+   
+      <collection-data-table collection="collection"></collection-data-table>
+    </div>
+    
+    <!-- COLLECTION HIERARCHY-->
+    <div class="container" ng-if="activeTab == 1">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: .5em;">
+        <div class="button" ng-click="openInYasgui()" style="margin-right:0.5em">
+          Open in YASGUI
+        </div>
+        <div class="button" ng-click="queryToClipboard()">
+          Copy Query to Clipboard
+        </div>
+      </div>
+
+      <div class="disabled-yasqe">
+        <yasqe-text query="collectionQuery"></yasqe-text>
+      </div>
+    </div>
+
+    <div class="container" ng-if="activeTab == 2">
+
+      <div style="display: flex; justify-content: flex-end; margin-bottom: .5em;">
+        <div class="button" ng-click="filesToClipboard()">
+          Copy Download URLs to Clipboard
+        </div>
+      </div>
+     
+      <textarea class="textarea" rows="40">{{ collectionFiles }}</textarea>
+    </div>
+
+   
+  </div>
+
+    <div class="section">
+
+      <div class="container">
+     
+       <!-- sucess or fail modal - TODO: clean this ng-if up! -->
+       <div class="modal" ng-class="{ 'is-active' : statusCode > 0 }">
+        <div class="modal-background" ng-click="resetStatus()" style="background-color: rgba(0, 0, 0, 0.4)"></div>
+        <div class="modal-card">
+          <section class="modal-card-body">
+            <div style="display:flex; align-items:center;">
+            <svg class="dashing success" width="64" height="64"  version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2"
+              ng-if="getStatusSuccess()">
+              <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+              <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+            </svg>
+
+            <svg class="dashing error"  width="64" height="64"  version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2"
+              ng-if="!getStatusSuccess()">
+              <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+              <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
+              <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
+            </svg>
+
+            <div class="field" style="margin-left:1em">
+              <div>{{ getStatusMessage(statusCode) }}</div>
+            </div>
+          </div>
+          </section>
+        </div>
+      </div>
+
+
+      <div class="modal" ng-class="{ 'is-active' : isPublishModalVisible }">
+          <div class="modal-background" ng-click="isPublishModalVisible = false" style="background-color: rgba(0, 0, 0, 0.4)"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Publish Colletion</p>
+              <button ng-click="isPublishModalVisible = false" class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+              <table class="table is-fullwidth">
+                <col width="40%">
+                <col width="60%">
+                <tr>
+                  <th colspan="2">Summary</th>
+                </tr>
+
+                <tr>
+                  <td>Label</td>
+                  <td>
+                    <span>{{ collectionManager.activeCollection.label }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Description</td>
+                  <td>
+                    <span>{{ collectionManager.activeCollection.description }}</span>
+                  </td>
+                </tr>
+
+
+              </table>
+
+              <div class="field">
+                <label class="label">Collection Id</label>
+                <div class="control">
+                  <input ng-model="publishCollectionId" class="input" type="text" placeholder="Please enter a collection id to publish"
+                    ng-class="{ 'is-danger' : hasPublishError() }">
+                </div>
+                <p ng-if="hasPublishError()" class="help is-danger">{{ getErrorMessage(statusCode) }}</p>
+              </div>
+            </section>
+            <footer class="modal-card-foot">
+              <button ng-click="unHideCollection()" class="button is-primary is-active">
+                <span class="icon has-text-primary has-margin-right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z"/></svg>
+                </span>
+                  Publish
+              </button>
+              <button ng-click="isPublishModalVisible = false" class="button">Cancel</button>
+            </footer>
+          </div>
+        </div>
+
+      <!--div class="control">
+
+        <button
+          ng-click="collectionManager.deleteAll()"
+          class="button is-text">
+          DELETOS
+        </button>
+      </div-->
+    </div>
+  </div>
+</div>
+
+
+
+<% include footer %>

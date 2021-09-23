@@ -1,0 +1,326 @@
+<div class="collection-editor-header">
+  <div class="container">
+    <div id="root-view" style="margin-bottom: 2.25em; width: 100%;">
+      <div class="section-label">Collection Info</div>
+      <table class="collection-summary table is-size-6 is-fullwidth">
+        <colgroup>
+          <col width="20%">
+          <col width="80%">
+        </colgroup>
+        <tbody>
+          <tr>
+            <td>Label</td>
+            <td ng-if="$ctrl.readonly" class="ng-binding">{{ $ctrl.collection.label }}</td>
+
+            <td ng-if="!$ctrl.readonly">
+              <edit-label single-line="true" text="$ctrl.collection.label"></edit-label>
+            </td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td ng-if="$ctrl.readonly" class="ng-binding"><div ng-bind-html="$ctrl.toHTML($ctrl.collection.abstract)"></div></td>
+            <td ng-if="!$ctrl.readonly">
+              <edit-label single-line="false" text="$ctrl.collection.abstract"></edit-label>
+            </td>
+          </tr>
+          <tr>
+            <td>Collection URI</td>
+            <td><a ng-if="$ctrl.collection.uri != null"
+                ng-href="{{ $ctrl.collection.uri }}">{{ $ctrl.collection.uri }}</a>
+              <span ng-if="$ctrl.collection.uri == null" style="color: #7a7a7a; "><i>Not published yet</i></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="collection-editor-tabs">
+      <div class="collection-editor-tab" ng-class="{ 'is-active' : $ctrl.activeTab == 0 }" ng-click="$ctrl.showFiles()">
+        <div class="section-label">Files</div>
+      </div>
+      <div class="collection-editor-tab" ng-class="{ 'is-active' : $ctrl.activeTab == 1 }" ng-click="$ctrl.showHierarchy()">
+        <div class="section-label">Collection Hierarchy</div>
+      </div>
+      <div class="collection-editor-tab" ng-class="{ 'is-active' : $ctrl.activeTab == 2 }" ng-click="$ctrl.showStatistics()">
+        <div class="section-label">Collection Statistics</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="section">
+  <div class="container" ng-if="$ctrl.activeTab == 0">
+    <table class="table is-bordered is-striped is-fullwidth"> 
+      <col width="40%">
+      <col width="30%">
+      <col width="10%">
+      <col width="5%">
+      <col width="15%">
+      <tr style="cursor:pointer;">
+        <th>Dataset</th>
+        <th>License</th>
+        <th>Variant</th>
+        <th>Format</th>
+        <th style="text-align: right;">Downloads</th>
+      </tr>
+
+      <tr ng-repeat-start="file in $ctrl.collection.files"></tr>
+      <tr style="position:relative;" ng-repeat="download in file.downloads">
+        
+        <td ng-if="$index == 0" rowspan="{{ file.downloads.length }}">{{file.label}} ({{ file.version }})</td>
+        <td><a ng-href="{{ download.license }}">{{download.license}}</a></td>
+        <td>{{ download.variant }}</td>
+        <td>{{ download.format }}</td>
+        <td style="text-align: right;">
+          {{ $ctrl.formatUploadSize(download.size / (1024 * 1024)) }} MB
+          <a ng-href="{{ download.downloadURLs }}"><svg style="margin-left:1em;margin-bottom:-.4em;" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M6 16h-5v6h22v-6h-5v-1h6v8h-24v-8h6v1zm14 2c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1zm-7.5-17v14.884l4.736-5.724.764.645-5.979 7.195-6.021-7.205.765-.644 4.735 5.732v-14.883h1z"/></svg></a>
+        </td>
+        
+      </tr>
+      <tr ng-repeat-end></tr>
+    </table>
+
+  </div>
+
+
+  <div class="container" ng-if="$ctrl.activeTab == 1">
+    <div class="tab-columns collections" style="min-height: 1000px;">
+      <div class="tab-columns-container" ng-class="{ 'moved' : $ctrl.viewMode != -1 }">
+        <div class="tab-column" style="padding: 0">
+          <!-- HIERARCHY VIEW -->
+          <div class="hierarchy">
+            <div class="node">
+              <expandable-arrow expanded="$ctrl.rootNode.expanded"></expandable-arrow>
+              <div class="node-label"><i>{{ $ctrl.collection.label }}</i></div>
+            </div>
+            <div class="node-children" ng-if="$ctrl.rootNode.expanded">
+              <div class="node" ng-if="!$ctrl.readonly || $ctrl.collection.content.groups.length > 0">
+                <expandable-arrow expanded="$ctrl.generatedNode.expanded"></expandable-arrow>
+                <div class="node-label"><i>{{ $ctrl.generatedNode.label }}</i></div>
+                <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'add'" size="24" on-click="$ctrl.showCollectionSearch()">
+                </databus-icon>
+              </div>
+              <div class="node-children" ng-if="$ctrl.generatedNode.expanded">
+                <div ng-repeat="groupNode in $ctrl.collection.content.groups track by groupNode.uri">
+                  <div class="node">
+                    <expandable-arrow expanded="groupNode.expanded"></expandable-arrow>
+                    <div class="node-label is-clickable" ng-click="$ctrl.showGroupNode(groupNode)">
+                      {{ groupNode.label }}
+                    </div>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'goto'" size="24"
+                      on-click="$ctrl.goToResource(groupNode)"></databus-icon>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                      on-click="$ctrl.showGroupNode(groupNode)"></databus-icon>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                      on-click="$ctrl.collectionWrapper.removeGroupNode(groupNode)"></databus-icon>
+                  </div>
+                  <div class="node-children" ng-if="groupNode.expanded">
+                    <div class="node has-label-padding"
+                      ng-repeat="artifactNode in groupNode.artifacts track by artifactNode.uri">
+                      <div class="node-label is-clickable" ng-click="$ctrl.showArtifactNode(artifactNode, groupNode)">
+                        {{ artifactNode.label }}
+                      </div>
+                      <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'goto'" size="24"
+                        on-click="$ctrl.goToResource(artifactNode)"></databus-icon>
+                      <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                        on-click="$ctrl.showArtifactNode(artifactNode, groupNode)"></databus-icon>
+                      <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                        on-click="$ctrl.collectionWrapper.removeArtifactNode(groupNode, artifactNode)"></databus-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="node" ng-if="!$ctrl.readonly || $ctrl.collection.content.customQueries.length > 0">
+                <expandable-arrow expanded="$ctrl.customNode.expanded"></expandable-arrow>
+                <div class="node-label"><i>{{ $ctrl.customNode.label }}</i></div>
+                <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'add'" size="24" on-click="$ctrl.addCustomNode()">
+                </databus-icon>
+              </div>
+              <div class="node-children" ng-if="$ctrl.customExpanded()">
+                <div class="node has-label-padding"
+                  ng-repeat="node in $ctrl.collection.content.customQueries track by node.guid">
+                  <div class="node-label is-clickable" ng-click="$ctrl.showCustomQueryNode(node)">{{ node.label }}</div>
+                  <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                    on-click="$ctrl.showCustomQueryNode(node)"></databus-icon>
+                  <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                    on-click="$ctrl.collectionWrapper.removeCustomQueryNode(node)"></databus-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <br />
+          <!--<yasqe-text query="$ctrl.collectionWrapper.createQuery()" valid="true"
+        read-only="true"></yasqe-text>-->
+        </div>
+
+        <div class="tab-column" style="padding: 0">
+
+          <!-- ROOT VIEW -->
+          <div class="page outer" ng-if="$ctrl.viewMode == 0">
+            <div class="section-label">Add Group Or Artifact To Collection</div>
+
+            <div class="hierarchy">
+              <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+                <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+                <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+              </div>
+            </div>
+
+            <collection-search on-component-added="$ctrl.onComponentAdded()" collection="$ctrl.collection">
+            </collection-search>
+
+          </div>
+
+
+
+
+
+          <!-- ARTIFACT VIEW -->
+          <div class="page outer" ng-if="$ctrl.viewMode == 1">
+
+
+            <div class="section-label">ARTIFACT FACETS : {{ $ctrl.activeNode.label }}</div>
+            <div class="hierarchy">
+              <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+                <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+                <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+              </div>
+            </div>
+
+            <div class="columns" style="width: 100%">
+              <div class="column side is-3">
+                <facets-view settings="$ctrl.activeNode.settings" parent-settings="$ctrl.parentNode.settings"
+                  resource-uri="$ctrl.activeNode.uri" readonly="$ctrl.readonly" resource-type="artifact">
+                </facets-view>
+              </div>
+              <div class="column main">
+                <file-browser settings="$ctrl.activeNode.settings" parent-settings="$ctrl.parentNode.settings"
+                  resource-uri="$ctrl.activeNode.uri" resource-type="artifact">
+                </file-browser>
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP VIEW -->
+          <div class="page outer" ng-if="$ctrl.viewMode == 3">
+
+            <div class="section-label">GROUP FACETS : {{ $ctrl.activeNode.label }}</div>
+           
+            <div class="hierarchy">
+              <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+                <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+                <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+              </div>
+            </div>
+
+            <div class="columns" style="width: 100%">
+              <div class="column side is-3">
+                <facets-view settings="$ctrl.activeNode.settings" parent-settings="null" resource-uri="$ctrl.activeNode.uri"
+                  readonly="$ctrl.readonly" resource-type="group">
+                </facets-view>
+              </div>
+              <div class="column main">
+
+                <table class="table is-fullwidth" style="table-layout: fixed;">
+                  <tr style="cursor:pointer;">
+          
+                    <th ng-click="$ctrl.sortBy('version.value')">Artifact</th>
+                  </tr>
+
+                  <tr ng-repeat="artifact in $ctrl.activeNode.artifacts">
+                    <td>{{ artifact.label }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+           
+          </div>
+
+          <!-- CUSTOM VIEW -->
+          <div class="page outer" ng-if="$ctrl.viewMode == 2">
+
+            <div class="section-label">Custom Subquery</div>
+
+            <div class="hierarchy">
+              <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+                <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+                <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+              </div>
+            </div>
+
+            <table class="table is-size-6 is-fullwidth">
+              <colgroup>
+                <col width="20%">
+                <col width="80%">
+              </colgroup>
+              <tbody>
+                <tr>
+                  <td>Label</td>
+                  <td class="ng-binding">
+                    <div ng-if="$ctrl.readonly">{{ $ctrl.activeNode.label != null ? $ctrl.activeNode.label : '-' }}
+                    </div>
+                    <edit-label ng-if="!$ctrl.readonly" single-line="true" text="$ctrl.activeNode.label"></edit-label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Description</td>
+                  <td class="ng-binding">
+                    <div ng-if="$ctrl.readonly">
+                      {{ $ctrl.activeNode.description != null ? $ctrl.activeNode.description : '-' }}</div>
+                    <edit-label ng-if="!$ctrl.readonly" single-line="false" text="$ctrl.activeNode.description">
+                    </edit-label>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+
+
+            <div class="field">
+              <yasqe-text query="$ctrl.activeNode.query" valid="$ctrl.activeNode.sparqlError"
+                read-only="$ctrl.readonly"></yasqe-text>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container" ng-if="$ctrl.activeTab == 2">
+    <div style="min-height: 1000px;">
+      <div  ng-if="$ctrl.isStatisticsLoading" style="text-align:center" >
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+      </div>
+      <div ng-if="!$ctrl.isStatisticsLoading">
+        <div ng-if="$ctrl.loadStatisticsError != null">
+          <div style="padding: .5em; color:#b5b5b5; font-size: 1em;">{{ $ctrl.loadStatisticsError }}</div>
+        </div>
+        <table ng-if="$ctrl.loadStatisticsError == null" class="collection-summary table is-size-6 is-fullwidth">
+          <colgroup>
+            <col width="20%">
+            <col width="80%">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td>Files</td>
+              <td class="ng-binding">{{ $ctrl.statistics.fileCount }}</td>
+            </tr>
+            <tr>
+              <td>Size in Bytes</td>
+              <td class="ng-binding">{{ $ctrl.statistics.fileSize }}</td>
+            </tr>
+            <tr>
+              <td>License(s)</td>
+              <td>
+                <div ng-repeat="license in $ctrl.statistics.licenses">
+                <a  ng-href="license">{{ license }}</a><br/>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

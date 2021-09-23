@@ -1,0 +1,194 @@
+.is-group {
+    
+    path {
+       fill: $entity-group; 
+
+        &.is-white {
+            fill: $white;
+        }
+    }
+
+    &.title {
+        color: $entity-group;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-group;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-group-bg;
+        background-size: 150px;
+    }
+}
+
+.is-artifact {
+    
+    path {
+        fill: $entity-artifact; 
+        &.is-white {
+            fill: $white;
+        }
+    }
+
+    &.button {
+        background-color: $entity-artifact;
+        color: $white;
+        border: none;
+    }
+
+    &.title {
+        color: $entity-artifact;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-artifact;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-artifact-bg;
+        background-size: 150px;
+    }
+}
+
+.is-service {
+    
+    path {
+        fill: $entity-service; 
+        &.is-white {
+            fill: $white;
+        }
+    }
+
+    &.title {
+        color: $entity-service;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-service;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-service;
+        background-size: 150px;
+    }
+}
+
+.grey-out .tag:not(body) {
+    background-color: $icon-light !important;
+    color: #fff;
+}
+
+.is-consumer {
+    
+    path {
+        fill: $entity-consumer; 
+        &.is-white {
+            fill: $white;
+        }
+    }
+
+    &.button {
+        background-color: $entity-consumer;
+        color: $white;
+        border: none;
+    }
+
+    &.title {
+        color: $entity-consumer;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-consumer;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-consumer-bg;
+        background-size: 150px;
+    }
+}
+
+.is-collection {
+    
+    &.button {
+        background-color: $entity-collection;
+        color: $white;
+        border: none;
+    }
+
+    path {
+      fill: $entity-collection; 
+      &.is-white {
+          fill: $white;
+      }
+    }
+
+    &.title {
+        color: $entity-collection;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-collection;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-collection-bg;
+        background-size: 150px;
+    }
+}
+
+.is-collection-editor {
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-collection-editor-bg;
+        background-size: 150px;
+    }
+}
+
+.is-blog {
+    
+    path {
+        fill: $entity-blog; 
+        &.is-white {
+            fill: $white;
+        }
+    }
+
+    &.button {
+        background-color: $entity-blog;
+        color: $white;
+        border: none;
+    }
+
+    &.title {
+        color: $entity-blog;
+    }
+
+    &.tag:not(body) {
+        background-color: $entity-blog;
+        color: $white;
+    }
+
+    &.databus-banner {
+        background-image: url("../img/banner-background.png");
+        background-repeat: repeat;
+        background-color: $entity-blog-bg;
+        background-size: 150px;
+    }
+}

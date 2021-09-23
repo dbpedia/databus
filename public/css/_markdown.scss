@@ -1,0 +1,37 @@
+.website-markdown {
+  font-family: inherit;
+} 
+
+img[alt$=">"] {
+  float: right;
+  max-width: 70%;
+  margin-left: 2em;
+}
+
+
+img[alt$="<"] {
+  float: left;
+  max-width: 70%;
+  margin-right: 2em;
+}
+
+.toc {
+
+  &.fixed {
+    position: fixed;
+    top: 48px;
+  } 
+
+  ol {
+    list-style: none;
+  }
+
+  li ol {
+    margin-left: 1em;
+  }
+
+  li a {
+    color: $black;
+    line-height: 2;
+  }
+}

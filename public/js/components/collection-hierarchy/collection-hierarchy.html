@@ -1,0 +1,181 @@
+
+<div class="container">
+  <div class="tab-columns collections">
+    <div class="tab-columns-container" ng-class="{ 'moved' : $ctrl.viewMode != -1 }">
+        <!-- FIRST COLUMN -->
+      <div class="tab-column" style="padding: 0">
+        <!-- HIERARCHY VIEW -->
+        <div class="hierarchy">
+          <div class="node">
+            <expandable-arrow expanded="$ctrl.rootNode.expanded"></expandable-arrow>
+            <div class="node-label"><i>{{ $ctrl.collection.label.length > 0 ? $ctrl.collection.label : 'Untitled Collection' }}</i></div>
+          </div>
+          <div class="node-children" ng-if="$ctrl.rootNode.expanded">
+            <div class="node" ng-if="!$ctrl.readonly || $ctrl.collection.content.groups.length > 0">
+              <expandable-arrow expanded="$ctrl.generatedNode.expanded"></expandable-arrow>
+              <div class="node-label"><i>{{ $ctrl.generatedNode.label }}</i></div>
+              <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'add'" size="24" on-click="$ctrl.showCollectionSearch()">
+              </databus-icon>
+            </div>
+            <div class="node-children" ng-if="$ctrl.generatedNode.expanded">
+              <div ng-repeat="groupNode in $ctrl.collection.content.generatedQuery.root.childNodes track by groupNode.uri">
+                <div class="node" ng-class="{ 'has-label-padding' : groupNode.childNodes.length == 0 }">
+                  <expandable-arrow ng-if="groupNode.childNodes.length > 0" expanded="groupNode.expanded"></expandable-arrow>
+                  <div class="node-label is-clickable" ng-click="$ctrl.showGroupNode(groupNode)" style="display: flex;">
+                    <span style="color : #ccc;">{{ $ctrl.formatGroupPrefix(groupNode.uri) }}/</span>
+                    <span>{{ $ctrl.uriToName(groupNode.uri) }}</span>
+                  </div>
+                  <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'goto'" size="24"
+                    on-click="$ctrl.goToResource(groupNode)"></databus-icon>
+                  <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                    on-click="$ctrl.showGroupNode(groupNode)"></databus-icon>
+                  <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                    on-click="$ctrl.removeNode(groupNode)"></databus-icon>
+                </div>
+                <div class="node-children" ng-if="groupNode.expanded">
+                  <div class="node has-label-padding"
+                    ng-repeat="artifactNode in groupNode.childNodes track by artifactNode.uri">
+                    <div class="node-label is-clickable" ng-click="$ctrl.showArtifactNode(artifactNode, groupNode)" style="display: flex;">
+                      <span style="color : #ccc;">{{ $ctrl.formatArtifactPrefix(artifactNode.uri) }}/</span>
+                      <span>{{ $ctrl.uriToName(artifactNode.uri) }}</span>
+                    </div>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'goto'" size="24"
+                      on-click="$ctrl.goToResource(artifactNode)"></databus-icon>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                      on-click="$ctrl.showArtifactNode(artifactNode, groupNode)"></databus-icon>
+                    <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                      on-click="$ctrl.removeNode(artifactNode)"></databus-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="node" ng-if="!$ctrl.readonly || $ctrl.collection.content.customQueries.length > 0">
+              <expandable-arrow expanded="$ctrl.customNode.expanded"></expandable-arrow>
+              <div class="node-label"><i>{{ $ctrl.customNode.label }}</i></div>
+              <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'add'" size="24" on-click="$ctrl.addCustomNode()">
+              </databus-icon>
+            </div>
+            <div class="node-children" ng-if="$ctrl.customExpanded()">
+              <div class="node has-label-padding"
+                ng-repeat="node in $ctrl.collection.content.customQueries track by node.guid">
+                <div class="node-label is-clickable" ng-click="$ctrl.showCustomQueryNode(node)">{{ node.label }}</div>
+                <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'edit'" size="24"
+                  on-click="$ctrl.showCustomQueryNode(node)"></databus-icon>
+                <databus-icon style="margin-right:16px;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+                  on-click="$ctrl.collectionWrapper.removeCustomQueryNode(node)"></databus-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- SECOND COLUMN -->
+      <div class="tab-column" style="padding: 0">
+        <!-- ROOT VIEW -->
+        <div class="page outer" ng-if="$ctrl.viewMode == 0">
+          <div class="section-label">Add Group Or Artifact To Collection</div>
+
+          <div class="hierarchy">
+            <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+              <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+              <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+            </div>
+          </div>
+          <collection-search on-component-added="$ctrl.onComponentAdded()" collection="$ctrl.collection">
+          </collection-search>
+        </div>
+        <!-- ARTIFACT VIEW -->
+        <div class="page outer" ng-if="$ctrl.viewMode == 1">
+          <div class="section-label">ARTIFACT FACETS : {{ $ctrl.uriToName($ctrl.activeNode.uri) }}</div>
+          <div class="hierarchy">
+            <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+              <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+              <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+            </div>
+          </div>
+          <div class="columns" style="width: 100%">
+            <div class="column side is-3">
+              <facets-view node="$ctrl.activeNode" on-change="$ctrl.onActiveNodeChanged()" readonly="$ctrl.readonly" resource-type="artifact">
+              </facets-view>
+            </div>
+            <div class="column main">
+              <file-browser query="$ctrl.activeFileQuery" full-query="$ctrl.activeFullQuery" config="$ctrl.artifactTableConfig">
+              </file-browser>
+            </div>
+          </div>
+        </div>
+        <!-- GROUP VIEW -->
+        <div class="page outer" ng-if="$ctrl.viewMode == 3">
+          <div class="section-label">GROUP FACETS : {{ $ctrl.uriToName($ctrl.activeNode.uri) }}</div>
+          <div class="hierarchy">
+            <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+              <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+              <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+            </div>
+          </div>
+          <div class="columns" style="width: 100%">
+            <div class="column side is-3">
+              <facets-view node="$ctrl.activeNode" on-change="$ctrl.onActiveNodeChanged()" readonly="$ctrl.readonly" resource-type="group">
+              </facets-view>
+            </div>
+
+            <div class="column main">
+              <file-browser query="$ctrl.activeFileQuery" full-query="$ctrl.activeFullQuery" config="$ctrl.groupTableConfig">
+              </file-browser>
+            </div>
+
+            <!--
+            <div class="column main">
+              <table class="table is-fullwidth" style="table-layout: fixed;">
+                <tr style="cursor:pointer;">
+                  <th ng-click="$ctrl.sortBy('version.value')">Artifact</th>
+                </tr>
+                <tr ng-repeat="artifact in $ctrl.activeNode.artifacts">
+                  <td>{{ artifact.label }}</td>
+                </tr>
+              </table>
+            </div>-->
+          </div>
+        </div>
+        <!-- CUSTOM VIEW -->
+        <div class="page outer" ng-if="$ctrl.viewMode == 2">
+          <div class="section-label">Custom Subquery</div>
+          <div class="hierarchy">
+            <div class="node is-clickable" style="margin-bottom: 1em;" ng-click="$ctrl.viewMode = -1">
+              <databus-icon style="margin-right:16px; margin-left:16px;" shape="'goback'" size="24"></databus-icon>
+              <div class="node-label" style="padding-left: 0;">Back to Hierarchy</div>
+            </div>
+          </div>
+          <table class="table is-size-6 is-fullwidth">
+            <colgroup>
+              <col width="20%">
+              <col width="80%">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>Label</td>
+                <td class="ng-binding">
+                  <div ng-if="$ctrl.readonly">{{ $ctrl.activeNode.label != null ? $ctrl.activeNode.label : '-' }}
+                  </div>
+                  <edit-label ng-if="!$ctrl.readonly" single-line="true" text="$ctrl.activeNode.label"></edit-label>
+                </td>
+              </tr>
+              <tr>
+                <td>Description</td>
+                <td class="ng-binding">
+                  <div ng-if="$ctrl.readonly">
+                    {{ $ctrl.activeNode.description != null ? $ctrl.activeNode.description : '-' }}</div>
+                  <edit-label ng-if="!$ctrl.readonly" single-line="false" text="$ctrl.activeNode.description">
+                  </edit-label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field">
+            <yasqe-text query="$ctrl.activeNode.query" valid="$ctrl.activeNode.sparqlError"
+              read-only="$ctrl.readonly"></yasqe-text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

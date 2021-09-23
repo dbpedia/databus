@@ -1,0 +1,16 @@
+_site
+.sass-cache
+.jekyll-metadata
+node_modules
+package-lock.json
+data
+lookup-app/local-files
+mongodb.log
+search/index
+server/keypair/private-key.pem
+server/keypair/public-key.pem
+server/users/namespaces.csv
+test/data
+redeploy-remote.sh
+redeploy.sh
+start_azure.sh
