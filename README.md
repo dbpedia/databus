@@ -1,4 +1,4 @@
-# On-Premise Databus (BETA)
+# Databus (BETA)
 
 ## Deployment
 
