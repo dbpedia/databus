@@ -10,7 +10,7 @@ In order to build and run the On-Premise Databus Application you will need `npm`
 ### Building the Docker Image
 
 ```
-git clone https://github.com/holycrab13/databus-beta.git
+git clone https://github.com/dbpedia/databus.git
 cd databus-beta
 bash install.sh
 ```
