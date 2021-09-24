@@ -370,6 +370,8 @@ Note that the *@id* of the supplied graph has to be the same as the request uri.
 
 Databus artifacts are created implicitly by creating a version of an artifact. You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT`, `PATCH` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to the following SHACL shapes
 
+#### Creating / Modifying an Artifact Version
+
 ```http
 PUT -d $data /$username/$group/$artifact/$version
 ```
@@ -386,8 +388,18 @@ PUT -d $data /$username/$group/$artifact/$version
 | `$group` | The group identifier for your artifact version |
 | `$artifact` | The artifact identifier for your artifact version |
 | `$version` | The version identifier for your artifact version |
-| `$data` | The DataId document of the artifact version as JSON-LD. The format specs are documented below. |
+| `$data` | The DataId of the artifact version. The format specs are documented below. |
 
 **Data Format Specification**
 * The `$data` must be supplied as JSON-LD 
 * The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+
+#### Removing an Artifact Version
+
+```http
+PUT /$username/$group/$artifact/$version
+```
+
+| Header | Value |
+| :--- | :--- | 
+| X-Api-Token | **Required** Your Databus API Key |
