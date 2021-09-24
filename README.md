@@ -164,171 +164,12 @@ Account data can be changed via `PUT` or `DELETE` request. It is however recomme
 * The request uri is the path of your account. 
 * The `X-Api-Token` header needs to specify a valid API token. 
 * The `Content-Type` header needs to be set to the content type of your data. 
-* The supplied data needs to conform to the following SHACL shapes
-
-```
-@prefix dash: <http://datashapes.org/dash#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema: <http://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
-@prefix dct:   <http://purl.org/dc/terms/> .
-@prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
-@prefix db: <https://databus.dbpedia.org/sys/ont/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-
-##########
-# Account
-##########
-
-<#person-exists>
-  a sh:NodeShape ;
-  sh:targetNode foaf:Person ; 
-  sh:property [
-      sh:path [ sh:inversePath rdf:type ] ;
-      sh:minCount 1 ;
-      sh:maxCount 1;
-      sh:message "Exactly one subject with an rdf:type of foaf:Person must occur."@en ;
-  ] .
-
-<#profile-exists>
-  a sh:NodeShape ;
-  sh:targetNode foaf:PersonalProfileDocument ; 
-  sh:property [
-      sh:path [ sh:inversePath rdf:type ] ;
-      sh:minCount 1 ;
-      sh:maxCount 1;
-      sh:message "Exactly one subject with an rdf:type of foaf:PersonalProfileDocument must occur."@en ;
-  ] .
-
-<#foaf-maker>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:PersonalProfileDocument ;
-    sh:severity sh:Violation ;
-    sh:message "Required property foaf:maker MUST occur exactly once in foaf:PersonalProfileDocument."@en ;
-    sh:path foaf:maker ;
-    sh:minCount 1 ;
-    sh:maxCount 1 .
-
-  <#foaf-primary-topic>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:PersonalProfileDocument ;
-    sh:severity sh:Violation ;
-    sh:message "Required property foaf:primaryTopic MUST occur exactly once in foaf:PersonalProfileDocument."@en ;
-    sh:path foaf:primaryTopic ;
-    sh:minCount 1 ;
-    sh:maxCount 1 .
-
-  <#foaf-primary-topic-target>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:PersonalProfileDocument ;
-    sh:severity sh:Violation ;
-    sh:message "Object of foaf:primaryTopic must be of type foaf:Person."@en ;
-    sh:path foaf:primaryTopic ;
-    sh:class foaf:Person .
-
-  <#foaf-account-target>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:Person ;
-    sh:severity sh:Violation ;
-    sh:message "Object of foaf:account must be of type foaf:PersonalProfileDocument."@en ;
-    sh:path foaf:account ;
-    sh:class foaf:PersonalProfileDocument .
-
-  <#foaf-account>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:Person ;
-    sh:severity sh:Violation ;
-    sh:message "Required property foaf:account MUST occur exactly once in foaf:Person."@en ;
-    sh:path foaf:account ;
-    sh:minCount 1 ;
-    sh:maxCount 1 .
-
-  <#foaf-name>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:Person ;
-    sh:severity sh:Violation ;
-    sh:message "Required property foaf:name MUST be of type xsd:string and occur exactly once in foaf:Person."@en ;
-    sh:path foaf:name ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 .
-  
-<#foaf-img>   
-    a sh:PropertyShape ;
-    sh:targetClass foaf:Person ;
-    sh:severity sh:Violation ;
-    sh:message "Property foaf:img MUST be an IRI."@en ;
-    sh:path foaf:img ;
-    sh:nodeKind sh:IRI .
-```
-
-
+* The supplied data needs to conform to these [SHACL shapes]([SHACL shapes](./server/app/common/shacl/account-shacl.ttl)
 
 ### Groups
 
-You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT`, `PATCH` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to the following SHACL shapes
+You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to these [SHACL shapes]([SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
 
-```
-@prefix dash: <http://datashapes.org/dash#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema: <http://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
-@prefix dct:   <http://purl.org/dc/terms/> .
-@prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
-@prefix db: <https://databus.dbpedia.org/sys/ont/> .
-
-##########
-# Group
-##########
-
-<#group-exists>
-  a sh:NodeShape ;
-  sh:targetNode dataid:Group ; 
-  sh:property [
-      sh:path [ sh:inversePath rdf:type ] ;
-      sh:minCount 1 ;
-      sh:maxCount 1;
-      sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-  ] .
-
-<#en-title>   
-    a sh:PropertyShape ;
-    sh:targetClass dataid:Group ;
-    sh:severity sh:Violation ;
-    sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-    sh:path dct:title ;
-    sh:minCount 1 ;
-    sh:languageIn ("en") ;
-    sh:uniqueLang true .
-
-<#en-abstract>   
-    a sh:PropertyShape ;
-    sh:targetClass dataid:Group ;
-    sh:severity sh:Violation ;
-    sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
-    sh:path dct:abstract ;
-    sh:minCount 1 ;
-    sh:languageIn ("en") ;
-    sh:uniqueLang true .
-  
-<#en-description>   
-    a sh:PropertyShape ;
-    sh:targetClass dataid:Group ;
-    sh:severity sh:Violation ;
-    sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-    sh:path dct:description ;
-    sh:minCount 1 ;
-    sh:languageIn ("en") ;
-    sh:uniqueLang true .
-```
 
 **ADDITIONALLY:** 
 * The uri of the dataid:Group has to match the request uri. 
@@ -398,7 +239,7 @@ PUT -d $data /$username/$group/$artifact/$version
 | :--- | :--- | :--- | 
 | 200 | `OK` | Artifact version updated |
 | 201 | `CREATED` | Artifact version created | 
-| 400 | `BAD REQUEST` | The sent request or request data was formatted incorrectly | 
+| 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
 | 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
@@ -411,3 +252,9 @@ DELETE /$username/$group/$artifact/$version
 | Header | Value |
 | :--- | :--- | 
 | X-Api-Token | **Required** Your Databus API Key |
+
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 204 | `NO CONTENT` | Artifact version deleted successfully |
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
