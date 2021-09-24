@@ -213,20 +213,6 @@ module.exports = function (router, protector) {
         return;
       }
 
-
-
-      
-
-      //var triples = await constructor.executeConstruct(expandedGraph, constructVersionQuery);
-      //console.log(triples);
-      //expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
-
-
-      //if(expandedGraph.length == 0) {
-      //  res.status(400).send(`The following construct query did not yield any triples:\n\n${constructVersionQuery}\n`);
-      //  return;
-      // }
-
       // Create compacted graph
       var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
       var targetPath = req.originalUrl.substring(1) + '/dataid.jsonld';

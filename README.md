@@ -394,6 +394,14 @@ PUT -d $data /$username/$group/$artifact/$version
 * The `$data` must be supplied as JSON-LD 
 * The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 200 | `OK` | Artifact version updated |
+| 201 | `CREATED` | Artifact version created | 
+| 400 | `BAD REQUEST` | The sent request or request data was formatted incorrectly | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
+
 #### Removing an Artifact Version
 
 ```http
