@@ -390,14 +390,14 @@ PUT -d $data /$username/$group/$artifact/$version
 | `$version` | The version identifier for your artifact version |
 | `$data` | The DataId of the artifact version. The format specs are documented below. |
 
-**Data Format Specification**
+*Data Format Specification*
 * The `$data` must be supplied as JSON-LD 
 * The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
 #### Removing an Artifact Version
 
 ```http
-PUT /$username/$group/$artifact/$version
+DELETE /$username/$group/$artifact/$version
 ```
 
 | Header | Value |
