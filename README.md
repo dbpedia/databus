@@ -380,12 +380,14 @@ PUT -d $data /$username/$group/$artifact/$version
 | Content-Type | **Required** application/json | 
 
 
-| Variables | Description |
+| Parameter | Description |
 | :--- | :--- | 
 | `$username` | Your Databus username |
 | `$group` | The group identifier for your artifact version |
 | `$artifact` | The artifact identifier for your artifact version |
 | `$version` | The version identifier for your artifact version |
-| `$version` | The version identifier for your artifact version |
+| `$data` | The DataId document of the artifact version as JSON-LD. The format specs are documented below. |
 
-**BODY**
+**Data Format Specification**
+* The `$data` must be supplied as JSON-LD 
+* The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
