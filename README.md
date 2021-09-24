@@ -330,7 +330,9 @@ You can add, change and remove groups. The actions are invoked by using the corr
     sh:uniqueLang true .
 ```
 
-The uri of the dataid:Group has to be the same as the request uri. Additionally, the uri has to be in the namespace of the issuing publisher (identified by the API token).
+**ADDITIONALLY:** 
+* The uri of the dataid:Group has to match the request uri. 
+* The uri path must start with the username of the issuing user (identified by the API token).
 
 
 
@@ -363,3 +365,27 @@ The contents of the file `./group.jsonld` are the following:
 ```
 
 Note that the *@id* of the supplied graph has to be the same as the request uri. Additionally, the uri has to be in John's namespace `john`.
+
+### Artifact Versions
+
+Databus artifacts are created implicitly by creating a version of an artifact. You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT`, `PATCH` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to the following SHACL shapes
+
+```http
+PUT -d $data /$username/$group/$artifact/$version
+```
+
+| Header | Value |
+| :--- | :--- | 
+| X-Api-Token | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+
+| Variables | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username |
+| `$group` | The group identifier for your artifact version |
+| `$artifact` | The artifact identifier for your artifact version |
+| `$version` | The version identifier for your artifact version |
+| `$version` | The version identifier for your artifact version |
+
+**BODY**
