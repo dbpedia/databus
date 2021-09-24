@@ -164,11 +164,11 @@ Account data can be changed via `PUT` or `DELETE` request. It is however recomme
 * The request uri is the path of your account. 
 * The `X-Api-Token` header needs to specify a valid API token. 
 * The `Content-Type` header needs to be set to the content type of your data. 
-* The supplied data needs to conform to these [SHACL shapes]([SHACL shapes](./server/app/common/shacl/account-shacl.ttl)
+* The supplied data needs to conform to these [SHACL shapes](./server/app/common/shacl/account-shacl.ttl)
 
 ### Groups
 
-You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to these [SHACL shapes]([SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
+You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
 
 
 **ADDITIONALLY:** 
