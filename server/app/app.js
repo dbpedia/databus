@@ -3,6 +3,7 @@
 // External includes
 var createError = require('http-errors');
 var express = require('express');
+var favicon = require('serve-favicon')
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -28,6 +29,7 @@ var DatabusProtect = require('./protect/middleware');
 var protector = new DatabusProtect(memoryStore);
 var router = new express.Router();
 
+app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
 
 // Create modules
 require('./collections/module')(router, protector);

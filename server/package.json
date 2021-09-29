@@ -42,12 +42,12 @@
     "request": "^2.88.0",
     "request-digest": "^1.0.13",
     "request-promise": "^4.2.4",
+    "serve-favicon": "^2.5.0",
     "ssh-key-decrypt": "^0.1.2",
     "streamify-string": "^1.0.1",
     "terser": "^5.7.0"
   },
   "main": "app.js",
-  "devDependencies": {},
   "author": "",
   "license": "ISC",
   "description": ""
