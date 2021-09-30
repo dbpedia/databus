@@ -102,10 +102,11 @@ services:
       VIRT_USER: ${VIRTUOSO_USER}
       VIRT_PASS: ${VIRTUOSO_PASSWORD}
       VIRT_URI: "http://172.17.0.01:3003"
+      GIT_ROOT: "/root/git"
     ports:
       - "3002:80"
     volumes:
-      - ./data/repo:/databus/git-root
+      - ./data/repo:/root/git
   virtuoso:
     image: "openlink/virtuoso-opensource-7"
     environment:
@@ -115,7 +116,7 @@ services:
     ports:
       - "3003:8890"
     volumes:
-      - ./data/virtuoso:/data
+      - ./data/virtuoso:/database
 ```
 
 ## Authentication
