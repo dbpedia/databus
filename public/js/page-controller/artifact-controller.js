@@ -97,7 +97,7 @@ function ArtifactPageController($scope, $sce, collectionManager) {
     facet : "http://purl.org/dc/terms/hasVersion",
     value : 'SYSTEM_LATEST_ARTIFACT_VERSION',
     checked : true
-  });*/
+  });
 
   angular.element(function () {
     $('.sliderboy').slick({
@@ -108,7 +108,7 @@ function ArtifactPageController($scope, $sce, collectionManager) {
       prevArrow: '<svg class="slick-prev" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M20 .755l-14.374 11.245 14.374 11.219-.619.781-15.381-12 15.391-12 .609.755z"/></svg>',
       nextArrow: '<svg class="slick-next" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M4 .755l14.374 11.245-14.374 11.219.619.781 15.381-12-15.391-12-.609.755z"/></svg>',
     });
-  });
+  });*/
 
 
   $scope.onFileSelectionChanged = function(numFiles, totalSize) {

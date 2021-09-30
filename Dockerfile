@@ -5,7 +5,12 @@ RUN apt-get install -y nodejs
 RUN node -v
 RUN npm -v
 
-COPY . /databus
+COPY ./server /databus/server
+COPY ./public /databus/public
+COPY ./search /databus/search
+
+COPY ./setup.sh /databus/setup.sh
+COPY ./context.json /databus/context.json
 
 # Copy Lookup WAR
 COPY ./search/app-config-servlet.yml /root/app-config.yml

@@ -17,10 +17,11 @@ services:
       VIRT_USER: "dba"
       VIRT_PASS: "everyoneknows"
       VIRT_URI: "http://172.17.0.01:3003"
+      GIT_ROOT: "/root/git"
     ports:
       - "3002:80"
     volumes:
-      - ./data/repo:/databus/git-root
+      - ./data/repo:/root/git
   virtuoso:
     logging:
       driver: none
@@ -29,7 +30,7 @@ services:
     environment:
       DBA_PASSWORD: "everyoneknows"
       SPARQL_UPDATE: "true"
-      DEFAULT_GRAPH: "https://databus.janni.org"
+      DEFAULT_GRAPH: "http://localhost:3000"
     ports:
       - "3003:8890"
     volumes: 

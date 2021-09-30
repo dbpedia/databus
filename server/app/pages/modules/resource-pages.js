@@ -1,4 +1,5 @@
 var sparql = require('../../common/queries/sparql');
+var request = require('request');
 
 const DatabusCache = require('../../common/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
@@ -47,7 +48,7 @@ module.exports = function (router, protector) {
     return res.redirect('/' + req.params.account + '#apps');
   });
 
-  router.get('/:account/:group', protector.checkSso(), async function (req, res, next) {
+  router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
       let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
@@ -128,7 +129,9 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/:group/:artifact/:version', protector.checkSso(), async function (req, res, next) {
+
+
+  router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
       let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}_${req.params.version}`;
@@ -154,10 +157,28 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group/:artifact/:version/:file', async function (req, res, next) {
 
+    // Return dataids?
+    if (req.params.file.startsWith('dataid.')) {
+
+      var repo = req.params.account;
+      var path = req.path;
+
+      let options = {
+        url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}`,
+        headers: {
+          'Accept': 'application/ld+json'
+        },
+        json: true
+      };
+
+      console.log(`Piping to ${options.url}`);
+      request(options).pipe(res);
+      return;
+    }
+
     try {
       var result = await sparql.dataid.getDownloadUrl(req.params.account, req.params.group,
         req.params.artifact, req.params.version, req.params.file);
-
 
       if (result == null) {
         res.status(404).send('Sorry can\'t find that!');

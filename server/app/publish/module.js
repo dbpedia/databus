@@ -5,6 +5,9 @@ var jsonld = require('jsonld');
 var defaultContext = require('../../../context.json');
 const sparql = require('../common/queries/sparql');
 const UriUtils = require('../common/utils/uri-utils');
+const ServerUtils = require('../common/utils/server-utils.js');
+const request = require('request');
+
 var constructor = require('../common/execute-construct.js');
 var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
@@ -29,7 +32,7 @@ module.exports = function (router, protector) {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph['@type'].includes(graphType)) {
+      if (graph['@type'] != undefined && graph['@type'].includes(graphType)) {
         return graph;
       }
     }
@@ -79,6 +82,23 @@ module.exports = function (router, protector) {
     return obj[0]['@id'];
   }
 
+  router.get('/:account/:group/:artifact/:version', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
+
+    var repo = req.params.account;
+    var path = req.path;
+
+    let options = {
+      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/dataid.jsonld`,
+      headers: {
+        'Accept': 'application/ld+json'
+      },
+      json: true
+    };
+
+    request(options).pipe(res);
+    return;
+  });
+
   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
 
     try {
@@ -92,7 +112,7 @@ module.exports = function (router, protector) {
       var group = await sparql.dataid.getGroup(req.params.account, req.params.group);
 
       if (group == undefined) {
-        res.status(400).send(`The specified group does not exist\n`);
+        res.status(400).send(`The specified group '${req.params.group}' does not exist\n`);
         return;
       }
 
@@ -221,12 +241,14 @@ module.exports = function (router, protector) {
       var existingVersion = null;///await sparql.dataid.getVersion(req.params.account,
       //  req.params.group, req.params.artifact, req.params.version);
 
+      console.log(JSON.stringify(compactedGraph, null, 3));
       // Save the RDF with the current path using the database manager
       var publishResult = await databaseManager.save(req.params.account, targetPath, compactedGraph);
 
       // Return failure
       if (!publishResult.isSuccess) {
         res.status(500).send('Internal database error\n');
+        return;
       }
 
       // Return success
@@ -242,6 +264,24 @@ module.exports = function (router, protector) {
     }
 
   });
+
+  router.get('/:account/:group', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
+
+    var repo = req.params.account;
+    var path = req.path;
+
+    let options = {
+      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/group.jsonld`,
+      headers: {
+        'Accept': 'application/ld+json'
+      },
+      json: true
+    };
+
+    request(options).pipe(res);
+    return;
+  });
+
 
   /**
    * Publishing of groups

@@ -32,5 +32,5 @@ const FACET_LASTEST_GROUP_VERSION_SUBQUERY =
 "\n\t}";
 
 const FACET_SUBQUERY_UNION = "\n\tUNION";
-const DATABUS_RESOURCE_BASE_URL = "https://databus.janni.org";
+const DATABUS_RESOURCE_BASE_URL = "http://localhost:3000";
 const DATABUS_SPARQL_ENDPOINT_URL = "/system/sparql";
