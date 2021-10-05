@@ -19,6 +19,8 @@ Configure your Databus installation by changing the values in the `.env` file in
 
 ### Starting the Databus Server
 
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Then run:
+
 ```
 docker-compose up
 ```
@@ -86,3 +88,9 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers 
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure
+
+
+## Documentation
+
+**API:** https://github.com/dbpedia/databus/blob/master/API.md
+**Development:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
