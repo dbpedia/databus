@@ -103,6 +103,11 @@ class DatabusProtect {
     this.userTablePath = __dirname + '/../../users/namespaces.csv';
 
     if (!fs.existsSync(this.userTablePath)) {
+
+      if (!fs.existsSync(__dirname + '/../../users')) {
+        fs.mkdirSync(__dirname + '/../../users');
+      }
+
       console.log(`Creating user file at ${this.userTablePath}.`);
       fs.writeFileSync(this.userTablePath, "", "utf8");
     }
@@ -294,7 +299,7 @@ class DatabusProtect {
     return (req, res, next) => {
 
       // User already fetched and authenticated
-      if(req.databus != undefined && req.databus.authenticated) {
+      if (req.databus != undefined && req.databus.authenticated) {
         return next();
       }
 
@@ -370,7 +375,7 @@ class DatabusProtect {
 
       var apiTokenUser = self.validateApiKey(request);
 
-      if(apiTokenUser != null) {
+      if (apiTokenUser != null) {
         // Api token has been found
         request.databus = {};
         request.databus.authenticated = true;

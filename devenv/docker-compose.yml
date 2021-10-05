@@ -5,7 +5,7 @@ version: "3.0"
 services:
   lookup-servlet:
     image: lookup-servlet
-    container_name: test_lookup
+    container_name: devenv_lookup
     ports:
       - 8080:8080
     volumes: 
@@ -13,6 +13,7 @@ services:
       - ../search/index:/databus/search/index
   gstore:
     image: gstore
+    container_name: devenv_gstore
     environment: 
       VIRT_USER: "dba"
       VIRT_PASS: "everyoneknows"
@@ -26,7 +27,7 @@ services:
     logging:
       driver: none
     image: "tenforce/virtuoso:1.3.2-virtuoso7.2.5.1"
-    container_name: test_virtuoso
+    container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"
       SPARQL_UPDATE: "true"

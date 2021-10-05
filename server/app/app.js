@@ -152,6 +152,10 @@ function initialize(app, memoryStore) {
       }
     });
 
+    if (!fs.existsSync(__dirname + '/../keypair')) {
+      fs.mkdirSync(__dirname + '/../keypair');
+    }
+
     fs.writeFileSync(privateKeyFile, privateKey.toString('base64'), "utf8");
     fs.writeFileSync(publicKeyFile, publicKey.toString('base64'), "utf8");
   }
