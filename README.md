@@ -11,7 +11,7 @@ In order to build and run the On-Premise Databus Application you will need `npm`
 
 ```
 git clone https://github.com/dbpedia/databus.git
-cd databus-beta
+cd databus
 bash install.sh
 ```
 
