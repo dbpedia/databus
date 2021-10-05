@@ -1,4 +1,4 @@
-# Databus (BETA)
+# Databus (2.0b)
 
 ## Deployment
 
