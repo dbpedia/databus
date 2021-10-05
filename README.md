@@ -19,7 +19,7 @@ Configure your Databus installation by changing the values in the `.env` file in
 
 ### Starting the Databus Server
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Then run:
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
 
 ```
 docker-compose up
