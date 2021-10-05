@@ -6,6 +6,17 @@ In order to run the On-Premise Databus Application you will need `docker` and `d
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
+
+## Starting the Databus Server
+
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
+
+```
+docker-compose up
+```
+
+The Databus should be available at `http://localhost:3000`.
+
 ## Basic Configuration
 
 Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
@@ -16,16 +27,6 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS_OIDC_SECTRET**: Client Secret of your OIDC client
 * **VIRTUOSO_USER**: A virtuoso database user with write access (SPARQL_UPDATE)
 * **VIRTUOSO_PASSWORD**: The password of the VIRTUOSO_USER account
-
-### Starting the Databus Server
-
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
-
-```
-docker-compose up
-```
-
-The Databus should be available at `http://localhost:3000`.
 
 
 ## Advanced Configuration
