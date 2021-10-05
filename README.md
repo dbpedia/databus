@@ -93,4 +93,5 @@ Tested OIDC providers: Keycloak, Auth0, Microsoft Azure
 ## Documentation
 
 **API:** https://github.com/dbpedia/databus/blob/master/API.md
+
 **Development:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
