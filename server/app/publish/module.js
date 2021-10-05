@@ -82,22 +82,7 @@ module.exports = function (router, protector) {
     return obj[0]['@id'];
   }
 
-  router.get('/:account/:group/:artifact/:version', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
-
-    var repo = req.params.account;
-    var path = req.path;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/dataid.jsonld`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
-  });
+ 
 
   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
 
@@ -265,23 +250,7 @@ module.exports = function (router, protector) {
 
   });
 
-  router.get('/:account/:group', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
-
-    var repo = req.params.account;
-    var path = req.path;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/group.jsonld`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
-  });
-
+  
 
   /**
    * Publishing of groups
