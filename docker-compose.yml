@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   databus:
-    image: databus
+    image: "dbpedia/databus"
     ports:
       - 3000:3000 
       - 3001:8080 # exposes search
