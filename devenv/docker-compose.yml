@@ -12,7 +12,7 @@ services:
       - ../search/app-config-servlet.yml:/root/app-config.yml
       - ../search/index:/databus/search/index
   gstore:
-    image: gstore
+    image: dbpedia/gstore
     container_name: devenv_gstore
     environment: 
       VIRT_USER: "dba"
