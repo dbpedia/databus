@@ -1,6 +1,4 @@
 # Starts everything except the databus
-# Start databus with:
-# DATABUS_RESOURCE_BASE_URL=https://databus.dbpedia.org DATABUS_DATABASE_URL=http://172.17.0.1:3002 npm start
 version: "3.0"
 services:
   lookup-servlet:
