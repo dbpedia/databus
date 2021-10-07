@@ -1,5 +1,10 @@
 # Databus (2.0b)
 
+
+**API:** https://github.com/dbpedia/databus/blob/master/API.md
+
+**Development:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
+
 ## Requirements
 
 In order to run the On-Premise Databus Application you will need `docker` and `docker-compose` installed on your machine.
@@ -91,8 +96,3 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure
 
 
-## Documentation
-
-**API:** https://github.com/dbpedia/databus/blob/master/API.md
-
-**Development:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
