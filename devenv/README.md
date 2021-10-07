@@ -19,11 +19,19 @@ The `build-docker-image.sh` script will install all npm dependencies for the ser
 
 ## Starting the Databus Locally
 
-### Starting the Databuse Environment
+### Starting the Databus Environment
 
-Go to the root directory of the repository and start the database and lookup search containers
+Firstly, build the lookup-servlet docker image
 
 ```
+cd search
+docker build -t lookup-servlet .
+```
+
+Go to the devenv directory of the repository and start the database and lookup search containers
+
+```
+cd ..
 cd devenv
 docker-compose up
 ```
