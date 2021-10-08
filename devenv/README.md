@@ -35,13 +35,13 @@ Additionally, there is a make instruction for a restart with database wipe  (`ma
 
 ### Starting the Databus Server
 
-First, both server and client application need to be installed using `npm`.
+First, install all dependencies by running:
 
 ```
 make srv-install
 ```
 
-Then run either 
+Then run either:
 
 ```
 make srv-start-auth0
