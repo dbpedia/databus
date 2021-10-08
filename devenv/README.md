@@ -53,4 +53,4 @@ make srv-start_dbpedia_keycloak
 
 Each script contains a different configuration for a specific OIDC provider (Auth0 with Google Auth *or* DBpedia Login)
 
-The sample OIDC providers are a development setup and should never be used in productions. Please use your own OIDC provider for authentication in production.
+**PLEASE NOTE:** The sample OIDC providers are a development setup and should never be used in productions. Please use your own OIDC provider for authentication in production.
