@@ -98,4 +98,3 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure
 
-a
