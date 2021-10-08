@@ -19,45 +19,34 @@ The `build-docker-image.sh` script will install all npm dependencies for the ser
 
 ## Starting the Databus Locally
 
-### Starting the Databus Environment
+### Starting the Databuse Environment
 
-Firstly, build the lookup-servlet docker image
-
-```
-cd search
-docker build -t lookup-servlet .
-```
-
-Go to the devenv directory of the repository and start the database and lookup search containers
+Go to the root directory of the repository and start the database and lookup search containers
 
 ```
-cd ..
-cd devenv
-docker-compose up
+make env-build
+make env-start
 ```
 
-You can restart these containers using `docker-compose restart`. 
-Additionally, there is a script for a restart with database wipe  (`bash env-clean-start.sh`)
+You can restart these containers using `make env-restart`. 
+Additionally, there is a make instruction for a restart with database wipe  (`make env-clean-start`)
 
 ### Starting the Databus Server
 
 First, both server and client application need to be installed using `npm`.
 
 ```
-cd public
-npm install
-cd ../server
-npm install
+make srv-install
 ```
 
 Then run either 
 
 ```
-bash start_auth0.sh
+make srv-start-auth0
 ```
 *or* 
 ```
-bash start_dbpedia_keycloak.sh
+make srv-start_dbpedia_keycloak
 ```
 
 Each script contains a different configuration for a specific OIDC provider (Auth0 with Google Auth *or* DBpedia Login)

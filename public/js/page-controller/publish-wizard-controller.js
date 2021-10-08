@@ -110,6 +110,9 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     var signatureData = $scope.session.data.signature;
 
+    // Update default uri
+    signatureData.defaultPublisherUri = `${DATABUS_RESOURCE_BASE_URL}/${data.auth.info.accountName}#this`
+
     // Update publisher uris
     signatureData.publisherUris = [];
     for (var p in data.publisherData) {
