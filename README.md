@@ -5,6 +5,7 @@ This repo develops Databus version 2.0, which is a major upgrade of version 1.3-
 If you install it and find problems, please report in issue tracker to help us test this new version. 
 
 **API docu:** https://github.com/dbpedia/databus/blob/master/API.md
+
 **Development setup:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
 
 ## Requirements
