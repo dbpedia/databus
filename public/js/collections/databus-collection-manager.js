@@ -243,6 +243,59 @@ class DatabusCollectionManager {
 
   }
 
+  createSnapshot(source) { // convert each version="latest" to actual latest version
+    if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
+
+    let collection = DatabusCollectionWrapper.createNew();
+    collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
+
+    let root = collection.content.generatedQuery.root;
+    for (var g in root.childNodes) {
+      var graph = root.childNodes[g];
+
+      for (var s in graph.facetSettings) {
+        if (graph.facetSettings[s][0].value === '$latest' ) {
+          this.http.get('/system/pages/facets', {
+            params: { uri: artifact.uri, type: 'group' }
+          }).then(function (result) {
+            let versions = result.data["http://purl.org/dc/terms/hasVersion"].values;
+            let latestVersion = versions.reduce(function (a, b) { return a > b ? a : b; });
+            artifact.facetSettings[s][0].value = latestVersion;
+          });
+        }
+      }
+
+      for (var a in graph.childNodes) {
+        var artifact = graph.childNodes[a];
+
+        for (var s in artifact.facetSettings) {
+          if (artifact.facetSettings[s][0].value === '$latest' ) {
+            this.http.get('/system/pages/facets', {
+              params: { uri: artifact.uri, type: 'artifact' }
+            }).then(function (result) {
+              let versions = result.data["http://purl.org/dc/terms/hasVersion"].values;
+              let latestVersion = versions.reduce(function (a, b) { return a > b ? a : b; });
+              artifact.facetSettings[s][0].value = latestVersion;
+            });
+          }
+        }
+
+      }
+      
+    }
+
+    
+    collection.label = `Snapshot of ${source.label}`;
+    collection.description = source.description;
+    collection.abstract = source.abstract;
+
+    this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
+    this.saveLocally();
+    this.setActive(collection.uuid);
+
+    return collection;
+  }
+
   saveLocally() {
     if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
@@ -371,6 +424,8 @@ class DatabusCollectionManager {
 
     return collection;
   }
+
+
 
   deleteLocally(callback) {
     delete this.local[this.activeCollection.uuid];
