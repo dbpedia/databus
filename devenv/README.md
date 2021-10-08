@@ -7,7 +7,9 @@ In order to build and run the On-Premise Databus Application you will need `npm`
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
-## Building the Docker Image
+## Building the Databus Docker Image
+
+The following instructions will build the docker image for the Databus Server. Only do this if you want to run the Databus as a dockerized application. If you want to run the Databus without docker, you can skip this section.
 
 ```
 git clone https://github.com/dbpedia/databus.git
