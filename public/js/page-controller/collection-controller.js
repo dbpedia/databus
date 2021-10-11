@@ -57,6 +57,19 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
     window.location.href = '/system/collection-editor'
   }
 
+  $scope.createSnapshot = function() {
+    if(!$scope.collectionManager.isInitialized) {
+      return;
+    }
+
+  
+    let collectionSnapshot = $scope.collectionManager.createSnapshot($scope.collection);
+
+    console.log(collectionSnapshot);
+    $scope.collectionManager.setActive(collectionSnapshot.uuid);
+    window.location.href = '/system/collection-editor'
+  }
+
   $scope.editCollection = function() {
 
     if(!$scope.collectionManager.isInitialized) {

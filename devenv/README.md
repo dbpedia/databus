@@ -7,7 +7,9 @@ In order to build and run the On-Premise Databus Application you will need `npm`
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
-## Building the Docker Image
+## Building the Databus Docker Image
+
+The following instructions will build the docker image for the Databus Server. Only do this if you want to run the Databus as a dockerized application. If you want to run the Databus without docker, you can skip this section.
 
 ```
 git clone https://github.com/dbpedia/databus.git
@@ -19,7 +21,7 @@ The `build-docker-image.sh` script will install all npm dependencies for the ser
 
 ## Starting the Databus Locally
 
-### Starting the Databuse Environment
+### Starting the Databus Environment
 
 Go to the root directory of the repository and start the database and lookup search containers
 
@@ -33,13 +35,13 @@ Additionally, there is a make instruction for a restart with database wipe  (`ma
 
 ### Starting the Databus Server
 
-First, both server and client application need to be installed using `npm`.
+First, install all dependencies by running:
 
 ```
 make srv-install
 ```
 
-Then run either 
+Then run either:
 
 ```
 make srv-start-auth0
@@ -51,3 +53,4 @@ make srv-start_dbpedia_keycloak
 
 Each script contains a different configuration for a specific OIDC provider (Auth0 with Google Auth *or* DBpedia Login)
 
+**PLEASE NOTE:** The sample OIDC providers are a development setup and should never be used in production. Please use your own OIDC provider for authentication in production.
