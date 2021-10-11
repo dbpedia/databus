@@ -91,7 +91,7 @@
       </p>
     </div>
 
-    <div>
+    <div ng-if="apiKeys != undefined && apiKeys.length > 0">
       <label class="label">API Keys</label>
       <div ng-repeat="key in apiKeys">
         <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;

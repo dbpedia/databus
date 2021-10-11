@@ -22,25 +22,27 @@
               Login
             </span>
           </button>
-          <a class="button is-secondary button-margin-left" style="width: 120px; height: 40px"
-            href="https://databus.dbpedia.org/auth/realms/databus/protocol/openid-connect/registrations?client_id=website&response_type=code&scope=openidemail&redirect_uri=https://databus.dbpedia.org&kc_locale=en">
-            <span class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                <path
-                  d="M10 2v2h12v16h-12v2h14v-20h-14zm0 7.408l2.963 2.592-2.963 2.592v-1.592h-8v-2h8v-1.592zm-2-4.408v4h-8v6h8v4l8-7-8-7z" />
-              </svg> </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" ng-if="authenticated && !hasAccount" style="min-height: 600px; display: flex; align-items: center;">
+      <div class="container">
+        <p class="collection-editor-info-text">You need to create a user account in order to publish data.</p>
+        <br />
+        <div class="collection-editor-info-text">
+          <button class="button is-secondary" ng-click="createAccount()" style="width: 200px; height: 40px">
+            <span>
+              Create Account
             </span>
-            <span class="is-hidden-desktop-only">
-              Register
-            </span>
-          </a>
+          </button>
         </div>
       </div>
     </div>
 
     <!--LOGGED IN VIEW-->
 
-    <div ng-if="authenticated" style="min-height: 500px;">
+    <div ng-if="authenticated && hasAccount" style="min-height: 500px;">
 
       <!-- LOADING VIEW -->
       <div class="section" ng-if="!collectionManager.isInitialized" style="text-align:center; margin: 2em;">

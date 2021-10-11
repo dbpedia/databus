@@ -5,25 +5,23 @@ function CollectionsEditorController($scope, $timeout, $http, collectionManager)
   $scope.accountName = data.auth.info.accountName;
 
   $scope.logMeIn = function () {
-    window.location = '/login?redirectUrl=' + encodeURIComponent(window.location);
+    window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
   }
+
+  $scope.createAccount = function() {
+    window.location = '/system/account';
+  }
+
 
   if (!$scope.authenticated) {
     return;
   }
 
-  // function doStuff() {
-  //   if(initialized!==true) {
-  //     console.log("KACKA" + initialized);//we want it to match
-  //     setTimeout(doStuff, 50);//wait 50 millisecnds then recheck
-  //     return;
-  //   } else {
-  //     console.log("jetz");
-  //   }
-  // }
-  //
-  // doStuff();
+  $scope.hasAccount = data.auth.info.accountName != undefined;;
 
+  if (!$scope.hasAccount) {
+    return;
+  }
 
   $scope.getCollectionJson = function() {
     var copy =  DatabusCollectionUtils.createCleanCopy($scope.collectionManager.activeCollection);

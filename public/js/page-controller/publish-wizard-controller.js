@@ -11,11 +11,21 @@ function PublishWizardController($scope, $http, focus, $q) {
   // https://openenergy-platform.org/ontology/oeo
 
   $scope.logMeIn = function () {
-    window.location = '/login?redirectUrl=' + encodeURIComponent(window.location);
+    window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
+  }
+
+  $scope.createAccount = function() {
+    window.location = '/system/account';
   }
 
   // controller does not work without authentication
   if (!$scope.authenticated) {
+    return;
+  }
+
+  $scope.hasAccount = data.auth.info.accountName != undefined;;
+
+  if (!$scope.hasAccount) {
     return;
   }
 
