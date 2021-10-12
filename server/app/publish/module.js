@@ -12,6 +12,9 @@ var constructor = require('../common/execute-construct.js');
 var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 
+const publishGroup = require('./publish-group');
+const publishDataId = require('./publish-dataid');
+
 const RDF_URIS = {
   DATASET: 'http://dataid.dbpedia.org/ns/core#Dataset',
   DB_TRACTATE_V1: 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1',
@@ -82,11 +85,47 @@ module.exports = function (router, protector) {
     return obj[0]['@id'];
   }
 
- 
+
+  router.post('/system/publish', protector.protect(), async function (req, res, next) {
+
+    try {
+
+      var account = req.databus.accountName;
+
+      // Find context:
+      var graph = req.body;
+      var context = graph['@context'];
+
+      // Replace if default context
+      if (context == `${process.env.DATABUS_RESOURCE_BASE_URL}/system/context.jsonld`) {
+        graph['@context'] = defaultContext;
+      }
+
+      var groupResult = await publishGroup(account, graph);
+
+      if (groupResult.code > 201) {
+        res.status(groupResult.code).send(groupResult.message);
+        return;
+      }
+
+      console.log(groupResult.message);
+
+      var dataIdResult = await publishDataId(account, graph);
+      console.log(dataIdResult.message);
+
+      res.status(dataIdResult.code).send(dataIdResult.message);
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  });
 
   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
 
     try {
+
+      // TODO: check for default context usage and swap out for local context file
 
       console.log('Upload request received at ' + req.originalUrl);
       if (req.params.account != req.databus.accountName) {
@@ -121,7 +160,7 @@ module.exports = function (router, protector) {
         return;
       }
 
-     
+
       // Validate all identifiers...
       var datasetGraph = getTypedGraph(expandedGraph, RDF_URIS.DATASET);
       var versionGraph = getTypedGraph(expandedGraph, RDF_URIS.VERSION);
@@ -147,7 +186,7 @@ module.exports = function (router, protector) {
         res.status(400).send(`The specified dataset artifact identifier (dataid:Dataset) does not match the request path. (Specified: ${datasetArtifactUri}, expected: ${process.env.DATABUS_RESOURCE_BASE_URL}${expectedPath})\n`);
         return;
       }
-      
+
       if (!UriUtils.isResourceUri(artifactGraph['@id'], expectedPath)) {
         res.status(400).send(`The specified dataset artifact identifier (dataid:Artifact) does not match the request path. (Expected: ${process.env.DATABUS_RESOURCE_BASE_URL}${expectedPath})\n`);
         return;
@@ -250,7 +289,7 @@ module.exports = function (router, protector) {
 
   });
 
-  
+
 
   /**
    * Publishing of groups
@@ -298,7 +337,6 @@ module.exports = function (router, protector) {
 
 
       var targetPath = req.originalUrl.substring(1) + '/group.jsonld';
-
       var existingGroup = await sparql.dataid.getGroup(req.params.account, req.params.group);
 
       // Save the RDF with the current path using the database manager

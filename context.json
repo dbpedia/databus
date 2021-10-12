@@ -1,4 +1,5 @@
 {
+  "@language": "en",
   "dataid": "http://dataid.dbpedia.org/ns/core#",
   "databus": "https://databus.dbpedia.org/system/ontology#",
   "dcv": "http://dataid.dbpedia.org/ns/cv#",
@@ -53,11 +54,13 @@
   },
   "abstract": {
     "@id": "dct:abstract",
-    "@type": "xsd:string"
+    "@type": "xsd:string",
+    "@language": "en"
   },
   "description": {
     "@id": "dct:description",
-    "@type": "xsd:string"
+    "@type": "xsd:string",
+    "@language": "en"
   },
   "issued": {
     "@id": "dct:issued",
@@ -75,10 +78,7 @@
     "@id": "dct:publisher",
     "@type": "@id"
   },
-  "distribution": {
-    "@id": "dcat:distribution",
-    "@type": "@id"
-  },
+  "distribution": "dcat:distribution",
   "downloadURL": {
     "@id": "dcat:downloadURL",
     "@type": "@id"

@@ -10,7 +10,8 @@ const RDF_URIS = {
   PROP_VERSION: 'http://dataid.dbpedia.org/ns/core#version',
   PROP_ARTIFACT: 'http://dataid.dbpedia.org/ns/core#artifact',
   PROP_GROUP: 'http://dataid.dbpedia.org/ns/core#group',
-  SINGLE_FILE: 'http://dataid.dbpedia.org/ns/core#SingleFile'
+  SINGLE_FILE: 'http://dataid.dbpedia.org/ns/core#SingleFile',
+  PROPERTY: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property'
 }
 
 RDF_URIS.datasetConstructConfig = {};

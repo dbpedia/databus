@@ -64,8 +64,17 @@ class UriUtils {
     return result;
   }
 
-  static navigateUp(uri) {
+  static navigateUp(uri, steps) {
 
+    if(steps == undefined) {
+      steps = 1;
+    }
+
+    for(var i = 0; i < steps; i++) {
+      uri = uri.substr(0, uri.lastIndexOf('/'));
+    }
+
+    return uri;
   }
 
   static sanitizeUri(uri) {

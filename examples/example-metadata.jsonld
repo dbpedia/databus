@@ -1,0 +1,48 @@
+{
+  "@context" : "http://localhost:3000/system/context.jsonld",
+  "@graph" : [
+    {
+      "@id": "http://localhost:3000/jan/examples",
+      "@type": "dataid:Group",
+      "title": { "@value" : "Example Group", "@language" : "en" },
+      "abstract": { "@value" : "This is an example group for API testing.", "@language" : "en" },
+      "description": { "@value" : "This is an example group for API testing.", "@language" : "en" }
+    },
+    {
+      "@id": "http://localhost:3000/jan/examples/dbpedia-ontology-example",
+      "@type": "dataid:Artifact"
+    },
+    {
+      "@id": "http://localhost:3000/jan/examples/dbpedia-ontology-example/2021-10-12",
+      "@type": "dataid:Version"
+    },
+    {
+      "@id": "http://localhost:3000/jan/examples/dbpedia-ontology-example/2021-10-12#Dataset",
+      "@type": "dataid:Dataset",
+      "title": { "@value" : "DBpedia Ontology Example", "@language" : "en" },
+      "abstract": { "@value" : "This is an example for API testing.", "@language" : "en" },
+      "description": { "@value" : "This is an example for API testing.", "@language" : "en" },
+      "publisher": "http://localhost:3000/jan#this",
+      "group": "http://localhost:3000/jan/examples",
+      "artifact": "http://localhost:3000/jan/examples/dbpedia-ontology-example",
+      "version": "http://localhost:3000/jan/examples/dbpedia-ontology-example/2021-10-12",
+      "hasVersion": "2021-10-12",
+      "issued": "2021-10-12T13:07:34Z",
+      "license": "http://creativecommons.org/licenses/by/4.0/",
+      "distribution": [
+        {
+          "@id": "http://localhost:3000/jan/examples/dbpedia-ontology-example/2021-10-12#ontology--DEV_type=parsed_sorted.nt",
+          "@type": "dataid:SingleFile",
+          "issued": "2021-10-12T13:07:34Z",
+          "file": "http://localhost:3000/jan/general/test/2021-10-11/ontology--DEV_type=parsed_sorted.nt",
+          "format": "nt",
+          "compression": "none",
+          "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+          "byteSize": "4439722",
+          "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+          "hasVersion": "2021-10-12"
+        }
+      ]
+    }
+  ]
+}
