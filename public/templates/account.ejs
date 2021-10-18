@@ -53,15 +53,15 @@
         <!--Tabs-->
         <div class="collection-editor-tabs">
           <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 0 }"
-            ng-click="tabViewModel.activeTab=0;">
+            ng-click="goToTab('');">
             <div class="section-label">Overview</div>
           </div>
           <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 1 }"
-            ng-click="tabViewModel.activeTab=1;">
+            ng-click="goToTab('data');">
             <div class="section-label">Data</div>
           </div>
           <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 2 }"
-            ng-click="tabViewModel.activeTab=2;">
+            ng-click="goToTab('collections');">
             <div class="section-label">Collections</div>
           </div>
           <!--<div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 3 }"
@@ -69,7 +69,7 @@
             <div class="section-label">Apps & Services</div>
           </div>-->
           <div ng-if="profileData.isOwn" class="collection-editor-tab"
-            ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="tabViewModel.activeTab=4;">
+            ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="goToTab('settings')">
             <div class="section-label">Settings</div>
           </div>
         </div>

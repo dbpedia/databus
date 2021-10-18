@@ -11,9 +11,9 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
     };
   }])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
-  .controller("AccountPageController", ["$scope", "$http", AccountPageController])
+  .controller("AccountPageController", ["$scope", "$http", "$location", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", FrontPageController])
-  .controller("ArtifactPageController", ["$scope", "$sce", "collectionManager", ArtifactPageController])
+  .controller("ArtifactPageController", ["$scope", "$sce","collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "collectionManager", CollectionsEditorController])
   .controller("DocumentationController", ["$scope", "$sce", DocumentationController])
@@ -30,6 +30,14 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
         data: '=data'
       }
     }
+  });
+
+  databusApplication.config(function($locationProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false,
+      rewriteLinks: false
+    });
   });
 
 // Components

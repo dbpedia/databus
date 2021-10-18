@@ -9,6 +9,8 @@ function ProfileController($scope, $http) {
   $scope.createApiKeyError = "";
   $scope.addWebIdUri = "";
 
+  $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
+
   $scope.putProfile = function(accountName, foafName) {
 
     var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;

@@ -3,6 +3,8 @@ function ArtifactPageController($scope, $sce, collectionManager) {
 
   $scope.collectionManager = collectionManager;
 
+  
+
   // TODO: Change this hacky BS!
   setTimeout(function() {
     $( ".dropdown-item" ).click(function(e) {

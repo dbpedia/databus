@@ -60,43 +60,59 @@
     <br />
     <br />
 
-    <div class="title is-4">WebIds</div>
     <div class=content>
-      <div ng-repeat="webIdEntry in editData.webIds">
 
-      </div>
+      <h2>WebIds</h2>
+      <h3>Internal WebId Document</h3>
+      <p>
+        Internal WebId document identifier:
+      <pre><a ng-href="{{ personUri }}">{{ personUri }}</a></pre>
+      </p>
+      <blockquote>IMPORTANT NOTE: Do not use this WebId document outside the scope of this Databus. It is not compatible
+        with WebId authentication and should only be used as a publisher identifier for this Databus instance.
+      </blockquote>
 
+
+
+      <h3>External WebIds</h3>
+
+
+
+      <p>Enter the WebId uri you want to connect to this account and click <i>Connect</i> to connect your WebId to this
+        account.</p>
       <div class="field has-addons" style="margin-bottom: 1.5em;">
 
         <div class="control has-icons-left">
-          <input class="input" type="text" style="min-width: 500px;" placeholder="WebId URI"
-            ng-model="addWebIdUri">
+          <input class="input" type="text" style="min-width: 500px;" placeholder="WebId URI" ng-model="addWebIdUri">
           <span class="icon is-small is-left">
             <i class="fas fa-id-card"></i>
           </span>
         </div>
         <p class="control">
           <a ng-click="connectWebid()" class="button is-primary">
-            Connect WebId to Account
+            Connect
           </a>
         </p>
       </div>
+
+      <div ng-repeat="webIdEntry in editData.webIds">
+
+      </div>
+
     </div>
 
     <br />
-    <br />
+    <h2>API Keys</h2>
 
-    <div class="title is-4">API Keys</div>
-    <div class=content>
-      <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a
-        x-api-key header</p>
-      <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
-    </div>
-    <label class="label">Create New API Key</label>
+    <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a
+      x-api-key header</p>
+    <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
+    <h3>Create New API Key</h3>
+    <p>Enter a name for your API key and click <i>Create</i> to create a new API key.</p>
     <div class="field has-addons" style="margin-bottom: 1.5em;">
       <p class="control">
-        <input class="input" placeholder="Enter key name..." input="searchInput" ng-model="createApiKeyName"
-          filters="searchFilters">
+        <input class="input" placeholder="Enter key name..." style="min-width: 500px;" input="searchInput"
+          ng-model="createApiKeyName" filters="searchFilters">
       </p>
       <p class="control">
         <a ng-click="addApiKey()" class="button is-primary">
@@ -106,7 +122,7 @@
     </div>
 
     <div ng-if="apiKeys != undefined && apiKeys.length > 0">
-      <label class="label">API Keys</label>
+      <h3>API Keys</h3>
       <div ng-repeat="key in apiKeys">
         <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
           align-items: center;">
