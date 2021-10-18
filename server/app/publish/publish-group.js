@@ -16,6 +16,8 @@ module.exports = async function publishGroup(account, data) {
   try {
     // Get the desired triples from the data via construct query
     var triples = await constructor.executeConstruct(data, constructGroupQuery);
+    console.log(triples);
+    console.log(data);
     var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
     // No data - no publish

@@ -22,22 +22,35 @@ CONSTRUCT
 WHERE
 {
   ?dataset a dataid:Dataset .
-  ?dataset ?p ?o .
-
-  ?dataset sec:proof ?proof .
-  ?proof ?q ?r .
-
-  ?dataset dataid:version ?version .
-  ?version a dataid:Version .
-
-  ?dataset dataid:artifact ?artifact .
-  ?artifact a dataid:Artifact .
-
   ?dataset dcat:distribution ?distribution .
-  ?distribution a dataid:SingleFile .
-  ?distribution ?e ?f .
 
-  ?distribution ?cvProperty ?cvLiteral .
-  ?cvProperty ?j ?k .
-  ?cvProperty rdfs:subPropertyOf dataid:contentVariant .
+  {
+    ?dataset ?p ?o .
+  }
+  UNION
+  {
+    ?distribution a dataid:SingleFile .
+    ?distribution ?e ?f .
+  }
+  UNION
+  {
+    ?dataset dataid:version ?version .
+    ?version a dataid:Version .
+  }
+  UNION
+  {
+    ?dataset dataid:artifact ?artifact .
+    ?artifact a dataid:Artifact .
+  }
+  UNION
+  {
+    ?dataset sec:proof ?proof .
+    ?proof ?q ?r .
+  }
+  UNION
+  {
+    ?distribution ?cvProperty ?cvLiteral .
+    ?cvProperty ?j ?k .
+    ?cvProperty rdfs:subPropertyOf dataid:contentVariant .
+  }
 }

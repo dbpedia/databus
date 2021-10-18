@@ -14,4 +14,4 @@ test/data
 redeploy-remote.sh
 redeploy.sh
 start_azure.sh
-example-metadata.jsonld
+examples/example-metadata.jsonld

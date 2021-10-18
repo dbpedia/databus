@@ -38,16 +38,6 @@
     </div>
 
     <div class="field">
-      <label class="label">WebId URI</label>
-      <div class="control has-icons-left has-icons-right">
-        <input class="input" type="text" placeholder="WebId URI" ng-model="editData.webIdURI">
-        <span class="icon is-small is-left">
-          <i class="fas fa-id-card"></i>
-        </span>
-      </div>
-    </div>
-
-    <div class="field">
       <label class="label">Promoted Content</label>
       <div class="control">
         <textarea class="input" type="text" placeholder="Featured Content" style="min-height: 10em;"
@@ -68,18 +58,42 @@
 
 
     <br />
-
     <br />
 
+    <div class="title is-4">WebIds</div>
+    <div class=content>
+      <div ng-repeat="webIdEntry in editData.webIds">
+
+      </div>
+
+      <div class="field has-addons" style="margin-bottom: 1.5em;">
+
+        <div class="control has-icons-left">
+          <input class="input" type="text" style="min-width: 500px;" placeholder="WebId URI"
+            ng-model="addWebIdUri">
+          <span class="icon is-small is-left">
+            <i class="fas fa-id-card"></i>
+          </span>
+        </div>
+        <p class="control">
+          <a ng-click="connectWebid()" class="button is-primary">
+            Connect WebId to Account
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <br />
     <br />
 
     <div class="title is-4">API Keys</div>
     <div class=content>
-      <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a x-api-key header</p>
+      <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a
+        x-api-key header</p>
       <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
     </div>
     <label class="label">Create New API Key</label>
-    <div class="field is-grouped" style="margin-bottom: 1.5em;">
+    <div class="field has-addons" style="margin-bottom: 1.5em;">
       <p class="control">
         <input class="input" placeholder="Enter key name..." input="searchInput" ng-model="createApiKeyName"
           filters="searchFilters">

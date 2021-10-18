@@ -47,7 +47,7 @@ read -r -d '' DATAID_DATA << _EOT_
           "format": "nt",
           "compression": "none",
           "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-          "byteSize": "4439722",
+          "byteSize": { "@value" : "4439722", "@type" : "xsd:decimal" },
           "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
           "hasVersion": "%VERSION%"
         }

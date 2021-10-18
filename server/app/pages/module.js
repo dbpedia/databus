@@ -127,7 +127,7 @@ module.exports = function (router, protector) {
    * @param  {Function} next [description]
    * @return {[type]}        [description]
    */
-  router.get('/system/pages/facets', protector.protect(), async function (req, res, next) {
+  router.get('/system/pages/facets', async function (req, res, next) {
 
     try {
 

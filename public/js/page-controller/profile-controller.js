@@ -7,6 +7,7 @@ function ProfileController($scope, $http) {
   $scope.createApiKeyName = ""
   $scope.createAccountError = "";
   $scope.createApiKeyError = "";
+  $scope.addWebIdUri = "";
 
   $scope.putProfile = function(accountName, foafName) {
 
@@ -106,6 +107,18 @@ function ProfileController($scope, $http) {
     });
 
   }
+
+  $scope.connectWebid = function() {
+
+    $http.post(`/system/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
+      $scope.webIds.push(result.data);
+
+    }, function (err) {
+      console.log(err);
+      $scope.addWebIdError = err.data;
+    });
+  }
+
 
   $scope.saveProfile = function () {
 

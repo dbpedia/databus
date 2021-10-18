@@ -168,7 +168,7 @@
   sh:languageIn ("en") ;
   sh:uniqueLang true .
 
-  <#properties-are-cvs>
+<#properties-are-cvs>
   a sh:PropertyShape ;
   sh:targetClass rdf:Property ; 
   sh:path rdfs:subPropertyOf ;

@@ -14,6 +14,12 @@
 # Group
 ##########
 
+
+# DATABUS BASE URL / ACCOUNT / GROUPNAME
+# http://localhost:3000/jan/example
+
+
+
 <#group-exists>
   a sh:NodeShape ;
   sh:targetNode dataid:Group ; 

@@ -8,6 +8,8 @@ var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var sparql = require('../common/queries/sparql');
 var defaultContext = require('../../../context.json');
+var constructor = require('../common/execute-construct.js');  
+var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 
 const dataidFileName = 'dataid.jsonld';
 
@@ -15,8 +17,16 @@ module.exports = async function publishDataid(account, data) {
 
   try {
 
-    // Only work on expanded jsonld
-    var expandedGraph = await jsonld.flatten(await jsonld.expand(data));
+    var report = '';
+
+    console.log(`Running construct...`);
+    var triples = await constructor.executeConstruct(data, constructVersionQuery);
+    console.log(triples);
+    console.log(`Done.`);
+
+    var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
+
+    // Generate dynamic shacl test ?
 
     // Validate the group RDF with the shacl validation tool
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
@@ -33,13 +43,8 @@ module.exports = async function publishDataid(account, data) {
 
     // Validate all identifiers...
     var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.DATASET);
-
-    var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.VERSION);
-    var artifactGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.ARTIFACT);
-    var contentVariantGraphs = JsonldUtils.getTypedGraphs(expandedGraph, RDF_URIS.PROPERTY);
-    var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, RDF_URIS.SINGLE_FILE)
-
     var datasetUri = datasetGraph['@id'];
+
     var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_PUBLISHER);
     var datasetGroupUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_GROUP);
     var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_ARTIFACT);
@@ -51,7 +56,7 @@ module.exports = async function publishDataid(account, data) {
 
       return {
         code: 400, message:
-          `The specified dataset group identifier does not match the request path.\n
+          `The specified dataset group identifier does not match the expected identifier.\n
           (Specified: ${datasetGroupUri}, expected: ${expectedGroupUri})\n`
       };
     }
@@ -61,22 +66,15 @@ module.exports = async function publishDataid(account, data) {
     if (datasetArtifactUri != expectedArtifactUri) {
       return {
         code: 400, message:
-          `The specified dataset artifact identifier (dataid:Dataset) does not match the request path. \n
+          `The specified dataset artifact identifier (dataid:Dataset) does not match the expected identifier. \n
           (Specified: ${datasetArtifactUri}, expected: ${expectedArtifactUri})\n`
-      };
-    }
-
-    if (artifactGraph['@id'] != expectedArtifactUri) {
-      return {
-        code: 400, message:
-          `The specified artifact identifier (dataid:Artifact) does not match the request path.\n
-          (Expected: ${expectedArtifactUri})\n`
       };
     }
 
     // TODO: More validataion!
 
-    // Only use the selected graphs
+    // Only use the selected graphs 
+    /*
     expandedGraph = [
       artifactGraph,
       versionGraph,
@@ -89,10 +87,12 @@ module.exports = async function publishDataid(account, data) {
 
     for(var graph of fileGraphs) {
       expandedGraph.push(graph);
-    }
+    } */
 
     console.log(`Publisher found: ${datasetPublisherUri}...`);
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
+
+    report += `-- Publisher: ${datasetPublisherUri}.\n`;
 
     // Validate the publisher and account (<publisherUri> <foaf:account> <accountUri>)
     var isPublisherConnectedToAccount =
@@ -116,6 +116,7 @@ module.exports = async function publishDataid(account, data) {
         return { code: 400, message: 'Uploads using an external account need to provide a signature' };
       }
 
+      report += "-- Proof generated with internal key.\n";
       console.log('Internal account detected. Generating proof...');
       proofGraph = signer.createProof(expandedGraph);
       datasetGraph[RDF_URIS.PROOF] = [proofGraph];
@@ -136,6 +137,9 @@ module.exports = async function publishDataid(account, data) {
       return { code: 400, message: 'The provided signature is invalid\n' };
     }
 
+
+    report += "-- Proof validation successful.\n";
+
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
     var targetPath = `${datasetVersionUri}/${dataidFileName}`;
@@ -143,13 +147,14 @@ module.exports = async function publishDataid(account, data) {
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
 
+    report += `-- Dataset published to ${datasetUri}\n`;
+
     // Return failure
     if (!publishResult.isSuccess) {
       return { code: 500, message: 'Internal database error\n' };
     }
 
-    console.log(JSON.stringify(compactedGraph, null, 4));
-    return { code: 200, message: 'Version saved successfully\n' };
+    return { code: 200, message: report };
 
 
   } catch (err) {
