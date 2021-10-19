@@ -142,7 +142,7 @@ module.exports = async function publishDataid(account, data) {
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
-    var targetPath = `${datasetVersionUri}/${dataidFileName}`;
+    var targetPath = `${datasetVersionUri}/${dataidFileName}`.replace(process.env.DATABUS_RESOURCE_BASE_URL, '');
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);

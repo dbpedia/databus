@@ -49,6 +49,7 @@ module.exports = async function publishGroup(account, data) {
     // Get the group graph (enforced by earlier SHACL test)
     var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, dataidGroupUri);
     var groupUri = groupGraph['@id'];
+
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     // Check for namespace violation
@@ -58,7 +59,8 @@ module.exports = async function publishGroup(account, data) {
 
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-    var targetPath = `${groupUri}/${groupFileName}`;
+
+    var targetPath = `${groupUri}/${groupFileName}`.replace(process.env.DATABUS_RESOURCE_BASE_URL, '');
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
