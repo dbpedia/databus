@@ -11,7 +11,7 @@ read -r -d '' DATAID_DATA << _EOT_
   "@context" : "%DATABUS_URI%/system/context.jsonld",
   "@graph" : [
     {
-      "@id": "http://localhost:3000/jan/examples",
+      "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
       "@type": "dataid:Group",
       "title": { "@value" : "Example Group", "@language" : "en" },
       "abstract": { "@value" : "This is an example group for API testing.", "@language" : "en" },
