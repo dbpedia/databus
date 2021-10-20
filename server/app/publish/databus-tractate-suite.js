@@ -38,7 +38,6 @@ signer.init = function () {
 
 signer.canonicalize = function (expandedGraph) {
 
-  console.log(expandedGraph);
   var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.DATASET);
 
   var tractate = '';

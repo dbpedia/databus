@@ -58,18 +58,40 @@ instance.getAccount = async function (accountName) {
     getAccountQuery = exec.formatQuery(getAccountQuery, queryOptions);
 
     // fire away
-    var entry = await exec.executeSelect(getAccountQuery);
+    var entries = await exec.executeSelect(getAccountQuery);
 
-    if (entry.length == 0) {
+    if (entries.length == 0) {
+      return null;
+    }
+
+    var entry = null;
+
+    for(var e of entries) {
+      if(e.account.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+        entry = e;
+      }
+    }
+
+    if(entry == null) {
       return null;
     }
 
     // post-process result
-    entry[0].accountName = accountName;
-    entry[0].uri = accountUri;
+    entry.accountName = accountName;
+    entry.uri = accountUri;
+    entry.webIds = [];
+
+    for(var e of entries) {
+      
+      if(e.account.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+        continue;
+      }
+
+      entry.webIds.push(e.account);
+    }
 
     // return result
-    return entry[0];
+    return entry;
 
   } catch (err) {
     console.log(err);

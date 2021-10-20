@@ -3,7 +3,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX databus:  <https://databus.dbpedia.org/system/voc/> 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?account ?label ?imageUrl ?created ?webIdURI ?about (group_concat(?featured;separator="\n") as ?featuredContent)  WHERE
+SELECT ?account ?label ?imageUrl ?created ?webIdURI ?about (group_concat(?featured;separator="\n") as ?featuredContent) WHERE
 {
   ?account foaf:account <%ACCOUNT_URI%> .
   OPTIONAL { ?account foaf:name ?label . }
@@ -12,7 +12,5 @@ SELECT ?account ?label ?imageUrl ?created ?webIdURI ?about (group_concat(?featur
   OPTIONAL { ?account databus:webid ?webIdURI . }
   OPTIONAL { ?account rdfs:comment ?about . }
   OPTIONAL { ?account databus:featuredContent ?featured . }
-
-  FILTER(REGEX(STR(?account), '%BASE_RESOURCE_URI%'))
 }
 GROUP BY ?account ?label ?imageUrl ?created ?webIdURI ?about

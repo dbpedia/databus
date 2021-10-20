@@ -10,7 +10,6 @@ var sparql = require('../common/queries/sparql');
 var defaultContext = require('../../../context.json');
 var constructor = require('../common/execute-construct.js');  
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
-
 const dataidFileName = 'dataid.jsonld';
 
 module.exports = async function publishDataid(account, data) {

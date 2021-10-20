@@ -66,7 +66,19 @@
       <h3>Internal WebId Document</h3>
       <p>
         Internal WebId document identifier:
-      <pre><a ng-href="{{ personUri }}">{{ personUri }}</a></pre>
+
+        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+        align-items: center; height: 54px;">
+        <div><a ng-href="{{personUri}}">{{ personUri }}</a></div>
+        <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(personUri)" width="24" height="24"
+          xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+          <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
+        </svg>
+        <div style="flex: 1;"></div>
+       
+      </div>
+
+
       </p>
       <blockquote>IMPORTANT NOTE: Do not use this WebId document outside the scope of this Databus. It is not compatible
         with WebId authentication and should only be used as a publisher identifier for this Databus instance.
@@ -94,9 +106,25 @@
           </a>
         </p>
       </div>
+      <div style="color:red; margin-top: -20px">{{ addWebIdError }}</div>
 
-      <div ng-repeat="webIdEntry in editData.webIds">
+      <br/>
+      <div ng-repeat="webIdEntry in profileData.webIds">
 
+        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+        align-items: center;">
+        <div><a ng-href="{{webIdEntry}}">{{ webIdEntry }}</a></div>
+        <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(webIdEntry)" width="24" height="24"
+          xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+          <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
+        </svg>
+        <div style="flex: 1;"></div>
+        <a ng-click="removeWebId(webIdEntry)" class="button is-error">
+          Remove
+        </a>
+      </div>
+
+        
       </div>
 
     </div>

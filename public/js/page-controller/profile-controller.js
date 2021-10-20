@@ -112,8 +112,8 @@ function ProfileController($scope, $http) {
 
   $scope.connectWebid = function() {
 
-    $http.post(`/system/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
-      $scope.webIds.push(result.data);
+    $http.post(`/system/account/webid/connect?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
+      $scope.profileData.webIds.push($scope.addWebIdUri);
 
     }, function (err) {
       console.log(err);
