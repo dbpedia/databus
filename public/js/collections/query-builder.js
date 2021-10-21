@@ -175,6 +175,8 @@ class QueryBuilder {
     this.cvCounter = 0;
     this.createNodeSubquery(groupNode, indent);
 
+    if (this.result == "") return null;
+    
     var re = new RegExp(placeholder, "g");
     return wrapperQuery.replace(re, this.result);
   }

@@ -122,7 +122,6 @@ function CollectionEditorController($http, $location, $sce) {
     ctrl.$http.get('/system/api/collection-statistics', {
       params : { uri : ctrl.collection.uri } 
     }).then(function(result) {
-
       ctrl.isStatisticsLoading = false;
       ctrl.statistics = result.data;
 

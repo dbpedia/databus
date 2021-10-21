@@ -164,6 +164,8 @@ class DatabusCollectionUtils {
     let query = queryBuilder.createQuery(collection.content.generatedQuery.root,
       DATABUS_QUERIES.collectionStatistics, '%COLLECTION_QUERY%', 2);
 
+    if (query == null) return null;
+    
     var req = {
       method: 'POST',
       url: DATABUS_SPARQL_ENDPOINT_URL,
