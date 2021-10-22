@@ -8,36 +8,43 @@
 </div>
 
 <div ng-if="!$ctrl.isLoading">
-  <table class="table is-fullwidth">
-    <col width="30%">
-    <col width="70%">
-    <tr>
-      <td>Label</td>
-      <td>{{ $ctrl.collection.label }}</td>
-    </tr>
-    <tr>
-      <td>URI</td>
-      <td ng-if="$ctrl.collection.uri"><a ng-href="{{$ctrl.collection.uri}}">{{ $ctrl.collection.uri }}</a></td>
-      <td ng-if="!$ctrl.collection.uri"><span style="color: #999">[Collection has not been published yet]</span></td>
-    </tr>
-    <tr>
-      <td>Files</td>
-      <td>{{ $ctrl.statistics.fileCount }}</td>
-    </tr>
-    <tr>
-      <td>Size</td>
-      <td> {{ $ctrl.formatUploadSize($ctrl.statistics.size) }}</td>
-    </tr>
-    <tr>
-      <td>License(s)</td>
-      <td>
-        <div ng-repeat="license in $ctrl.statistics.licenses">
-          <a ng-href="{{license}}">{{ license }}</a>
-        </div>
-      </td>
-    </tr>
-  </table>
-  <div style="margin-top:40px;" class="content description-markdown">
-    <div ng-bind-html="$ctrl.markdownToHtml($ctrl.collection.description)"></div>
+
+  <div ng-if="$ctrl.statistics.fileCount==undefined">
+    <span style="font-size: large; color: #da4c4c;">Please add data to your collection, to get its crucial information shown here!</span>
+  </div>
+  
+  <div ng-if="$ctrl.statistics.fileCount!==undefined">
+    <table class="table is-fullwidth">
+      <col width="30%">
+      <col width="70%">
+      <tr>
+        <td>Label</td>
+        <td>{{ $ctrl.collection.label }}</td>
+      </tr>
+      <tr>
+        <td>URI</td>
+        <td ng-if="$ctrl.collection.uri"><a ng-href="{{$ctrl.collection.uri}}">{{ $ctrl.collection.uri }}</a></td>
+        <td ng-if="!$ctrl.collection.uri"><span style="color: #999">[Collection has not been published yet]</span></td>
+      </tr>
+      <tr>
+        <td>Files</td>
+        <td>{{ $ctrl.statistics.fileCount }}</td>
+      </tr>
+      <tr>
+        <td>Size</td>
+        <td> {{ $ctrl.formatUploadSize($ctrl.statistics.size) }}</td>
+      </tr>
+      <tr>
+        <td>License(s)</td>
+        <td>
+          <div ng-repeat="license in $ctrl.statistics.licenses">
+            <a ng-href="{{license}}">{{ license }}</a>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div style="margin-top:40px;" class="content description-markdown">
+      <div ng-bind-html="$ctrl.markdownToHtml($ctrl.collection.description)"></div>
+    </div>
   </div>
 </div>
