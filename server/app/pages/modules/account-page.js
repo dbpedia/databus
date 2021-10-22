@@ -36,6 +36,32 @@ module.exports = function (router, protector) {
 
   });
 
+  router.post('/system/account/webid/remove', protector.protect(), async function(req, res, next) {
+    try {
+
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var webIdUri = decodeURIComponent(req.query.uri);
+    
+      var path = `/${auth.info.accountName}/webid.jsonld`;
+      var accountJson = await gstore.read(auth.info.accountName, path);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
+
+      expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
+          return value['@id'] != webIdUri;
+      });
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      var result = await gstore.save(auth.info.accountName, path, compactedGraph);
+
+      res.status(200).send('WebId removed from account.\n');
+      return;
+
+
+    } catch(err) {
+      res.status(400).send(err.message);
+    }
+  });
+
   router.post('/system/account/webid/connect', protector.protect(), async function(req, res, next) {
 
     try {
@@ -75,7 +101,6 @@ module.exports = function (router, protector) {
       // Add triple to account!
       var path = `/${auth.info.accountName}/webid.jsonld`;
       var accountJson = await gstore.read(auth.info.accountName, path);
-
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
       for(var graph of expandedGraphs) {

@@ -121,6 +121,20 @@ function ProfileController($scope, $http) {
     });
   }
 
+  $scope.removeWebId = function(webIdToRemove) {
+
+    $http.post(`/system/account/webid/remove?uri=${encodeURIComponent(webIdToRemove)}`).then(function (result) {
+      
+      $scope.profileData.webIds =  $scope.profileData.webIds.filter(function(value, index, arr) {
+        return value != webIdToRemove;
+      });
+
+    }, function (err) {
+      console.log(err);
+      $scope.addWebIdError = err.data;
+    });
+  }
+
 
   $scope.saveProfile = function () {
 
