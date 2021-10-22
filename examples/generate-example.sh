@@ -43,7 +43,7 @@ read -r -d '' DATAID_DATA << _EOT_
           "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
           "@type": "dataid:SingleFile",
           "issued": "%NOW%",
-          "file": "http://localhost:3000/jan/general/test/2021-10-11/ontology--DEV_type=parsed_sorted.nt",
+          "file": "%DATABUS_URI%/%ACCOUNT%/examples/general/test/2021-10-11/ontology--DEV_type=parsed_sorted.nt",
           "format": "nt",
           "compression": "none",
           "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
