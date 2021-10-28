@@ -41,6 +41,7 @@ initialize(app, memoryStore).then(function () {
   require('./publish/module')(router, protector);
   require('./accounts/module')(router, protector);
   require('./pages/module')(router, protector);
+  require('./tractate/module')(router, protector);
 
 
   app.use(protector.auth());

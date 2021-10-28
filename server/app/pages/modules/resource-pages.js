@@ -177,6 +177,7 @@ module.exports = function (router, protector) {
         };
       });
 
+      console.log(data);
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
 
       res.render('version', { title: data.version.label, data: data });

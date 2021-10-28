@@ -1,5 +1,4 @@
-var shaclTester = require('../common/shacl/shacl-tester');
-var signer = require('./databus-tractate-suite');
+var signer = require('../tractate/databus-tractate-suite');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var defaultContext = require('../../../context.json');
@@ -32,60 +31,6 @@ const RDF_URIS = {
 
 module.exports = function (router, protector) {
 
-  function getTypedGraph(graphs, graphType) {
-    for (var g in graphs) {
-      var graph = graphs[g];
-
-      if (graph['@type'] != undefined && graph['@type'].includes(graphType)) {
-        return graph;
-      }
-    }
-
-    return null;
-  }
-
-  function getGraphById(graphs, id) {
-    for (var g in graphs) {
-      var graph = graphs[g];
-
-      if (graph['@id'] === id) {
-        return graph;
-      }
-    }
-
-    return null;
-  }
-
-  function getFirstObject(graph, key, expandedGraphs) {
-    var obj = graph[key];
-
-    if (obj == undefined || obj.length < 1) {
-      return null;
-    }
-
-    var obj = obj[0];
-
-    if (obj == undefined) {
-      return null;
-    }
-
-    if (expandedGraphs != undefined && obj['@id'].startsWith('_:')) {
-      obj = getGraphById(expandedGraphs, obj['@id']);
-    }
-
-    return obj;
-  }
-
-  function getFirstObjectUri(graph, key) {
-    var obj = graph[key];
-
-    if (obj == undefined || obj.length < 1) {
-      return null;
-    }
-
-    return obj[0]['@id'];
-  }
-
 
   router.post('/system/publish', protector.protect(), async function (req, res, next) {
 
@@ -95,10 +40,9 @@ module.exports = function (router, protector) {
 
       // Find context:
       var graph = req.body;
-      var context = graph['@context'];
 
       // Replace if default context
-      if (context == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+      if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
         graph['@context'] = defaultContext;
       }
 

@@ -60,7 +60,7 @@ class DataIdCreator {
 
     var graph = {
       "@type": "dataid:Dataset",
-      "@id": versionUri + "/dataid.jsonld#Dataset",
+      "@id": versionUri + "#Dataset",
       "version": versionUri,
       "artifact": artifactUri,
       "group": groupUri,
@@ -94,7 +94,13 @@ class DataIdCreator {
     }
 
     if (!data.signature.autoGenerateSignature) {
-      graph["https://w3id.org/security#proof"] = data.signature.proof;
+      graph["https://w3id.org/security#proof"] = {
+        '@type': ["https://databus.dbpedia.org/system/ontology#DatabusTractateV1"],
+        'https://w3id.org/security#signature': [{
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
+          "@value": data.signature.userSignature
+        } ]
+      };
     }
 
     var customVariants = [];
@@ -104,32 +110,33 @@ class DataIdCreator {
       var file = version.files[fg];
 
       var variantSuffix = '';
-        for(var c in version.contentVariants) {
-          var cv = version.contentVariants[c];
-          var value = file.contentVariants[cv.id];
+      for (var c in version.contentVariants) {
+        var cv = version.contentVariants[c];
+        var value = file.contentVariants[cv.id];
 
-          if(value == undefined) {
-            value = "";
-          }
-          
-          variantSuffix += '_' + cv.id + '=' + value;
+        if (value == undefined) {
+          value = "";
         }
 
+        variantSuffix += '_' + cv.id + '=' + value;
+      }
 
-        var distributionUri =  `${versionUri}/dataid.jsonld#dist`;
-        var fileUri = `${versionUri}/file${variantSuffix}`;
+      var fileName = DatabusUtils.uriToName(file.uri);
 
-        distributionUri += variantSuffix;
+      var distributionUri = `${versionUri}#${fileName}`;
+      var fileUri = `${versionUri}/${fileName}${variantSuffix}`;
 
-        if(file.format != 'none') {
-          distributionUri += '.' + file.format;
-          fileUri += '.' + file.format;
-        }
+      distributionUri += variantSuffix;
 
-        if(file.compression != 'none') {
-          distributionUri += '.' + file.compression;
-          fileUri += '.' + file.compression;
-        }
+      if (file.format != 'none') {
+        distributionUri += '.' + file.format;
+        fileUri += '.' + file.format;
+      }
+
+      if (file.compression != 'none') {
+        distributionUri += '.' + file.compression;
+        fileUri += '.' + file.compression;
+      }
 
       var distribution = {
         "@id": distributionUri,

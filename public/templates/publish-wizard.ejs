@@ -861,7 +861,7 @@
                       </label>
                     </div>
                     <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
-                      <pre style="margin-bottom: 4px;">TRACTATE</pre>
+                      <pre style="margin-bottom: 4px;">{{ session.data.signature.tractate}}</pre>
                       <textarea ng-model="session.data.signature.userSignature" class="textarea"
                         placeholder="Signature"></textarea>
                     </div>
@@ -941,7 +941,9 @@
                 <div style="width: 100%; font-family: monospace; padding: 1.5em; background-color: #f5f5f5;">
                   
                   <p ng-repeat="entry in result.publishLog">
-                    {{ entry.message }}
+
+                    <span ng-if="entry.hasError" style="color:red">{{ entry.message }}</span> 
+                    <span ng-if="!entry.hasError">{{ entry.message }}</span> 
                   </p>
                 </div>
 
