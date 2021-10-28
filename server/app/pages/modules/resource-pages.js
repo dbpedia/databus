@@ -172,13 +172,12 @@ module.exports = function (router, protector) {
         return {
           version: await sparql.dataid.getVersion(req.params.account, req.params.group,
             req.params.artifact, req.params.version),
-          debug: await sparql.pages.getVersionActions(req.params.account, req.params.group,
-            req.params.artifact, req.params.version),
           mods: await sparql.pages.getModsByVersion(req.params.account, req.params.group,
             req.params.artifact, req.params.version)
         };
       });
 
+      console.log(data);
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
 
       res.render('version', { title: data.version.label, data: data });

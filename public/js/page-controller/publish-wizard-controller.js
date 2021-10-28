@@ -51,6 +51,10 @@ function PublishWizardController($scope, $http, focus, $q) {
         $scope.result.groupUpdate = $scope.session.dataIdCreator.createGroupUpdate($scope.session.data);
         $scope.result.versionUpdate = $scope.session.dataIdCreator.createVersionUpdate($scope.session.data);
         $scope.result.isReadyForUpload = $scope.checkReadyForUpload();
+
+        if($scope.result.isReadyForUpload) {
+          $scope.createTractate($scope.result.versionUpdate);
+        }
       }
 
       $scope.saveSession();
@@ -440,27 +444,47 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.runPublishSequence = async function () {
 
+
     var basePath = DATABUS_RESOURCE_BASE_URL;
     var output = $scope.result;
     output.publishLog = [];
     output.publishLog.push({ hasError: false, message: "Publishing..." });
 
-    var groupId = output.groupUpdate['@graph'][0]['@id'];
-    var relativeGroupPath = groupId.replace(basePath, '');
+    try {
+      var groupId = output.groupUpdate['@graph'][0]['@id'];
+      var relativeGroupPath = groupId.replace(basePath, '');
 
-    output.publishLog.push({ hasError: false, message: `Publishing group at ${relativeGroupPath} ...` });
-    var result = await $http.put(relativeGroupPath, output.groupUpdate);
-    output.publishLog.push({ hasError: false, message: "Done." });
+      output.publishLog.push({ hasError: false, message: `Publishing group at ${relativeGroupPath} ...` });
+      var result = await $http.put(relativeGroupPath, output.groupUpdate);
+      output.publishLog.push({ hasError: false, message: "Done." });
 
-    var versionId = output.versionUpdate['@graph'][0]['version'];
-    var relativeVersionPath = versionId.replace(basePath, '');
-    output.publishLog.push({ hasError: false, message: `Publishing version at ${relativeVersionPath} ...` });
-    result = await $http.put(relativeVersionPath, output.versionUpdate);
+      var versionId = output.versionUpdate['@graph'][0]['version'];
+      var relativeVersionPath = versionId.replace(basePath, '');
+      output.publishLog.push({ hasError: false, message: `Publishing version at ${relativeVersionPath} ...` });
+      result = await $http.put(relativeVersionPath, output.versionUpdate);
 
-    output.publishLog.push({ hasError: false, message: "Done." });
+      output.publishLog.push({ hasError: false, message: "Done." });
 
-    $scope.session.isPublishing = false;
-    $scope.$apply();
+      $scope.session.isPublishing = false;
+      $scope.$apply();
+    } catch(err) {
+      output.publishLog.push({ hasError: true, message: err.data });
+      $scope.session.isPublishing = false;
+      $scope.$apply();
+    }
+  }
+
+  $scope.createTractate = function(graph) {
+
+    $http.post('/system/tractate/v1/canonicalize', graph).then(function (response) {
+      $scope.session.data.signature.tractate = response.data;
+
+
+
+    }, function (err) {
+
+    });
+
   }
 
   $scope.createUploadResult = function () {

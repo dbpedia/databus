@@ -8,10 +8,10 @@ echo "Issued: " $NOW
 
 read -r -d '' DATAID_DATA << _EOT_
 {
-  "@context" : "%DATABUS_URI%/system/context.jsonld",
+  "@context" : "https://downloads.dbpedia.org/databus/context.jsonld",
   "@graph" : [
     {
-      "@id": "http://localhost:3000/jan/examples",
+      "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
       "@type": "dataid:Group",
       "title": { "@value" : "Example Group", "@language" : "en" },
       "abstract": { "@value" : "This is an example group for API testing.", "@language" : "en" },
@@ -43,7 +43,7 @@ read -r -d '' DATAID_DATA << _EOT_
           "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
           "@type": "dataid:SingleFile",
           "issued": "%NOW%",
-          "file": "http://localhost:3000/jan/general/test/2021-10-11/ontology--DEV_type=parsed_sorted.nt",
+          "file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
           "format": "nt",
           "compression": "none",
           "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",

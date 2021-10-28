@@ -381,6 +381,9 @@
                           <a href="#" class="dropdown-item" ng-click="queryToClipboard()">
                             Copy Query to Clipboard
                           </a>
+                          <a ng-if="authenticated" class="dropdown-item" ng-click="createSnapshot()">
+                            Create stable Snapshot
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -594,7 +597,14 @@
 
                 <div class="ce-content-hint">The SPARQL field below shows the generated query for your collection.</div>
 
-                <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
+                <div style="font-size: large; color: #da4c4c;" ng-if="collectionQuery === undefined">
+                  <hr>
+                  To get the collection-related query, you need to add data to this collection, first!
+                </div>
+                <div ng-if="collectionQuery !== undefined">
+                  <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
+                </div>
+               
 
               </div>
 

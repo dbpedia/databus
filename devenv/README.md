@@ -2,10 +2,26 @@
 
 ## Requirements
 
-In order to build and run the On-Premise Databus Application you will need `npm`, `docker` and `docker-compose` installed on your machine.
+* `node.js`: v16.13.0 or higher
+
+```
+# see https://github.com/nodesource/distributions/blob/master/README.md
+# Using Ubuntu 
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+```
 * `npm`: 7.24.0 or higher
+```
+sudo npm install -g npm@latest
+```
+
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
+```
+sudo apt-get install docker docker-compose
+```
+
 
 ## Building the Databus Docker Image
 

@@ -112,8 +112,22 @@ function ProfileController($scope, $http) {
 
   $scope.connectWebid = function() {
 
-    $http.post(`/system/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
-      $scope.webIds.push(result.data);
+    $http.post(`/system/account/webid/connect?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
+      $scope.profileData.webIds.push($scope.addWebIdUri);
+
+    }, function (err) {
+      console.log(err);
+      $scope.addWebIdError = err.data;
+    });
+  }
+
+  $scope.removeWebId = function(webIdToRemove) {
+
+    $http.post(`/system/account/webid/remove?uri=${encodeURIComponent(webIdToRemove)}`).then(function (result) {
+      
+      $scope.profileData.webIds =  $scope.profileData.webIds.filter(function(value, index, arr) {
+        return value != webIdToRemove;
+      });
 
     }, function (err) {
       console.log(err);

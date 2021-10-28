@@ -113,12 +113,18 @@ function createActivityChartData(bindings) {
 // VERSION DATA //
 instance.getVersionActions = async function (account, group, artifact, version) {
 
-  let query = require('../sparql/get-version-actions.sparql');
-  let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
-  query = exec.formatQuery(query, queryOptions);
-  let bindings = await exec.executeSelect(query);
+  try {
+    let query = require('../sparql/get-version-actions.sparql');
+    let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
+    query = exec.formatQuery(query, queryOptions);
+    let bindings = await exec.executeSelect(query);
 
-  return bindings.length !== 0 ? bindings : null;
+    return bindings.length !== 0 ? bindings : null;
+  } catch(err) {
+
+    console.log(err);
+    return null;
+  }
 }
 
 instance.getVersionDropdownData = async function (account, group, artifact, version) {
@@ -153,12 +159,17 @@ instance.getVersionDropdownData = async function (account, group, artifact, vers
 
 instance.getModsByVersion = async function (account, group, artifact, version) {
 
-  let query = require('../sparql/get-mods-by-version.sparql');
-  let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
-  query = exec.formatQuery(query, queryOptions);
-  let bindings = await exec.executeSelect(query);
+  try {
+    let query = require('../sparql/get-mods-by-version.sparql');
+    let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
+    query = exec.formatQuery(query, queryOptions);
+    let bindings = await exec.executeSelect(query);
 
-  return bindings.length !== 0 ? bindings : null;
+    return bindings.length !== 0 ? bindings : null;
+  }catch(err){
+    console.log(err);
+    return null;
+  }
 }
 // VERSION DATA //
 

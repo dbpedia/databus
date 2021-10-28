@@ -1,12 +1,12 @@
-var express = require('express');
-var constants = require('../../common/constants.js');
 var sparql = require('../../common/queries/sparql');
+var jsonld = require('jsonld');
 
 const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
-const UriUtils = require('../../common/utils/uri-utils');
 var DatabusCache = require('../../common/databus-cache');
-const e = require('express');
+const requestRDF = require('../../common/request-rdf');
+var gstore = require('../../common/remote-database-manager');
+var defaultContext = require('../../../../context.json');
 
 var cache = new DatabusCache(15);
 
@@ -34,6 +34,96 @@ module.exports = function (router, protector) {
       return;
     }
 
+  });
+
+  router.post('/system/account/webid/remove', protector.protect(), async function(req, res, next) {
+    try {
+
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var webIdUri = decodeURIComponent(req.query.uri);
+    
+      var path = `/${auth.info.accountName}/webid.jsonld`;
+      var accountJson = await gstore.read(auth.info.accountName, path);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
+
+      expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
+          return value['@id'] != webIdUri;
+      });
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      var result = await gstore.save(auth.info.accountName, path, compactedGraph);
+
+      res.status(200).send('WebId removed from account.\n');
+      return;
+
+
+    } catch(err) {
+      res.status(400).send(err.message);
+    }
+  });
+
+  router.post('/system/account/webid/connect', protector.protect(), async function(req, res, next) {
+
+    try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var webIdUri = decodeURIComponent(req.query.uri);
+      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${auth.info.accountName}`;
+      var foafAccountPredicate = `http://xmlns.com/foaf/0.1/account`;
+
+      console.log(`Trying to connect ${webIdUri} to ${accountUri}.`);
+
+      var quads = await requestRDF.requestQuads(webIdUri);
+      var canConnect = false;
+
+      for(var quad of quads) {
+
+        if(quad.subject.id != webIdUri) {
+          continue;
+        }
+
+        if(quad.predicate.id != foafAccountPredicate) {
+          continue;
+        }
+
+        if(quad.object.id != accountUri) {
+          continue;
+        }
+
+        console.log(`Backlink found.`);
+        canConnect = true;
+      }
+
+      if(!canConnect) {
+        res.status(403).send('Unable to find valid backlink in WebId document.');
+        return;
+      }
+
+      // Add triple to account!
+      var path = `/${auth.info.accountName}/webid.jsonld`;
+      var accountJson = await gstore.read(auth.info.accountName, path);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
+
+      for(var graph of expandedGraphs) {
+        if(graph['@id'] == webIdUri) {
+          res.status(403).send('WebId document already linked to this account.');
+          return;
+        }
+      }
+
+      var addon = {};
+      addon['@id'] = webIdUri;
+      addon[foafAccountPredicate] = { '@id' : accountUri, '@type' : '@id' };
+      expandedGraphs.push(addon);
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      var result = await gstore.save(auth.info.accountName, path, compactedGraph);
+
+      res.status(200).send('WebId linked to account.\n');
+      return;
+
+    } catch(err) {
+      res.status(400).send(err.message);
+    }
   });
 
   router.post('/system/account/api-key/create', protector.protect(), async function (req, res, next) {
