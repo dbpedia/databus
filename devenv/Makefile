@@ -29,6 +29,7 @@ srv-start-auth0:
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com \
 	DATABUS_OIDC_CLIENT_ID=e9eOLS9IkGvuyBl7cBorWUQTNgbqejhc \
+	DATABUS_DEFAULT_CONTEXT_URL=https://downloads.dbpedia.org/databus/context.jsonld \
 	DATABUS_OIDC_SECRET=0RVo9jMnbhPnkR6Ttz0aXQRTcRuSz5DpqyUEjbbcbgRuGA4rbwCjnHM2cOlTrv9q \
 	npm start --prefix ../server
 
@@ -37,5 +38,6 @@ srv-start-dbpedia-keycloak:
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://databus.dbpedia.org/auth/realms/databus \
 	DATABUS_OIDC_CLIENT_ID=databus-test-client \
+	DATABUS_DEFAULT_CONTEXT_URL=https://downloads.dbpedia.org/databus/context.jsonld \
 	DATABUS_OIDC_SECRET=e266406c-08c1-4baf-88c5-6137c8c57f3e \
 	npm start --prefix ../server

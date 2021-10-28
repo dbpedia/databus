@@ -18,7 +18,8 @@ const Constants = {
 
    DEFAULT_SPARQL_ENDPOINT_URL : 'http://localhost:8898/sparql',
    DATAID_DEFAULT_IMAGE_URL : 'https://picsum.photos/id/223/320/320',
-   DEFAULT_DATABASE_URL : 'http://localhost:3002'
+   DEFAULT_DATABASE_URL : 'http://localhost:3002',
+   DATABUS_DEFAULT_CONTEXT_URL : 'https://downloads.dbpedia.org/databus/context.json'
 }
 
 module.exports = Constants;

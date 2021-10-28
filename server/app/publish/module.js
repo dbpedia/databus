@@ -14,6 +14,7 @@ var constructVersionQuery = require('../common/queries/constructs/construct-vers
 
 const publishGroup = require('./publish-group');
 const publishDataId = require('./publish-dataid');
+const Constants = require('../common/constants');
 
 const RDF_URIS = {
   DATASET: 'http://dataid.dbpedia.org/ns/core#Dataset',
@@ -97,7 +98,7 @@ module.exports = function (router, protector) {
       var context = graph['@context'];
 
       // Replace if default context
-      if (context == `${process.env.DATABUS_RESOURCE_BASE_URL}/system/context.jsonld`) {
+      if (context == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
         graph['@context'] = defaultContext;
       }
 
@@ -122,6 +123,34 @@ module.exports = function (router, protector) {
   });
 
   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
+
+    try {
+
+      console.log('Upload request received at ' + req.originalUrl);
+      if (req.params.account != req.databus.accountName) {
+        res.status(403).send('You cannot publish data in a foreign namespace.\n');
+        return;
+      }
+
+      var account = req.databus.accountName;
+      var graph = req.body;
+
+      // Replace if default context
+      if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph['@context'] = defaultContext;
+      }
+
+      var dataIdResult = await publishDataId(account, graph);
+      console.log(dataIdResult.message);
+
+      res.status(dataIdResult.code).send(dataIdResult.message);
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+
+    /*
 
     try {
 
@@ -286,7 +315,7 @@ module.exports = function (router, protector) {
       console.log(err);
       res.status(500).send(err);
     }
-
+*/
   });
 
 
@@ -303,9 +332,21 @@ module.exports = function (router, protector) {
         return;
       }
 
-      // Validate the group RDF with the shacl validation tool
-      var shaclResult = await shaclTester.validateGroupRDF(req.body);
+      var account = req.databus.accountName;
 
+      // Find context:
+      var graph = req.body;
+      var context = graph['@context'];
+
+      // Replace if default context
+      if (context == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph['@context'] = defaultContext;
+      }
+
+      var groupResult = await publishGroup(account, graph);
+      res.status(groupResult.code).send(groupResult.message);
+       
+      /*
       // Return failure
       if (!shaclResult.isSuccess) {
         // todo
@@ -354,7 +395,7 @@ module.exports = function (router, protector) {
       } else {
         res.status(200).send('Group saved successfully.\n');
       }
-
+    */
     } catch (err) {
       console.log(err);
       res.status(500).send(err);

@@ -8,7 +8,7 @@ var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var sparql = require('../common/queries/sparql');
 var defaultContext = require('../../../context.json');
-var constructor = require('../common/execute-construct.js');  
+var constructor = require('../common/execute-construct.js');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 const dataidFileName = 'dataid.jsonld';
 
@@ -18,11 +18,7 @@ module.exports = async function publishDataid(account, data) {
 
     var report = '';
 
-    console.log(`Running construct...`);
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
-    console.log(triples);
-    console.log(`Done.`);
-
     var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
 
     // Generate dynamic shacl test ?
@@ -49,6 +45,8 @@ module.exports = async function publishDataid(account, data) {
     var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_ARTIFACT);
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_VERSION);
 
+    
+
     // Validate Group URI
     var expectedGroupUri = UriUtils.navigateUp(datasetUri, 2);
     if (datasetGroupUri != expectedGroupUri) {
@@ -58,6 +56,14 @@ module.exports = async function publishDataid(account, data) {
           `The specified dataset group identifier does not match the expected identifier.\n
           (Specified: ${datasetGroupUri}, expected: ${expectedGroupUri})\n`
       };
+    }
+
+    // Check if group exists
+    var group = await sparql.dataid.getGroup(datasetGroupUri);
+
+    if (group == undefined) {
+      res.status(400).send(`The specified group '${datasetGroupUri}' does not exist\n`);
+      return;
     }
 
     // Validate Artifact URIs

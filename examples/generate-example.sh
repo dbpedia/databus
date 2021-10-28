@@ -8,7 +8,7 @@ echo "Issued: " $NOW
 
 read -r -d '' DATAID_DATA << _EOT_
 {
-  "@context" : "%DATABUS_URI%/system/context.jsonld",
+  "@context" : "https://downloads.dbpedia.org/databus/context.jsonld",
   "@graph" : [
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples",

@@ -12,7 +12,9 @@ var fs = require('fs');
 var cors = require('cors');
 var bodyParser = require("body-parser");
 var minifier = require("./minifier.js");
+var rp = require('request-promise');
 const crypto = require("crypto");
+const Constants = require('./common/constants.js');
 
 // Creation of the mighty server app
 var app = express();
@@ -21,56 +23,59 @@ var app = express();
 var memoryStore = new session.MemoryStore();
 
 // Initialize the express app
-initialize(app, memoryStore);
-
-// Create and attach the databus protector
-var DatabusProtect = require('./protect/middleware');
-
-var protector = new DatabusProtect(memoryStore);
-var router = new express.Router();
-
-app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
-
-// Create modules
-require('./collections/module')(router, protector);
-require('./publish/module')(router, protector);
-require('./accounts/module')(router, protector);
-require('./pages/module')(router, protector);
+initialize(app, memoryStore).then(function () {
 
 
-app.use(protector.auth());
-// Attach router
-app.use('/', router);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+
+  // Create and attach the databus protector
+  var DatabusProtect = require('./protect/middleware');
+
+  var protector = new DatabusProtect(memoryStore);
+  var router = new express.Router();
+
+  app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
+
+  // Create modules
+  require('./collections/module')(router, protector);
+  require('./publish/module')(router, protector);
+  require('./accounts/module')(router, protector);
+  require('./pages/module')(router, protector);
+
+
+  app.use(protector.auth());
+  // Attach router
+  app.use('/', router);
+
+  // catch 404 and forward to error handler
+  app.use(function (req, res, next) {
+    next(createError(404));
+  });
+
+  // error handler
+  app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+  });
+
+  // TODO remove later
+  require('./tests')().then(function () {
+    console.log('Tests run successfully.');
+  }, function (error) {
+    console.log(error);
+  })
 });
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-// TODO remove later
-require('./tests')().then(function () {
-  console.log('Tests run successfully.');
-}, function (error) {
-  console.log(error);
-})
-
 
 /**
  * Express app initialization
  * @param {the express app} app 
  */
-function initialize(app, memoryStore) {
+async function initialize(app, memoryStore) {
 
   // CORS setup
   var originsWhitelist = [
@@ -130,8 +135,37 @@ function initialize(app, memoryStore) {
   clientConstants = clientConstants.replace(regex,
     `DATABUS_RESOURCE_BASE_URL = "${process.env.DATABUS_RESOURCE_BASE_URL}";`);
 
+  regex = new RegExp(/DATABUS_DEFAULT_CONTEXT_URL\s=\s"(.*)";/gm);
+  clientConstants = clientConstants.replace(regex,
+    `DATABUS_DEFAULT_CONTEXT_URL = "${process.env.DATABUS_DEFAULT_CONTEXT_URL}";`);
+
   fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
 
+  try {
+    // Download context
+    if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
+      Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
+    }
+    var contextFile = __dirname + '/../../context.json';
+
+    var contextOptions = {
+      method: 'GET',
+      uri: Constants.DATABUS_DEFAULT_CONTEXT_URL,
+      headers: {
+        'User-Agent': 'Request-Promise'
+      },
+      json: true
+    };
+
+    var response = await rp(contextOptions);
+
+    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
+    console.log(`Fetched default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
+
+  } catch (err) {
+    console.log(err);
+    console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
+  }
 
   // Create RSA keys
   var privateKeyFile = __dirname + '/../keypair/private-key.pem';
