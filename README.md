@@ -82,6 +82,8 @@ If no existing web server is available, an integrated [Caddy server](https://cad
 
 Finally, the variable `DATABUS_PROXY_SERVER_HOSTNAME` must be set to the host's name. As long as `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`, which is the default, an ACME provider is used to request a free certificate. However, the Databus container must be accessible from the Internet for this.
 
+Next, after starting the container by `docker-compose up -d`, the Databus is available on port `4000`. Assuming the hostname is e.g. `my-databus.org`, the full address is `https://my-databus.org:4000`. By editing the `docker-compose.yml` file, you could change the port to be `443`, in order to be accessible as `https://my-databus.org`. The search API gets accessible by port `4001` e.g. `https://my-databus.org:4001`.
+
 ## Basic Configuration
 
 Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
