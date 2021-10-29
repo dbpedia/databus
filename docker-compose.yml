@@ -14,11 +14,11 @@ services:
       DATABUS_OIDC_CLIENT_ID: ${DATABUS_OIDC_CLIENT_ID}
       DATABUS_OIDC_SECRET: ${DATABUS_OIDC_SECRET}
       DATABUS_DEFAULT_CONTEXT_URL: https://downloads.dbpedia.org/databus/context.jsonld
-      DATABUS_PROXY_SERVER_ENABLE: false # Disable the proxy server by default
-      DATABUS_PROXY_SERVER_USE_ACME: true # When using the proxy, use ACME by default
-      DATABUS_PROXY_SERVER_OWN_CERT: cert.pem # When not using ACME, what is the name of the own certificate file?
-      DATABUS_PROXY_SERVER_OWN_CERT_KEY: key.pem # When not using ACME, what is the name of the own certificate's key file?
-      DATABUS_PROXY_SERVER_HOSTNAME: my-databus.org # What is the hostname of this machine, when using the proxy server?
+      DATABUS_PROXY_SERVER_ENABLE: "false" # Disable the proxy server by default
+      DATABUS_PROXY_SERVER_USE_ACME: "true" # When using the proxy, use ACME by default
+      DATABUS_PROXY_SERVER_OWN_CERT: "cert.pem" # When not using ACME, what is the name of the own certificate file?
+      DATABUS_PROXY_SERVER_OWN_CERT_KEY: "key.pem" # When not using ACME, what is the name of the own certificate's key file?
+      DATABUS_PROXY_SERVER_HOSTNAME: "my-databus.org" # What is the hostname of this machine, when using the proxy server?
     volumes:
       - ./data/keypair/:/databus/server/keypair
       - ./data/users/:/databus/server/users
