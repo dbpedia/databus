@@ -5,8 +5,8 @@ services:
     ports:
       - 3000:3000 # HTTP: web ui
       - 3001:8080 # HTTP: exposes search api
-      - 3002:3002 # HTTPS: web ui (when proxy server is enabled)
-      - 3003:3003 # HTTPS: exposes search api (when proxy server is enabled)
+      - 4000:4000 # HTTPS: web ui (when proxy server is enabled)
+      - 4001:4001 # HTTPS: exposes search api (when proxy server is enabled)
     environment: 
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
       DATABUS_DATABASE_URL: http://172.17.0.01:3002

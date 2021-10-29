@@ -12,11 +12,11 @@ if [ "$DATABUS_PROXY_SERVER_ENABLE" = "true" ]; then
         
         # Re-create the Caddyfile using the user's configuration:
         cat <<EOF > /etc/caddy/Caddyfile
-$DATABUS_PROXY_SERVER_HOSTNAME:3002 {
+$DATABUS_PROXY_SERVER_HOSTNAME:4000 {
     reverse_proxy 127.0.0.1:3000
 }
 
-$DATABUS_PROXY_SERVER_HOSTNAME:3003 {
+$DATABUS_PROXY_SERVER_HOSTNAME:4001 {
     reverse_proxy 127.0.0.1:8080
 }
 EOF
@@ -26,12 +26,12 @@ EOF
 
         # Re-create the Caddyfile using the user's configuration:
         cat <<EOF > /etc/caddy/Caddyfile
-$DATABUS_PROXY_SERVER_HOSTNAME:3002 {
+$DATABUS_PROXY_SERVER_HOSTNAME:4000 {
     tls /tls/$DATABUS_PROXY_SERVER_OWN_CERT /tls/$DATABUS_PROXY_SERVER_OWN_CERT_KEY
     reverse_proxy 127.0.0.1:3000
 }
 
-$DATABUS_PROXY_SERVER_HOSTNAME:3003 {
+$DATABUS_PROXY_SERVER_HOSTNAME:4001 {
     tls /tls/$DATABUS_PROXY_SERVER_OWN_CERT /tls/$DATABUS_PROXY_SERVER_OWN_CERT_KEY
     reverse_proxy 127.0.0.1:8080
 }
