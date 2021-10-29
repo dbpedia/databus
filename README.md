@@ -25,6 +25,55 @@ docker-compose up
 
 The Databus should be available at `http://localhost:3000`.
 
+However, to actually use the Databus, a TLS-encrypted connection is required. This is a requirement of the OpenID provider. There are two options to fulfill this requirement.
+
+### First option (default)
+The first option is to use an existing web server as a reverse proxy in front of the Databus container. In case Apache gets used, the configuration might looks like this:
+
+```
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+
+        ServerName dev.databus.dbpedia.org
+        ServerAlias www.dev.databus.dbpedia.org
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        ProxyPreserveHost On
+        SSLProxyEngine On
+        SSLProxyCheckPeerCN on
+        SSLProxyCheckPeerExpire on
+        RequestHeader set X-Forwarded-Proto "https"
+        RequestHeader set X-Forwarded-Port "443"
+
+        #ProxyPassMatch ^/gstore/(.*) http://localhost:3002/$1
+        #ProxyPassReverse ^/gstore/(.*) http://localhost:3002/$1
+
+        #ProxyPass /file http://localhost:3002/file/
+        #ProxyPassReverse /file http://localhost:3002/file/
+
+        #ProxyPass /repo http://localhost:3002/repo/
+        #ProxyPassReverse /repo http://localhost:3002/repo/
+
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+
+SSLCertificateFile /etc/letsencrypt/live/dev.databus.dbpedia.org/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/dev.databus.dbpedia.org/privkey.pem
+Include /etc/letsencrypt/options-ssl-apache.conf
+</VirtualHost>
+</IfModule>
+```
+
+### Second option (optional)
+If no existing web server is available, an integrated [Caddy server](https://caddyserver.com) can be activated. For this purpose the variable `DATABUS_PROXY_SERVER_ENABLE` is set to `true`. If an own certificate is to be used, the variable `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`. The file name of the own certificate is then set by `DATABUS_PROXY_SERVER_OWN_CERT`, as well as its key file name by `DATABUS_PROXY_SERVER_OWN_CERT_KEY`. Finally, the variable `DATABUS_PROXY_SERVER_HOSTNAME` must be set to the host's name. As long as `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`, which is the default, an ACME provider is used to request a free certificate. However, the Databus container must be accessible from the Internet for this.
+
 ## Basic Configuration
 
 Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
