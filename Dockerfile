@@ -45,5 +45,11 @@ COPY ./context.json /databus/context.json
 COPY ./search/app-config-servlet.yml /root/app-config.yml
 COPY ./search/lookup-application.war /usr/local/tomcat/webapps/
 
+# Set up the NPM projects:
+RUN cd /databus/server && \
+    npm install && \
+    cd ../public && \
+    npm install
+
 WORKDIR /databus
 ENTRYPOINT [ "/bin/bash", "./setup.sh" ]
