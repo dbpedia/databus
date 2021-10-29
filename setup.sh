@@ -38,11 +38,11 @@ $DATABUS_PROXY_SERVER_HOSTNAME:3003 {
 EOF
 
     fi
+    caddy start --config /etc/caddy/Caddyfile
     echo "The proxy server is enabled."
 
 # The proxy server is disabled:
 else
-    systemctl disable --now caddy
 	echo "The proxy server is disabled."
 fi
 
