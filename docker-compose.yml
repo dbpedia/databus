@@ -22,7 +22,7 @@ services:
     volumes:
       - ./data/keypair/:/databus/server/keypair
       - ./data/users/:/databus/server/users
-      - /tls
+      - ./data/tls/:/tls:ro
   gstore:
     image: "dbpedia/gstore"
     environment: 

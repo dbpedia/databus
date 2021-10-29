@@ -72,7 +72,9 @@ Include /etc/letsencrypt/options-ssl-apache.conf
 ```
 
 ### Second option (optional)
-If no existing web server is available, an integrated [Caddy server](https://caddyserver.com) can be activated. For this purpose the variable `DATABUS_PROXY_SERVER_ENABLE` is set to `true`. If an own certificate is to be used, the variable `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`. The file name of the own certificate is then set by `DATABUS_PROXY_SERVER_OWN_CERT`, as well as its key file name by `DATABUS_PROXY_SERVER_OWN_CERT_KEY`. Finally, the variable `DATABUS_PROXY_SERVER_HOSTNAME` must be set to the host's name. As long as `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`, which is the default, an ACME provider is used to request a free certificate. However, the Databus container must be accessible from the Internet for this.
+If no existing web server is available, an integrated [Caddy server](https://caddyserver.com) can be activated. For this purpose the variable `DATABUS_PROXY_SERVER_ENABLE` is set to `true`. If an own certificate is to be used, the variable `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`. The file name of the own certificate is then set by `DATABUS_PROXY_SERVER_OWN_CERT`, as well as its key file name by `DATABUS_PROXY_SERVER_OWN_CERT_KEY`. Please note that in the `docker-compose.yml` file, the path to the certificate on the Docker host may need to be customized. By default, `./data/tls/` is used, which is relative to the folder of the `docker-compose.yml` file. Note that the left part before the colon corresponds to the Docker host specification; the right part must not be edited. Regarding IT security, it should be mentioned that the certificate folder is mounted as read-only, so the Databus container cannot modify or delete your own certificates.
+
+Finally, the variable `DATABUS_PROXY_SERVER_HOSTNAME` must be set to the host's name. As long as `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`, which is the default, an ACME provider is used to request a free certificate. However, the Databus container must be accessible from the Internet for this.
 
 ## Basic Configuration
 
