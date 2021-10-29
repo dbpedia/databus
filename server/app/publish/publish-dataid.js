@@ -20,7 +20,9 @@ module.exports = async function publishDataid(account, data) {
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
     var report = '';
 
+    console.log(data);
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
+    console.log(triples);
     var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
 
     // Generate dynamic shacl test ?
