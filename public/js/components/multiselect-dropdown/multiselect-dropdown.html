@@ -23,7 +23,7 @@
           <div ng-repeat="value in $ctrl.values" class="dropdown-item" ng-click="$ctrl.toggle(value)">
 
             <div style="display: flex; align-items: center;">
-              <div style="flex: 1">{{ value }}</div>
+              <div style="flex: 1">{{ $ctrl.getLabel(value) }}</div>
 
               <svg
                 ng-if="$ctrl.parentInput != undefined && $ctrl.includesValue($ctrl.parentInput, value) && $ctrl.isChecked($ctrl.parentInput, value)

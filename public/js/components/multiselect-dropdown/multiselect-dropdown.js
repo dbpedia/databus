@@ -14,6 +14,15 @@ function MultiselectDropdownController($timeout, $sce) {
     }
   }
 
+  ctrl.getLabel = function(value) {
+
+    if(value == '$latest') {
+      return 'Latest Version';
+    }
+
+    return value;
+  }
+
   ctrl.hasContent = function() {
     return !((ctrl.input == undefined || ctrl.input.length == 0) && (ctrl.parentInput == undefined ||
       ctrl.parentInput.length == 0));
@@ -44,9 +53,9 @@ function MultiselectDropdownController($timeout, $sce) {
 
     return ctrl.$sce.trustAsHtml(Object.keys(mergedSettings).map(function(key, index) { 
       if(mergedSettings[key]) {
-        return key;
+        return ctrl.getLabel(key);
       } else {
-        return `<s>${key}</s>`;
+        return `<s>${ctrl.getLabel(key)}</s>`;
       }
     }).join(', '));
 

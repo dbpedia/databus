@@ -125,10 +125,7 @@ function AccountPageController($scope, $http, $location) {
  
 
   $scope.goToTab = function(value) {
-
-    
     $location.hash(value);
-
   }
 
 
