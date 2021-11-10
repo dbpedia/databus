@@ -80,7 +80,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 ## Accounts
 
 ### Update Account Information
-```
+```http
 PUT /$username
 ```
 #### Headers
@@ -104,7 +104,7 @@ PUT /$username
 ## Groups
 
 ### Create / Update Group
-```
+```http
 PUT /$username/$group
 ```
 #### Headers
