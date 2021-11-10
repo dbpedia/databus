@@ -10,7 +10,7 @@ You will be asked to specify a namespace. Choose this namespace carefully, as it
 
 Navigate to the settings tab on your account page and scroll to the 'API Keys' section. Enter a display name for your API key (this is only for better distinguishability) and click 'Create' to create the key. You can use the copy icon on the API key to copy the key value to your clipboard.
 
-Use any API key in the `X-Api-Token` header of your API calls to authenticate yourself.
+Use any API key in the `x-api-key` header of your API calls to authenticate yourself.
 
 The following examples of the API usage use a non-existing example databus at `https://databus.example.org`. The user performing the requests will be John who is using the namespace `john`. John has already created an API token on his account page with a value of `27b29848-69c6-4eaf`.
 
@@ -107,18 +107,35 @@ PUT -d $data /$username
 
 ## Groups
 
-You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
+### Create/Update Group
+```
+PUT -d $data /$username/$group
+```
+#### Headers
 
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
 
-**ADDITIONALLY:** 
-* The uri of the dataid:Group has to match the request uri. 
-* The uri path must start with the username of the issuing user (identified by the API token).
+#### Parameters
+| Parameter | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username | 
+| `$group` | The target group identifier |
+| `$data` | The input data. |
 
-### Example:
+#### Input Data Format Specification
+* The `$data` must be supplied as JSON-LD 
+* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
+* The uri of the dataid:Group in `$data` has to match the request uri. 
+
+#### Example:
 John wants to create the group `general` to later publish some of his artifacts. He issues the following `PUT` request:
 
 ```
-curl -X PUT -H "Content-Type: application/json" -H "X-Api-Token: 27b29848-69c6-4eaf" -d "./group.jsonld" https://databus.example.org/john/general
+curl -X PUT -H "Content-Type: application/json" -H "x-api-key: 27b29848-69c6-4eaf" -d "./group.jsonld" https://databus.example.org/john/general
 ```
 
 The contents of the file `./group.jsonld` are the following:
