@@ -82,9 +82,7 @@ Applies to
 
 ## Accounts
 
-Account data can be changed via `PUT` or `DELETE` request. It is however recommended to use the web interface for these actions.
-
-```http
+```
 PUT -d $data /$username
 ```
 
@@ -101,7 +99,7 @@ PUT -d $data /$username
 *Input Data Format Specification*
 * The `$data` must be supplied as JSON-LD 
 * The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
-* The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
 
 ## Groups
