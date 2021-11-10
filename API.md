@@ -85,12 +85,14 @@ Applies to
 ```
 PUT -d $data /$username
 ```
+### Headers
 
 | Header | Value |
 | :--- | :--- | 
 | x-api-key | **Required** Your Databus API Key |
 | Content-Type | **Required** application/json | 
 
+### Parameters
 | Parameter | Description |
 | :--- | :--- | 
 | `$username` | Your Databus username |
