@@ -90,7 +90,7 @@ PUT -d $data /$username
 
 | Header | Value |
 | :--- | :--- | 
-| X-Api-Token | **Required** Your Databus API Key |
+| x-api-key | **Required** Your Databus API Key |
 | Content-Type | **Required** application/json | 
 
 | Parameter | Description |
@@ -100,7 +100,7 @@ PUT -d $data /$username
 
 *Input Data Format Specification*
 * The `$data` must be supplied as JSON-LD 
-* The `$data` will be filtered with this [construct query](./server/app/common/queries/construct/construct-account.sparql)
+* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
 * The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
 
