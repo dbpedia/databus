@@ -81,7 +81,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 ### Update Account Information
 ```
-PUT -d $data /$username
+PUT /$username
 ```
 #### Headers
 
@@ -94,11 +94,10 @@ PUT -d $data /$username
 | Parameter | Description |
 | :--- | :--- | 
 | `$username` | Your Databus username |
-| `$data` | The input data. |
 
-#### Input Data Specification
-* The `$data` must be supplied as JSON-LD 
-* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
 
@@ -106,7 +105,7 @@ PUT -d $data /$username
 
 ### Create / Update Group
 ```
-PUT -d $data /$username/$group
+PUT /$username/$group
 ```
 #### Headers
 
@@ -120,11 +119,10 @@ PUT -d $data /$username/$group
 | :--- | :--- | 
 | `$username` | Your Databus username | 
 | `$group` | The target group identifier |
-| `$data` | The input data. |
 
-#### Input Data Specification
-* The `$data` must be supplied as JSON-LD 
-* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
 * The uri of the dataid:Group in `$data` has to match the request uri. 
 
@@ -165,7 +163,7 @@ Databus artifacts are created implicitly by creating a version of an artifact. Y
 ### Create / Update Artifact Version
 
 ```http
-PUT --data 'asdasd' /$username/$group/$artifact/$version
+PUT /$username/$group/$artifact/$version
 ```
 #### Headers
 | Header | Value |
@@ -180,11 +178,10 @@ PUT --data 'asdasd' /$username/$group/$artifact/$version
 | `$group` | The group identifier for your artifact version |
 | `$artifact` | The artifact identifier for your artifact version |
 | `$version` | The version identifier for your artifact version |
-| `$data` | The DataId of the artifact version. The format specs are documented below. |
 
-#### Input Data Specification*
-* The `$data` must be supplied as JSON-LD 
-* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-version.sparql)
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-version.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 #### Responses
 | Status Codes | Status | Description |
