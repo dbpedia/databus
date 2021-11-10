@@ -14,7 +14,7 @@ Use any API key in the `X-Api-Token` header of your API calls to authenticate yo
 
 The following examples of the API usage use a non-existing example databus at `https://databus.example.org`. The user performing the requests will be John who is using the namespace `john`. John has already created an API token on his account page with a value of `27b29848-69c6-4eaf`.
 
-### Data Validation Workflow
+### Input Validation Workflow
 
 Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
 
@@ -83,10 +83,26 @@ Applies to
 ## Accounts
 
 Account data can be changed via `PUT` or `DELETE` request. It is however recommended to use the web interface for these actions.
-* The request uri is the path of your account. 
-* The `X-Api-Token` header needs to specify a valid API token. 
-* The `Content-Type` header needs to be set to the content type of your data. 
-* The supplied data needs to conform to these [SHACL shapes](./server/app/common/shacl/account-shacl.ttl)
+
+```http
+PUT -d $data /$username
+```
+
+| Header | Value |
+| :--- | :--- | 
+| X-Api-Token | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+| Parameter | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username |
+| `$data` | The input data. |
+
+*Input Data Format Specification*
+* The `$data` must be supplied as JSON-LD 
+* The `$data` will be filtered with this [construct query](./server/app/common/queries/construct/construct-account.sparql)
+* The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+
 
 ## Groups
 
