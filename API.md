@@ -165,7 +165,7 @@ Databus artifacts are created implicitly by creating a version of an artifact. Y
 ### Create / Update Artifact Version
 
 ```http
-PUT -d $data /$username/$group/$artifact/$version
+PUT -d data /$username/$group/$artifact/$version
 ```
 #### Headers
 | Header | Value |
