@@ -1,6 +1,8 @@
 # Databus API
 
-## Creating an API Token
+## General 
+
+### Creating an API Token
 
 Once the Databus has been started with the correct configuration, you can use the login button on the web interface to log in to your OIDC provider account. Once you are successfully logged in, you can navigate to your account page by using the 'My Account' button on the landing page or using the dropdown in the upper right corner of the screen.
 
@@ -11,6 +13,72 @@ Navigate to the settings tab on your account page and scroll to the 'API Keys' s
 Use any API key in the `X-Api-Token` header of your API calls to authenticate yourself.
 
 The following examples of the API usage use a non-existing example databus at `https://databus.example.org`. The user performing the requests will be John who is using the namespace `john`. John has already created an API token on his account page with a value of `27b29848-69c6-4eaf`.
+
+### Data Validation Workflow
+
+Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
+
+Before saving your inputs to the database, they will be validated in 3 steps:
+
+1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information. 
+2) **SHACL Validation** The result of the construct is validated with SHACL constraints. This makes sure that the information in your input is complete
+3) **URI Validation** As a last step, the URIs in your input are validated. The rules are described in the following chapter.
+
+### URI Rules
+
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
+
+The following rules apply to the identifiers of the following Databus concepts:
+
+
+#### General Rules
+
+* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
+* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+
+Applies to
+* Accounts *(foaf:account)*
+* Groups *(dataid:group / dataid:Group)*
+* Artifacts *(dataid:artifact / dataid:Artifact)*
+* Versions *(dataid:version / dataid:Version)*
+* Datasets *(dataid:Dataset)*
+* Distributions *(dcat:distrubution)*
+* Files *(dataid:file)*
+
+#### Account URI Rules
+
+* An account URI has exactly one path segment
+
+#### Group URI Rules
+
+* A group URI has exactly two path segments
+
+#### Artifact URI Rules
+
+* An artifact URI has exactly three path segments. 
+* An artifact URI contains the URI of its associated group
+
+#### Version URI Rules
+
+* A version URI has exactly four path segments
+* A version URI contains the URI of its associated artifact
+
+#### Dataset URI Rules
+
+* A dataset URI has exactly four path segments
+* A dataset URI contains the URI of its associated version
+* The hash of a dataset URI is the string `Dataset`
+
+#### Distribution URI Rules
+
+* A distribution URI has exactly four path segments
+* A distribution URI contains the URI of its associated version
+* The hash of a dataset URI is NOT the string `Dataset`
+
+#### File URI Rules
+
+* A file URI has exactly five path segments
+* A file URI contains the URI of its associated version
 
 ## Accounts
 

@@ -36,12 +36,13 @@ module.exports = function (router, protector) {
 
     try {
 
+      // Get the account namespace
       var account = req.databus.accountName;
 
-      // Find context:
+      // Find graph
       var graph = req.body;
 
-      // Replace if default context
+      // Replace context if graph uses default context
       if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
         graph['@context'] = defaultContext;
       }
