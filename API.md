@@ -29,14 +29,6 @@ Before saving your inputs to the database, they will be validated in 3 steps:
 The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
 
 The following rules apply to the identifiers of the following Databus concepts:
-
-
-#### General Rules
-
-* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
-* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
-
-Applies to
 * Accounts *(foaf:account)*
 * Groups *(dataid:group / dataid:Group)*
 * Artifacts *(dataid:artifact / dataid:Artifact)*
@@ -44,6 +36,11 @@ Applies to
 * Datasets *(dataid:Dataset)*
 * Distributions *(dcat:distrubution)*
 * Files *(dataid:file)*
+
+#### General Rules
+
+* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
+* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
 
 #### Account URI Rules
 
@@ -99,7 +96,7 @@ PUT -d $data /$username
 | `$username` | Your Databus username |
 | `$data` | The input data. |
 
-#### Input Data Format Specification
+#### Input Data Specification
 * The `$data` must be supplied as JSON-LD 
 * The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
@@ -107,7 +104,7 @@ PUT -d $data /$username
 
 ## Groups
 
-### Create/Update Group
+### Create / Update Group
 ```
 PUT -d $data /$username/$group
 ```
@@ -125,7 +122,7 @@ PUT -d $data /$username/$group
 | `$group` | The target group identifier |
 | `$data` | The input data. |
 
-#### Input Data Format Specification
+#### Input Data Specification
 * The `$data` must be supplied as JSON-LD 
 * The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
@@ -165,18 +162,18 @@ Note that the *@id* of the supplied graph has to be the same as the request uri.
 
 Databus artifacts are created implicitly by creating a version of an artifact. You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT`, `PATCH` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to the following SHACL shapes
 
-### Creating / Modifying an Artifact Version
+### Create / Update Artifact Version
 
 ```http
 PUT -d $data /$username/$group/$artifact/$version
 ```
-
+#### Headers
 | Header | Value |
 | :--- | :--- | 
-| X-Api-Token | **Required** Your Databus API Key |
+| x-api-key | **Required** Your Databus API Key |
 | Content-Type | **Required** application/json | 
 
-
+#### Parameters
 | Parameter | Description |
 | :--- | :--- | 
 | `$username` | Your Databus username |
@@ -185,10 +182,11 @@ PUT -d $data /$username/$group/$artifact/$version
 | `$version` | The version identifier for your artifact version |
 | `$data` | The DataId of the artifact version. The format specs are documented below. |
 
-*Data Format Specification*
+#### Input Data Specification*
 * The `$data` must be supplied as JSON-LD 
-* The `$data` must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
-
+* The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-version.sparql)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+#### Responses
 | Status Codes | Status | Description |
 | :--- | :--- | :--- | 
 | 200 | `OK` | Artifact version updated |
@@ -197,16 +195,16 @@ PUT -d $data /$username/$group/$artifact/$version
 | 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
-### Removing an Artifact Version
+### Remove Artifact Version
 
 ```http
 DELETE /$username/$group/$artifact/$version
 ```
-
+#### Headers
 | Header | Value |
 | :--- | :--- | 
 | X-Api-Token | **Required** Your Databus API Key |
-
+#### Responses
 | Status Codes | Status | Description |
 | :--- | :--- | :--- | 
 | 204 | `NO CONTENT` | Artifact version deleted successfully |
