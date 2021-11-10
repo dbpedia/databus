@@ -124,7 +124,7 @@ PUT /$username/$group
 * The input data must be supplied as JSON-LD 
 * The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
-* The uri of the dataid:Group in `$data` has to match the request uri. 
+* The uri of the dataid:Group has to match the request uri. 
 
 #### Example:
 John wants to create the group `general` to later publish some of his artifacts. He issues the following `PUT` request:
