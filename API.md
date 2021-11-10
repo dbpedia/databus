@@ -82,23 +82,24 @@ Applies to
 
 ## Accounts
 
+### Update Account Information
 ```
 PUT -d $data /$username
 ```
-### Headers
+#### Headers
 
 | Header | Value |
 | :--- | :--- | 
 | x-api-key | **Required** Your Databus API Key |
 | Content-Type | **Required** application/json | 
 
-### Parameters
+#### Parameters
 | Parameter | Description |
 | :--- | :--- | 
 | `$username` | Your Databus username |
 | `$data` | The input data. |
 
-*Input Data Format Specification*
+#### Input Data Format Specification
 * The `$data` must be supplied as JSON-LD 
 * The `$data` will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
 * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
