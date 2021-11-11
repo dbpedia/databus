@@ -11,12 +11,12 @@ CONSTRUCT
 {
   ?dataset a dataid:Dataset .
   ?dataset ?datasetProperty ?datasetObject .
-  ?proof ?proofProperty ?proofObject .
   ?version a dataid:Version .
   ?artifact a dataid:Artifact .
   ?distribution a dataid:SingleFile .
   ?distribution ?distributionProperty ?distributionObject .
   ?contentVariant ?contentVariantProperty ?contentVariantObject .
+  ?proof ?proofProperty ?proofObject .
 }
 WHERE
 {
