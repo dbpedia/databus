@@ -219,6 +219,8 @@ DELETE /$username/$group/$artifact/$version
 
 ## Generic
 
+Alternatively to the specific API calls, you can merge the RDF content you want to publish into a single input. The following API call will then try to find Databus entities in your input automatically.
+
 ### Add Content
 
 ```http
