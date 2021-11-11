@@ -233,11 +233,11 @@ PUT /system/publish
 #### Body
 * The input data must be supplied as JSON-LD 
 * The input data will be filtered with the following construct queries
-* * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
-* * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
+  * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
+  * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
 * Each construct query result will then be validated with their corresponding SHACL shape (e.g. group construct query result validated by group SHACL shapes)
-* * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
-* * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
+  * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
+  * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
 
 #### Responses
 | Status Codes | Status | Description |
