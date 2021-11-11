@@ -167,7 +167,7 @@ A [DataId](http://dataid.dbpedia.org/ns/core.html) is an RDF metadata document w
 * A Databus artifact
 * A Databus group
 
-While Databus **groups** have to be created by a separate API, Databus **artifacts** and **versions** information is contained in the DataId document.
+While Databus **groups** have to be created by a separate API call, Databus **artifacts** and **versions** information need to be put into the DataId document.
 
 ### Create / Update Version
 
