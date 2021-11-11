@@ -46,19 +46,27 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 * An account URI has exactly one path segment
 
+**Example:** https://databus.example.org/john
+
 #### Group URI Rules
 
 * A group URI has exactly two path segments
+
+**Example:** https://databus.example.org/john/animals
 
 #### Artifact URI Rules
 
 * An artifact URI has exactly three path segments. 
 * An artifact URI contains the URI of its associated group
 
+**Example:** https://databus.example.org/john/animals/cats
+
 #### Version URI Rules
 
 * A version URI has exactly four path segments
 * A version URI contains the URI of its associated artifact
+
+**Example:** https://databus.example.org/john/animals/cats/2021-11-11
 
 #### Dataset URI Rules
 
@@ -66,16 +74,22 @@ The following rules apply to the identifiers of the following Databus concepts:
 * A dataset URI contains the URI of its associated version
 * The hash of a dataset URI is the string `Dataset`
 
+**Example:** https://databus.example.org/john/animals/cats/2021-11-11#Dataset
+
 #### Distribution URI Rules
 
 * A distribution URI has exactly four path segments
 * A distribution URI contains the URI of its associated version
 * The hash of a dataset URI is NOT the string `Dataset`
 
+**Example:** https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
+
 #### File URI Rules
 
 * A file URI has exactly five path segments
 * A file URI contains the URI of its associated version
+
+**Example:** https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
 
 ## Accounts
 
