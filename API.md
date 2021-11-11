@@ -156,11 +156,20 @@ The contents of the file `./group.jsonld` are the following:
 
 Note that the *@id* of the supplied graph has to be the same as the request uri. Additionally, the uri has to be in John's namespace `john`.
 
-## Artifact Versions
 
-Databus artifacts are created implicitly by creating a version of an artifact. You can add, change and remove groups. The actions are invoked by using the corresponding http request method `PUT`, `PATCH` and `DELETE`. The request uri is the path of your Databus Group. The `X-Api-Token` header needs to specify a valid API token. The `Content-Type` header needs to be set to the content type of your data. The supplied data needs to conform to the following SHACL shapes
+## Datasets (Artifacts and Versions)
 
-### Create / Update Artifact Version
+Databus artifacts and versions can be created implicitly by sending a DataId document to the Databus API. 
+
+A [DataId](http://dataid.dbpedia.org/ns/core.html) is an RDF metadata document with an entity of rdf:type [dataid:Dataset](http://dataid.dbpedia.org/ns/core#Dataset) at its heart. The contents of the document then associate the Dataset with 
+* The containing files and their metadata
+* A Databus version
+* A Databus artifact
+* A Databus group
+
+While Databus **groups** have to be created by a separate API, Databus **artifacts** and **versions** information is contained in the DataId document.
+
+### Create / Update Version
 
 ```http
 PUT /$username/$group/$artifact/$version
@@ -192,7 +201,7 @@ PUT /$username/$group/$artifact/$version
 | 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
-### Remove Artifact Version
+### Remove Version
 
 ```http
 DELETE /$username/$group/$artifact/$version
@@ -205,5 +214,35 @@ DELETE /$username/$group/$artifact/$version
 | Status Codes | Status | Description |
 | :--- | :--- | :--- | 
 | 204 | `NO CONTENT` | Artifact version deleted successfully |
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
+
+## Generic
+
+### Add Content
+
+```http
+PUT /system/publish
+```
+#### Headers
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with the following construct queries
+* * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
+* * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
+* Each construct query result will then be validated with their corresponding SHACL shape (e.g. group construct query result validated by group SHACL shapes)
+* * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
+* * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
+
+#### Responses
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 200 | `OK` | Content created or updated |
+| 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
 | 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
