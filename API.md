@@ -46,19 +46,27 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 * An account URI has exactly one path segment
 
+*Example:* https://databus.example.org/john
+
 #### Group URI Rules
 
 * A group URI has exactly two path segments
+
+*Example:* https://databus.example.org/john/animals
 
 #### Artifact URI Rules
 
 * An artifact URI has exactly three path segments. 
 * An artifact URI contains the URI of its associated group
 
+*Example:* https://databus.example.org/john/animals/cats
+
 #### Version URI Rules
 
 * A version URI has exactly four path segments
 * A version URI contains the URI of its associated artifact
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11
 
 #### Dataset URI Rules
 
@@ -66,16 +74,22 @@ The following rules apply to the identifiers of the following Databus concepts:
 * A dataset URI contains the URI of its associated version
 * The hash of a dataset URI is the string `Dataset`
 
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
+
 #### Distribution URI Rules
 
 * A distribution URI has exactly four path segments
 * A distribution URI contains the URI of its associated version
 * The hash of a dataset URI is NOT the string `Dataset`
 
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
+
 #### File URI Rules
 
 * A file URI has exactly five path segments
 * A file URI contains the URI of its associated version
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
 
 ## Accounts
 
@@ -167,7 +181,7 @@ A [DataId](http://dataid.dbpedia.org/ns/core.html) is an RDF metadata document w
 * A Databus artifact
 * A Databus group
 
-While Databus **groups** have to be created by a separate API, Databus **artifacts** and **versions** information is contained in the DataId document.
+While Databus **groups** have to be created by a separate API call, Databus **artifacts** and **versions** information need to be put into the DataId document.
 
 ### Create / Update Version
 
@@ -219,6 +233,8 @@ DELETE /$username/$group/$artifact/$version
 
 ## Generic
 
+Alternatively to the specific API calls, you can merge the RDF content you want to publish into a single input. The following API call will then try to find Databus entities in your input automatically.
+
 ### Add Content
 
 ```http
@@ -233,11 +249,11 @@ PUT /system/publish
 #### Body
 * The input data must be supplied as JSON-LD 
 * The input data will be filtered with the following construct queries
-* * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
-* * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
+  * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
+  * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
 * Each construct query result will then be validated with their corresponding SHACL shape (e.g. group construct query result validated by group SHACL shapes)
-* * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
-* * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
+  * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
+  * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
 
 #### Responses
 | Status Codes | Status | Description |

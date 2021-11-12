@@ -7,17 +7,16 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
 PREFIX sec: <https://w3id.org/security#>
 
-# Creates a collection
 CONSTRUCT
 {
   ?dataset a dataid:Dataset .
-  ?dataset ?p ?o .
-  ?proof ?q ?r .
+  ?dataset ?datasetProperty ?datasetObject .
   ?version a dataid:Version .
   ?artifact a dataid:Artifact .
   ?distribution a dataid:SingleFile .
-  ?distribution ?e ?f .
-  ?cvProperty ?j ?k .
+  ?distribution ?distributionProperty ?distributionObject .
+  ?contentVariant ?contentVariantProperty ?contentVariantObject .
+  ?proof ?proofProperty ?proofObject .
 }
 WHERE
 {
@@ -25,12 +24,12 @@ WHERE
   ?dataset dcat:distribution ?distribution .
 
   {
-    ?dataset ?p ?o .
+    ?dataset ?datasetProperty ?datasetObject .
   }
   UNION
   {
     ?distribution a dataid:SingleFile .
-    ?distribution ?e ?f .
+    ?distribution ?distributionProperty ?distributionObject .
   }
   UNION
   {
@@ -45,12 +44,12 @@ WHERE
   UNION
   {
     ?dataset sec:proof ?proof .
-    ?proof ?q ?r .
+    ?proof ?proofProperty ?proofObject .
   }
   UNION
   {
-    ?distribution ?cvProperty ?cvLiteral .
-    ?cvProperty ?j ?k .
-    ?cvProperty rdfs:subPropertyOf dataid:contentVariant .
+    ?distribution ?contentVariant ?contentVariantLiteral .
+    ?contentVariant ?contentVariantProperty ?contentVariantObject .
+    ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
   }
 }
