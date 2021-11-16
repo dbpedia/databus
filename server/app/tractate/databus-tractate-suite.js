@@ -4,11 +4,13 @@ var rp = require('request-promise');
 var streamify = require('streamify-string');
 const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../common/utils/jsonld-utils');
+var jsonld = require('jsonld');
+
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 var proofType = 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1';
 
-const RDF_URIS = require('./rdf-uris');
+const RDF_URIS = require('../publish/rdf-uris');
 
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0',
@@ -33,6 +35,11 @@ signer.init = function () {
   var encodedPrivateKeyString = fs.readFileSync(privateKeyFile, "utf8");
 
   signer.privateKey = new NodeRSA(encodedPrivateKeyString, 'pkcs8');
+}
+
+signer.expandAndCanonicalize = async function(graph) {
+  var expandedGraph = await jsonld.flatten(await jsonld.expand(graph));
+  return signer.canonicalize(expandedGraph);
 }
 
 
@@ -66,6 +73,7 @@ signer.canonicalize = function (expandedGraph) {
 }
 
 signer.createProof = function (datasetGraph) {
+  
   return {
     '@type': [proofType],
     'https://w3id.org/security#signature': [{

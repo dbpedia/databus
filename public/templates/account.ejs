@@ -157,14 +157,14 @@
               <img ng-src="{{ getImageUrl() }}"></img>
             </div>
 
-            <div class="dashboard-card">
+            <div ng-if="profileData.about" class="dashboard-card">
               <div class="dashboard-card-title">About</div>
               <p>{{ profileData.about }}</p>
             </div>
           </div>
           <div class="column main" style="padding-left: 2em;">
 
-            <div class="dashboard-card">
+            <!-- div class="dashboard-card">
               <div class="dashboard-card-title">Popular Content</div>
 
               <div>
@@ -182,7 +182,7 @@
                   </entity-card>
                 </div>
               </div>
-            </div>
+            </div>-->
 
 
 
@@ -208,7 +208,7 @@
                       <div></div>
                     </div>
                   </div>
-                  <div ng-if="!artifactData.isLoading" class="timeline" style="padding: 1em 0.5em;">
+                  <div ng-if="recentUploads.length > 0" class="timeline" style="padding: 1em 0.5em;">
                     <div ng-repeat="dataset in recentUploads">
 
                       <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
@@ -264,7 +264,7 @@
             <input class="input" placeholder="Find data..." input="searchInput" filters="searchFilters">
           </p>
           <p class="control">
-            <a href="/system/publish" class="button is-primary">
+            <a href="/system/publish-wizard" class="button is-primary">
               Publish Data
             </a>
           </p>

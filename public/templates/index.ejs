@@ -36,8 +36,8 @@
             <activity-chart data="activityChartData" height="400"></activity-chart>
             <br />
             <br />
-            <p class="section-label">Most Active Users</p>
-            <uploader-ranking data="uploadRankingData"></uploader-ranking>
+            <p ng-if="uploadRankingData.length > 0" class="section-label">Most Active Users</p>
+            <uploader-ranking ng-if="uploadRankingData.length > 0" data="uploadRankingData"></uploader-ranking>
             <br />
           </div>
           <div class="column main">
@@ -49,7 +49,7 @@
             </div>
             <search></search>
             <br />
-            <p class="section-label">New Artifacts</p>
+            <p ng-if="recentUploadsData.length > 0" class="section-label">New Artifacts</p>
             <br />
             <div ng-repeat="dataset in recentUploadsData">
               <entity-card style="flex: 1;" label="dataset.label" type="'Artifact'" uri="dataset.artifactUri"

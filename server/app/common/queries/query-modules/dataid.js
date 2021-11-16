@@ -4,6 +4,15 @@ const UriUtils = require('../../utils/uri-utils');
 
 let instance = {};
 
+instance.getGroupByUri = async function (groupUri) {
+
+  // Create the query and insert the account uri
+  let queryOptions = { GROUP_URI: groupUri };
+  let query = exec.formatQuery(require('../sparql/get-group.sparql'), queryOptions);
+  let bindings = await exec.executeSelect(query);
+
+  return bindings.length !== 0 ? bindings[0] : null;
+}
 
 /**
  * Get information about a databus group
@@ -126,9 +135,11 @@ instance.getArtifactsByGroup = async function (account, group) {
  */
 instance.getVersion = async function (account, group, artifact, version) {
 
+  console.log("HEASDJASKDJASKDJ");
   let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
   let query = exec.formatQuery(require('../sparql/get-version-data.sparql'), queryOptions);
 
+  console.log("YO");
   console.log(query);
   let bindings = await exec.executeSelect(query);
 

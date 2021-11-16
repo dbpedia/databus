@@ -2,7 +2,7 @@ const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
 const RDF_URIS = require('./rdf-uris');
 
-var signer = require('./databus-tractate-suite');
+var signer = require('../tractate/databus-tractate-suite');
 var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
@@ -10,15 +10,19 @@ var sparql = require('../common/queries/sparql');
 var defaultContext = require('../../../context.json');
 var constructor = require('../common/execute-construct.js');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
+const Constants = require('../common/constants');
 const dataidFileName = 'dataid.jsonld';
 
 module.exports = async function publishDataid(account, data) {
 
   try {
 
+    var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
     var report = '';
 
+    console.log(data);
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
+    console.log(triples);
     var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
 
     // Generate dynamic shacl test ?
@@ -45,10 +49,23 @@ module.exports = async function publishDataid(account, data) {
     var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_ARTIFACT);
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_VERSION);
 
+    // Prefix checks
     
 
+    var expectedDatasetUri = `${datasetVersionUri}#Dataset`;
+
+    if(datasetUri != expectedDatasetUri) {
+      return {
+        code: 400, message:
+          `The specified dataset identifier does not match the expected identifier.\n
+          (Specified: ${datasetUri}, expected: ${expectedDatasetUri})\n`
+      };      
+    }
+
     // Validate Group URI
+
     var expectedGroupUri = UriUtils.navigateUp(datasetUri, 2);
+
     if (datasetGroupUri != expectedGroupUri) {
 
       return {
@@ -58,12 +75,28 @@ module.exports = async function publishDataid(account, data) {
       };
     }
 
+    var expectedAccountUri = UriUtils.navigateUp(datasetUri, 3);
+
+    if (expectedAccountUri != accountUri) {
+
+      return {
+        code: 400, message:
+          `The specified account does not match the expected account.\n
+          (Specified: ${expectedAccountUri}, expected: ${accountUri})\n`
+      };
+    }
+
+
+
+
     // Check if group exists
-    var group = await sparql.dataid.getGroup(datasetGroupUri);
+    var group = await sparql.dataid.getGroupByUri(datasetGroupUri);
 
     if (group == undefined) {
-      res.status(400).send(`The specified group '${datasetGroupUri}' does not exist\n`);
-      return;
+      return {
+        code: 400, message:
+        `The specified group '${datasetGroupUri}' does not exist\n`
+      };
     }
 
     // Validate Artifact URIs
@@ -78,24 +111,8 @@ module.exports = async function publishDataid(account, data) {
 
     // TODO: More validataion!
 
-    // Only use the selected graphs 
-    /*
-    expandedGraph = [
-      artifactGraph,
-      versionGraph,
-      datasetGraph
-    ];
-
-    for(var graph of contentVariantGraphs) {
-      expandedGraph.push(graph);
-    }
-
-    for(var graph of fileGraphs) {
-      expandedGraph.push(graph);
-    } */
 
     console.log(`Publisher found: ${datasetPublisherUri}...`);
-    var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     report += `-- Publisher: ${datasetPublisherUri}.\n`;
 
@@ -107,8 +124,11 @@ module.exports = async function publishDataid(account, data) {
       return { code: 400, message: 'The specified publisher is not associated with the requested account' };
     }
 
-    // Check for proof
-    var proofGraph = JsonldUtils.getFirstObject(datasetGraph, RDF_URIS.PROOF, expandedGraph);
+    var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROOF);
+    var proofGraph = JsonldUtils.getGraphById(expandedGraph, proofId);
+
+    console.log(proofGraph);
+
 
     // Not setting the proof is allowed!
     if (proofGraph == undefined) {

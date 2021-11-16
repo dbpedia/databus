@@ -3,13 +3,13 @@ services:
   databus:
     image: "dbpedia/databus"
     ports:
-      - 3000:3000 # HTTP: web ui
-      - 3001:8080 # HTTP: exposes search api
-      - 4000:4000 # HTTPS: web ui (when proxy server is enabled)
-      - 4001:4001 # HTTPS: exposes search api (when proxy server is enabled)
+      - 3000:3000 # HTTP:  Databus web UI
+      - 3001:8080 # HTTP:  Databus search API
+      - 4000:4000 # HTTPS: Databus web UI (when proxy server is enabled)
+      - 4001:4001 # HTTPS: Databus search API (when proxy server is enabled)
     environment: 
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
-      DATABUS_DATABASE_URL: http://172.17.0.01:3002
+      DATABUS_DATABASE_URL: "http://gstore:80"
       DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
       DATABUS_OIDC_CLIENT_ID: ${DATABUS_OIDC_CLIENT_ID}
       DATABUS_OIDC_SECRET: ${DATABUS_OIDC_SECRET}
@@ -25,10 +25,10 @@ services:
       - ./data/tls/:/tls:ro
   gstore:
     image: "dbpedia/gstore"
-    environment: 
+    environment:
       VIRT_USER: ${VIRTUOSO_USER}
       VIRT_PASS: ${VIRTUOSO_PASSWORD}
-      VIRT_URI: "http://172.17.0.01:3003"
+      VIRT_URI: "http://virtuoso:8890"
       GIT_ROOT: "/root/git"
     ports:
       - "3002:80"

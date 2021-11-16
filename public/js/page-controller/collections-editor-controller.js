@@ -1,8 +1,49 @@
 // hinzufügen eines Controllers zum Modul
-function CollectionsEditorController($scope, $timeout, $http, collectionManager) {
+function CollectionsEditorController($scope, $timeout, $http, $location, collectionManager) {
 
   $scope.authenticated = data.auth.authenticated;
   $scope.accountName = data.auth.info.accountName;
+  $scope.location = $location;
+
+  $scope.$watch("location.hash()", function(newVal, oldVal) {
+
+    if($scope.session == undefined) {
+      return;
+    }
+
+    if(newVal == 'import') {
+      $scope.session.activeTab = 5;
+      return;
+    }
+
+    if(newVal == 'add') {
+      $scope.session.activeTab = 4;
+      return;
+    }
+
+    if(newVal == 'query') {
+      $scope.session.activeTab = 3;
+      return;
+    }
+  
+    if(newVal == 'preview') {
+      $scope.session.activeTab = 2;
+      return;
+    }
+
+    if(newVal == 'edit') {
+      $scope.session.activeTab = 1;
+      return;
+    }
+
+    $scope.session.activeTab = 0;
+    
+  }, true);
+
+  $scope.goToTab = function(value) {
+    $location.hash(value);
+    window.scrollTo(0, 0);
+  }
 
   $scope.logMeIn = function () {
     window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
@@ -82,11 +123,6 @@ function CollectionsEditorController($scope, $timeout, $http, collectionManager)
   $scope.username = data.auth.info.accountName;
   $scope.modalTime = 1000;
 
-  $scope.goToTab = function (index) {
-    $scope.session.activeTab = index;
-    window.scrollTo(0, 0);
-  }
-
   $scope.updateStatistics = function (collection) {
     if (collection.uri === undefined) {
       $scope.statistics = null;
@@ -140,7 +176,7 @@ SELECT DISTINCT ?file WHERE {\n\
   $scope.onCollectionClicked = function (collection) {
     // if already active
     if (collection.uuid == $scope.collectionManager.activeCollection.uuid && $scope.session.activeTab == 0) {
-      $scope.session.activeTab = 1;
+      $scope.goToTab('edit');
     }
 
     $scope.setActiveCollection(collection);

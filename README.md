@@ -155,5 +155,5 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 
 ### OIDC Providers 
 
-Tested OIDC providers: Keycloak, Auth0, Microsoft Azure
+Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
 

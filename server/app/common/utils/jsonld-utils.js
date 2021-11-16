@@ -12,6 +12,20 @@ class JsonldUtils {
     return null;
   }
 
+  static getGraphById(graphs, id) {
+    for (var g in graphs) {
+      var graph = graphs[g];
+
+      if (graph['@id'] == id) {
+        return graph;
+      }
+    }
+
+    return null;
+
+
+  }
+
   static getTypedGraphs(graphs, graphType) {
     var result = [];
 

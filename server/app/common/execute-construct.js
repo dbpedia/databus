@@ -5,6 +5,10 @@ var self = {};
 // Possibly exec stuff on CLI
 const { exec } = require('child_process');
 
+
+function escapeQuotes(value) {
+  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n');
+}
 /**
  * 
  * @param {*} jsonld
@@ -37,7 +41,7 @@ self.convertToN3 = function (graph) {
 
     if (triple.object.interfaceName == 'Literal') {
 
-      objectValue = `"${triple.object.nominalValue}"${dataType}`
+      objectValue = `"${escapeQuotes(triple.object.nominalValue)}"${dataType}`
 
       if (triple.object.language != undefined) {
         objectValue += `@${triple.object.language}`;

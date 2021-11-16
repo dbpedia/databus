@@ -136,7 +136,9 @@ module.exports = function (router, protector) {
       var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
       var targetPath = req.params.account + '/webid.jsonld';
 
-      console.log(compactedGraph);
+      console.log(`Target path: ${targetPath}`);
+      console.log(JSON.stringify(compactedGraph));
+
 
       // Save the data using the database manager
       var result = await databaseManager.save(req.params.account, targetPath, compactedGraph);

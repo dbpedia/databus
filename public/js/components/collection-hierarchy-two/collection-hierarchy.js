@@ -120,6 +120,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
           params: { uri: artifactNode.uri, type: 'artifact' }
         }).then(function (result) {
 
+          result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
           var artifactUri = result.config.params.uri;
           var groupUri = DatabusUtils.navigateUp(artifactUri);
           ctrl.view.artifacts[artifactUri].facets = result.data;
