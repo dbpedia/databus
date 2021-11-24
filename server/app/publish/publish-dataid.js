@@ -2,6 +2,7 @@ const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
 const RDF_URIS = require('./rdf-uris');
 
+
 var signer = require('../tractate/databus-tractate-suite');
 var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
@@ -20,9 +21,10 @@ module.exports = async function publishDataid(account, data) {
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
     var report = '';
 
-    console.log(data);
+    //console.log(data);
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
-    console.log(triples);
+
+    //console.log(triples);
     var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
 
     // Generate dynamic shacl test ?

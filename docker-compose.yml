@@ -23,7 +23,7 @@ services:
       VIRT_URI: "http://virtuoso:8890"
       GIT_ROOT: "/root/git"
     ports:
-      - "3002:80"
+      - "3002:8080"
     volumes:
       - ./data/repo:/root/git
   virtuoso:

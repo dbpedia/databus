@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 
 
 function escapeQuotes(value) {
-  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n');
+  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r');
 }
 /**
  * 
@@ -46,6 +46,7 @@ self.convertToN3 = function (graph) {
       if (triple.object.language != undefined) {
         objectValue += `@${triple.object.language}`;
       }
+      
     }
 
     triples += `${subjectValue} ${predicateValue} ${objectValue} .\n`;

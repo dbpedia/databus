@@ -86,7 +86,7 @@ module.exports = function (router, protector) {
       }
 
       var dataIdResult = await publishDataId(account, graph);
-      console.log(dataIdResult.message);
+      console.log(`Message: ${dataIdResult.message} EOM`);
 
       res.status(dataIdResult.code).send(dataIdResult.message);
 

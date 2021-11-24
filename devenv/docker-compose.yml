@@ -15,10 +15,10 @@ services:
     environment: 
       VIRT_USER: "dba"
       VIRT_PASS: "everyoneknows"
-      VIRT_URI: "http://172.17.0.01:3003"
+      VIRT_URI: "http://virtuoso:8890"
       GIT_ROOT: "/root/git"
     ports:
-      - "3002:80"
+      - "3002:8080"
     volumes:
       - ./data/repo:/root/git
   virtuoso:
