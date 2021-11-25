@@ -7,13 +7,16 @@ class QueryBuilder {
 
 
   constructor(artifactBaseQuery, artifactUriPlaceholder, optionsPlaceholder) {
+
+    //this.stringSuffix =  '^^<http://www.w3.org/2001/XMLSchema#string>'; 
+    this.stringSuffix = '';
     this.artifactBaseQuery = artifactBaseQuery;
     this.artifactUriPlaceholder = artifactUriPlaceholder;
     this.optionsPlaceholder = optionsPlaceholder;
 
     this.queryPlaceholderFacet = "%FACET%";
     this.queryPlaceholderValue = "%VALUE%";
-    this.defaultSubquery = "\n\t{ ?distribution <%FACET%> '%VALUE%'^^<http://www.w3.org/2001/XMLSchema#string> . }";
+    this.defaultSubquery = `\n\t{ ?distribution <%FACET%> '%VALUE%'${this.stringSuffix}. }`;
   }
 
   extractPrefixes(prefixes, query) {
@@ -327,6 +330,7 @@ class QueryBuilder {
   createFacetSubquery(node, facetUri, indent) {
     var first = true;
 
+
     // If we add a facet setting, we have to include the facets of all the ancestor nodes
     var settings = this.createEnrichedSettings(node, facetUri);
     settings = settings.filter(function(s) {
@@ -350,7 +354,7 @@ class QueryBuilder {
       }
       else {
         // Add the facet value restriction
-        this.appendLine(`{ ?distribution <${facetUri}> '${facetSettingEntry.value}'^^<http://www.w3.org/2001/XMLSchema#string> . }`, indent);
+        this.appendLine(`{ ?distribution <${facetUri}> '${facetSettingEntry.value}'${this.stringSuffix} . }`, indent);
       }
     }
     else if(settings.length > 1) {
@@ -380,7 +384,7 @@ class QueryBuilder {
           }
           else {
             // Add the facet value restriction
-            this.appendLine(`{ ?distribution <${facetUri}> '${facetSettingEntry.value}'^^<http://www.w3.org/2001/XMLSchema#string> . }`, indent);
+            this.appendLine(`{ ?distribution <${facetUri}> '${facetSettingEntry.value}'${this.stringSuffix} . }`, indent);
           }
 
           // If we have more than one value for this facet we need a UNION
@@ -395,7 +399,7 @@ class QueryBuilder {
         for(var i in settings) {
           var facetSettingEntry = settings[i];
           if(!facetSettingEntry.checked) continue;
-          this.appendLine(`'${facetSettingEntry.value}'^^<http://www.w3.org/2001/XMLSchema#string>`, indent + 2);
+          this.appendLine(`'${facetSettingEntry.value}'${this.stringSuffix}`, indent + 2);
         }
         this.appendLine(`}`, indent + 1);
         this.appendLine(`}`, indent);

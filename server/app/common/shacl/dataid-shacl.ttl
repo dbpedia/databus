@@ -118,7 +118,7 @@
   sh:datatype xsd:string ;
   sh:maxCount 1 ;
   sh:minCount 1 .
-
+  
 <#has-format>   
   a sh:PropertyShape ;
   sh:targetClass dataid:SingleFile ;
