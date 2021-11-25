@@ -3,16 +3,19 @@ var request = require('request');
 
 const ServerUtils = require('../common/utils/server-utils.js');
 const DatabusCache = require('../common/databus-cache');
+const LayeredCache = require('../common/layered-cache')
 const UriUtils = require('../common/utils/uri-utils');
 
 module.exports = function (router, protector) {
 
-  var cache = new DatabusCache(15);
+  var cache = new LayeredCache(15, 6000);
 
   /* GET home page. */
   router.get('/', protector.checkSso(), async function (req, res, next) {
 
-    var data = await cache.get('index', async function () {
+    var indexCacheKey = 'index';
+
+    var data = await cache.get(indexCacheKey, async function () {
       return {
         activityData: await sparql.pages.getGlobalActivityChartData(),
         rankingData: await sparql.pages.getPublishRankingData(),
