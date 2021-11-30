@@ -28,7 +28,7 @@ WHERE {
   ?distribution dct:hasVersion ?version .
   ?dataset dcat:distribution ?distribution .
   ?dataset dataid:version ?versionUri .
-  ?dataset rdfs:label ?label .
-  ?dataset rdfs:comment ?comment.
+  ?dataset dct:title ?label .
+  ?dataset dct:abstract ?comment.
 }
 GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview

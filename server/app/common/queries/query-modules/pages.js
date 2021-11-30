@@ -40,7 +40,6 @@ instance.getRecentUploadsData = async function () {
     result.push(binding);
   }
 
-  console.log(result);
   return result;
 };
 

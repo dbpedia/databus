@@ -5,30 +5,91 @@
  */
 
 var fs = require('fs');
-var app = require('./app/app');
 var debug = require('debug')('databus-server:server');
-var http = require('http');
-
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+var initialize = require('./app/init');
+const Constants = require('./app/common/constants');
+const DatabusUserDatabase = require('./userdb');
+var userTablePath = __dirname + '/users/namespaces.csv';
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+
+if (cluster.isMaster) {
+  masterProcess();
+} else {
+  childProcess();
+}
+
+function broadcast(msg) {
+  Object.keys(cluster.workers).forEach(function (id) {
+    cluster.workers[id].send(msg);
+  });
+}
+
+function masterProcess() {
+
+  var userDatabase = new DatabusUserDatabase(userTablePath, function(table) {
+    broadcast({ id : Constants.DATABUS_USER_CACHE_REFRESH, body: table });
+  })
+
+  initialize().then(function () {
+    console.log(`Number of CPUs is ${numCPUs}`);
+    console.log(`Master ${process.pid} is running`);
+
+    for (let i = 0; i < numCPUs; i++) {
+      console.log(`Forking process number ${i}...`);
+      var fork = cluster.fork();
+
+      fork.on('message', function (message) {
+        if(message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
+          userDatabase.updateUser(JSON.parse(message.body));
+        }
+      });
+    }
+
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+      console.log("Forking another worker!");
+      cluster.fork();
+    });
+
+
+
+  }, function (err) {
+    console.log(`Initialization error: \n${err}`);
+  });
+
+}
+
+function childProcess() {
+  console.log(`Worker ${process.pid} started...`);
+
+  var app = require('./app/app');
+  var port = normalizePort(process.env.PORT || '3000');
+  app.set('port', port);
+
+  var server = http.createServer(app);
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', function () {
+    console.log(`Worker listening on port ${port}`);
+  });
+}
+
+
+
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -78,14 +139,3 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}

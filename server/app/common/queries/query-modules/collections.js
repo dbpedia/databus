@@ -44,6 +44,8 @@ instance.getCollectionStatistics = async function(collectionUri) {
     };
 
     let selectQuery = exec.formatQuery(require('../sparql/get-collection.sparql'), queryOptions);
+
+    console.log(`Query: ${selectQuery}`);
     let entry = await exec.executeSelect(selectQuery);
 
     if(entry.length === 0) {
@@ -55,6 +57,8 @@ instance.getCollectionStatistics = async function(collectionUri) {
     let queryBuilder = new QueryBuilder();
     let wrapperQuery = require('../sparql/file-statistics-query-template.sparql');
     let query = queryBuilder.createCollectionQuery(content, wrapperQuery, '%COLLECTION_QUERY%');
+
+    console.log(`More query: ${query}`);
     let entries = await exec.executeSelect(query);
 
     if(entries.length === 0) {

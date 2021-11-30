@@ -18,6 +18,34 @@ module.exports = function (router, protector) {
 
   var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 
+  // Calculate the hash of a collection to check for changes
+  router.get('system/collections/collection-hash', async function (req, res, next) {
+    try {
+      var shasum = sparql.collections.getCollectionShasum(req.query.uri);
+      res.status(200).send(shasum);
+    } catch (err) {
+      console.log(err);
+      res.status(404).send('404 - collection not found');
+    }
+  });
+
+  router.get('/system/collections/collection-statistics', async function(req, res, next) {
+    try{
+
+      let collectionStatistics = await sparql.collections.getCollectionStatistics(req.query.uri);
+
+      if(collectionStatistics.length !== 0) {
+        res.status(200).send(collectionStatistics);
+      } else {
+        res.status(404).send('Unable to find statistics for this collection.');
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(404).send('Unable to find statistics for this collection.');
+    }
+  });
+
+
   async function putOrPatchCollection(req, res, next) {
 
     try {
