@@ -32,7 +32,8 @@
 </tr>
 <tr>
 <td> 200 </td>
-<td>
+<td>V Extra blank line below!
+    
 ```json
 json
 {
@@ -45,6 +46,7 @@ json
     "updated_at": "2015-02-14T20:45:26.540Z"
 }
 ```
+    
 V Extra blank line below!
 
 </td>
