@@ -12,6 +12,7 @@
     <h1 class="title is-6">{{ facet.label }}</h1>
     <div ng-repeat="facetValue in facet.visibleFacetSettings">
       <override-checkbox label="$ctrl.getFacetLabel(facetValue.value)"
+        id="facet.label + '_' + facetValue.value"
         is-override="facetValue.isOverride"
         check-value="facetValue.checked"
         readonly="$ctrl.readonly"

@@ -98,10 +98,10 @@ class DatabusUtils {
     result = result.substr(result.lastIndexOf('#') + 1);
 
     if(result.includes('.')) {
-      result = result.substr(0, result.lastIndexOf('.'));
+      result = result.substr(0, result.indexOf('.'));
     }
     
-    return result;
+    return decodeURIComponent(result);
   }
 
   static navigateUp(uri) {
