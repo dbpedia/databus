@@ -108,7 +108,7 @@ V Extra blank line below!
 <td> Status </td> <td> Response </td>
 </tr>
 <tr>
-<td> <code>
+<td> <pre><code>
 {
     "id": 10,
     "username": "alanpartridge",
@@ -118,9 +118,9 @@ V Extra blank line below!
     "created_at": "2015-02-14T20:45:26.433Z",
     "updated_at": "2015-02-14T20:45:26.540Z"
 }
-    </code>   
+    </code></pre>   
 </td>
-<td>
+<td><pre>
 <code>
 {
     "id": 10,
@@ -131,7 +131,7 @@ V Extra blank line below!
     "created_at": "2015-02-14T20:45:26.433Z",
     "updated_at": "2015-02-14T20:45:26.540Z"
 }
-</code>
+</code></pre>
 </td>
 </tr>
 </table>
