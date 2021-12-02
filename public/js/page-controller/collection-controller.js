@@ -8,7 +8,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
   $scope.collectionViewModel = {};
   $scope.collectionViewModel.downloadScript = [];
   $scope.collectionViewModel.downloadScript.length = 3;
-  $scope.collectionViewModel.downloadScript[0] = `query=$(curl -H "Accept:text/sparql" ${scope.collection.uri})`;
+  $scope.collectionViewModel.downloadScript[0] = `query=$(curl -H "Accept:text/sparql" ${$scope.collection.uri})`;
   $scope.collectionViewModel.downloadScript[1] = `files=$(curl -H "Accept: text/csv" --data-urlencode "query=\${query}" ${DATABUS_RESOURCE_BASE_URL}/system/sparql | tail -n+2 | sed \'s/"//g\')`;
   $scope.collectionViewModel.downloadScript[2] = 'while IFS= read -r file ; do wget $file; done <<< "$files"';
   
@@ -23,7 +23,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
   $scope.collectionManager = collectionManager;
   $scope.collectionFiles = "";
 
-
+  /*
   $http.get('/system/collections/collection-statistics', { params : { uri : $scope.collection.uri } }).then(function(result) {
     for(let i in result.data.files) {
       $scope.collectionFiles += result.data.files[i].downloadURLs + "\n";
@@ -31,7 +31,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
 
     $scope.collection.statistics = result.data;
     $scope.files = result.data.files;
-  });
+  });*/
 
   if($scope.authenticated) {
     $scope.username = data.auth.info.username;

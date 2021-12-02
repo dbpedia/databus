@@ -16,6 +16,8 @@ const Constants = {
    KEY_ACTIONS: 'actions',
    KEY_MODS: 'mods',
 
+   DATABUS_USER_CACHE_REFRESH : 0x01,
+   DATABUS_USER_ENTRY_UPDATE : 0x02,
    DEFAULT_SPARQL_ENDPOINT_URL : 'http://localhost:8898/sparql',
    DATAID_DEFAULT_IMAGE_URL : 'https://picsum.photos/id/223/320/320',
    DEFAULT_DATABASE_URL : 'http://localhost:3002',

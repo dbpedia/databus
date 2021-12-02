@@ -16,6 +16,8 @@ var rp = require('request-promise');
 const crypto = require("crypto");
 const Constants = require('./common/constants.js');
 
+
+
 // Creation of the mighty server app
 var app = express();
 
@@ -24,8 +26,6 @@ var memoryStore = new session.MemoryStore();
 
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
-
-
 
 
   // Create and attach the databus protector
@@ -72,11 +72,47 @@ initialize(app, memoryStore).then(function () {
   })
 });
 
+
+async function loadDefaultContext() {
+
+  try {
+
+    // Overwrite default if configured
+    if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
+      Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
+    }
+
+    // Set file path
+    var contextFile = __dirname + '/../../context.json';
+
+    // Request options
+    var contextOptions = {
+      method: 'GET',
+      uri: Constants.DATABUS_DEFAULT_CONTEXT_URL,
+      headers: { 'User-Agent': 'Request-Promise' },
+      json: true
+    };
+
+    // Request and save to file
+    var response = await rp(contextOptions);
+    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
+
+    console.log(`Fetched default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
+
+  } catch (err) {
+    console.log(err);
+    console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
+  }
+}
+
 /**
  * Express app initialization
  * @param {the express app} app 
  */
 async function initialize(app, memoryStore) {
+
+
+
 
   // CORS setup
   var originsWhitelist = [
@@ -128,75 +164,9 @@ async function initialize(app, memoryStore) {
     store: memoryStore
   }));
 
-  // Write environment variables to client constants
-  var constantsFile = './../public/js/utils/databus-constants.js';
+  await loadDefaultContext();
 
-  var regex = new RegExp(/DATABUS_RESOURCE_BASE_URL\s=\s"(.*)";/gm);
-  var clientConstants = fs.readFileSync(constantsFile, ['utf8']).toString();
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_RESOURCE_BASE_URL = "${process.env.DATABUS_RESOURCE_BASE_URL}";`);
 
-  regex = new RegExp(/DATABUS_DEFAULT_CONTEXT_URL\s=\s"(.*)";/gm);
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_DEFAULT_CONTEXT_URL = "${process.env.DATABUS_DEFAULT_CONTEXT_URL}";`);
-
-  fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
-
-  try {
-    // Download context
-    if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
-      Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
-    }
-    var contextFile = __dirname + '/../../context.json';
-
-    var contextOptions = {
-      method: 'GET',
-      uri: Constants.DATABUS_DEFAULT_CONTEXT_URL,
-      headers: {
-        'User-Agent': 'Request-Promise'
-      },
-      json: true
-    };
-
-    var response = await rp(contextOptions);
-
-    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
-    console.log(`Fetched default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-
-  } catch (err) {
-    console.log(err);
-    console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-  }
-
-  // Create RSA keys
-  var privateKeyFile = __dirname + '/../keypair/private-key.pem';
-  var publicKeyFile = __dirname + '/../keypair/public-key.pem';
-
-  // try to load from file
-  if (!fs.existsSync(privateKeyFile)) {
-
-    var { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-      'modulusLength': 2048,
-      publicKeyEncoding: {
-        type: 'spki',
-        format: 'pem'
-      },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'pem'
-      }
-    });
-
-    if (!fs.existsSync(__dirname + '/../keypair')) {
-      fs.mkdirSync(__dirname + '/../keypair');
-    }
-
-    fs.writeFileSync(privateKeyFile, privateKey.toString('base64'), "utf8");
-    fs.writeFileSync(publicKeyFile, publicKey.toString('base64'), "utf8");
-  }
-
-  // TODO: enable minifier
-  minifier.minify('../../public/js', 'js', '../min/databus.min.js', '../min/databus.min.js.map');
 }
 
 module.exports = app;

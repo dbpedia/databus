@@ -24,6 +24,7 @@ const COOKIE_NAME = 'skipSilentLogin';
 
 var path = require('path');
 var fs = require('fs');
+const Constants = require('../common/constants');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -98,8 +99,29 @@ class DatabusProtect {
 
   constructor(memoryStore) {
 
+    var self = this;
+
+    // Receive messages from the master process.
+    process.on('message', function (msg) {
+      if (msg.id == Constants.DATABUS_USER_CACHE_REFRESH) {
+        self.updateHashTables(msg.body)
+      }
+    });
+
+    process.send({
+      id: Constants.DATABUS_USER_ENTRY_UPDATE,
+      body: JSON.stringify({
+        sub: process.pid,
+        username: `user_${process.pid}`,
+        name: `Name Of ${process.pid}`,
+        keys: []
+      })
+    });
+
     this.oidc = oidc;
     this.oidc.debug = (str) => console.log(str);
+
+    /*
     this.userTablePath = __dirname + '/../../users/namespaces.csv';
 
     if (!fs.existsSync(this.userTablePath)) {
@@ -113,7 +135,7 @@ class DatabusProtect {
     }
 
     console.log(`Parsing user table from ${this.userTablePath}`);
-    this.createUserHashtable(fs.readFileSync(this.userTablePath, "utf8"));
+    this.createUserHashtable(fs.readFileSync(this.userTablePath, "utf8"));*/
   }
 
   hasUser(user) {
@@ -136,11 +158,18 @@ class DatabusProtect {
     this.users.byUsername[username] = user;
     this.users.bySub[sub] = user;
 
-    this.saveUserTable();
+    this.saveUser(user);
   }
 
-  saveUserTable() {
+  saveUser(user) {
 
+    process.send({
+      id: Constants.DATABUS_USER_ENTRY_UPDATE,
+      body: JSON.stringify(user)
+    });
+
+
+    /*
     var csvString = "";
     for (var u in this.users.bySub) {
       var user = this.users.bySub[u];
@@ -154,7 +183,7 @@ class DatabusProtect {
       }
     }
 
-    fs.writeFileSync(this.userTablePath, csvString, "utf8");
+    fs.writeFileSync(this.userTablePath, csvString, "utf8");*/
   }
 
   addApiKey(sub, name) {
@@ -172,10 +201,9 @@ class DatabusProtect {
 
     user.keys.push({ name: name, key: key });
 
+    //this.users.byApiKey[key] = user;
 
-    this.users.byApiKey[key] = user;
-    this.saveUserTable();
-
+    this.saveUser(user);
     return { name: name, key: key };
   }
 
@@ -198,8 +226,8 @@ class DatabusProtect {
 
       if (keys.length != user.keys.length) {
         user.keys = keys;
-        delete this.users.byApiKey[key];
-        this.saveUserTable();
+
+        this.saveUser(user);
         return true;
       }
 
@@ -229,6 +257,26 @@ class DatabusProtect {
     };
   }
 
+  updateHashTables(bySubTable) {
+
+    this.users = {};
+    this.users.bySub = bySubTable;
+    this.users.byUsername = {};
+    this.users.byApiKey = {};
+
+    for (var sub in this.users.bySub) {
+
+      var obj = this.users.bySub[sub];
+      this.users.byUsername[obj.username] = obj;
+
+      for (var k in obj.keys) {
+        var entry = obj.keys[k];
+        this.users.byApiKey[entry.key] = obj;
+      }
+    }
+
+    console.log(`User table updated on worker ${process.pid}`);
+  }
 
   createUserHashtable(csv) {
 
