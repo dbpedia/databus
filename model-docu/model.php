@@ -1,13 +1,43 @@
 <?php 
 /*
 sudo apt install php7.4-cli
-sudo apt install pandoc
 php model.php > model.md
-pandoc -f markdown model.md | tidy -i > model.html
 
+Goal:
+* php script is a template to fill a markdown doc (stdout)
+* also generates context, shacl and example (these are the Single Source of Truth files) 
+* OWL should be taken from dataid, dct, dcat, etc. SSoT is elsewhere
+
+Success criteria:
+* model.md renders well and looks pretty
+* context.json, shacl and example have a correct syntax.
+
+TODO Preparation:
+* remove @value and @language from databus/example/generate-example_slim.sh
+<"title": { "@value" : "Example Group", "@language" : "en" },
+>"title": "Example Group",
+* generate new example file
+
+TODO   
+* migrate all content in model.php from  /input folder, ontologies and above example file
+* follow the order of example file
+* do header/footer for the generated files
+
+
+
+Other attempts (outdated html conversion):
+sudo apt install pandoc
+pandoc -f markdown model.md | tidy -i > model.html
+<span id="<?="context|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($context))?></span>
 
 */
-function table ($id, $owl,$shacl,$example,$context){
+function table ($header, $id, $owl,$shacl,$example,$context){
+	file_put_contents("context.json",$context,FILE_APPEND);
+	file_put_contents("$header.shacl",$shacl,FILE_APPEND);
+	if($header === "distribution" ) {
+		$header = "dataid";
+		}
+	file_put_contents("$header.example.jsonld",$example,FILE_APPEND);
 	
 ?>	
 <table id="<?=$id?>" border=1px >
@@ -22,8 +52,6 @@ function table ($id, $owl,$shacl,$example,$context){
 <?=$owl?>    
 ```
 
-<span id="<?="owl|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($owl))?></span>
-
 </td>
 <td>
 
@@ -31,7 +59,6 @@ function table ($id, $owl,$shacl,$example,$context){
 <?=$shacl?>    
 ```
 
-<span id="<?="shacl|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($shacl))?></span>
 </td>
 </tr>
 <tr>
@@ -41,16 +68,12 @@ function table ($id, $owl,$shacl,$example,$context){
 <?=$example?>    
 ```
 
-<span id="<?="example|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($example))?></span>
-
 </td>
 <td>
 
 ```json
 <?=$context?>    
 ```
-
-<span id="<?="context|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($context))?></span>
 
 </td>
 </tr>
@@ -63,10 +86,9 @@ function table ($id, $owl,$shacl,$example,$context){
 
 # Model
 
-
 ## Group
 
-## Dataset
+## Dataset (DataId)
 
 ## Distribution
 
@@ -101,8 +123,6 @@ $context='"byteSize": {
     "@type": "xsd:decimal"
   },';
 
-
-
-table("dcat:bytesize",$owl,$shacl,$example,$context);
+table("distribution","dcat:bytesize",$owl,$shacl,$example,$context);
 
 ?>
