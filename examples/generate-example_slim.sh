@@ -13,16 +13,16 @@ read -r -d '' DATAID_DATA << _EOT_
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
       "@type": "dataid:Group",
-      "title": { "@value" : "Example Group", "@language" : "en" },
-      "abstract": { "@value" : "This is an example group for API testing.", "@language" : "en" },
-      "description": { "@value" : "This is an example group for API testing.", "@language" : "en" }
+      "title": "Example Group",
+      "abstract": "This is an example group for API testing.",
+      "description": "This is an example group for API testing.",
     },
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
       "@type": "dataid:Dataset",
-      "title": { "@value" : "DBpedia Ontology Example", "@language" : "en" },
-      "abstract": { "@value" : "This is an example for API testing.", "@language" : "en" },
-      "description": { "@value" : "This is an example for API testing.", "@language" : "en" },
+      "title": "DBpedia Ontology Example",
+      "abstract": "This is an example for API testing.",
+      "description": "This is an example for API testing.",
       "publisher": "%DATABUS_URI%/%ACCOUNT%#this",
       "group": "%DATABUS_URI%/%ACCOUNT%/examples",
       "artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",
@@ -39,7 +39,7 @@ read -r -d '' DATAID_DATA << _EOT_
           "format": "nt",
           "compression": "none",
           "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-          "byteSize": { "@value" : "4439722", "@type" : "xsd:decimal" },
+          "byteSize": "4439722",
           "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
           "hasVersion": "%VERSION%"
         }
