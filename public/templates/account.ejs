@@ -168,13 +168,8 @@
               <div class="dashboard-card-title">Popular Content</div>
 
               <div>
-                <div ng-if="artifactData.isLoading" style="text-align:center">
-                  <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
+                <div  ng-if="artifactData.isLoading" style="text-align:center" >
+                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
 
                 <div ng-if="!artifactData.isLoading" ng-repeat="content in featuredContent" style="padding: 1em 0.5em;">
@@ -188,26 +183,16 @@
 
             <div class="dashboard-card">
               <div class="dashboard-card-title">Publisher Activity</div>
-              <div ng-if="activityData.isLoading" style="text-align:center">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
+                <div  ng-if="activityData.isLoading" style="text-align:center" >
+                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
-              </div>
               <div ng-if="!activityData.isLoading" style="display: flex;">
                 <activity-chart data="activityData.entries" height="400"></activity-chart>
 
                 <div style="min-width: 40%;">
-                  <div ng-if="artifactData.isLoading" style="text-align:center">
-                    <div class="lds-ellipsis">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
+                    <div  ng-if="artifactData.isLoading" style="text-align:center" >
+                      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     </div>
-                  </div>
                   <div ng-if="recentUploads.length > 0" class="timeline" style="padding: 1em 0.5em;">
                     <div ng-repeat="dataset in recentUploads">
 
@@ -276,8 +261,8 @@
               <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'" desc="artifact.abstract">
               </entity-card>
             </div>
-            <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
           </div>
+          <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
         </div>
 
         <!--

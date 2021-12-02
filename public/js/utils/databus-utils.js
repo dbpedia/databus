@@ -96,7 +96,7 @@ class DatabusUtils {
 
     var result = uri.substr(uri.lastIndexOf('/') + 1);
     result = result.substr(result.lastIndexOf('#') + 1);
-    result = result.substr(0, result.lastIndexOf('.'));
+    if(result.includes('.')) result = result.substr(0, result.lastIndexOf('.'));
     return result;
   }
 

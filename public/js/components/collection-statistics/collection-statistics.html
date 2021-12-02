@@ -1,10 +1,5 @@
-<div ng-if="$ctrl.isLoading" style="text-align:center">
-  <div class="lds-ellipsis">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+<div  ng-if="$ctrl.isLoading" style="text-align:center" >
+  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 </div>
 
 <div ng-if="!$ctrl.isLoading">
@@ -12,7 +7,7 @@
   <div ng-if="$ctrl.statistics.fileCount==undefined">
     <span style="font-size: large; color: #da4c4c;">Please add data to your collection, to get its crucial information shown here!</span>
   </div>
-  
+
   <div ng-if="$ctrl.statistics.fileCount!==undefined">
     <table class="table is-fullwidth">
       <col width="30%">
