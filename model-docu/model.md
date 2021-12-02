@@ -8,15 +8,10 @@
 
 ## Distribution
 
-### <?>
-	
+### dcat:bytesize	
 <table id="dcat:bytesize" border=1px >
-<tr>
-<td> OWL </td> <td> SHACL </td>
-</tr>
-<tr>	
-	
-<td> 
+<tr><td> OWL </td> <td> SHACL </td></tr>
+<tr><td> 
 	
 ```sql
 # excerpt from https://www.w3.org/ns/dcat2.ttl 
@@ -32,8 +27,7 @@ dcat:byteSize
   skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;    
 ```
 
-</td>
-<td>
+</td><td>
 
 ```sql
 <#has-bytesize>   
@@ -47,17 +41,13 @@ dcat:byteSize
   sh:minCount 1 .    
 ```
 
-</td>
-</tr>
-<tr>
-<td> 
+</td></tr><tr><td> 
 
 ```json	
 "byteSize": "4439722" ,    
 ```
 
-</td>
-<td>
+</td><td>
 
 ```json
 "byteSize": {
@@ -66,6 +56,4 @@ dcat:byteSize
   },    
 ```
 
-</td>
-</tr>
-</table>
+</td></tr></table>

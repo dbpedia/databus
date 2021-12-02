@@ -9,19 +9,20 @@ Goal:
 * OWL should be taken from dataid, dct, dcat, etc. SSoT is elsewhere
 
 Success criteria:
-* model.md renders well and looks pretty
 * context.json, shacl and example have a correct syntax.
+* model.md renders well and looks pretty
 
-TODO Preparation:
+
+TODO 1 Preparation Fabian:
 * remove @value and @language from databus/example/generate-example_slim.sh
 <"title": { "@value" : "Example Group", "@language" : "en" },
 >"title": "Example Group",
 * generate new example file
 
-TODO   
-* migrate all content in model.php from  /input folder, ontologies and above example file
-* follow the order of example file
-* do header/footer for the generated files
+TODO 2 Fabian
+* migrate all content in model.php from ontologies, ../context.json, example file and server/app/common/shacl/ 
+* follow the order of example file in this doc
+* do header/footer for the generated files so they are valid
 
 
 
@@ -31,53 +32,42 @@ pandoc -f markdown model.md | tidy -i > model.html
 <span id="<?="context|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($context))?></span>
 
 */
-function table ($header, $id, $owl,$shacl,$example,$context){
+function table ($section, $id, $owl,$shacl,$example,$context){
 	file_put_contents("context.json",$context,FILE_APPEND);
-	file_put_contents("$header.shacl",$shacl,FILE_APPEND);
-	if($header === "distribution" ) {
-		$header = "dataid";
+	file_put_contents("$section.shacl",$shacl,FILE_APPEND);
+	if($section === "distribution" ) {
+		$section = "dataid";
 		}
-	file_put_contents("$header.example.jsonld",$example,FILE_APPEND);
+	file_put_contents("$section.example.jsonld",$example,FILE_APPEND);
 	
 ?>	
 <table id="<?=$id?>" border=1px >
-<tr>
-<td> OWL </td> <td> SHACL </td>
-</tr>
-<tr>	
-	
-<td> 
+<tr><td> OWL </td> <td> SHACL </td></tr>
+<tr><td> 
 	
 ```sql
 <?=$owl?>    
 ```
 
-</td>
-<td>
+</td><td>
 
 ```sql
 <?=$shacl?>    
 ```
 
-</td>
-</tr>
-<tr>
-<td> 
+</td></tr><tr><td> 
 
 ```json	
 <?=$example?>    
 ```
 
-</td>
-<td>
+</td><td>
 
 ```json
 <?=$context?>    
 ```
 
-</td>
-</tr>
-</table>
+</td></tr></table>
 <?php	
 	}
 
@@ -86,15 +76,20 @@ function table ($header, $id, $owl,$shacl,$example,$context){
 
 # Model
 
+<?php $section="group" ?>
 ## Group
 
+<?php $section="dataid" ?>
 ## Dataset (DataId)
 
+<?php $section="distribution" ?>
 ## Distribution
 
+### <?=$id="dcat:bytesize" ?>
 <?php 
 
-$owl='dcat:byteSize
+$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl 
+dcat:byteSize
   a rdf:Property ;
   a owl:DatatypeProperty ;
   rdfs:comment "The size of a distribution in bytes."@en ;
@@ -123,6 +118,6 @@ $context='"byteSize": {
     "@type": "xsd:decimal"
   },';
 
-table("distribution","dcat:bytesize",$owl,$shacl,$example,$context);
+table($section,$id,$owl,$shacl,$example,$context);
 
 ?>

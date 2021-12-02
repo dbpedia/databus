@@ -18,4 +18,3 @@ examples/example-metadata.jsonld
 model-docu/context.json
 model-docu/*.example.jsonld
 model-docu/*.shacl
-model-docu/model.md
