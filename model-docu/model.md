@@ -4,6 +4,11 @@
 
 ## Group
 
+### dct:title
+
+### dct:abstract
+### dct:description
+
 ## Dataset (DataId)
 
 ## Distribution
@@ -38,7 +43,7 @@ dcat:byteSize
   sh:path dcat:byteSize ;
   sh:datatype xsd:decimal ;
   sh:maxCount 1 ;
-  sh:minCount 1 .    
+  sh:minCount 1 .      
 ```
 
 </td></tr><tr><td> 

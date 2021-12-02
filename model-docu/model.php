@@ -20,7 +20,7 @@ TODO 1 Preparation Fabian:
 * generate new example file
 
 TODO 2 Fabian
-* migrate all content in model.php from ontologies, ../context.json, example file and server/app/common/shacl/ 
+* migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/   
 * follow the order of example file in this doc
 * do header/footer for the generated files so they are valid
 
@@ -79,6 +79,24 @@ function table ($section, $id, $owl,$shacl,$example,$context){
 <?php $section="group" ?>
 ## Group
 
+### <?=$id="dct:title" ?>
+
+<?php 
+
+//$owl=
+//$shacl=
+//$example=
+//$context=
+
+//table()
+
+?>
+
+### <?=$id="dct:abstract" ?>
+
+### <?=$id="dct:description" ?>
+
+
 <?php $section="dataid" ?>
 ## Dataset (DataId)
 
@@ -108,7 +126,7 @@ $shacl='<#has-bytesize>
   sh:path dcat:byteSize ;
   sh:datatype xsd:decimal ;
   sh:maxCount 1 ;
-  sh:minCount 1 .';
+  sh:minCount 1 .  ';
 
 
 $example='"byteSize": "4439722" ,';
