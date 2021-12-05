@@ -1,11 +1,16 @@
-<?php 
+<?php
+
+$contextFile="context.json";
+$shaclDir="shacl";
+$examplesDir="examples";
+
 /*
 sudo apt install php7.4-cli
 php model.php > model.md
 
 Goal:
 * php script is a template to fill a markdown doc (stdout)
-* also generates context, shacl and example (these are the Single Source of Truth files) 
+* also generates context, shacl and example (these are the Single Source of Truth files)
 * OWL should be taken from dataid, dct, dcat, etc. SSoT is elsewhere
 
 Success criteria:
@@ -20,7 +25,7 @@ TODO 1 Preparation Fabian:
 * generate new example file
 
 TODO 2 Fabian
-* migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/   
+* migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/
 * follow the order of example file in this doc
 * do header/footer for the generated files so they are valid
 
@@ -32,15 +37,30 @@ pandoc -f markdown model.md | tidy -i > model.html
 <span id="<?="context|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($context))?></span>
 
 */
-function table ($section, $id, $owl,$shacl,$example,$context){
-	file_put_contents("context.json",$context,FILE_APPEND);
-	file_put_contents("$section.shacl",$shacl,FILE_APPEND);
+?>
+
+
+<?php
+function table ($section, $id, $owl, $shacl, $example, $context){
+    global $contextFile, $shaclDir, $examplesDir;
+
+    if ($shacl != 'missing') {
+	    file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
+    }
+
+
+
+    if ($context !== "missing"){
+	    file_put_contents($contextFile,$context ."," .PHP_EOL,FILE_APPEND);
+    }
+
 	if($section === "distribution" ) {
 		$section = "dataid";
-		}
-	file_put_contents("$section.example.jsonld",$example,FILE_APPEND);
+	}
 
+	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 ?>
+
 <table id="<?=$id?>" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr>
 <tr><td>
@@ -68,18 +88,33 @@ function table ($section, $id, $owl,$shacl,$example,$context){
 ```
 
 </td></tr></table>
+
 <?php
 	}
 
 ?>
 
+<?php
+function init ($contextFile, $shaclDir, $examplesDir){
+    unlink($contextFile);
+    array_map('unlink', glob("$shaclDir/*.*"));
+    rmdir($shaclDir);
+    array_map('unlink', glob("$examplesDir/*.*"));
+    rmdir($examplesDir);
+    mkdir($shaclDir, 0777, true);
+    mkdir($examplesDir, 0777, true);
+    }
+?>
 
+<?php
+init($contextFile, $shaclDir, $examplesDir);
+?>
 
 
 # Model
 
-
 ## Group
+<?php $section="group" ?>
 
 ### <?=$id="group" ?>
 <?php
@@ -101,6 +136,10 @@ $context='"group": {
        "@id": "dataid:group",
        "@type": "@id"
      }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -131,6 +170,10 @@ $context='"title": {
     "@id": "dct:title",
     "@type": "xsd:string"
   }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -164,6 +207,10 @@ $context='"abstract": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dct:description" ?>
 <?php
@@ -195,12 +242,14 @@ $context='"description": {
     }';
 ?>
 
-
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
 
 
 ## Dataset (DataId)
-
 <?php $section="dataid" ?>
+
 ### <?=$id="dct:title" ?>
 <?php
 $owl='dct:title
@@ -227,6 +276,10 @@ $context='"title": {
     "@id": "dct:title",
     "@type": "xsd:string"
   }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -256,6 +309,10 @@ $context='"abstract": {
       "@type": "xsd:string",
       "@language": "en"
     }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -288,6 +345,10 @@ $context='"description": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dct:publisher" ?>
 <?php
@@ -317,6 +378,10 @@ $context='"publisher": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dataid:group" ?>
 <?php
@@ -332,6 +397,10 @@ $context='"group": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dataid:artifact" ?>
 <?php
@@ -344,7 +413,11 @@ $example='%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example';
 $context='"artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
-    },';
+    }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -376,6 +449,10 @@ $context='"version": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dct:hasVersion" ?>
 <?php
@@ -396,6 +473,10 @@ $context='"hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
     }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -428,6 +509,10 @@ $context='"issued": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dct:license" ?>
 <?php
@@ -456,6 +541,10 @@ $context='"license": {
       "@id": "dct:license",
       "@type": "@id"
     }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -518,10 +607,12 @@ $shacl='<#distribution-violation>
 
 $example='';
 
-$context='"distribution": "dcat:distribution",';
+$context='"distribution": "dcat:distribution"';
 ?>
 
-
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
 
 
 ## Distribution
@@ -556,6 +647,11 @@ $context='"issued": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
+
 ### <?=$id="dataid:file" ?>
 <?php
 $owl='missing';
@@ -568,6 +664,10 @@ $context='"file": {
       "@id": "dataid:file",
       "@type": "@id"
     }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -592,6 +692,10 @@ $context='"format": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dataid:compression" ?>
 <?php
@@ -612,6 +716,10 @@ $context='"compression": {
       "@id": "dataid:compression",
       "@type": "xsd:string"
     }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -680,6 +788,10 @@ $context='"downloadURL": {
     }';
 ?>
 
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
+?>
+
 
 ### <?=$id="dcat:bytesize" ?>
 <?php
@@ -710,7 +822,11 @@ $example='"byteSize": "4439722" ,';
 $context='"byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
-  },';
+  }';
+?>
+
+<?php
+table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -758,6 +874,49 @@ $context='"hasVersion": {
     }';
 ?>
 
+<?php
 table($section,$id,$owl,$shacl,$example,$context);
-
 ?>
+
+
+<?php
+function headerFooter($contextFile, $shaclDir){
+    //context.json
+    $fileContent = file_get_contents($contextFile);
+    $fileContent = substr_replace($fileContent ,"",-2);
+    $fileContent = "{" .PHP_EOL .$fileContent .PHP_EOL ."}";
+    file_put_contents($contextFile, $fileContent);
+
+    //prepare shacl files
+    $shaclFiles = array_diff(scandir($shaclDir), array('.', '..'));
+    foreach($shaclFiles as $shaclFile){
+
+        $fileContent = file_get_contents("$shaclDir/$shaclFile");
+
+        $prefixes = "@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+";
+
+        file_put_contents("$shaclDir/$shaclFile", $prefixes .$fileContent);
+    }
+
+}
+?>
+
+<?php
+headerFooter($contextFile, $shaclDir);
+?>
+
+
+
+
