@@ -686,7 +686,7 @@ $shacl='<#formatExtension-violation>
 
 $example='nt';
 
-$context='"format": {
+$context='"formatExtension": {
       "@id": "dataid:formatExtension",
       "@type": "xsd:string"
     }';
