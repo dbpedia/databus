@@ -64,29 +64,32 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 ?>
 
 <table id="<?=$id?>" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 <?=$owl?>
+
 ```
 
 </td><td>
 
 ```sql
 <?=$shacl?>
+
 ```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
 <?=$example?>
+
 ```
 
 </td><td>
 
 ```json
 <?=$context?>
+
 ```
 
 </td></tr></table>

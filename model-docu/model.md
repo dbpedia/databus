@@ -7,11 +7,11 @@
 ### group
 
 <table id="group" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
@@ -24,12 +24,14 @@ missing```
               sh:minCount 1 ;
               sh:maxCount 1;
               sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-          ] .```
+          ] .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-dataid:Group```
+dataid:Group
+```
 
 </td><td>
 
@@ -37,7 +39,8 @@ dataid:Group```
 "group": {
        "@id": "dataid:group",
        "@type": "@id"
-     }```
+     }
+```
 
 </td></tr></table>
 
@@ -46,8 +49,7 @@ dataid:Group```
 ### dct:title
 
 <table id="dct:title" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:title
@@ -57,7 +59,8 @@ dct:title
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Title"@en ;
           rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
+```
 
 </td><td>
 
@@ -70,12 +73,14 @@ dct:title
             sh:path dct:title ;
             sh:minCount 1 ;
             sh:languageIn ("en") ;
-            sh:uniqueLang true .```
+            sh:uniqueLang true .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-Example Group```
+Example Group
+```
 
 </td><td>
 
@@ -83,7 +88,8 @@ Example Group```
 "title": {
     "@id": "dct:title",
     "@type": "xsd:string"
-  }```
+  }
+```
 
 </td></tr></table>
 
@@ -92,8 +98,7 @@ Example Group```
 ### dct:abstract
 
 <table id="dct:abstract" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:abstract
@@ -102,7 +107,8 @@ dct:abstract
           rdfs:comment "A summary of the resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+```
 
 </td><td>
 
@@ -116,12 +122,14 @@ dct:abstract
           sh:minCount 1 ;
           sh:languageIn ("en") ;
           sh:uniqueLang true .
-        ```
+        
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.```
+This is an example group for API testing.
+```
 
 </td><td>
 
@@ -130,7 +138,8 @@ This is an example group for API testing.```
       "@id": "dct:abstract",
       "@type": "xsd:string",
       "@language": "en"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -139,8 +148,7 @@ This is an example group for API testing.```
 ### dct:description
 
 <table id="dct:description" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:description
@@ -150,7 +158,8 @@ dct:description
           rdfs:comment "An account of the resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+```
 
 </td><td>
 
@@ -163,12 +172,14 @@ dct:description
             sh:path dct:description ;
             sh:minCount 1 ;
             sh:languageIn ("en") ;
-            sh:uniqueLang true .```
+            sh:uniqueLang true .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.```
+This is an example group for API testing.
+```
 
 </td><td>
 
@@ -177,7 +188,8 @@ This is an example group for API testing.```
       "@id": "dct:description",
       "@type": "xsd:string",
       "@language": "en"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -188,8 +200,7 @@ This is an example group for API testing.```
 ### dct:title
 
 <table id="dct:title" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:title
@@ -199,7 +210,8 @@ dct:title
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Title"@en ;
           rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
+```
 
 </td><td>
 
@@ -211,12 +223,14 @@ dct:title
             sh:path dct:title ;
             sh:minCount 1 ;
             sh:languageIn ("en") ;
-            sh:uniqueLang true .```
+            sh:uniqueLang true .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-DBpedia Ontology Example```
+DBpedia Ontology Example
+```
 
 </td><td>
 
@@ -224,7 +238,8 @@ DBpedia Ontology Example```
 "title": {
     "@id": "dct:title",
     "@type": "xsd:string"
-  }```
+  }
+```
 
 </td></tr></table>
 
@@ -233,8 +248,7 @@ DBpedia Ontology Example```
 ### dct:abstract
 
 <table id="dct:abstract" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:abstract
@@ -243,7 +257,8 @@ dct:abstract
           rdfs:comment "A summary of the resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+```
 
 </td><td>
 
@@ -255,12 +270,14 @@ dct:abstract
             sh:path dct:abstract ;
             sh:minCount 1 ;
             sh:languageIn ("en") ;
-            sh:uniqueLang true .```
+            sh:uniqueLang true .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.```
+This is an example group for API testing.
+```
 
 </td><td>
 
@@ -269,7 +286,8 @@ This is an example group for API testing.```
       "@id": "dct:abstract",
       "@type": "xsd:string",
       "@language": "en"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -278,8 +296,7 @@ This is an example group for API testing.```
 ### dct:description
 
 <table id="dct:description" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:description
@@ -289,7 +306,8 @@ dct:description
           rdfs:comment "An account of the resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+```
 
 </td><td>
 
@@ -301,12 +319,14 @@ dct:description
             sh:path dct:description ;
             sh:minCount 1 ;
             sh:languageIn ("en") ;
-            sh:uniqueLang true .```
+            sh:uniqueLang true .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example for API testing.```
+This is an example for API testing.
+```
 
 </td><td>
 
@@ -315,7 +335,8 @@ This is an example for API testing.```
       "@id": "dct:description",
       "@type": "xsd:string",
       "@language": "en"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -324,8 +345,7 @@ This is an example for API testing.```
 ### dct:publisher
 
 <table id="dct:publisher" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:publisher
@@ -335,7 +355,8 @@ dct:publisher
           rdfs:comment "An entity responsible for making the resource available."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Publisher"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
+```
 
 </td><td>
 
@@ -347,12 +368,14 @@ dct:publisher
             sh:path dct:publisher;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .```
+            sh:nodeKind sh:IRI .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%#this```
+%DATABUS_URI%/%ACCOUNT%#this
+```
 
 </td><td>
 
@@ -360,7 +383,8 @@ dct:publisher
 "publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -369,21 +393,23 @@ dct:publisher
 ### dataid:group
 
 <table id="dataid:group" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
 ```sql
-missing```
+missing
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples```
+%DATABUS_URI%/%ACCOUNT%/examples
+```
 
 </td><td>
 
@@ -391,7 +417,8 @@ missing```
 "group": {
       "@id": "dataid:group",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -400,21 +427,23 @@ missing```
 ### dataid:artifact
 
 <table id="dataid:artifact" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
 ```sql
-missing```
+missing
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example```
+%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example
+```
 
 </td><td>
 
@@ -422,7 +451,8 @@ missing```
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -431,11 +461,11 @@ missing```
 ### dataid:version
 
 <table id="dataid:version" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
@@ -454,12 +484,14 @@ missing```
             # group: maven
             # artifact: maven + some extra
             # version: maven
-            sh:nodeKind sh:IRI .```
+            sh:nodeKind sh:IRI .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%```
+%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%
+```
 
 </td><td>
 
@@ -467,7 +499,8 @@ missing```
 "version": {
       "@id": "dataid:version",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -476,8 +509,7 @@ missing```
 ### dct:hasVersion
 
 <table id="dct:hasVersion" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:hasVersion
@@ -487,17 +519,20 @@ dct:hasVersion
           rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
+```
 
 </td><td>
 
 ```sql
-missing```
+missing
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%VERSION%```
+%VERSION%
+```
 
 </td><td>
 
@@ -505,7 +540,8 @@ missing```
 "hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -514,8 +550,7 @@ missing```
 ### dct:issued
 
 <table id="dct:issued" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:issued
@@ -526,7 +561,8 @@ dct:issued
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Date Issued"@en ;
           rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
+```
 
 </td><td>
 
@@ -538,12 +574,14 @@ dct:issued
             sh:path dct:issued;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:datatype xsd:dateTime .```
+            sh:datatype xsd:dateTime .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%NOW%```
+%NOW%
+```
 
 </td><td>
 
@@ -551,7 +589,8 @@ dct:issued
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -560,8 +599,7 @@ dct:issued
 ### dct:license
 
 <table id="dct:license" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:license
@@ -572,7 +610,8 @@ dct:license
           rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "License"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
+```
 
 </td><td>
 
@@ -584,12 +623,14 @@ dct:license
             sh:path dct:license;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .```
+            sh:nodeKind sh:IRI .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-http://creativecommons.org/licenses/by/4.0/```
+http://creativecommons.org/licenses/by/4.0/
+```
 
 </td><td>
 
@@ -597,7 +638,8 @@ http://creativecommons.org/licenses/by/4.0/```
 "license": {
       "@id": "dct:license",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -606,8 +648,7 @@ http://creativecommons.org/licenses/by/4.0/```
 ### dcat:distribution
 
 <table id="dcat:distribution" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dcat:Distribution
@@ -653,7 +694,8 @@ dcat:Distribution
         skos:scopeNote "Αυτό αναπαριστά μία γενική διαθεσιμότητα ενός συνόλου δεδομένων και δεν υπονοεί τίποτα περί του πραγματικού τρόπου πρόσβασης στα δεδομένα, αν είναι άμεσα μεταφορτώσιμα, μέσω API ή μέσω μίας ιστοσελίδας. Η χρήση της ιδιότητας dcat:downloadURL δείχνει μόνο άμεσα μεταφορτώσιμες διανομές."@el ;
         skos:scopeNote "これは、データセットの一般的な利用可能性を表わし、データの実際のアクセス方式に関する情報（つまり、直接ダウンロードなのか、APIなのか、ウェブページを介したものなのか）を意味しません。dcat:downloadURLプロパティーの使用は、直接ダウンロード可能な配信を意味します。"@ja ;
         skos:scopeNote "Denne klasse repræsenterer datasættets overordnede tilgængelighed og giver ikke oplysninger om hvilken metode der kan anvendes til at få adgang til data, dvs. om adgang til datasættet realiseres ved direkte download, API eller via et websted. Anvendelsen af egenskaben dcat:downloadURL indikerer at distributionen kan downloades direkte."@da ;
-      .```
+      .
+```
 
 </td><td>
 
@@ -664,17 +706,20 @@ dcat:Distribution
             sh:message "Required property dcat:distribution MUST occur exactly once AND have URI/IRI as value"@en ;
             sh:path dcat:distribution;
             sh:minCount 1 ;
-            sh:nodeKind sh:IRI .```
+            sh:nodeKind sh:IRI .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
+
 ```
 
 </td><td>
 
 ```json
-"distribution": "dcat:distribution"```
+"distribution": "dcat:distribution"
+```
 
 </td></tr></table>
 
@@ -685,8 +730,7 @@ dcat:Distribution
 ### dct:issued
 
 <table id="dct:issued" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:issued
@@ -697,7 +741,8 @@ dct:issued
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Date Issued"@en ;
           rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
+```
 
 </td><td>
 
@@ -709,12 +754,14 @@ dct:issued
             sh:path dct:issued;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:datatype xsd:dateTime .```
+            sh:datatype xsd:dateTime .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%NOW%```
+%NOW%
+```
 
 </td><td>
 
@@ -722,7 +769,8 @@ dct:issued
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -731,21 +779,23 @@ dct:issued
 ### dataid:file
 
 <table id="dataid:file" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
 ```sql
-missing```
+missing
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt```
+%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt
+```
 
 </td><td>
 
@@ -753,7 +803,8 @@ missing```
 "file": {
       "@id": "dataid:file",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -762,11 +813,11 @@ missing```
 ### dataid:formatExtension
 
 <table id="dataid:formatExtension" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
@@ -778,12 +829,14 @@ missing```
             sh:path dataid:formatExtension;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:datatype xsd:string .```
+            sh:datatype xsd:string .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-nt```
+nt
+```
 
 </td><td>
 
@@ -791,7 +844,8 @@ nt```
 "formatExtension": {
       "@id": "dataid:formatExtension",
       "@type": "xsd:string"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -800,11 +854,11 @@ nt```
 ### dataid:compression
 
 <table id="dataid:compression" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-missing```
+missing
+```
 
 </td><td>
 
@@ -816,12 +870,14 @@ missing```
             sh:path dataid:compression;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:datatype xsd:string .```
+            sh:datatype xsd:string .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-none```
+none
+```
 
 </td><td>
 
@@ -829,7 +885,8 @@ none```
 "compression": {
       "@id": "dataid:compression",
       "@type": "xsd:string"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -838,8 +895,7 @@ none```
 ### dcat:downloadURL
 
 <table id="dcat:downloadURL" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dcat:downloadURL
@@ -884,7 +940,8 @@ dcat:downloadURL
   skos:scopeNote "dcat:downloadURL SHOULD be used for the address at which this distribution is available directly, typically through a HTTP Get request."@en ;
   skos:scopeNote "Η τιμή είναι ένα URL."@el ;
   skos:scopeNote "dcat:downloadURL BØR anvendes til angivelse af den adresse hvor distributionen er tilgængelig direkte, typisk gennem et HTTP Get request."@da ;
-.```
+.
+```
 
 </td><td>
 
@@ -896,12 +953,14 @@ dcat:downloadURL
             sh:path dcat:downloadURL ;
             sh:minCount 1 ;
             sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .```
+            sh:nodeKind sh:IRI .
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt```
+https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt
+```
 
 </td><td>
 
@@ -909,7 +968,8 @@ https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/onto
 "downloadURL": {
       "@id": "dcat:downloadURL",
       "@type": "@id"
-    }```
+    }
+```
 
 </td></tr></table>
 
@@ -918,8 +978,7 @@ https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/onto
 ### dcat:bytesize
 
 <table id="dcat:bytesize" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 # excerpt from https://www.w3.org/ns/dcat2.ttl 
@@ -932,7 +991,8 @@ dcat:byteSize
   rdfs:label "byte size"@en ;
   rdfs:range rdfs:Literal ;
   skos:definition "The size of a distribution in bytes."@en ;
-  skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;```
+  skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
+```
 
 </td><td>
 
@@ -945,12 +1005,14 @@ dcat:byteSize
   sh:path dcat:byteSize ;
   sh:datatype xsd:decimal ;
   sh:maxCount 1 ;
-  sh:minCount 1 .  ```
+  sh:minCount 1 .  
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-"byteSize": "4439722" ,```
+"byteSize": "4439722" ,
+```
 
 </td><td>
 
@@ -958,7 +1020,8 @@ dcat:byteSize
 "byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
-  }```
+  }
+```
 
 </td></tr></table>
 
@@ -968,8 +1031,7 @@ dcat:byteSize
 ### dct:hasVersion
 
 <table id="dct:hasVersion" border=1px >
-<tr><td> OWL </td> <td> SHACL </td></tr>
-<tr><td>
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dct:hasVersion
@@ -979,17 +1041,20 @@ dct:hasVersion
           rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .```
+          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
+```
 
 </td><td>
 
 ```sql
-missing```
+missing
+```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%VERSION%```
+%VERSION%
+```
 
 </td><td>
 
@@ -997,7 +1062,8 @@ missing```
 "hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
-    }```
+    }
+```
 
 </td></tr></table>
 
