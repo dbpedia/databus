@@ -2,13 +2,48 @@
 
 function init ($contextFile, $shaclDir, $examplesDir){
     unlink($contextFile);
+    
     array_map('unlink', glob("$shaclDir/*.*"));
     @rmdir($shaclDir);
+    mkdir($shaclDir, 0777, true);
+    
     array_map('unlink', glob("$examplesDir/*.*"));
     @rmdir($examplesDir);
-    mkdir($shaclDir, 0777, true);
     mkdir($examplesDir, 0777, true);
     }
+    
+    
+function headerFooter($contextFile, $shaclDir){
+    //context.json
+    $fileContent = file_get_contents($contextFile);
+    $fileContent = substr_replace($fileContent ,"",-2);
+    $fileContent = "{" .PHP_EOL .$fileContent .PHP_EOL ."}";
+    file_put_contents($contextFile, $fileContent);
+
+    //prepare shacl files
+    $shaclFiles = array_diff(scandir($shaclDir), array('.', '..'));
+    foreach($shaclFiles as $shaclFile){
+
+        $fileContent = file_get_contents("$shaclDir/$shaclFile");
+
+        $prefixes = "@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+";
+
+        file_put_contents("$shaclDir/$shaclFile", $prefixes .$fileContent);
+    }
+
+}
 
 function table ($section, $id, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir, $examplesDir;
