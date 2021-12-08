@@ -15,4 +15,4 @@ redeploy-remote.sh
 redeploy.sh
 start_azure.sh
 examples/example-metadata.jsonld
-model-docu/created
+model-docu/generated

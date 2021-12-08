@@ -1,7 +1,7 @@
 <?php
 
 function init ($contextFile, $shaclDir, $examplesDir){
-    unlink($contextFile);
+    @unlink($contextFile);
     
     array_map('unlink', glob("$shaclDir/*.*"));
     @rmdir($shaclDir);

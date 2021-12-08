@@ -14,24 +14,13 @@ Success criteria:
 * context.json, shacl and example have a correct syntax.
 * model.md renders well and looks pretty
 
+comm -23 <(cat ../context.json | jq| grep '": {' | sort -u ) <(cat remainingFiles/context.json | jq | grep '": {' | sort -u)
 
-TODO 1 Preparation Fabian:
-* remove @value and @language from databus/example/generate-example_slim.sh
-<"title": { "@value" : "Example Group", "@language" : "en" },
->"title": "Example Group",
-* generate new example file
 
 TODO 2 Fabian
 * migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/
 * follow the order of example file in this doc
 * do header/footer for the generated files so they are valid
-
-
-
-Other attempts (outdated html conversion):
-sudo apt install pandoc
-pandoc -f markdown model.md | tidy -i > model.html
-<span id="<?="context|$id"?>" style="visibility: hidden;" ><?=str_replace("@","&#64;",htmlentities($context))?></span>
 
 */
 
