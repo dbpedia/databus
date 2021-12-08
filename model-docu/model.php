@@ -38,9 +38,9 @@ pandoc -f markdown model.md | tidy -i > model.html
 error_reporting( E_ALL | E_STRICT );
 require_once("function.php");
 
-$contextFile="context.json";
-$shaclDir="shacl";
-$examplesDir="examples";
+$contextFile="generated/context.json";
+$shaclDir="generated/shacl";
+$examplesDir="generated/examples";
 
 init($contextFile, $shaclDir, $examplesDir);
 ?>
