@@ -52,8 +52,6 @@
     "@id": "dct:modified",
     "@type": "xsd:dateTime"
   },
-  "Group": "dataid:Group",
-  "Dataset": "dataid:Dataset",
   "Artifact": "dataid:Artifact",
   "format": {
     "@id": "dataid:formatExtension",
