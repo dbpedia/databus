@@ -929,7 +929,7 @@ skos:definition "The URL of the downloadable file in a given format. E.g. CSV fi
 
 
 
-### dcat:bytesize
+### dcat:byteSize
 
 
 ### dataid:sha256sum
