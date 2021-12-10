@@ -124,7 +124,6 @@ $example='"abstract": "This is an example group for API testing.",';
 
 $context='"abstract": {
       "@id": "dct:abstract",
-      "@type": "xsd:string",
       "@language": "en"
     }';
 
