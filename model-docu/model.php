@@ -185,7 +185,7 @@ $shacl='<#dataset-exists>
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "dataid:Dataset",';
 
-$context='"Dataset": "dataid:Dataset",';
+$context='"Dataset": "dataid:Dataset" ';
 
 table($section,$id,$owl,$shacl,$example,$context);
 ?>
