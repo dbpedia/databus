@@ -197,17 +197,17 @@
                     <div ng-repeat="dataset in recentUploads">
 
                       <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
-                        <span class="tag is-medium is-primary">Now</span>
+                        <span class="tag is-medium is-consumer">Now</span>
                       </header>
 
                       <header class="timeline-header"
                         ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
-                        <span class="tag is-primary">{{ recentUploads[$index - 1].year }}</span>
+                        <span class="tag is-consumer">{{ recentUploads[$index - 1].year }}</span>
                       </header>
 
                       <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
                   && recentUploads[$index - 1].month != dataset.month">
-                        <span class="tag is-primary">{{ recentUploads[$index - 1].month }}</span>
+                        <span class="tag is-consumer">{{ recentUploads[$index - 1].month }}</span>
                       </header>
 
                       <div class="timeline-item">
@@ -226,8 +226,8 @@
                     </div>
 
                     <div class="timeline-header is-clickable" ng-click="toggleTimelineShowMore()">
-                      <span ng-if="!timeLineShowMore" class="tag is-medium is-primary">More..</span>
-                      <span ng-if="timeLineShowMore" class="tag is-medium is-primary">Less..</span>
+                      <span ng-if="!timeLineShowMore" class="tag is-medium is-consumer">More..</span>
+                      <span ng-if="timeLineShowMore" class="tag is-medium is-consumer">Less..</span>
                     </div>
                   </div>
                 </div>

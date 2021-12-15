@@ -123,7 +123,7 @@
   a sh:PropertyShape ;
   sh:targetClass dataid:SingleFile ;
   sh:severity sh:Violation ;
-  sh:message "A dataid:SingleFile MUST have exactly one dataid:formatExtension of type IRI"@en ;
+  sh:message "A dataid:SingleFile MUST have exactly one dataid:formatExtension of type xsd:string"@en ;
   sh:path dataid:formatExtension ;
   sh:datatype xsd:string ;
   sh:maxCount 1 ;

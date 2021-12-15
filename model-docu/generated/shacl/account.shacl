@@ -1,0 +1,22 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+<#foaf-name>   
+a sh:PropertyShape ;
+sh:targetClass foaf:Person ;
+sh:severity sh:Violation ;
+sh:message "Required property foaf:name MUST be of type xsd:string and occur exactly once in foaf:Person."@en ;
+sh:path foaf:name ;
+sh:datatype xsd:string ;
+sh:minCount 1 ;
+sh:maxCount 1 .
+

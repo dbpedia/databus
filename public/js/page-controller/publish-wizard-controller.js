@@ -14,7 +14,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
   }
 
-  $scope.createAccount = function() {
+  $scope.createAccount = function () {
     window.location = '/system/account';
   }
 
@@ -47,12 +47,14 @@ function PublishWizardController($scope, $http, focus, $q) {
     return $scope.$watch('session', function (newVal, oldVal) {
       $scope.session.data.validate();
 
-      if ($scope.session.dataIdCreator != undefined) {
+      if ($scope.session.dataIdCreator != undefined) { 
+        
+        $scope.result.updateData = $scope.session.dataIdCreator.createUpdate($scope.session.data);
         $scope.result.groupUpdate = $scope.session.dataIdCreator.createGroupUpdate($scope.session.data);
         $scope.result.versionUpdate = $scope.session.dataIdCreator.createVersionUpdate($scope.session.data);
         $scope.result.isReadyForUpload = $scope.checkReadyForUpload();
 
-        if($scope.result.isReadyForUpload) {
+        if ($scope.result.isReadyForUpload) {
           $scope.createTractate($scope.result.versionUpdate);
         }
       }
@@ -299,7 +301,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     $scope.accountArtifact = targetArtifact;
   }
 
-
   $scope.selectGroup = function (targetGroup) {
     var group = $scope.session.data.group;
     var artifact = $scope.session.data.artifact;
@@ -323,12 +324,9 @@ function PublishWizardController($scope, $http, focus, $q) {
     var uri = `/system/pages/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
 
     $http.get(uri).then(function (response) {
-
       session.isAccountDataLoading = false;
       session.accountData = response.data;
-
-      $scope.setCreateNewGroup(session.data.group.createNew);
-
+      // $scope.setCreateNewGroup(session.data.group.createNew);
       $scope.isWizardReady = true;
     }, function (err) {
       console.log(err);
@@ -363,13 +361,8 @@ function PublishWizardController($scope, $http, focus, $q) {
       }
     }
 
-
     return true;
-
   }
-
-
-
 
   $scope.hasError = function (list, error) {
     for (var i in list) {
@@ -413,7 +406,6 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.removeFile = function (fileGroup) {
-
     var files = $scope.session.data.version.files;
     files.splice(files.findIndex(f => f.uri == fileGroup.uri), 1);
     $scope.session.data.version.isConfigDirty = true;
@@ -423,12 +415,10 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.fetchFiles = function (parentUri) {
 
     $http.get('/system/api/fetch-resource-page?url=' + encodeURIComponent(parentUri)).then(function (response) {
-
       for (var i in response.data) {
         var uri = response.data[i];
         $scope.addFile(uri);
       }
-
     }, function (err) {
 
     });
@@ -442,6 +432,59 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   }
 
+  $scope.postDeferred = function (data) {
+
+    var deferred = $q.defer();
+
+    var headers = {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    }
+
+    fetch('/system/publish', {
+      headers: headers,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(data)
+    }).then(function (fetchResult) {
+      var decoder = new TextDecoder("utf-8");
+      var reader = fetchResult.body.getReader();
+
+      function push(reader) {
+        return reader.read().then(({ done, value }) => {
+          var chunk = decoder.decode(value);
+          //console.log(chunk);
+
+          var messages = chunk.split('\n');
+
+          for (var message of messages) {
+            $scope.result.publishLog.push({ hasError: false, message: message });
+          }
+
+          $scope.$apply();
+
+          if (done) {
+            deferred.resolve({ status: 'ok' });
+            return true;
+          }
+
+          push(reader);
+
+        }, function (err) {
+          deferred.reject({ message: err });
+        });
+      };
+
+      push(reader);
+
+    }, function (err) {
+      deferred.reject({ message: err });
+    });
+
+    return deferred.promise;
+  }
+
+
   $scope.runPublishSequence = async function () {
 
 
@@ -450,93 +493,42 @@ function PublishWizardController($scope, $http, focus, $q) {
     output.publishLog = [];
     output.publishLog.push({ hasError: false, message: "Publishing..." });
 
-    try {
-      var groupId = output.groupUpdate['@graph'][0]['@id'];
-      var relativeGroupPath = groupId.replace(basePath, '');
 
-      output.publishLog.push({ hasError: false, message: `Publishing group at ${relativeGroupPath} ...` });
-      var result = await $http.put(relativeGroupPath, output.groupUpdate);
+    try {
+      //var groupId = output.groupUpdate['@graph'][0]['@id'];
+      //var relativeGroupPath = groupId.replace(basePath, '');
+
+
+
+      //      output.publishLog.push({ hasError: false, message: `Publishing group at ${relativeGroupPath} ...` });
+      await $scope.postDeferred(output.updateData);
+      // await $scope.postDeferred(output.versionUpdate);
+
+      /*
       output.publishLog.push({ hasError: false, message: "Done." });
 
-      var versionId = output.versionUpdate['@graph'][0]['version'];
+      var versionId = DatabusUtils.navigateUp(output.versionUpdate['@graph'][0]['@id'], 0);
       var relativeVersionPath = versionId.replace(basePath, '');
       output.publishLog.push({ hasError: false, message: `Publishing version at ${relativeVersionPath} ...` });
       result = await $http.put(relativeVersionPath, output.versionUpdate);
 
       output.publishLog.push({ hasError: false, message: "Done." });
-
+      */
       $scope.session.isPublishing = false;
       $scope.$apply();
-    } catch(err) {
+    } catch (err) {
       output.publishLog.push({ hasError: true, message: err.data });
       $scope.session.isPublishing = false;
       $scope.$apply();
     }
   }
 
-  $scope.createTractate = function(graph) {
-
+  $scope.createTractate = function (graph) {
     $http.post('/system/tractate/v1/canonicalize', graph).then(function (response) {
       $scope.session.data.signature.tractate = response.data;
-
-
-
     }, function (err) {
-
+      console.log(err);
     });
-
-  }
-
-  $scope.createUploadResult = function () {
-
-    var session = $scope.session;
-    var dataIdCreator = new DataIdCreator();
-
-    var proofType = 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1';
-
-    if (!$scope.autoGenerateSignature) {
-      session.data.signature.proof = {
-        '@type': [proofType],
-        'https://w3id.org/security#signature': [{
-          "@type": "http://www.w3.org/2001/XMLSchema#string",
-          "@value": session.data.signature.userSignature
-        }]
-      };
-    }
-
-    session.groupUpdate = dataIdCreator.createGroupUpdate(session.accountName, session.data);
-    session.versionUpdate = dataIdCreator.createVersionUpdate(session.accountName, session.data);
-    session.isReadyForUpload = true;
-  }
-
-  /**
-   * Callback for the artifact search input (on change). 
-   * Refreshes the distribution suggestions
-   * @param {*} artifact 
-   */
-  $scope.onArtifactSearchInputChanged = function (artifact) {
-    var input = artifact.fileFilterInput;
-    artifact.fileSuggestions = [];
-
-    if (input.length == 0) {
-      return;
-    }
-
-    artifact.fileSuggestions = [];
-
-    for (var f in $scope.session.fileGroups) {
-      var fileGroup = $scope.session.fileGroups[f];
-
-      if (fileGroup.artifactId != undefined) {
-        continue;
-      }
-
-      if (!fileGroup.name.startsWith(input)) {
-        continue;
-      }
-
-      artifact.fileSuggestions.push(fileGroup);
-    }
   }
 
   $scope.getArtifact = function (groupId, artifactId) {
@@ -547,11 +539,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     return groups[groupId].artifacts[artifactId];
-  }
-
-  $scope.onBeginAddArtifact = function (group) {
-    $scope.addComponentFocus = group.id;
-    focus(group.id + '_add_artifact_input')
   }
 
   $scope.onRemoveDistribution = function (distribution) {
@@ -565,36 +552,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     $scope.saveSession();
-  }
-
-  $scope.startNewUpload = function () {
-    $scope.createNewSession();
-  }
-
-  $scope.onShowAddGroupDataDropdown = function (group) {
-    $scope.addGroupData.targetGroupId = group.id;
-    $scope.addGroupData.mode = 'selectMode';
-  }
-
-  $scope.onShowAddArtifactDataDropdown = function (artifact) {
-    $scope.addArtifactData.targetGroupId = artifact.groupId;
-    $scope.addArtifactData.targetId = artifact.id;
-    $scope.addArtifactData.mode = 'selectMode';
-  }
-
-  $scope.onRemoveContentVarant = function (variant) {
-    var version = $scope.session.version;
-    version.contentVariants = version.contentVariants.filter(function (d) {
-      return d.id != variant.id;
-    });
-
-    for (var f in version.files) {
-      var file = version.files[f];
-      delete file.contentVariants[variant.id];
-    }
-
-
-    version.isConfigDirty = true;
   }
 
   $scope.fetchGroupsAndArtifacts();

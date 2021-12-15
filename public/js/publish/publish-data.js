@@ -211,7 +211,7 @@ class PublishData {
   }
 
 
-  removeContentVarant(variant) {
+  removeContentVariant(variant) {
 
     this.version.contentVariants = this.version.contentVariants.filter(function (d) {
       return d.id != variant.id;

@@ -3,6 +3,7 @@ var suite = require('./databus-tractate-suite');
 var jsonld = require('jsonld');
 var JsonldUtils = require('../common/utils/jsonld-utils');
 const Constants = require('../common/constants');
+var defaultContext = require('../../../context.json');
 
 module.exports = function (router, protector) {
 
@@ -20,7 +21,7 @@ module.exports = function (router, protector) {
       }
 
       var canonicalizedForm = await suite.expandAndCanonicalize(graph);
-      console.log(canonicalizedForm);
+      console.log(`\x1b[32m${canonicalizedForm}\x1b[0m`);
       res.status(200).send(canonicalizedForm);
 
     } catch (err) {

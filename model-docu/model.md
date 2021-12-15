@@ -5,7 +5,6 @@
 ## Group
 
 ### group
-
 <table id="group" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -30,12 +29,14 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-dataid:Group
+"@id": "%DATABUS_URI%/%ACCOUNT%/examples",
+"@type": "dataid:Group",
 ```
 
 </td><td>
 
 ```json
+"Group": "dataid:Group",
 "group": {
        "@id": "dataid:group",
        "@type": "@id"
@@ -47,7 +48,6 @@ dataid:Group
 
 
 ### dct:title
-
 <table id="dct:title" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -79,7 +79,7 @@ dct:title
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-Example Group
+"title": "Example Group" ,
 ```
 
 </td><td>
@@ -96,7 +96,6 @@ Example Group
 
 
 ### dct:abstract
-
 <table id="dct:abstract" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -128,7 +127,7 @@ dct:abstract
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.
+"abstract": "This is an example group for API testing.",
 ```
 
 </td><td>
@@ -136,7 +135,6 @@ This is an example group for API testing.
 ```json
 "abstract": {
       "@id": "dct:abstract",
-      "@type": "xsd:string",
       "@language": "en"
     }
 ```
@@ -146,7 +144,6 @@ This is an example group for API testing.
 
 
 ### dct:description
-
 <table id="dct:description" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -178,7 +175,7 @@ dct:description
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.
+"description": "This is an example group for API testing.",
 ```
 
 </td><td>
@@ -197,8 +194,46 @@ This is an example group for API testing.
 
 ## Dataset (DataId)
 
-### dct:title
+### dataid
+<table id="dataid" border=1px >
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
+```sql
+missing
+```
+
+</td><td>
+
+```sql
+<#dataset-exists>
+          a sh:NodeShape ;
+          sh:targetNode dataid:Dataset ;
+          sh:property [
+              sh:path [ sh:inversePath rdf:type ] ;
+              sh:minCount 1 ;
+              sh:maxCount 1 ;
+              sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+          ] .
+```
+
+</td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
+
+```json
+"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
+"@type": "dataid:Dataset",
+```
+
+</td><td>
+
+```json
+"Dataset": "dataid:Dataset" 
+```
+
+</td></tr></table>
+
+
+
+### dct:title
 <table id="dct:title" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -229,7 +264,7 @@ dct:title
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-DBpedia Ontology Example
+"title": "DBpedia Ontology Example",
 ```
 
 </td><td>
@@ -246,7 +281,6 @@ DBpedia Ontology Example
 
 
 ### dct:abstract
-
 <table id="dct:abstract" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -276,7 +310,7 @@ dct:abstract
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example group for API testing.
+"abstract": "This is an example for API testing.",
 ```
 
 </td><td>
@@ -294,7 +328,6 @@ This is an example group for API testing.
 
 
 ### dct:description
-
 <table id="dct:description" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -325,7 +358,7 @@ dct:description
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-This is an example for API testing.
+"description": "This is an example for API testing.",
 ```
 
 </td><td>
@@ -343,7 +376,6 @@ This is an example for API testing.
 
 
 ### dct:publisher
-
 <table id="dct:publisher" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -374,7 +406,7 @@ dct:publisher
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%#this
+"publisher": "%DATABUS_URI%/%ACCOUNT%#this",
 ```
 
 </td><td>
@@ -391,7 +423,6 @@ dct:publisher
 
 
 ### dataid:group
-
 <table id="dataid:group" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -408,7 +439,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples
+"group": "%DATABUS_URI%/%ACCOUNT%/examples",
 ```
 
 </td><td>
@@ -425,7 +456,6 @@ missing
 
 
 ### dataid:artifact
-
 <table id="dataid:artifact" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -442,7 +472,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example
+"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",
 ```
 
 </td><td>
@@ -459,7 +489,6 @@ missing
 
 
 ### dataid:version
-
 <table id="dataid:version" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -490,7 +519,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%
+"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",
 ```
 
 </td><td>
@@ -507,7 +536,6 @@ missing
 
 
 ### dct:hasVersion
-
 <table id="dct:hasVersion" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -531,7 +559,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%VERSION%
+"hasVersion": "%VERSION%",
 ```
 
 </td><td>
@@ -548,7 +576,6 @@ missing
 
 
 ### dct:issued
-
 <table id="dct:issued" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -580,7 +607,7 @@ dct:issued
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%NOW%
+"issued": "%NOW%",
 ```
 
 </td><td>
@@ -597,7 +624,6 @@ dct:issued
 
 
 ### dct:license
-
 <table id="dct:license" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -629,7 +655,7 @@ dct:license
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-http://creativecommons.org/licenses/by/4.0/
+"license": "http://creativecommons.org/licenses/by/4.0/",
 ```
 
 </td><td>
@@ -645,8 +671,11 @@ http://creativecommons.org/licenses/by/4.0/
 
 
 
-### dcat:distribution
 
+
+## Distribution
+
+### dcat:distribution
 <table id="dcat:distribution" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -655,45 +684,10 @@ dcat:Distribution
         a rdfs:Class ;
         a owl:Class ;
         rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        rdfs:comment "Konkrétní reprezentace datové sady. Datová sada může být dostupná v různých serializacích, které se mohou navzájem lišit různými způsoby, mimo jiné přirozeným jazykem, media-typem či formátem, schematickou organizací, časovým a prostorovým rozlišením, úrovní detailu či profily (které mohou specifikovat některé či všechny tyto rozdíly)."@cs ;
-        rdfs:comment "Rappresenta una forma disponibile e specifica del dataset. Ciascun dataset può essere disponibile in forme differenti, che possono rappresentare formati diversi o diversi punti di accesso per un dataset. Esempi di distribuzioni sono un file CSV scaricabile, una API o un RSS feed."@it ;
-        rdfs:comment "Représente une forme spécifique d'un jeu de données. Caque jeu de données peut être disponible sous différentes formes, celles-ci pouvant représenter différents formats du jeu de données ou différents endpoint. Des exemples de distribution sont des fichirs CSV, des API ou des flux RSS."@fr ;
-        rdfs:comment "Una representación específica de los datos. Cada conjunto de datos puede estar disponible en formas diferentes, las cuáles pueden variar en distintas formas, incluyendo el idioma, 'media-type' o formato, organización esquemática, resolución temporal y espacial, nivel de detalle o perfiles (que pueden especificar cualquiera o todas las diferencias anteriores)."@es ;
-        rdfs:comment "Αναπαριστά μία συγκεκριμένη διαθέσιμη μορφή ενός συνόλου δεδομένων. Κάθε σύνολο δεδομενων μπορεί να είναι διαθέσιμο σε διαφορετικές μορφές, οι μορφές αυτές μπορεί να αναπαριστούν διαφορετικές μορφές αρχείων ή διαφορετικά σημεία διάθεσης. Παραδείγματα διανομών συμπεριλαμβάνουν ένα μεταφορτώσιμο αρχείο μορφής CSV, ένα API ή ένα RSS feed."@el ;
-        rdfs:comment "شكل محدد لقائمة البيانات يمكن الوصول إليه. قائمة بيانات ما يمكن أن تكون متاحه باشكال و أنواع متعددة.  ملف يمكن تحميله أو واجهة برمجية يمكن من خلالها الوصول إلى البيانات هي أمثلة على ذلك."@ar ;
-        rdfs:comment "データセットの特定の利用可能な形式を表わします。各データセットは、異なる形式で利用できることがあり、これらの形式は、データセットの異なる形式や、異なるエンドポイントを表わす可能性があります。配信の例には、ダウンロード可能なCSVファイル、API、RSSフィードが含まれます。"@ja ;
-        rdfs:comment "En specifik repræsentation af et datasæt. Et datasæt kan være tilgængelig i mange serialiseringer der kan variere på forskellige vis, herunder sprog, medietype eller format, systemorganisering, tidslig- og geografisk opløsning, detaljeringsniveau eller profiler (der kan specificere en eller flere af ovenstående)."@da ;
         rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-        rdfs:label "Distribuce"@cs ;
-        rdfs:label "Distribución"@es ;
         rdfs:label "Distribution"@en ;
-        rdfs:label "Distribution"@fr ;
-        rdfs:label "Distribuzione"@it ;
-        rdfs:label "Διανομή"@el ;
-        rdfs:label "التوزيع"@ar ;
-        rdfs:label "配信"@ja ;
-        rdfs:label "Distribution"@da ;
-        skos:altLabel "Datadistribution"@da ;
-        skos:altLabel "Datarepræsentation"@da ;
-        skos:altLabel "Datamanifestation"@da ;
-        skos:altLabel "Dataudstilling"@da ;
         skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        skos:definition "Konkrétní reprezentace datové sady. Datová sada může být dostupná v různých serializacích, které se mohou navzájem lišit různými způsoby, mimo jiné přirozeným jazykem, media-typem či formátem, schematickou organizací, časovým a prostorovým rozlišením, úrovní detailu či profily (které mohou specifikovat některé či všechny tyto rozdíly)."@cs ;
-        skos:definition "Rappresenta una forma disponibile e specifica del dataset. Ciascun dataset può essere disponibile in forme differenti, che possono rappresentare formati diversi o diversi punti di accesso per un dataset. Esempi di distribuzioni sono un file CSV scaricabile, una API o un RSS feed."@it ;
-        skos:definition "Représente une forme spécifique d'un jeu de données. Caque jeu de données peut être disponible sous différentes formes, celles-ci pouvant représenter différents formats du jeu de données ou différents endpoint. Des exemples de distribution sont des fichirs CSV, des API ou des flux RSS."@fr ;
-        skos:definition "Una representación específica de los datos. Cada conjunto de datos puede estar disponible en formas diferentes, las cuáles pueden variar en distintas formas, incluyendo el idioma, 'media-type' o formato, organización esquemática, resolución temporal y espacial, nivel de detalle o perfiles (que pueden especificar cualquiera o todas las diferencias anteriores)."@es ;
-        skos:definition "Αναπαριστά μία συγκεκριμένη διαθέσιμη μορφή ενός συνόλου δεδομένων. Κάθε σύνολο δεδομενων μπορεί να είναι διαθέσιμο σε διαφορετικές μορφές, οι μορφές αυτές μπορεί να αναπαριστούν διαφορετικές μορφές αρχείων ή διαφορετικά σημεία διάθεσης. Παραδείγματα διανομών συμπεριλαμβάνουν ένα μεταφορτώσιμο αρχείο μορφής CSV, ένα API ή ένα RSS feed."@el ;
-        skos:definition "شكل محدد لقائمة البيانات يمكن الوصول إليه. قائمة بيانات ما يمكن أن تكون متاحه باشكال و أنواع متعددة.  ملف يمكن تحميله أو واجهة برمجية يمكن من خلالها الوصول إلى البيانات هي أمثلة على ذلك."@ar ;
-        skos:definition "データセットの特定の利用可能な形式を表わします。各データセットは、異なる形式で利用できることがあり、これらの形式は、データセットの異なる形式や、異なるエンドポイントを表わす可能性があります。配信の例には、ダウンロード可能なCSVファイル、API、RSSフィードが含まれます。"@ja ;
-        skos:definition "En specifik repræsentation af et datasæt. Et datasæt kan være tilgængelig i mange serialiseringer der kan variere på forskellige vis, herunder sprog, medietype eller format, systemorganisering, tidslig- og geografisk opløsning, detaljeringsniveau eller profiler (der kan specificere en eller flere af ovenstående)."@da ;
-        skos:scopeNote "Ceci représente une disponibilité générale du jeu de données, et implique qu'il n'existe pas d'information sur la méthode d'accès réelle des données, par exple, si c'est un lien de téléchargement direct ou à travers une page Web."@fr ;
-        skos:scopeNote "Esta clase representa una disponibilidad general de un conjunto de datos, e implica que no existe información acerca del método de acceso real a los datos, i.e., si es un enlace de descarga directa o a través de una página Web."@es ;
-        skos:scopeNote "Questa classe rappresenta una disponibilità generale di un dataset e non implica alcuna informazione sul metodo di accesso effettivo ai dati, ad esempio se si tratta di un accesso a download diretto, API, o attraverso una pagina Web. L'utilizzo della proprietà dcat:downloadURL indica distribuzioni direttamente scaricabili."@it ;
         skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
-        skos:scopeNote "Toto popisuje obecnou dostupnost datové sady. Neimplikuje žádnou informaci o skutečné metodě přístupu k datům, tj. zda jsou přímo ke stažení, skrze API či přes webovou stránku. Použití vlastnosti dcat:downloadURL indikuje přímo stažitelné distribuce."@cs ;
-        skos:scopeNote "Αυτό αναπαριστά μία γενική διαθεσιμότητα ενός συνόλου δεδομένων και δεν υπονοεί τίποτα περί του πραγματικού τρόπου πρόσβασης στα δεδομένα, αν είναι άμεσα μεταφορτώσιμα, μέσω API ή μέσω μίας ιστοσελίδας. Η χρήση της ιδιότητας dcat:downloadURL δείχνει μόνο άμεσα μεταφορτώσιμες διανομές."@el ;
-        skos:scopeNote "これは、データセットの一般的な利用可能性を表わし、データの実際のアクセス方式に関する情報（つまり、直接ダウンロードなのか、APIなのか、ウェブページを介したものなのか）を意味しません。dcat:downloadURLプロパティーの使用は、直接ダウンロード可能な配信を意味します。"@ja ;
-        skos:scopeNote "Denne klasse repræsenterer datasættets overordnede tilgængelighed og giver ikke oplysninger om hvilken metode der kan anvendes til at få adgang til data, dvs. om adgang til datasættet realiseres ved direkte download, API eller via et websted. Anvendelsen af egenskaben dcat:downloadURL indikerer at distributionen kan downloades direkte."@da ;
       .
 ```
 
@@ -712,7 +706,8 @@ dcat:Distribution
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-
+"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
+"@type": "dataid:SingleFile",
 ```
 
 </td><td>
@@ -724,11 +719,7 @@ dcat:Distribution
 </td></tr></table>
 
 
-
-## Distribution
-
 ### dct:issued
-
 <table id="dct:issued" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -760,7 +751,7 @@ dct:issued
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%NOW%
+"issued": "%NOW%",
 ```
 
 </td><td>
@@ -777,7 +768,6 @@ dct:issued
 
 
 ### dataid:file
-
 <table id="dataid:file" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -794,7 +784,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt
+"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
 ```
 
 </td><td>
@@ -811,7 +801,6 @@ missing
 
 
 ### dataid:formatExtension
-
 <table id="dataid:formatExtension" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -835,7 +824,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-nt
+"format": "nt",
 ```
 
 </td><td>
@@ -852,7 +841,6 @@ nt
 
 
 ### dataid:compression
-
 <table id="dataid:compression" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -876,7 +864,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-none
+"compression": "none",
 ```
 
 </td><td>
@@ -893,53 +881,18 @@ none
 
 
 ### dcat:downloadURL
-
 <table id="dcat:downloadURL" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
 dcat:downloadURL
-  a rdf:Property ;
-  a owl:ObjectProperty ;
-  rdfs:comment "Ceci est un lien direct à un fichier téléchargeable en un format donnée. Exple fichier CSV ou RDF. Le format est décrit par les propriétés de distribution dct:format et/ou dcat:mediaType."@fr ;
-  rdfs:comment "La URL de un archivo descargable en el formato dato. Por ejemplo, archivo CSV o archivo RDF. El formato se describe con las propiedades de la distribución dct:format y/o dcat:mediaType."@es ;
-  rdfs:comment "Questo è un link diretto al file scaricabile in un dato formato. E.g. un file CSV o un file RDF. Il formato è descritto dal dct:format e/o dal dcat:mediaType della distribuzione."@it ;
-  rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-  rdfs:comment "URL souboru ke stažení v daném formátu, například CSV nebo RDF soubor. Formát je popsán vlastností distribuce dct:format a/nebo dcat:mediaType."@cs ;
-  rdfs:comment "dcat:downloadURLはdcat:accessURLの特定の形式です。しかし、DCATプロファイルが非ダウンロード・ロケーションに対してのみaccessURLを用いる場合には、より強い分離を課すことを望む可能性があるため、この含意を強化しないように、DCATは、dcat:downloadURLをdcat:accessURLのサブプロパティーであると定義しません。"@ja ;
-  rdfs:comment "Είναι ένας σύνδεσμος άμεσης μεταφόρτωσης ενός αρχείου σε μια δεδομένη μορφή. Π.χ. ένα αρχείο CSV ή RDF. Η μορφη αρχείου περιγράφεται από τις ιδιότητες dct:format ή/και dcat:mediaType της διανομής."@el ;
-  rdfs:comment "رابط مباشر لملف يمكن تحميله. نوع الملف يتم توصيفه باستخدام الخاصية dct:format dcat:mediaType "@ar ;
-  rdfs:comment "URL til fil der kan downloades i et bestemt format. Fx en CSV-fil eller en RDF-fil. Formatet for distributionen angives ved hjælp af egenskaberne dct:format og/eller dcat:mediaType."@da ;
-  rdfs:domain dcat:Distribution ;
-  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-  rdfs:label "URL de descarga"@es ;
-  rdfs:label "URL de téléchargement"@fr ;
-  rdfs:label "URL di scarico"@it ;
-  rdfs:label "URL souboru ke stažení"@cs ;
-  rdfs:label "URL μεταφόρτωσης"@el ;
-  rdfs:label "download URL"@en ;
-  rdfs:label "رابط تحميل"@ar ;
-  rdfs:label "ダウンロードURL"@ja ;
-  rdfs:label "downloadURL"@da ;
-  rdfs:range rdfs:Resource ;
-  skos:definition "Ceci est un lien direct à un fichier téléchargeable en un format donnée. Exple fichier CSV ou RDF. Le format est décrit par les propriétés de distribution dct:format et/ou dcat:mediaType."@fr ;
-  skos:definition "La URL de un archivo descargable en el formato dato. Por ejemplo, archivo CSV o archivo RDF. El formato se describe con las propiedades de la distribución dct:format y/o dcat:mediaType."@es ;
-  skos:definition "Questo è un link diretto al file scaricabile in un dato formato. E.g. un file CSV o un file RDF. Il formato è descritto dal dct:format e/o dal dcat:mediaType della distribuzione."@it ;
-  skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-  skos:definition "URL souboru ke stažení v daném formátu, například CSV nebo RDF soubor. Formát je popsán vlastností distribuce dct:format a/nebo dcat:mediaType."@cs ;
-  skos:definition "dcat:downloadURLはdcat:accessURLの特定の形式です。しかし、DCATプロファイルが非ダウンロード・ロケーションに対してのみaccessURLを用いる場合には、より強い分離を課すことを望む可能性があるため、この含意を強化しないように、DCATは、dcat:downloadURLをdcat:accessURLのサブプロパティーであると定義しません。"@ja ;
-  skos:definition "Είναι ένας σύνδεσμος άμεσης μεταφόρτωσης ενός αρχείου σε μια δεδομένη μορφή. Π.χ. ένα αρχείο CSV ή RDF. Η μορφη αρχείου περιγράφεται από τις ιδιότητες dct:format ή/και dcat:mediaType της διανομής."@el ;
-  skos:definition "URL til fil der kan downloades i et bestemt format. Fx en CSV-fil eller en RDF-fil. Formatet for distributionen angives ved hjælp af egenskaberne dct:format og/eller dcat:mediaType."@da ;
-  skos:definition "رابط مباشر لملف يمكن تحميله. نوع الملف يتم توصيفه باستخدام الخاصية dct:format dcat:mediaType "@ar ;
-  skos:editorialNote "Status: English  Definition text modified by DCAT revision team, Italian, Spanish and Czech translation updated, other translations pending."@en ;
-  skos:editorialNote "rdfs:label, rdfs:comment and/or skos:scopeNote have been modified. Non-english versions must be updated."@en ;
-  skos:scopeNote "El valor es una URL."@es ;
-  skos:scopeNote "La valeur est une URL."@fr ;
-  skos:scopeNote "dcat:downloadURL BY MĚLA být použita pro adresu, ze které je distribuce přímo přístupná, typicky skrze požadavek HTTP Get."@cs ;
-  skos:scopeNote "dcat:downloadURL DOVREBBE essere utilizzato per l'indirizzo a cui questa distribuzione è disponibile direttamente, in genere attraverso una richiesta Get HTTP."@it ;
-  skos:scopeNote "dcat:downloadURL SHOULD be used for the address at which this distribution is available directly, typically through a HTTP Get request."@en ;
-  skos:scopeNote "Η τιμή είναι ένα URL."@el ;
-  skos:scopeNote "dcat:downloadURL BØR anvendes til angivelse af den adresse hvor distributionen er tilgængelig direkte, typisk gennem et HTTP Get request."@da ;
+a rdf:Property ;
+a owl:ObjectProperty ;
+rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+rdfs:domain dcat:Distribution ;
+rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+rdfs:label "download URL"@en ;
+skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 .
 ```
 
@@ -959,7 +912,7 @@ dcat:downloadURL
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt
+"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
 ```
 
 </td><td>
@@ -977,59 +930,49 @@ https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/onto
 
 ### dcat:bytesize
 
-<table id="dcat:bytesize" border=1px >
+
+### dataid:sha256sum
+<table id="dataid:sha256sum" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-# excerpt from https://www.w3.org/ns/dcat2.ttl 
-dcat:byteSize
-  a rdf:Property ;
-  a owl:DatatypeProperty ;
-  rdfs:comment "The size of a distribution in bytes."@en ;
-  rdfs:domain dcat:Distribution ;
-  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-  rdfs:label "byte size"@en ;
-  rdfs:range rdfs:Literal ;
-  skos:definition "The size of a distribution in bytes."@en ;
-  skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
+missing
 ```
 
 </td><td>
 
 ```sql
-<#has-bytesize>   
-  a sh:PropertyShape ;
-  sh:targetClass dataid:SingleFile ;
-  sh:severity sh:Violation ;
-  sh:message "A dataid:SingleFile MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
-  sh:path dcat:byteSize ;
-  sh:datatype xsd:decimal ;
-  sh:maxCount 1 ;
-  sh:minCount 1 .  
+<#sha256sum-violation>
+        #   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+            a sh:PropertyShape ;
+            sh:severity sh:Violation ;
+            sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+            sh:path dataid:sha256sum;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:datatype xsd:string ;
+            sh:pattern "^[a-f0-9]{64}$" .
 ```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-"byteSize": "4439722" ,
+"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 ```
 
 </td><td>
 
 ```json
-"byteSize": {
-    "@id": "dcat:byteSize",
-    "@type": "xsd:decimal"
-  }
+"sha256sum": {
+      "@id": "dataid:sha256sum",
+      "@type": "xsd:string"
+    }
 ```
 
 </td></tr></table>
 
 
-
-### dataid:sha256sum
 ### dct:hasVersion
-
 <table id="dct:hasVersion" border=1px >
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
@@ -1053,7 +996,7 @@ missing
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-%VERSION%
+"hasVersion": "%VERSION%",
 ```
 
 </td><td>
@@ -1063,6 +1006,53 @@ missing
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
     }
+```
+
+</td></tr></table>
+
+
+## Account
+
+### foaf:name
+<table id="foaf:name" border=1px >
+<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
+
+```sql
+foaf:name
+  a rdf:Property, owl:DatatypeProperty ;
+  ns0:term_status "testing" ;
+  rdfs:label "name" ;
+  rdfs:comment "A name for some thing." ;
+  rdfs:domain owl:Thing ;
+  rdfs:range rdfs:Literal ;
+  rdfs:isDefinedBy foaf: ;
+  rdfs:subPropertyOf rdfs:label .
+```
+
+</td><td>
+
+```sql
+<#foaf-name>   
+a sh:PropertyShape ;
+sh:targetClass foaf:Person ;
+sh:severity sh:Violation ;
+sh:message "Required property foaf:name MUST be of type xsd:string and occur exactly once in foaf:Person."@en ;
+sh:path foaf:name ;
+sh:datatype xsd:string ;
+sh:minCount 1 ;
+sh:maxCount 1 .
+```
+
+</td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
+
+```json
+
+```
+
+</td><td>
+
+```json
+"name": "foaf:name"
 ```
 
 </td></tr></table>

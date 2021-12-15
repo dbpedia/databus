@@ -41,7 +41,6 @@ db.save = async function (repo, path, content) {
       callback();
     }
 
-    console.log(res);
     return { isSuccess: true };
   } catch (err) {
     console.log(err);
