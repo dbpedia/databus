@@ -28,10 +28,12 @@ error_reporting( E_ALL | E_STRICT );
 require_once("function.php");
 
 $contextFile="generated/context.json";
+$markDownFile="model2.md";
 $shaclDir="generated/shacl";
 $examplesDir="generated/examples";
 
-init($contextFile, $shaclDir, $examplesDir);
+init();
+
 ?>
 
 

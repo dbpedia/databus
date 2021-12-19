@@ -1,8 +1,11 @@
 <?php
 
-function init ($contextFile, $shaclDir, $examplesDir){
+function init (){
+    global $contextFile, $markDownFile, $shaclDir, $examplesDir;
+
     @unlink($contextFile);
-    
+    @unlink($markDownFile);
+
     array_map('unlink', glob("$shaclDir/*.*"));
     @rmdir($shaclDir);
     mkdir($shaclDir, 0777, true);
@@ -10,10 +13,11 @@ function init ($contextFile, $shaclDir, $examplesDir){
     array_map('unlink', glob("$examplesDir/*.*"));
     @rmdir($examplesDir);
     mkdir($examplesDir, 0777, true);
-    }
 
+    $mdString = "# Model";
+    file_put_contents($markDownFile, $mdString .PHP_EOL.PHP_EOL, FILE_APPEND);
+}
 
-    
     
 function headerFooter($contextFile, $shaclDir){
     //context.json
@@ -69,6 +73,7 @@ function headerFooter($contextFile, $shaclDir){
 function table ($section, $id, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir, $examplesDir;
 
+
     if ($shacl != 'missing') {
 	    file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
     }
@@ -77,45 +82,67 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 	    file_put_contents($contextFile,$context ."," .PHP_EOL,FILE_APPEND);
     }
 
-	if($section === "distribution" ) {
-		$section = "dataid";
-	}
-
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
-?>
 
-<table id="<?=$id?>" border=1px >
+    writeMd($section, $id, $owl, $shacl, $example, $context);
+
+}
+
+
+function writeMd($section, $id, $owl, $shacl, $example, $context){
+    global $markDownFile;
+
+	$mdString = <<<XML
+### $id
+<table id="<?=$id?>" border=1px>
 <tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
 
 ```sql
-<?=$owl?>
-
+$owl
 ```
 
 </td><td>
 
 ```sql
-<?=$shacl?>
-
+$shacl
 ```
 
 </td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
 
 ```json
-<?=$example?>
-
+$example
 ```
 
 </td><td>
 
 ```json
-<?=$context?>
-
+$context
 ```
 
 </td></tr></table>
 
-<?php
-	}
+XML;
+
+    //check if new section
+    $arrayOfLines = file($markDownFile);
+    $sections = preg_grep('/^## /', $arrayOfLines);
+    $lastSection = end($sections);
+    $lastSection = str_replace("## ", "", $lastSection);
+    $lastSection = trim($lastSection);
+
+    $thisSection = ucfirst($section);
+
+
+
+    if (strcmp($lastSection, $thisSection) !== 0) {
+        $mdString = "## $thisSection" .PHP_EOL.PHP_EOL . $mdString;
+    }
+
+
+    file_put_contents($markDownFile, $mdString .PHP_EOL, FILE_APPEND);
+}
 
 ?>
+
+
+
