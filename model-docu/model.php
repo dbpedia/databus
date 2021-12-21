@@ -16,12 +16,6 @@ Success criteria:
 
 comm -23 <(cat ../context.json | jq| grep '": {' | sort -u ) <(cat remainingFiles/context.json | jq | grep '": {' | sort -u)
 
-
-TODO 2 Fabian
-* migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/
-* follow the order of example file in this doc
-* do header/footer for the generated files so they are valid
-
 */
 
 error_reporting( E_ALL | E_STRICT );
@@ -41,11 +35,19 @@ init();
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
+
 ## Group 
+
+### Purpose of Group
+
+### URI pattern
+
+### Full example
 Full JSON-LD Example for Group
+TODOJAN: Can you adjust this example to a better one?
 ```json
 {
-	"@context": "",
+	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
 	"@id": "https://databus.dbpedia.org/janni/examples",
 	"@type": "dataid:Group",
 	"title": "Example Group" ,
@@ -53,8 +55,10 @@ Full JSON-LD Example for Group
 	"description": "This is an example group for API testing."
 }
 ```
- 
 
+TODO:
+* shacl check URI pattern? $DOMAIN/$USER/$GROUP  w/o slash
+* add to dataid ontology
 
 <?php 
 $section="group"; 
@@ -94,20 +98,20 @@ $owl='dct:title
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
 $shacl='<#en-title>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
 $example='"title": "Example Group" ,';
 
 $context='"title": {
     "@id": "dct:title",
-    "@type": "xsd:string"
+    "@language": "en"
   }';
 
 table($section,$id,$owl,$shacl,$example,$context);
@@ -117,25 +121,22 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:abstract" ?>
 <?php
 $owl='dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
 $shacl='<#en-abstract>
-          a sh:PropertyShape ;
-          sh:targetClass dataid:Group ;
-          sh:severity sh:Violation ;
-          sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
-          sh:path dct:abstract ;
-          sh:minCount 1 ;
-          sh:languageIn ("en") ;
-          sh:uniqueLang true .
-        ';
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"abstract": "This is an example group for API testing.",';
+$example='"abstract": "TODO",';
 
 $context='"abstract": {
       "@id": "dct:abstract",
@@ -149,29 +150,26 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:description" ?>
 <?php
 $owl='dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
+	rdfs:label "Description"@en ;
+	rdfs:comment "An account of the resource."@en ;
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
 $shacl='<#en-description>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
 $example='"description": "This is an example group for API testing.",';
 
 $context='"description": {
       "@id": "dct:description",
-      "@type": "xsd:string",
       "@language": "en"
     }';
 
@@ -187,14 +185,14 @@ table($section,$id,$owl,$shacl,$example,$context);
 $owl='missing';
 
 $shacl='<#dataset-exists>
-          a sh:NodeShape ;
-          sh:targetNode dataid:Dataset ;
-          sh:property [
-              sh:path [ sh:inversePath rdf:type ] ;
-              sh:minCount 1 ;
-              sh:maxCount 1 ;
-              sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
-          ] .';
+	a sh:NodeShape ;
+	sh:targetNode dataid:Dataset ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	] .';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "dataid:Dataset",';
@@ -208,28 +206,26 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:title" ?>
 <?php
 $owl='dct:title
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A name given to the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Title"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
 $shacl='<#en-title>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
 $example='"title": "DBpedia Ontology Example",';
 
 $context='"title": {
     "@id": "dct:title",
-    "@type": "xsd:string"
+    "@language": "en"
   }';
 
 table($section,$id,$owl,$shacl,$example,$context);
@@ -239,27 +235,24 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:abstract" ?>
 <?php
 $owl='dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
 $shacl='<#en-abstract>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:abstract ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
 $example='"abstract": "This is an example for API testing.",';
 
 $context='"abstract": {
       "@id": "dct:abstract",
-      "@type": "xsd:string",
       "@language": "en"
     }';
 
@@ -270,28 +263,25 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:description" ?>
 <?php
 $owl='dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:comment "An account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Description"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
 $shacl='<#en-description>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
 $example='"description": "This is an example for API testing.",';
 
 $context='"description": {
       "@id": "dct:description",
-      "@type": "xsd:string",
       "@language": "en"
     }';
 
@@ -302,24 +292,22 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:publisher" ?>
 <?php
 $owl='dct:publisher
-          dcam:rangeIncludes dct:Agent ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An entity responsible for making the resource available."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Publisher"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .';
+	dcam:rangeIncludes dct:Agent ;
+	rdfs:comment "An entity responsible for making the resource available."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Publisher"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .';
 
 $shacl='<#publisher-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
-            sh:path dct:publisher;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .';
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:publisher;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
 
-$example='"publisher": "%DATABUS_URI%/%ACCOUNT%#this",';
+$example='"publisher": "https://databus.dbpedia.org/TODO#this",';
 
 $context='"publisher": {
       "@id": "dct:publisher",
@@ -398,13 +386,11 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:hasVersion" ?>
 <?php
 $owl='dct:hasVersion
-          dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Has Version"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
 $shacl='missing';
 
@@ -617,17 +603,17 @@ table($section,$id,$owl,$shacl,$example,$context);
 
 ### <?=$id="dcat:downloadURL" ?>
 <?php
-$owl=<<<XML
+$owl='
     dcat:downloadURL
     a rdf:Property ;
     a owl:ObjectProperty ;
-    rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+    rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;
     rdfs:domain dcat:Distribution ;
     rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
     rdfs:label "download URL"@en ;
-    skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+    skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;
     .
-    XML;
+    ';
 
 $shacl='<#downloadurl-violation>
             a sh:PropertyShape ;
