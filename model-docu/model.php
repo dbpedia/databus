@@ -36,6 +36,8 @@ init();
 
 ?>
 
+* auto-gen TOC:
+{:toc}
 
 # Model
 

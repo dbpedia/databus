@@ -92,10 +92,10 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 
 function renderjson($example,$context){
 	return "```json
-# Example:
+# Example
 $example
 
-#Context:
+#Context
 $context
 ```";
 	}
@@ -105,7 +105,7 @@ function renderrdf($owl,$shacl){
 #OWL
 $owl
 
-#SHACL:
+#SHACL
 $shacl
 ```";
 	}
