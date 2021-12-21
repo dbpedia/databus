@@ -38,9 +38,23 @@ init();
 
 # Databus Model
 
-Databus runs on a model made from DCAT, DCT and additional DataId properties. 
+Databus runs on a model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata.  
 
 ## Group 
+Full JSON-LD Example for Group
+```json
+{
+	"@context": "",
+	"@id": "https://databus.dbpedia.org/janni/examples",
+	"@type": "dataid:Group",
+	"title": "Example Group" ,
+	"abstract": "This is an example group for API testing.",
+	"description": "This is an example group for API testing."
+}
+```
+ 
+
+
 <?php 
 $section="group"; 
 $id="group" 
@@ -56,7 +70,7 @@ $shacl='<#group-exists>
 	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
 	] .';
 
-$example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples",
+$example='"@id": "https://databus.dbpedia.org/janni/examples",
 "@type": "dataid:Group",';
 
 $context='"Group": "dataid:Group",
@@ -72,13 +86,11 @@ table($section,$id,$owl,$shacl,$example,$context);
 ### <?=$id="dct:title" ?>
 <?php
 $owl='dct:title
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A name given to the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Title"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
 $shacl='<#en-title>
             a sh:PropertyShape ;
