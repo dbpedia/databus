@@ -114,13 +114,14 @@ $shacl
 function writeMd($section, $id, $owl, $shacl, $example, $context){
     global $markDownFile;
 
-	$mdString="### $id
-	
+	//$mdString="### $id
+	$mdString="
 ".renderjson($example,$context)."
 	
 ".renderrdf($owl,$shacl);
 	
 
+	echo $mdString;
     //check if new section
     $arrayOfLines = file($markDownFile);
     $sections = preg_grep('/^## /', $arrayOfLines);
