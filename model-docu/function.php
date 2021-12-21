@@ -91,23 +91,21 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 
 
 function renderjson($example,$context){
-	return "Example:
-```json
+	return "```json
+# Example:
 $example
-```
-Context:
-```json
+
+#Context:
 $context
 ```";
 	}
 
 function renderrdf($owl,$shacl){
-	return "OWL:
-```sql
+	return "```sql
+#OWL
 $owl
-```
-SHACL:
-```sql
+
+#SHACL:
 $shacl
 ```";
 	}

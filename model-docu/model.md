@@ -4,13 +4,12 @@
 
 ### group
 	
-Example:
 ```json
+# Example:
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
 "@type": "dataid:Group",
-```
-Context:
-```json
+
+#Context:
 "Group": "dataid:Group",
 "group": {
        "@id": "dataid:group",
@@ -18,12 +17,11 @@ Context:
      }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#group-exists>
           a sh:NodeShape ;
           sh:targetNode dataid:Group ;
@@ -36,20 +34,19 @@ SHACL:
 ```
 ### dct:title
 	
-Example:
 ```json
+# Example:
 "title": "Example Group" ,
-```
-Context:
-```json
+
+#Context:
 "title": {
     "@id": "dct:title",
     "@type": "xsd:string"
   }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:title
           dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
           a rdf:Property ;
@@ -58,9 +55,8 @@ dct:title
           rdfs:label "Title"@en ;
           rdfs:range rdfs:Literal ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-title>
             a sh:PropertyShape ;
             sh:targetClass dataid:Group ;
@@ -73,20 +69,19 @@ SHACL:
 ```
 ### dct:abstract
 	
-Example:
 ```json
+# Example:
 "abstract": "This is an example group for API testing.",
-```
-Context:
-```json
+
+#Context:
 "abstract": {
       "@id": "dct:abstract",
       "@language": "en"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:abstract
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
           a rdf:Property ;
@@ -94,9 +89,8 @@ dct:abstract
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Abstract"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-abstract>
           a sh:PropertyShape ;
           sh:targetClass dataid:Group ;
@@ -110,12 +104,11 @@ SHACL:
 ```
 ### dct:description
 	
-Example:
 ```json
+# Example:
 "description": "This is an example group for API testing.",
-```
-Context:
-```json
+
+#Context:
 "description": {
       "@id": "dct:description",
       "@type": "xsd:string",
@@ -123,8 +116,8 @@ Context:
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:description
           dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
           dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -133,9 +126,8 @@ dct:description
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Description"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-description>
             a sh:PropertyShape ;
             sh:targetClass dataid:Group ;
@@ -150,22 +142,20 @@ SHACL:
 
 ### dataid
 	
-Example:
 ```json
+# Example:
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "dataid:Dataset",
-```
-Context:
-```json
+
+#Context:
 "Dataset": "dataid:Dataset" 
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#dataset-exists>
           a sh:NodeShape ;
           sh:targetNode dataid:Dataset ;
@@ -178,20 +168,19 @@ SHACL:
 ```
 ### dct:title
 	
-Example:
 ```json
+# Example:
 "title": "DBpedia Ontology Example",
-```
-Context:
-```json
+
+#Context:
 "title": {
     "@id": "dct:title",
     "@type": "xsd:string"
   }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:title
           dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
           a rdf:Property ;
@@ -200,9 +189,8 @@ dct:title
           rdfs:label "Title"@en ;
           rdfs:range rdfs:Literal ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-title>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -214,12 +202,11 @@ SHACL:
 ```
 ### dct:abstract
 	
-Example:
 ```json
+# Example:
 "abstract": "This is an example for API testing.",
-```
-Context:
-```json
+
+#Context:
 "abstract": {
       "@id": "dct:abstract",
       "@type": "xsd:string",
@@ -227,8 +214,8 @@ Context:
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:abstract
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
           a rdf:Property ;
@@ -236,9 +223,8 @@ dct:abstract
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Abstract"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-abstract>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -250,12 +236,11 @@ SHACL:
 ```
 ### dct:description
 	
-Example:
 ```json
+# Example:
 "description": "This is an example for API testing.",
-```
-Context:
-```json
+
+#Context:
 "description": {
       "@id": "dct:description",
       "@type": "xsd:string",
@@ -263,8 +248,8 @@ Context:
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:description
           dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
           dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -273,9 +258,8 @@ dct:description
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Description"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#en-description>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -287,20 +271,19 @@ SHACL:
 ```
 ### dct:publisher
 	
-Example:
 ```json
+# Example:
 "publisher": "%DATABUS_URI%/%ACCOUNT%#this",
-```
-Context:
-```json
+
+#Context:
 "publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:publisher
           dcam:rangeIncludes dct:Agent ;
           dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -309,9 +292,8 @@ dct:publisher
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Publisher"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#publisher-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -323,68 +305,62 @@ SHACL:
 ```
 ### dataid:group
 	
-Example:
 ```json
+# Example:
 "group": "%DATABUS_URI%/%ACCOUNT%/examples",
-```
-Context:
-```json
+
+#Context:
 "group": {
       "@id": "dataid:group",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 missing
 ```
 ### dataid:artifact
 	
-Example:
 ```json
+# Example:
 "artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",
-```
-Context:
-```json
+
+#Context:
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 missing
 ```
 ### dataid:version
 	
-Example:
 ```json
+# Example:
 "version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",
-```
-Context:
-```json
+
+#Context:
 "version": {
       "@id": "dataid:version",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#version-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -403,20 +379,19 @@ SHACL:
 ```
 ### dct:hasVersion
 	
-Example:
 ```json
+# Example:
 "hasVersion": "%VERSION%",
-```
-Context:
-```json
+
+#Context:
 "hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:hasVersion
           dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -425,27 +400,25 @@ dct:hasVersion
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Has Version"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
-```
-SHACL:
-```sql
+
+#SHACL:
 missing
 ```
 ### dct:issued
 	
-Example:
 ```json
+# Example:
 "issued": "%NOW%",
-```
-Context:
-```json
+
+#Context:
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:issued
           dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -455,9 +428,8 @@ dct:issued
           rdfs:label "Date Issued"@en ;
           rdfs:range rdfs:Literal ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#issued-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -469,20 +441,19 @@ SHACL:
 ```
 ### dct:license
 	
-Example:
 ```json
+# Example:
 "license": "http://creativecommons.org/licenses/by/4.0/",
-```
-Context:
-```json
+
+#Context:
 "license": {
       "@id": "dct:license",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:license
           dcam:rangeIncludes dct:LicenseDocument ;
           dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
@@ -492,9 +463,8 @@ dct:license
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "License"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#license-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -508,18 +478,17 @@ SHACL:
 
 ### dcat:distribution
 	
-Example:
 ```json
+# Example:
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "dataid:SingleFile",
-```
-Context:
-```json
+
+#Context:
 "distribution": "dcat:distribution"
 ```
 	
-OWL:
 ```sql
+#OWL
 dcat:Distribution
         a rdfs:Class ;
         a owl:Class ;
@@ -529,9 +498,8 @@ dcat:Distribution
         skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
         skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
       .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#distribution-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -542,20 +510,19 @@ SHACL:
 ```
 ### dct:issued
 	
-Example:
 ```json
+# Example:
 "issued": "%NOW%",
-```
-Context:
-```json
+
+#Context:
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:issued
           dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -565,9 +532,8 @@ dct:issued
           rdfs:label "Date Issued"@en ;
           rdfs:range rdfs:Literal ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#issued-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -579,46 +545,42 @@ SHACL:
 ```
 ### dataid:file
 	
-Example:
 ```json
+# Example:
 "file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
-```
-Context:
-```json
+
+#Context:
 "file": {
       "@id": "dataid:file",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 missing
 ```
 ### dataid:formatExtension
 	
-Example:
 ```json
+# Example:
 "format": "nt",
-```
-Context:
-```json
+
+#Context:
 "formatExtension": {
       "@id": "dataid:formatExtension",
       "@type": "xsd:string"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#formatExtension-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -630,24 +592,22 @@ SHACL:
 ```
 ### dataid:compression
 	
-Example:
 ```json
+# Example:
 "compression": "none",
-```
-Context:
-```json
+
+#Context:
 "compression": {
       "@id": "dataid:compression",
       "@type": "xsd:string"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#compression-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -659,20 +619,19 @@ SHACL:
 ```
 ### dcat:downloadURL
 	
-Example:
 ```json
+# Example:
 "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-```
-Context:
-```json
+
+#Context:
 "downloadURL": {
       "@id": "dcat:downloadURL",
       "@type": "@id"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dcat:downloadURL
 a rdf:Property ;
 a owl:ObjectProperty ;
@@ -682,9 +641,8 @@ rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 rdfs:label "download URL"@en ;
 skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 .
-```
-SHACL:
-```sql
+
+#SHACL:
 <#downloadurl-violation>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
@@ -696,24 +654,22 @@ SHACL:
 ```
 ### dataid:sha256sum
 	
-Example:
 ```json
+# Example:
 "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-```
-Context:
-```json
+
+#Context:
 "sha256sum": {
       "@id": "dataid:sha256sum",
       "@type": "xsd:string"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 missing
-```
-SHACL:
-```sql
+
+#SHACL:
 <#sha256sum-violation>
         #   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
             a sh:PropertyShape ;
@@ -727,20 +683,19 @@ SHACL:
 ```
 ### dct:hasVersion
 	
-Example:
 ```json
+# Example:
 "hasVersion": "%VERSION%",
-```
-Context:
-```json
+
+#Context:
 "hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
     }
 ```
 	
-OWL:
 ```sql
+#OWL
 dct:hasVersion
           dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
           dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -749,8 +704,7 @@ dct:hasVersion
           rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
           rdfs:label "Has Version"@en ;
           rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
-```
-SHACL:
-```sql
+
+#SHACL:
 missing
 ```
