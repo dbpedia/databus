@@ -35,30 +35,45 @@ init();
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
+## URI Design
+TODO explain URIs
 
-## Group 
+## Quickstart Examples
 
-### Purpose of Group
+Some examples to copy and adapt. 
 
-### URI pattern
+### Dataset Version
 
-### Full example
-Full JSON-LD Example for Group
-TODOJAN: Can you adjust this example to a better one?
+```
+TODO Jan -> can you copy an example here, e.g. the DBpedia Ontology example
+```
+After posting, Databus will add these inferred statements:
+
+```
+
+```
+
+### Group
 ```json
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/janni/examples",
+	"@id": "https://databus.dbpedia.org/username/example_group",
 	"@type": "dataid:Group",
-	"title": "Example Group" ,
+	"title": "Group title" ,
 	"abstract": "This is an example group for API testing.",
 	"description": "This is an example group for API testing."
 }
 ```
 
+
+
+
+
+
+## Group 
+
 TODO:
 * shacl check URI pattern? $DOMAIN/$USER/$GROUP  w/o slash
-* add to dataid ontology
 
 <?php 
 $section="group"; 

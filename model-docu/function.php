@@ -73,14 +73,13 @@ function headerFooter($contextFile, $shaclDir){
 
 function table ($section, $id, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir, $examplesDir;
-
+	
+	if($section=="distribution"){
+		$section="dataid";
+		}
 
     if ($shacl != 'missing') {
-		if($section=="distribution"){
-			file_put_contents("$shaclDir/dataid.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
-		}else{
-			file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
-		}
+		file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
     }
 
     if ($context !== "missing"){
