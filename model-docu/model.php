@@ -36,36 +36,34 @@ init();
 
 ?>
 
-* auto-gen TOC:
-{:toc}
+# Databus Model
 
-# Model
+Databus runs on a model made from DCAT, DCT and additional DataId properties. 
 
-## Group
-<?php $section="group" ?>
-
-### <?=$id="group" ?>
-<?php
+## Group 
+<?php 
+$section="group"; 
+$id="group" 
 $owl='missing';
 
 $shacl='<#group-exists>
-          a sh:NodeShape ;
-          sh:targetNode dataid:Group ;
-          sh:property [
-              sh:path [ sh:inversePath rdf:type ] ;
-              sh:minCount 1 ;
-              sh:maxCount 1;
-              sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-          ] .';
+	a sh:NodeShape ;
+	sh:targetNode dataid:Group ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	] .';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples",
 "@type": "dataid:Group",';
 
 $context='"Group": "dataid:Group",
 "group": {
-       "@id": "dataid:group",
-       "@type": "@id"
-     }';
+	"@id": "dataid:group",
+	"@type": "@id"
+	}';
 
 table($section,$id,$owl,$shacl,$example,$context);
 ?>
