@@ -38,7 +38,8 @@ init();
 
 # Databus Model
 
-Databus runs on a model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata.  
+
+Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
 ## Group 
 Full JSON-LD Example for Group
@@ -57,7 +58,7 @@ Full JSON-LD Example for Group
 
 <?php 
 $section="group"; 
-$id="group" 
+$id="group" ;
 $owl='missing';
 
 $shacl='<#group-exists>
