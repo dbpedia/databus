@@ -24,7 +24,7 @@ function headerFooter($contextFile, $shaclDir){
     $contextStr = file_get_contents($contextFile);
     $contextStr = substr_replace($contextStr ,"",-2);
 
-    $contextPrefix =<<<XML
+    $contextPrefix ='
     {
         "@language": "en",
         "dataid": "http://dataid.dbpedia.org/ns/core#",
@@ -39,7 +39,8 @@ function headerFooter($contextFile, $shaclDir){
         "foaf": "http://xmlns.com/foaf/0.1/",
         "sec": "https://w3id.org/security#",
 
-    XML;
+    ';
+    
     $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}";
     file_put_contents($contextFile, $contextStr);
 
@@ -89,39 +90,38 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 }
 
 
-function writeMd($section, $id, $owl, $shacl, $example, $context){
-    global $markDownFile;
-
-	$mdString = <<<XML
-### $id
-<table id="<?=$id?>" border=1px>
-<tr><td> OWL </td> <td> SHACL </td></tr><tr><td>
-
-```sql
-$owl
-```
-
-</td><td>
-
-```sql
-$shacl
-```
-
-</td></tr><tr><td> Example </td> <td> Context </td></tr><tr><td>
-
+function renderjson($example,$context){
+	return "Example:
 ```json
 $example
 ```
-
-</td><td>
-
+Context:
 ```json
 $context
+```";
+	}
+
+function renderrdf($owl,$shacl){
+	return "OWL:
+```sql
+$owl
 ```
+SHACL:
+```sql
+$shacl
+```";
+	}
 
-</td></tr></table>
 
-XML;
+function writeMd($section, $id, $owl, $shacl, $example, $context){
+    global $markDownFile;
+
+	$mdString="### $id
+	
+".renderjson($example,$context)."
+	
+".renderrdf($owl,$shacl);
+	
 
     //check if new section
     $arrayOfLines = file($markDownFile);

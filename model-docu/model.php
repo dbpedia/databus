@@ -3,7 +3,7 @@
 
 /*
 sudo apt install php7.4-cli
-php model.php > model.md
+php model.php 
 
 Goal:
 * php script is a template to fill a markdown doc (stdout)
@@ -28,7 +28,7 @@ error_reporting( E_ALL | E_STRICT );
 require_once("function.php");
 
 $contextFile="generated/context.json";
-$markDownFile="model2.md";
+$markDownFile="model.md";
 $shaclDir="generated/shacl";
 $examplesDir="generated/examples";
 
