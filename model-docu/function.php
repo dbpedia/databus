@@ -76,16 +76,28 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 
 
     if ($shacl != 'missing') {
-	    file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
+		if($section=="distribution"){
+			file_put_contents("$shaclDir/dataid.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
+		}else{
+			file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
+		}
     }
 
     if ($context !== "missing"){
 	    file_put_contents($contextFile,$context ."," .PHP_EOL,FILE_APPEND);
     }
 
+	
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
-    writeMd($section, $id, $owl, $shacl, $example, $context);
+	//$mdString="### $id
+	$mdString="
+".renderjson($example,$context)."
+	
+".renderrdf($owl,$shacl);
+
+	echo $mdString;
+//    writeMd($section, $id, $owl, $shacl, $example, $context);
 
 }
 
@@ -114,14 +126,7 @@ $shacl
 function writeMd($section, $id, $owl, $shacl, $example, $context){
     global $markDownFile;
 
-	//$mdString="### $id
-	$mdString="
-".renderjson($example,$context)."
-	
-".renderrdf($owl,$shacl);
-	
 
-	echo $mdString;
     //check if new section
     $arrayOfLines = file($markDownFile);
     $sections = preg_grep('/^## /', $arrayOfLines);

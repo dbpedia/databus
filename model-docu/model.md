@@ -1,26 +1,6 @@
+# Model
 
-
-
-
-# Databus Model
-
-
-Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
-
-## Group 
-Full JSON-LD Example for Group
-```json
-{
-	"@context": "",
-	"@id": "https://databus.dbpedia.org/janni/examples",
-	"@type": "dataid:Group",
-	"title": "Example Group" ,
-	"abstract": "This is an example group for API testing.",
-	"description": "This is an example group for API testing."
-}
-```
- 
-
+## Group
 
 
 ```json
@@ -52,7 +32,6 @@ missing
 	] .
 ```
 
-### dct:title
 ```json
 # Example
 "title": "Example Group" ,
@@ -60,7 +39,7 @@ missing
 #Context
 "title": {
     "@id": "dct:title",
-    "@type": "xsd:string"
+    "@language": "en"
   }
 ```
 	
@@ -75,20 +54,19 @@ dct:title
 
 #SHACL
 <#en-title>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
 
-### dct:abstract
 ```json
 # Example
-"abstract": "This is an example group for API testing.",
+"abstract": "TODO",
 
 #Context
 "abstract": {
@@ -100,27 +78,23 @@ dct:title
 ```sql
 #OWL
 dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 
 #SHACL
 <#en-abstract>
-          a sh:PropertyShape ;
-          sh:targetClass dataid:Group ;
-          sh:severity sh:Violation ;
-          sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
-          sh:path dct:abstract ;
-          sh:minCount 1 ;
-          sh:languageIn ("en") ;
-          sh:uniqueLang true .
-        
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
 
-### dct:description
 ```json
 # Example
 "description": "This is an example group for API testing.",
@@ -128,7 +102,6 @@ dct:abstract
 #Context
 "description": {
       "@id": "dct:description",
-      "@type": "xsd:string",
       "@language": "en"
     }
 ```
@@ -136,29 +109,26 @@ dct:abstract
 ```sql
 #OWL
 dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+	rdfs:label "Description"@en ;
+	rdfs:comment "An account of the resource."@en ;
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 
 #SHACL
 <#en-description>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
+## Dataid
 
-## Dataset (DataId)
 
-### dataid
 ```json
 # Example
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
@@ -174,17 +144,16 @@ missing
 
 #SHACL
 <#dataset-exists>
-          a sh:NodeShape ;
-          sh:targetNode dataid:Dataset ;
-          sh:property [
-              sh:path [ sh:inversePath rdf:type ] ;
-              sh:minCount 1 ;
-              sh:maxCount 1 ;
-              sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
-          ] .
+	a sh:NodeShape ;
+	sh:targetNode dataid:Dataset ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	] .
 ```
 
-### dct:title
 ```json
 # Example
 "title": "DBpedia Ontology Example",
@@ -192,33 +161,30 @@ missing
 #Context
 "title": {
     "@id": "dct:title",
-    "@type": "xsd:string"
+    "@language": "en"
   }
 ```
 	
 ```sql
 #OWL
 dct:title
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A name given to the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Title"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 
 #SHACL
 <#en-title>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
 
-### dct:abstract
 ```json
 # Example
 "abstract": "This is an example for API testing.",
@@ -226,7 +192,6 @@ dct:title
 #Context
 "abstract": {
       "@id": "dct:abstract",
-      "@type": "xsd:string",
       "@language": "en"
     }
 ```
@@ -234,25 +199,22 @@ dct:title
 ```sql
 #OWL
 dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 
 #SHACL
 <#en-abstract>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:abstract ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
 
-### dct:description
 ```json
 # Example
 "description": "This is an example for API testing.",
@@ -260,7 +222,6 @@ dct:abstract
 #Context
 "description": {
       "@id": "dct:description",
-      "@type": "xsd:string",
       "@language": "en"
     }
 ```
@@ -268,29 +229,26 @@ dct:abstract
 ```sql
 #OWL
 dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:comment "An account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Description"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 
 #SHACL
 <#en-description>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .
 ```
 
-### dct:publisher
 ```json
 # Example
-"publisher": "%DATABUS_URI%/%ACCOUNT%#this",
+"publisher": "https://databus.dbpedia.org/TODO#this",
 
 #Context
 "publisher": {
@@ -302,26 +260,23 @@ dct:description
 ```sql
 #OWL
 dct:publisher
-          dcam:rangeIncludes dct:Agent ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An entity responsible for making the resource available."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Publisher"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
+	dcam:rangeIncludes dct:Agent ;
+	rdfs:comment "An entity responsible for making the resource available."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Publisher"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
 
 #SHACL
 <#publisher-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
-            sh:path dct:publisher;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .
+	a sh:PropertyShape ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:publisher;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
 ```
 
-### dataid:group
 ```json
 # Example
 "group": "%DATABUS_URI%/%ACCOUNT%/examples",
@@ -341,7 +296,6 @@ missing
 missing
 ```
 
-### dataid:artifact
 ```json
 # Example
 "artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",
@@ -361,7 +315,6 @@ missing
 missing
 ```
 
-### dataid:version
 ```json
 # Example
 "version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",
@@ -395,7 +348,6 @@ missing
             sh:nodeKind sh:IRI .
 ```
 
-### dct:hasVersion
 ```json
 # Example
 "hasVersion": "%VERSION%",
@@ -410,19 +362,16 @@ missing
 ```sql
 #OWL
 dct:hasVersion
-          dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Has Version"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 
 #SHACL
 missing
 ```
 
-### dct:issued
 ```json
 # Example
 "issued": "%NOW%",
@@ -457,7 +406,6 @@ dct:issued
             sh:datatype xsd:dateTime .
 ```
 
-### dct:license
 ```json
 # Example
 "license": "http://creativecommons.org/licenses/by/4.0/",
@@ -491,12 +439,9 @@ dct:license
             sh:maxCount 1 ;
             sh:nodeKind sh:IRI .
 ```
-
-
-
 ## Distribution
 
-### dcat:distribution
+
 ```json
 # Example
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
@@ -527,7 +472,7 @@ dcat:Distribution
             sh:minCount 1 ;
             sh:nodeKind sh:IRI .
 ```
-### dct:issued
+
 ```json
 # Example
 "issued": "%NOW%",
@@ -562,7 +507,6 @@ dct:issued
             sh:datatype xsd:dateTime .
 ```
 
-### dataid:file
 ```json
 # Example
 "file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
@@ -582,7 +526,6 @@ missing
 missing
 ```
 
-### dataid:formatExtension
 ```json
 # Example
 "format": "nt",
@@ -609,7 +552,6 @@ missing
             sh:datatype xsd:string .
 ```
 
-### dataid:compression
 ```json
 # Example
 "compression": "none",
@@ -636,7 +578,6 @@ missing
             sh:datatype xsd:string .
 ```
 
-### dcat:downloadURL
 ```json
 # Example
 "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
@@ -650,15 +591,17 @@ missing
 	
 ```sql
 #OWL
-dcat:downloadURL
-a rdf:Property ;
-a owl:ObjectProperty ;
-rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-rdfs:domain dcat:Distribution ;
-rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-rdfs:label "download URL"@en ;
-skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-.
+
+    dcat:downloadURL
+    a rdf:Property ;
+    a owl:ObjectProperty ;
+    rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+    rdfs:domain dcat:Distribution ;
+    rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+    rdfs:label "download URL"@en ;
+    skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+    .
+    
 
 #SHACL
 <#downloadurl-violation>
@@ -671,10 +614,6 @@ skos:definition "The URL of the downloadable file in a given format. E.g. CSV fi
             sh:nodeKind sh:IRI .
 ```
 
-### dcat:bytesize
-
-
-### dataid:sha256sum
 ```json
 # Example
 "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
@@ -702,7 +641,7 @@ missing
             sh:datatype xsd:string ;
             sh:pattern "^[a-f0-9]{64}$" .
 ```
-### dct:hasVersion
+
 ```json
 # Example
 "hasVersion": "%VERSION%",
@@ -728,7 +667,3 @@ dct:hasVersion
 #SHACL
 missing
 ```
-
-
-
-
