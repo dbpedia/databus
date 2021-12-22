@@ -71,7 +71,7 @@ function headerFooter($contextFile, $shaclDir){
 
 }
 
-function table ($section, $id, $owl, $shacl, $example, $context){
+function table ($section, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir, $examplesDir;
 	
 	if($section=="distribution"){
@@ -89,14 +89,12 @@ function table ($section, $id, $owl, $shacl, $example, $context){
 	
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
-	//$mdString="### $id
 	$mdString="
 ".renderjson($example,$context)."
 	
 ".renderrdf($owl,$shacl);
 
 	echo $mdString;
-//    writeMd($section, $id, $owl, $shacl, $example, $context);
 
 }
 

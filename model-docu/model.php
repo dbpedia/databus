@@ -30,21 +30,31 @@ init();
 
 ?>
 
-# Databus Model
+TODO:
+* impose a limit on abstract? 200 chars?
+* solve issued/created/lastmodified
 
+# Databus Model
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
-## URI Design and Structure
+## URI Design
 TODO explain URIs
+
+## Structure 
+TODO Group, Artifact, Version
+
+## Versioning
+TODO alphanumeric and patterns
+
+## Timestamping
+
 
 ## Quickstart Examples
 
 Some examples to copy and adapt. 
 
 ### Dataset Version
-
-
 
 ```json
 {
@@ -79,7 +89,7 @@ Some examples to copy and adapt.
 	"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
 	"issued": "2021-12-06T11:34:17Z",
     "issued": "2021-12-06T11:34:17Z",
-
+	types
 ```
 
 ### Group
@@ -91,6 +101,10 @@ Some examples to copy and adapt.
 	"title": "Group title" ,
 	"abstract": "This is an example group for API testing.",
 	"description": "This is an example group for API testing."
+
+# Automatically inferred after post
+language tags
+
 }
 ```
 
@@ -102,8 +116,7 @@ Some examples to copy and adapt.
 
 ## Group 
 
-TODO:
-* shacl check URI pattern? $DOMAIN/$USER/$GROUP  w/o slash
+TODO check pattern
 
 <?php 
 $section="group"; 
@@ -124,7 +137,7 @@ $shacl='<#group-exists>
       sh:nodekind sh:IRI ;            
       sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
-    ] ';
+    ] .';
 
 $example='"@id": "https://databus.dbpedia.org/janni/examples",
 "@type": "dataid:Group",';
@@ -135,11 +148,12 @@ $context='"Group": "dataid:Group",
 	"@type": "@id"
 	}';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:title" ?>
+### title (Group)
+
 <?php
 $owl='dct:title
 	rdfs:label "Title"@en ;
@@ -152,7 +166,7 @@ $shacl='<#en-title>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Group ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en. Each language MUST only occur once "@en ;
 	sh:path dct:title ;
 	sh:minCount 1 ;
 	sh:languageIn ("en") ;
@@ -165,11 +179,12 @@ $context='"title": {
     "@language": "en"
   }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:abstract" ?>
+### abstract (Group)
+
 <?php
 $owl='dct:abstract
 	rdfs:label "Abstract"@en ;
@@ -194,7 +209,7 @@ $context='"abstract": {
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -224,15 +239,17 @@ $context='"description": {
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-## Dataset (DataId)
-<?php $section="dataid" ?>
+## Dataset Version - the DataId
 
-### <?=$id="dataid" ?>
-<?php
+TODO check pattern
+
+<?php 
+$section="dataid" ;
+$id="dataid" ;
 $owl='missing';
 
 $shacl='<#dataset-exists>
@@ -243,14 +260,20 @@ $shacl='<#dataset-exists>
 	  sh:minCount 1 ;
 	  sh:maxCount 1 ;
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
-	] .';
+	] ;
+	sh:property [
+      sh:path (rdf:type [ sh:inversePath rdf:type ] );
+      sh:nodekind sh:IRI ;            
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" ;
+      sh:message "IRI for dataid:Group must match /USER/GROUP/VERSION , |USER|>3"@en ;
+    ] .';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "dataid:Dataset",';
 
 $context='"Dataset": "dataid:Dataset" ';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -279,7 +302,7 @@ $context='"title": {
     "@language": "en"
   }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -307,7 +330,7 @@ $context='"abstract": {
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -336,11 +359,13 @@ $context='"description": {
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:publisher" ?>
+### publisher
+
+
 <?php
 $owl='dct:publisher
 	dcam:rangeIncludes dct:Agent ;
@@ -358,14 +383,14 @@ $shacl='<#publisher-violation>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .';
 
-$example='"publisher": "https://databus.dbpedia.org/TODO#this",';
+$example='"publisher": "https://databus.dbpedia.org/janni#this",';
 
 $context='"publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -382,7 +407,7 @@ $context='"group": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -399,7 +424,7 @@ $context='"artifact": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -430,7 +455,7 @@ $context='"version": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -452,7 +477,7 @@ $context='"hasVersion": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -484,7 +509,7 @@ $context='"issued": {
       "@type": "xsd:dateTime"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -516,7 +541,7 @@ $context='"license": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -552,7 +577,7 @@ $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VER
 
 $context='"distribution": "dcat:distribution"';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 ### <?=$id="dct:issued" ?>
@@ -583,7 +608,7 @@ $context='"issued": {
       "@type": "xsd:dateTime"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -600,7 +625,7 @@ $context='"file": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -624,7 +649,7 @@ $context='"formatExtension": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -648,7 +673,7 @@ $context='"compression": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -682,7 +707,7 @@ $context='"downloadURL": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
@@ -742,7 +767,7 @@ $context='"sha256sum": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 ### <?=$id="dct:hasVersion" ?>
@@ -765,7 +790,7 @@ $context='"hasVersion": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 
 headerFooter($contextFile, $shaclDir);
 ?>
