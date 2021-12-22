@@ -532,6 +532,7 @@ $owl='dct:issued
 
 $shacl='<#has-issued>
 	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -549,8 +550,48 @@ $context='"issued": {
 table($section,$owl,$shacl,$example,$context);
 ?>
 
+### modified
+
+Note: *Always* set by the Databus on post.
+
+<?php
+$owl='dct:modified
+	rdfs:label "Date Modified"@en ;
+	rdfs:comment "Date on which the resource was changed."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .';
+
+$shacl='<#has-modified>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:modified;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
+
+$example='"modified": "%NOW%",';
+
+$context='"modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:dateTime"
+    }';
+
+table($section,$owl,$shacl,$example,$context);
+?>
+
 
 ### license
+
+Note:
+* see roadmap above for planned changes
+* must be an IRI
+* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs. 
+
 <?php
 $owl='dct:license
 	rdfs:label "License"@en ;
@@ -809,6 +850,13 @@ table($section,$owl,$shacl,$example,$context);
 
 
 ### bytesize
+
+Note: Determining byteSize is not trivial for two reasons:
+1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system. 
+2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption. 
+  
+We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
+
 <?php
 $owl='# excerpt from https://www.w3.org/ns/dcat2.ttl 
 dcat:byteSize
@@ -871,10 +919,10 @@ table($section,$owl,$shacl,$example,$context);
 ### hasVersion
 <?php
 $owl='dct:hasVersion
+	rdfs:label "Has Version"@en ;
 	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
 $shacl='missing';
