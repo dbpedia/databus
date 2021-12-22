@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 ob_start();
 include_once("model.php");
