@@ -22,25 +22,25 @@ function init (){
 function headerFooter($contextFile, $shaclDir){
     //context.json
     $contextStr = file_get_contents($contextFile);
-    $contextStr = substr_replace($contextStr ,"",-2);
-
-    $contextPrefix ='
-    {
-        "@language": "en",
-        "dataid": "http://dataid.dbpedia.org/ns/core#",
-        "databus": "https://databus.dbpedia.org/system/ontology#",
-        "dcv": "http://dataid.dbpedia.org/ns/cv#",
-        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-        "dct": "http://purl.org/dc/terms/",
-        "dcat": "http://www.w3.org/ns/dcat#",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "cert": "http://www.w3.org/ns/auth/cert#",
-        "dbo": "http://dbpedia.org/ontology/",
-        "foaf": "http://xmlns.com/foaf/0.1/",
-        "sec": "https://w3id.org/security#",
-
-    ';
     
+    // removes last comma
+    $contextStr = substr_replace(trim($contextStr) ,"",-1);
+
+    $contextPrefix ='{
+	"@language": "en",
+	"dataid": "http://dataid.dbpedia.org/ns/core#",
+    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+	"dct": "http://purl.org/dc/terms/",
+	"dcat": "http://www.w3.org/ns/dcat#",
+	"xsd": "http://www.w3.org/2001/XMLSchema#",
+	"cert": "http://www.w3.org/ns/auth/cert#",
+	"dbo": "http://dbpedia.org/ontology/",
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"sec": "https://w3id.org/security#",
+
+';
+     
     $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}";
     file_put_contents($contextFile, $contextStr);
 
@@ -82,8 +82,8 @@ function table ($section, $owl, $shacl, $example, $context){
 		file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
     }
 
-    if ($context !== "missing" || $context !== "duplicate" ){
-	    file_put_contents($contextFile,$context ."," .PHP_EOL,FILE_APPEND);
+    if ($context !== "missing" && $context !== "duplicate" ){
+	    file_put_contents($contextFile,$context.",".PHP_EOL.PHP_EOL,FILE_APPEND);
     }
 
 	

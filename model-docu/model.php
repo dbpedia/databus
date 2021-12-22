@@ -85,7 +85,7 @@ Some examples to copy and adapt.
 		"byteSize": "4439722",
 		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 		"hasVersion": "2021-12-06",
-		"dataid-cv:type": "parsed_sorted"
+		"dcv:type": "parsed_sorted"
     }]
 }
 
@@ -151,6 +151,7 @@ $example='"@id": "https://databus.dbpedia.org/janni/examples",
 "@type": "dataid:Group",';
 
 $context='"Group": "dataid:Group",
+
 "group": {
 	"@id": "dataid:group",
 	"@type": "@id"
@@ -648,7 +649,7 @@ $shacl='<#has-distribution>
 $example='"distribution":"TODO"';
 
 $context='"distribution": {
-      "@type": "@id".
+      "@type": "@id",
       "@id": "@dcat:distribution"
 }';
 
@@ -970,6 +971,66 @@ $context='"hasVersion": {
 
 table($section,$owl,$shacl,$example,$context);
 
+?>
+
+### TODO signature/tractate
+
+
+
+## TODO Remaining JSON-LD
+
+<?php
+$owl='missing';
+
+$shacl='missing';
+	
+$example='missing';
+
+$context='"maker": {
+    "@id": "foaf:maker",
+    "@type": "@id"
+  },
+  "primaryTopic": {
+    "@id": "foaf:primaryTopic",
+    "@type": "@id"
+  },
+  "name": {
+    "@id": "foaf:name",
+    "@type": "xsd:string"
+  },
+  "account": {
+    "@id": "foaf:account",
+    "@type": "@id"
+  },
+  "img": {
+    "@id": "foaf:img",
+    "@type": "@id"
+  },
+  "key": {
+    "@id": "cert:key"
+  },
+  "modulus": {
+    "@id": "cert:modulus"
+  },
+  "exponent": {
+    "@id": "cert:exponent"
+  },
+  "signature": {
+    "@id": "dataid:signature",
+    "@type": "xsd:string"
+  },
+  "tractate": {
+    "@id": "databus:tractate"
+  },
+  "subPropertyOf" : {
+    "@id" : "rdfs:subPropertyOf",
+    "@type" : "@id"
+  }';
+
+
+table($section,$owl,$shacl,$example,$context);
+?>
+<?php
 headerFooter($contextFile, $shaclDir);
 ?>
 
