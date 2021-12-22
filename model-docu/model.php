@@ -489,6 +489,8 @@ table($section,$owl,$shacl,$example,$context);
 
 ### hasVersion
 
+Note: see section versioning above
+
 <?php
 $owl='dct:hasVersion
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
@@ -497,7 +499,7 @@ $owl='dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='<#has-hasVersion>   
+$shacl='<#has-hasVersion-dataset>   
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -655,6 +657,9 @@ table($section,$owl,$shacl,$example,$context);
 
 
 ## Distribution (Part)
+
+TODO: check if sh:pattern in SHACL is possible 
+
 <?php 
 $section="distribution";
 
@@ -664,10 +669,22 @@ $owl='dcat:Distribution
 	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;'
-	.
+	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;';
 
-$shacl='missing';
+$shacl='<#dataset-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Part ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	] .
+	#sh:property [
+    #  sh:path [ sh:inversePath rdf:type ] ;
+	#  sh:nodekind sh:IRI ;            
+    #  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" ;
+    #  sh:message "IRI for dataid:Group must match /USER/GROUP/VERSION , |USER|>3"@en ;
+    #] . ';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "Part",';
@@ -681,14 +698,15 @@ table($section,$owl,$shacl,$example,$context);
 
 
 ### issued (Distribution)
+
 <?php
 $owl='dct:issued
-rdfs:label "Date Issued"@en ;
-rdfs:comment "Date of formal issuance of the resource."@en ;
-dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
-rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-rdfs:range rdfs:Literal ;
-rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
 
 $shacl='<#has-issued>
 	a sh:PropertyShape ;
@@ -735,6 +753,9 @@ table($section,$owl,$shacl,$example,$context);
 ?>
 
 ### format
+
+TODO: check sh:pattern
+
 <?php
 $owl='missing';
 
@@ -742,8 +763,9 @@ $shacl='<#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dataid:formatExtension of type IRI"@en ;
 	sh:path dataid:format ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  "@en ;
+	sh:pattern "^\." ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
 	sh:minCount 1 .';
@@ -763,6 +785,7 @@ table($section,$owl,$shacl,$example,$context);
 
 TODO:
 * is this needed? would it help to query this?
+
 <?php
 $owl='missing';
 
@@ -916,7 +939,10 @@ $context='"sha256sum": {
 table($section,$owl,$shacl,$example,$context);
 ?>
 
-### hasVersion
+### hasVersion (Distribution)
+
+Note: see section versioning above
+
 <?php
 $owl='dct:hasVersion
 	rdfs:label "Has Version"@en ;
@@ -925,8 +951,16 @@ $owl='dct:hasVersion
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='missing';
-
+$shacl='<#has-hasVersion-part>   
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .';
+	
 $example='"hasVersion": "%VERSION%",';
 
 $context='"hasVersion": {
