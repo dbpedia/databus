@@ -34,7 +34,9 @@ $examplesDir="generated/examples";
 
 init();
 
+
 ?>
+
 
 TODO Design decisions:
 *  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
