@@ -263,13 +263,19 @@ $shacl='<#dataset-exists>
 	  sh:minCount 1 ;
 	  sh:maxCount 1 ;
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
-	] ;
+	] .
+
+<#dataset-uri-pattern>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Dataset ;
 	sh:property [
       sh:path (rdf:type [ sh:inversePath rdf:type ] );
       sh:nodekind sh:IRI ;            
       sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP/VERSION , |USER|>3"@en ;
     ] .';
+    
+  
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "dataid:Dataset",';
@@ -407,7 +413,15 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#has-group>   
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:group MUST occur exactly once AND be of type IRI"@en ;
+	sh:path dataid:group ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
 
 $example='"group": "%DATABUS_URI%/%ACCOUNT%/examples",';
 
@@ -425,7 +439,15 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#artifact-exists>
+  a sh:NodeShape ;
+  sh:targetNode dataid:Artifact ; 
+  sh:property [
+      sh:path [ sh:inversePath rdf:type ] ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:message "Exactly one subject with an rdf:type of dataid:Artifact must occur."@en ;
+  ] .';
 
 $example='"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",';
 
@@ -442,21 +464,36 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='<#version-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "TODO Required property dataid:version MUST occur exactly once AND have URI/IRI as value AND match pattern"@en ;
-            sh:path dataid:version;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            #TODO specify version better
-            # sh:pattern "^https://databus.dbpedia.org/[^\\/]+/[^/]+/[^/]+/[^/]+$" ;
-            # all need to comply to URI path spec ?
-            # user: keycloak -> jan
-            # group: maven
-            # artifact: maven + some extra
-            # version: maven
-            sh:nodeKind sh:IRI .';
+$shacl='<#version-exists>
+	a sh:PropertyShape ;
+	
+	sh:severity sh:Violation ;
+	sh:message "TODO Required property dataid:version MUST occur exactly once AND have URI/IRI as value AND match pattern"@en ;
+	sh:path dataid:version;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	#TODO specify version better
+	# sh:pattern "^https://databus.dbpedia.org/[^\\/]+/[^/]+/[^/]+/[^/]+$" ;
+	# all need to comply to URI path spec ?
+	# user: keycloak -> jan
+	# group: maven
+	# artifact: maven + some extra
+	# version: maven
+	sh:nodeKind sh:IRI .
+	
+<#version-exists>
+  a sh:NodeShape ;
+  sh:targetNode dataid:Version ; 
+  sh:property [
+      sh:path [ sh:inversePath rdf:type ] ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:message "Exactly one subject with an rdf:type of dataid:Version must occur."@en ;
+  ] .	
+';
+
+
+
 
 $example='"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",';
 
@@ -524,7 +561,7 @@ table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:license" ?>
+### license
 <?php
 $owl='dct:license
           dcam:rangeIncludes dct:LicenseDocument ;
@@ -556,33 +593,27 @@ $context='"license": {
 table($section,$owl,$shacl,$example,$context);
 ?>
 
-
-
-
-## Distribution
-<?php $section="distribution" ?>
-
-### <?=$id="dcat:distribution" ?>
+### distribution
 <?php
-$owl=<<<XML
-dcat:Distribution
-        a rdfs:Class ;
-        a owl:Class ;
-        rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-        rdfs:label "Distribution"@en ;
-        skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
-      .
-XML;
+$owl='dcat:distribution
+  a rdf:Property ;
+  a owl:ObjectProperty ;
+  rdfs:comment "An available distribution of the dataset."@en ;
+  rdfs:domain dcat:Dataset ;
+  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+  rdfs:label "distribution"@en ;
+  rdfs:range dcat:Distribution ;
+  rdfs:subPropertyOf dct:relation ;
+  skos:definition "An available distribution of the dataset."@en .';
 
-$shacl='<#distribution-violation>
+$shacl='<#has-distribution>
             a sh:PropertyShape ;
             sh:severity sh:Violation ;
             sh:message "Required property dcat:distribution MUST occur exactly once AND have URI/IRI as value"@en ;
             sh:path dcat:distribution;
             sh:minCount 1 ;
-            sh:nodeKind sh:IRI .';
+            sh:nodeKind sh:IRI .
+';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "dataid:SingleFile",';
@@ -591,6 +622,31 @@ $context='"distribution": "dcat:distribution"';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
+
+
+## Distribution
+<?php $section="distribution" ?>
+<?php
+$owl='dcat:Distribution
+	a owl:Class ;
+	rdfs:label "Distribution"@en ;
+	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;'
+	.
+
+$shacl='missing';
+
+$example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
+"@type": "dataid:SingleFile",';
+
+$context='"distribution": "dcat:distribution"';
+
+table($section,$owl,$shacl,$example,$context);
+?>
+
+
 
 ### <?=$id="dct:issued" ?>
 <?php
@@ -624,11 +680,20 @@ table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:file" ?>
+### file
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#has-file>   
+	a sh:PropertyShape ;
+	sh:targetClass dataid:SingleFile ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:SingleFile MUST have exactly one dataid:file of type IRI"@en ;
+	sh:path dataid:file;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+';
 
 $example='"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",';
 
@@ -640,21 +705,45 @@ $context='"file": {
 table($section,$owl,$shacl,$example,$context);
 ?>
 
-
-### <?=$id="dataid:formatExtension" ?>
+### format
 <?php
 $owl='missing';
 
-$shacl='<#formatExtension-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
-            sh:path dataid:formatExtension;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:string .';
+$shacl='<#has-format>   
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:SingleFile MUST have exactly one dataid:formatExtension of type IRI"@en ;
+	sh:path dataid:format ;
+	sh:datatype xsd:string ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .';
 
 $example='"format": "nt",';
+
+$context='"format": {
+      "@id": "dataid:format",
+      "@type": "xsd:string"
+    }';
+
+table($section,$owl,$shacl,$example,$context);
+?>
+
+
+### formatExtension TODO is this needed?
+<?php
+$owl='missing';
+
+$shacl='<#has-formatExtension>
+a sh:PropertyShape ;
+sh:severity sh:Violation ;
+sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+sh:path dataid:formatExtension;
+sh:minCount 1 ;
+sh:maxCount 1 ;
+sh:datatype xsd:string .';
+
+$example='"formatExtension": "nt",';
 
 $context='"formatExtension": {
       "@id": "dataid:formatExtension",
@@ -782,7 +871,7 @@ $context='"sha256sum": {
 table($section,$owl,$shacl,$example,$context);
 ?>
 
-### <?=$id="dct:hasVersion" ?>
+### hasVersion
 <?php
 $owl='dct:hasVersion
 	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
