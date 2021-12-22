@@ -78,11 +78,11 @@ function table ($section, $owl, $shacl, $example, $context){
 		$section="dataid";
 		}
 
-    if ($shacl != 'missing') {
+    if ($shacl != "missing") {
 		file_put_contents("$shaclDir/$section.shacl",$shacl .PHP_EOL .PHP_EOL,FILE_APPEND);
     }
 
-    if ($context !== "missing"){
+    if ($context !== "missing" || $context !== "duplicate" ){
 	    file_put_contents($contextFile,$context ."," .PHP_EOL,FILE_APPEND);
     }
 
