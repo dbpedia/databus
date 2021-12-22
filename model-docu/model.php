@@ -2,19 +2,25 @@
 
 
 /*
+# Usage:
 sudo apt install php7.4-cli
-php model.php 
+php model.php > model.md
+
+RECOMMENDED if context or shacl was changed
+cat generated/context.json | jq
+cd generated/shacl/
+for i in `ls *.shacl` ; do rapper -gc $i  ; done  
+
 
 Goal:
 * php script is a template to fill a markdown doc (stdout)
-* also generates context, shacl and example (these are the Single Source of Truth files)
+* also generates context, shacl (these are the Single Source of Truth SSoT files)
 * OWL should be taken from dataid, dct, dcat, etc. SSoT is elsewhere
 
 Success criteria:
-* context.json, shacl and example have a correct syntax.
-* model.md renders well and looks pretty
-
-comm -23 <(cat ../context.json | jq| grep '": {' | sort -u ) <(cat remainingFiles/context.json | jq | grep '": {' | sort -u)
+* context.json, shacl have a correct syntax.
+* model.md renders well and looks pretty and serves as good docu
+* model.md can be viewed at github and might be converted to HTML and shipped with the bus later
 
 */
 
@@ -30,26 +36,38 @@ init();
 
 ?>
 
-TODO:
-* impose a limit on abstract? 200 chars?
-* solve issued/created/lastmodified
+TODO Design decisions:
+*  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
+* impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
+
+
 
 # Databus Model
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
 ## URI Design
-TODO explain URIs
+TODO Jan: 
+explain URIs
 
 ## Structure 
-TODO Group, Artifact, Version
+TODO Sebastian:
+Group, Artifact, Version, CVS
 
 ## Versioning
-TODO alphanumeric and patterns
+TODO Denis: 
+explain alphanumeric order and give an example query and also give some patterns (e.g. day vs. datetime as in Archivo vs. using version numbers 01.01.10 )
 
 ## Timestamping
+* if dct:issue is given on post, this will be used
+* if not, then Databus inserts %now%
+* dct:modified is always set by Databus
 
 ## Customization, Mods, Metadata Quality
+TODO Marvin:
+Databus can be customized, by changing shacl, the webid and posting additional data. Please give some best practices, when to use this customization mechanism and when to use mods. I think, that if people have metadata that can not generated from the file and is available to poster, then that could be included, e.g. if they have own identifiers. 
+
+
 
 ## Roadmap - planned changes
 * license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.  
@@ -96,7 +114,7 @@ Some examples to copy and adapt.
 	"issued": "2021-12-06T11:34:17Z",
     "issued": "2021-12-06T11:34:17Z",
 	"modified"
-	types
+	additional types
 ```
 
 ### Group
@@ -115,15 +133,9 @@ language tags
 }
 ```
 
-
-
-
-
-
-
 ## Group 
 
-TODO:
+TODO Jan:
 * check sh:pattern in SHACL
 
 <?php 
