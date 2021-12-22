@@ -88,7 +88,13 @@ $shacl='<#group-exists>
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
 	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-	] .';
+	] ;
+	sh:property [
+      sh:path (rdf:type [ sh:inversePath rdf:type ] );
+      sh:nodekind sh:IRI ;            
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
+      sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
+    ] ';
 
 $example='"@id": "https://databus.dbpedia.org/janni/examples",
 "@type": "dataid:Group",';
