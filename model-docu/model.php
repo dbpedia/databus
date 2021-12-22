@@ -35,7 +35,7 @@ init();
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
-## URI Design
+## URI Design and Structure
 TODO explain URIs
 
 ## Quickstart Examples
@@ -44,12 +44,41 @@ Some examples to copy and adapt.
 
 ### Dataset Version
 
-```
-TODO Jan -> can you copy an example here, e.g. the DBpedia Ontology example
-```
-After posting, Databus will add these inferred statements:
 
-```
+
+```json
+{
+	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+	"@type": "dataid:Dataset",
+	"title": "DBpedia Ontology",
+	"abstract": "Registered a version of the DBpedia Ontology into my account",
+	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:
+  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency
+  2. License was checked -> CC-BY
+",
+	"publisher": "https://databus.dbpedia.org/janni#this",
+	"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
+	"hasVersion": "2021-12-06",
+	"license": "http://creativecommons.org/licenses/by/4.0/",
+	"distribution": [{
+		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+		"@type": "dataid:Part",
+		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
+		"format": "nt",
+		"compression": "none",
+		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+		"byteSize": "4439722",
+		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+		"hasVersion": "2021-12-06"
+    }]
+}
+
+# Automatically inferred after post
+	"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+	"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
+	"issued": "2021-12-06T11:34:17Z",
+    "issued": "2021-12-06T11:34:17Z",
 
 ```
 
@@ -57,13 +86,14 @@ After posting, Databus will add these inferred statements:
 ```json
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/username/example_group",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 	"@type": "dataid:Group",
 	"title": "Group title" ,
 	"abstract": "This is an example group for API testing.",
 	"description": "This is an example group for API testing."
 }
 ```
+
 
 
 
