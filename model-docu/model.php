@@ -975,7 +975,32 @@ table($section,$owl,$shacl,$example,$context);
 
 ### TODO signature/tractate
 
+```
+<#signature-violation>
+#   dataid:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
+    a sh:PropertyShape ;
+    sh:severity sh:Violation ;
+    sh:message " TODO Optional property dataid:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
+    sh:path dataid:signature;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" .
 
+```
+
+
+
+## TODO Content variants
+
+```
+<#properties-are-cvs>
+  a sh:PropertyShape ;
+  sh:targetClass rdf:Property ; 
+  sh:path rdfs:subPropertyOf ;
+  sh:hasValue dataid:contentVariant ;
+  sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+
+```
 
 ## TODO Remaining JSON-LD
 
