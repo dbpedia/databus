@@ -139,7 +139,7 @@ $shacl='<#group-exists>
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
 	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-	] 
+	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;            
@@ -765,7 +765,7 @@ $shacl='<#has-format>
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  "@en ;
+	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  """@en ;
 	sh:pattern "^\." ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
@@ -792,7 +792,7 @@ $owl='missing';
 
 $shacl='<#has-formatExtension>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part
+	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
 	sh:path dataid:formatExtension;
@@ -823,7 +823,7 @@ $shacl='<#has-compression>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front "@en ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front """@en ;
 	sh:pattern "^\." ;
 	sh:path dataid:compression;
 	sh:minCount 1 ;
