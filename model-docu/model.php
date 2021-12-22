@@ -12,7 +12,6 @@ cat generated/context.json | jq
 cd generated/shacl/
 for i in `ls *.shacl` ; do rapper -gc $i  ; done  
 
-
 Goal:
 * php script is a template to fill a markdown doc (stdout)
 * also generates context, shacl (these are the Single Source of Truth SSoT files)
@@ -40,7 +39,17 @@ init();
 TODO Design decisions:
 *  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
 * impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
+* formatExtension in or out?
 
+TODO all: 
+* review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
+
+TODO Fabian:
+* get the pre-commit script working
+* take the examples from ## Quickstart Examples and copy them in the individual sections. Note that we do not need the examples generation any more, so this can be removed
+
+TODO Jan:
+* test the new shacl and context.jsonld, does it work?
 
 
 # Databus Model
@@ -49,7 +58,7 @@ Databus runs on an RDF model made from DCAT, DCT and DataId properties. Addition
 
 ## URI Design
 TODO Jan: 
-explain URIs
+explain URI patterns
 
 ## Structure 
 TODO Sebastian:
@@ -66,7 +75,7 @@ explain alphanumeric order and give an example query and also give some patterns
 
 ## Customization, Mods, Metadata Quality
 TODO Marvin:
-Databus can be customized, by changing shacl, the webid and posting additional data. Please give some best practices, when to use this customization mechanism and when to use mods. I think, that if people have metadata that can not generated from the file and is available to poster, then that could be included, e.g. if they have own identifiers. 
+Databus can be customized, by changing shacl, the webid and posting additional data. Please give some best practices, when to use this customization mechanism and when to use mods. I think, that if people have metadata that can not be generated from the file and is available to uploading agent, then that could be included, e.g. if they have own identifiers. Or they could limit licenses to CC or few open licenses only. Then also how do mods increase metadata quality (consistency is one aspect here, see e.g. the comments in byteSize)
 
 
 
@@ -267,7 +276,8 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Dataset Version - the DataId
 
-TODO check sh:pattern in shacl
+TODO Jan:
+* check sh:pattern in shacl
 
 <?php 
 $section="dataid" ;
@@ -382,8 +392,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### publisher
 
-TODO explain webid and how databus also provides these
-
 <?php
 $owl='dct:publisher
 	dcam:rangeIncludes dct:Agent ;
@@ -415,7 +423,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### group
 
-TODO:
+TODO jan:
 * add sh:pattern to SHACL
 
 <?php
@@ -444,7 +452,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### artifact
 
-TODO:
+TODO jan:
 * add sh:pattern to SHACL
 
 <?php
@@ -473,7 +481,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### version
 
-TODO:
+TODO jan:
 * add sh:pattern to SHACL
 
 <?php
@@ -568,7 +576,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### modified
 
-Note: *Always* set by the Databus on post.
+Note: dct:modified is *always* set by the Databus on post.
 
 <?php
 $owl='dct:modified
@@ -672,7 +680,8 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Distribution (Part)
 
-TODO: check if sh:pattern in SHACL is possible 
+TODO Jan: 
+* check if sh:pattern in SHACL is possible 
 
 <?php 
 $section="distribution";
@@ -768,7 +777,8 @@ table($section,$owl,$shacl,$example,$context);
 
 ### format
 
-TODO: check sh:pattern
+TODO Jan: 
+* check sh:pattern
 
 <?php
 $owl='missing';
@@ -797,7 +807,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### formatExtension
 
-TODO:
+TODO all:
 * is this needed? would it help to query this?
 
 <?php
@@ -826,7 +836,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### compression
 
-TODO:
+TODO Jan:
 * Check sh:pattern
 
 <?php
@@ -986,7 +996,8 @@ table($section,$owl,$shacl,$example,$context);
 
 ?>
 
-### TODO signature/tractate
+### signature/tractate
+TODO ??
 
 ```
 <#signature-violation>
@@ -1003,8 +1014,8 @@ table($section,$owl,$shacl,$example,$context);
 
 
 
-## TODO Content variants
-
+##  Content variants
+TODO ??
 
 <?php
 $owl='missing';
@@ -1027,7 +1038,8 @@ $context='"subPropertyOf" : {
 table($section,$owl,$shacl,$example,$context);
 ?>  
 
-## TODO Remaining JSON-LD
+## Remaining JSON-LD
+TODO ??
 
 <?php
 $owl='missing';
