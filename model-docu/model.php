@@ -992,15 +992,27 @@ table($section,$owl,$shacl,$example,$context);
 
 ## TODO Content variants
 
-```
-<#properties-are-cvs>
-  a sh:PropertyShape ;
-  sh:targetClass rdf:Property ; 
-  sh:path rdfs:subPropertyOf ;
-  sh:hasValue dataid:contentVariant ;
-  sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
 
-```
+<?php
+$owl='missing';
+
+$shacl='<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ; 
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+';
+	
+$example='missing';
+
+$context='"subPropertyOf" : {
+    "@id" : "rdfs:subPropertyOf",
+    "@type" : "@id"
+  }';
+
+table($section,$owl,$shacl,$example,$context);
+?>  
 
 ## TODO Remaining JSON-LD
 
@@ -1046,10 +1058,6 @@ $context='"maker": {
   },
   "tractate": {
     "@id": "databus:tractate"
-  },
-  "subPropertyOf" : {
-    "@id" : "rdfs:subPropertyOf",
-    "@type" : "@id"
   }';
 
 
