@@ -7,7 +7,8 @@ function init (){
 	";
 
     @unlink($contextFile);
-    @unlink($markDownFile);
+//     @unlink($markDownFile);
+
 
     array_map('unlink', glob("$shaclDir/*.*"));
     @rmdir($shaclDir);
@@ -16,9 +17,6 @@ function init (){
     array_map('unlink', glob("$examplesDir/*.*"));
     @rmdir($examplesDir);
     mkdir($examplesDir, 0777, true);
-
-    $mdString = "# Model";
-    file_put_contents($markDownFile, $mdString .PHP_EOL.PHP_EOL, FILE_APPEND);
 }
 
     
@@ -92,35 +90,56 @@ function table ($section, $owl, $shacl, $example, $context){
 	
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
-	$mdString="
-".renderjson($example,$context)."
-	
-".renderrdf($owl,$shacl);
+	$mdString = "<table>"
+	.renderrdf($owl,$shacl)
+	.renderjson($example,$context)
+	."</table>";
+
 
 	echo $mdString;
 
 }
 
+function renderrdf($owl,$shacl){
+	return <<<XML
+<tr> <td>OWL</td> <td>SHACL</td> </tr>
+<tr><td>
+
+```sql
+$owl
+```
+
+</td><td>
+
+```sql
+$shacl
+```
+
+</td></tr>
+XML;
+}
+
 
 function renderjson($example,$context){
-	return "```json
-# Example
+	return <<<XML
+<tr> <td>Example</td> <td>Context</td> </tr>
+<tr><td>
+
+```json
 $example
+```
 
-#Context
+</td><td>
+
+```json
 $context
-```";
-	}
+```
 
-function renderrdf($owl,$shacl){
-	return "```sql
-#OWL
-$owl
+</td></tr>
+XML;
+}
 
-#SHACL
-$shacl
-```";
-	}
+
 
 
 function writeMd($section, $id, $owl, $shacl, $example, $context){
