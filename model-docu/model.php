@@ -53,6 +53,8 @@ TODO Fabian:
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
 
+TODO Johannes:
+* create the "missing" OWL statements for DataId 
 
 # Databus Model
 
@@ -97,10 +99,7 @@ Some examples to copy and adapt.
 	"@type": "dataid:Dataset",
 	"title": "DBpedia Ontology",
 	"abstract": "Registered a version of the DBpedia Ontology into my account",
-	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:
-  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency
-  2. License was checked -> CC-BY
-",
+	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
 	"publisher": "https://databus.dbpedia.org/janni#this",
 	"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 	"hasVersion": "2021-12-06",
@@ -673,7 +672,7 @@ $example='"distribution":"TODO"';
 
 $context='"distribution": {
       "@type": "@id",
-      "@id": "@dcat:distribution"
+      "@id": "dcat:distribution"
 }';
 
 table($section,$owl,$shacl,$example,$context);
