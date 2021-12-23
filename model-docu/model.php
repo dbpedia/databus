@@ -52,6 +52,7 @@ TODO Fabian:
 
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
+UPDATE context and shacl are not complete / correct, will test once that is the case
 
 TODO Johannes:
 * create the "missing" OWL statements for DataId 
@@ -61,8 +62,72 @@ TODO Johannes:
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
 
 ## URI Design
-TODO Jan: 
-explain URI patterns
+
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
+
+The following rules apply to the identifiers of the following Databus concepts:
+* Accounts *(foaf:account)*
+* Groups *(dataid:group / dataid:Group)*
+* Artifacts *(dataid:artifact / dataid:Artifact)*
+* Versions *(dataid:version / dataid:Version)*
+* Datasets *(dataid:Dataset)*
+* Distributions *(dcat:distrubution)*
+* Files *(dataid:file)*
+
+### General Rules
+
+* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
+* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+* A user namespace (e.g. `john`) must have at least 4 characters.
+
+### Account URI Rules
+
+* An account URI has exactly one path segment
+
+*Example:* https://databus.example.org/john
+
+### Group URI Rules
+
+* A group URI has exactly two path segments
+
+*Example:* https://databus.example.org/john/animals
+
+### Artifact URI Rules
+
+* An artifact URI has exactly three path segments. 
+* An artifact URI contains the URI of its associated group
+
+*Example:* https://databus.example.org/john/animals/cats
+
+### Version URI Rules
+
+* A version URI has exactly four path segments
+* A version URI contains the URI of its associated artifact
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11
+
+### Dataset URI Rules
+
+* A dataset URI has exactly four path segments
+* A dataset URI contains the URI of its associated version
+* The hash of a dataset URI is the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
+
+### Part URI Rules
+
+* A part URI has exactly four path segments
+* A part URI contains the URI of its associated version
+* The hash of a dataset URI is NOT the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
+
+### File URI Rules
+
+* A file URI has exactly five path segments
+* A file URI contains the URI of its associated version
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
 
 ## Structure 
 TODO Sebastian:
@@ -277,9 +342,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Dataset Version - the DataId
 
-TODO Jan:
-* check sh:pattern in shacl
-
 <?php 
 $section="dataid" ;
 $owl='missing';
@@ -294,14 +356,13 @@ $shacl='<#dataset-exists>
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
 	] ;
 	sh:property [
-      sh:path [ sh:inversePath rdf:type ] ;
+    sh:path [ sh:inversePath rdf:type ] ;
 	  sh:nodekind sh:IRI ;            
-      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" ;
-      sh:message "IRI for dataid:Group must match /USER/GROUP/VERSION , |USER|>3"@en ;
-    ] . ';
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
+    sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+  ] . ';
     
   
-
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "Dataset",';
 
@@ -322,7 +383,7 @@ $owl='dct:title
 
 $shacl='<#has-title-dataid>
 	a sh:PropertyShape ;
-    sh:targetClass dataid:Dataset ;
+  sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
 	sh:path dct:title ;
@@ -348,7 +409,7 @@ $owl='dct:abstract
 
 $shacl='<#has-abstract-dataid>
 	a sh:PropertyShape ;
-    sh:targetClass dataid:Dataset ;
+  sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
 	sh:path dct:abstract ;
@@ -375,7 +436,7 @@ $owl='dct:description
 
 $shacl='<#has-description-dataid>
 	a sh:PropertyShape ;
-    sh:targetClass dataid:Dataset ;
+  sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
 	sh:path dct:description ;
@@ -403,7 +464,7 @@ $owl='dct:publisher
 
 $shacl='<#has-publisher>
 	a sh:PropertyShape ;
-    sh:targetClass dataid:Dataset ;
+  sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:publisher;
@@ -424,9 +485,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### group
 
-TODO jan:
-* add sh:pattern to SHACL
-
 <?php
 $owl='missing';
 
@@ -434,11 +492,12 @@ $shacl='<#has-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI"@en ;
+	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .';
+	sh:nodeKind sh:IRI ;       
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"group": "%DATABUS_URI%/%ACCOUNT%/examples",';
 
@@ -453,9 +512,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### artifact
 
-TODO jan:
-* add sh:pattern to SHACL
-
 <?php
 $owl='missing';
 
@@ -463,11 +519,12 @@ $shacl='<#has-artifact>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI"@en ;
+	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .';
+	sh:nodeKind sh:IRI  ;       
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",';
 
@@ -482,9 +539,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### version
 
-TODO jan:
-* add sh:pattern to SHACL
-
 <?php
 $owl='missing';
 
@@ -492,12 +546,12 @@ $shacl='<#has-version>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI"@en ;
-	# sh:pattern "^https://databus.dbpedia.org/[^\\/]+/[^/]+/[^/]+/[^/]+$" ;
+	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
 	sh:path dataid:version ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .';
+	sh:nodeKind sh:IRI  ;       
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",';
 
@@ -661,7 +715,7 @@ $owl='dcat:distribution
 
 $shacl='<#has-distribution>
 	a sh:PropertyShape ;
-	sh:targetClase dataid:Dataset ;
+	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
 	sh:path dcat:distribution;
