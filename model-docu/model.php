@@ -211,9 +211,6 @@ language tags
 
 ## Group 
 
-TODO Jan:
-* check sh:pattern in SHACL
-
 <?php 
 $section="group"; 
 $id="group" ;
@@ -735,9 +732,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Distribution (Part)
 
-TODO Jan: 
-* check if sh:pattern in SHACL is possible 
-
 <?php 
 $section="distribution";
 
@@ -749,20 +743,20 @@ $owl='dcat:Distribution
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;';
 
-$shacl='<#dataset-exists>
+$shacl='<#part-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Part ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
-	] .
-	#sh:property [
-    #  sh:path [ sh:inversePath rdf:type ] ;
-	#  sh:nodekind sh:IRI ;            
-    #  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" ;
-    #  sh:message "IRI for dataid:Group must match /USER/GROUP/VERSION , |USER|>3"@en ;
-    #] . ';
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+    sh:nodekind sh:IRI ;            
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
+    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
+    ] . ';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "Part",';
@@ -1133,11 +1127,11 @@ $context='"maker": {
     "@id": "cert:exponent"
   },
   "signature": {
-    "@id": "dataid:signature",
+    "@id": "sec:signature",
     "@type": "xsd:string"
   },
-  "tractate": {
-    "@id": "databus:tractate"
+  "proof": {
+    "@id": "sec:proof"
   }';
 
 

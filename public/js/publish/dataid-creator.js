@@ -94,12 +94,9 @@ class DataIdCreator {
     }
 
     if (!data.signature.autoGenerateSignature) {
-      graph["https://w3id.org/security#proof"] = {
+      graph["sec:proof"] = {
         '@type': ["https://databus.dbpedia.org/system/ontology#DatabusTractateV1"],
-        'https://w3id.org/security#signature': [{
-          "@type": "http://www.w3.org/2001/XMLSchema#string",
-          "@value": data.signature.userSignature
-        } ]
+        'sec:signature': data.signature.userSignature
       };
     }
 
