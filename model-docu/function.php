@@ -1,6 +1,7 @@
 <?php
 
 
+
 function init (){
     global $contextFile, $markDownFile, $shaclDir, $examplesDir;
 
