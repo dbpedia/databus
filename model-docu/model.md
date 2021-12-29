@@ -6,11 +6,10 @@ TODO Design decisions:
 * impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
 * formatExtension in or out?
 
-TODO all: 
+TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* get the pre-commit script working
 * take the examples from ## Quickstart Examples and copy them in the individual sections. Note that we do not need the examples generation any more, so this can be removed
 
 TODO Jan:
@@ -18,11 +17,11 @@ TODO Jan:
 UPDATE context and shacl are not complete / correct, will test once that is the case
 
 TODO Johannes:
-* create the "missing" OWL statements for DataId 
+* create the "missing" OWL statements for DataId
 
 # Databus Model
 
-Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
+Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working.
 
 ## URI Design
 
@@ -57,7 +56,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 ### Artifact URI Rules
 
-* An artifact URI has exactly three path segments. 
+* An artifact URI has exactly three path segments.
 * An artifact URI contains the URI of its associated group
 
 *Example:* https://databus.example.org/john/animals/cats
@@ -92,12 +91,12 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
 
-## Structure 
+## Structure
 TODO Sebastian:
 Group, Artifact, Version, CVS
 
 ## Versioning
-TODO Denis: 
+TODO Denis:
 explain alphanumeric order and give an example query and also give some patterns (e.g. day vs. datetime as in Archivo vs. using version numbers 01.01.10 )
 
 ## Timestamping
@@ -112,11 +111,11 @@ Databus can be customized, by changing shacl, the webid and posting additional d
 
 
 ## Roadmap - planned changes
-* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.  
+* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.
 
 ## Quickstart Examples
 
-Some examples to copy and adapt. 
+Some examples to copy and adapt.
 
 ### Dataset Version
 
@@ -172,7 +171,7 @@ language tags
 }
 ```
 
-## Group 
+## Group
 
 <table><tr> <td>OWL</td> <td>SHACL</td> </tr>
 <tr><td>
@@ -195,7 +194,7 @@ missing
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
-	    sh:nodekind sh:IRI ;            
+	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .
@@ -381,7 +380,7 @@ missing
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
-	  sh:nodekind sh:IRI ;            
+	  sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
     sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
@@ -586,7 +585,7 @@ missing
 </td><td>
 
 ```sql
-<#has-group>   
+<#has-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -594,7 +593,7 @@ missing
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI ;       
+	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .
 ```
 
@@ -628,7 +627,7 @@ missing
 </td><td>
 
 ```sql
-<#has-artifact>   
+<#has-artifact>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -636,7 +635,7 @@ missing
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI  ;       
+	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
 ```
 
@@ -670,7 +669,7 @@ missing
 </td><td>
 
 ```sql
-<#has-version>   
+<#has-version>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -678,7 +677,7 @@ missing
 	sh:path dataid:version ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI  ;       
+	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
 ```
 
@@ -719,7 +718,7 @@ dct:hasVersion
 </td><td>
 
 ```sql
-<#has-hasVersion-dataset>   
+<#has-hasVersion-dataset>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -850,7 +849,7 @@ Note:
 * see roadmap above for planned changes
 * must be an IRI
 * license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
-* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs. 
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 <table><tr> <td>OWL</td> <td>SHACL</td> </tr>
 <tr><td>
@@ -972,7 +971,7 @@ dcat:Distribution
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
-    sh:nodekind sh:IRI ;            
+    sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . 
@@ -1051,7 +1050,7 @@ missing
 </td><td>
 
 ```sql
-<#has-file>   
+<#has-file>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1082,7 +1081,7 @@ missing
 </td></tr></table>
 ### format
 
-TODO Jan: 
+TODO Jan:
 * check sh:pattern
 
 <table><tr> <td>OWL</td> <td>SHACL</td> </tr>
@@ -1095,7 +1094,7 @@ missing
 </td><td>
 
 ```sql
-<#has-format>   
+<#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1231,7 +1230,7 @@ dcat:downloadURL
 </td><td>
 
 ```sql
-<#has-downloadURL>   
+<#has-downloadURL>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1264,9 +1263,9 @@ dcat:downloadURL
 ### bytesize
 
 Note: Determining byteSize is not trivial for two reasons:
-1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system. 
-2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption. 
-  
+1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system.
+2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption.
+
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
 
@@ -1333,7 +1332,7 @@ dct:hasVersion
 </td><td>
 
 ```sql
-<#has-hasVersion-part>   
+<#has-hasVersion-part>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1394,7 +1393,7 @@ missing
 ```sql
 <#properties-are-cvs>
 	a sh:PropertyShape ;
-	sh:targetClass rdf:Property ; 
+	sh:targetClass rdf:Property ;
 	sh:path rdfs:subPropertyOf ;
 	sh:hasValue dataid:contentVariant ;
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
@@ -1417,8 +1416,7 @@ missing
   }
 ```
 
-</td></tr></table>  
-
+</td></tr></table>
 ## Remaining JSON-LD
 TODO ??
 
@@ -1484,6 +1482,3 @@ missing
 ```
 
 </td></tr></table>
-
-
-

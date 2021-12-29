@@ -9,7 +9,7 @@ php model.php > model.md
 RECOMMENDED if context or shacl was changed
 cat generated/context.json | jq
 cd generated/shacl/
-for i in `ls *.shacl` ; do rapper -gc $i  ; done  
+for i in `ls *.shacl` ; do rapper -gc $i  ; done
 
 Goal:
 * php script is a template to fill a markdown doc (stdout)
@@ -42,11 +42,10 @@ TODO Design decisions:
 * impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
 * formatExtension in or out?
 
-TODO all: 
+TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* get the pre-commit script working
 * take the examples from ## Quickstart Examples and copy them in the individual sections. Note that we do not need the examples generation any more, so this can be removed
 
 TODO Jan:
@@ -54,11 +53,11 @@ TODO Jan:
 UPDATE context and shacl are not complete / correct, will test once that is the case
 
 TODO Johannes:
-* create the "missing" OWL statements for DataId 
+* create the "missing" OWL statements for DataId
 
 # Databus Model
 
-Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working. 
+Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working.
 
 ## URI Design
 
@@ -93,7 +92,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 ### Artifact URI Rules
 
-* An artifact URI has exactly three path segments. 
+* An artifact URI has exactly three path segments.
 * An artifact URI contains the URI of its associated group
 
 *Example:* https://databus.example.org/john/animals/cats
@@ -128,12 +127,12 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
 
-## Structure 
+## Structure
 TODO Sebastian:
 Group, Artifact, Version, CVS
 
 ## Versioning
-TODO Denis: 
+TODO Denis:
 explain alphanumeric order and give an example query and also give some patterns (e.g. day vs. datetime as in Archivo vs. using version numbers 01.01.10 )
 
 ## Timestamping
@@ -148,11 +147,11 @@ Databus can be customized, by changing shacl, the webid and posting additional d
 
 
 ## Roadmap - planned changes
-* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.  
+* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.
 
 ## Quickstart Examples
 
-Some examples to copy and adapt. 
+Some examples to copy and adapt.
 
 ### Dataset Version
 
@@ -208,10 +207,10 @@ language tags
 }
 ```
 
-## Group 
+## Group
 
-<?php 
-$section="group"; 
+<?php
+$section="group";
 $id="group" ;
 $owl='missing';
 
@@ -226,7 +225,7 @@ $shacl='<#group-exists>
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
-	    sh:nodekind sh:IRI ;            
+	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .';
@@ -338,7 +337,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Dataset Version - the DataId
 
-<?php 
+<?php
 $section="dataid" ;
 $owl='missing';
 
@@ -353,12 +352,12 @@ $shacl='<#dataset-exists>
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
-	  sh:nodekind sh:IRI ;            
+	  sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
     sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . ';
-    
-  
+
+
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
 "@type": "Dataset",';
 
@@ -484,7 +483,7 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='<#has-group>   
+$shacl='<#has-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -492,7 +491,7 @@ $shacl='<#has-group>
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI ;       
+	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"group": "%DATABUS_URI%/%ACCOUNT%/examples",';
@@ -511,7 +510,7 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='<#has-artifact>   
+$shacl='<#has-artifact>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -519,7 +518,7 @@ $shacl='<#has-artifact>
 	sh:path dataid:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI  ;       
+	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",';
@@ -538,7 +537,7 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='<#has-version>   
+$shacl='<#has-version>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -546,7 +545,7 @@ $shacl='<#has-version>
 	sh:path dataid:version ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI  ;       
+	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
 $example='"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",';
@@ -572,7 +571,7 @@ $owl='dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='<#has-hasVersion-dataset>   
+$shacl='<#has-hasVersion-dataset>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
@@ -665,7 +664,7 @@ Note:
 * see roadmap above for planned changes
 * must be an IRI
 * license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
-* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs. 
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 <?php
 $owl='dct:license
@@ -731,7 +730,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ## Distribution (Part)
 
-<?php 
+<?php
 $section="distribution";
 
 $owl='dcat:Distribution
@@ -752,7 +751,7 @@ $shacl='<#part-exists>
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
-    sh:nodekind sh:IRI ;            
+    sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . ';
@@ -802,7 +801,7 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 $owl='missing';
 
-$shacl='<#has-file>   
+$shacl='<#has-file>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -825,13 +824,13 @@ table($section,$owl,$shacl,$example,$context);
 
 ### format
 
-TODO Jan: 
+TODO Jan:
 * check sh:pattern
 
 <?php
 $owl='missing';
 
-$shacl='<#has-format>   
+$shacl='<#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -922,7 +921,7 @@ $owl='dcat:downloadURL
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;';
 
-$shacl='<#has-downloadURL>   
+$shacl='<#has-downloadURL>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -947,13 +946,13 @@ table($section,$owl,$shacl,$example,$context);
 ### bytesize
 
 Note: Determining byteSize is not trivial for two reasons:
-1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system. 
-2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption. 
-  
+1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system.
+2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption.
+
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
 <?php
-$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl 
+$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl
 dcat:byteSize
 	a owl:DatatypeProperty ;
 	rdfs:label "byte size"@en ;
@@ -964,7 +963,7 @@ dcat:byteSize
 	skos:definition "The size of a distribution in bytes."@en ;
 	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;';
 
-$shacl='<#has-bytesize>   
+$shacl='<#has-bytesize>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1023,7 +1022,7 @@ $owl='dct:hasVersion
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='<#has-hasVersion-part>   
+$shacl='<#has-hasVersion-part>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -1032,7 +1031,7 @@ $shacl='<#has-hasVersion-part>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .';
-	
+
 $example='"hasVersion": "%VERSION%",';
 
 $context='"hasVersion": {
@@ -1070,12 +1069,12 @@ $owl='missing';
 
 $shacl='<#properties-are-cvs>
 	a sh:PropertyShape ;
-	sh:targetClass rdf:Property ; 
+	sh:targetClass rdf:Property ;
 	sh:path rdfs:subPropertyOf ;
 	sh:hasValue dataid:contentVariant ;
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
 ';
-	
+
 $example='missing';
 
 $context='"subPropertyOf" : {
@@ -1084,7 +1083,7 @@ $context='"subPropertyOf" : {
   }';
 
 table($section,$owl,$shacl,$example,$context);
-?>  
+?>
 
 ## Remaining JSON-LD
 TODO ??
@@ -1093,7 +1092,7 @@ TODO ??
 $owl='missing';
 
 $shacl='missing';
-	
+
 $example='missing';
 
 $context='"maker": {
@@ -1139,7 +1138,3 @@ table($section,$owl,$shacl,$example,$context);
 <?php
 headerFooter($contextFile, $shaclDir);
 ?>
-
-
-
-
