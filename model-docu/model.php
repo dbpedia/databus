@@ -1,7 +1,6 @@
 #!/usr/bin/php
 <?php
 
-
 /*
 # Usage:
 sudo apt install php7.4-cli
