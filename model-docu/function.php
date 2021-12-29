@@ -1,5 +1,6 @@
 <?php
 
+
 function init (){
     global $contextFile, $markDownFile, $shaclDir, $examplesDir;
 
@@ -13,17 +14,17 @@ function init (){
     array_map('unlink', glob("$shaclDir/*.*"));
     @rmdir($shaclDir);
     mkdir($shaclDir, 0777, true);
-    
+
     array_map('unlink', glob("$examplesDir/*.*"));
     @rmdir($examplesDir);
     mkdir($examplesDir, 0777, true);
 }
 
-    
+
 function headerFooter($contextFile, $shaclDir){
     //context.json
     $contextStr = file_get_contents($contextFile);
-    
+
     // removes last comma
     $contextStr = substr_replace(trim($contextStr) ,"",-1);
 
@@ -41,7 +42,7 @@ function headerFooter($contextFile, $shaclDir){
 	"sec": "https://w3id.org/security#",
 
 ';
-     
+
     $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}";
     file_put_contents($contextFile, $contextStr);
 
@@ -74,7 +75,7 @@ function headerFooter($contextFile, $shaclDir){
 
 function table ($section, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir, $examplesDir;
-	
+
 	if($section=="distribution"){
 		$section="dataid";
 		}
@@ -87,7 +88,7 @@ function table ($section, $owl, $shacl, $example, $context){
 	    file_put_contents($contextFile,$context.",".PHP_EOL.PHP_EOL,FILE_APPEND);
     }
 
-	
+
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
 	$mdString = "<table>"
@@ -166,6 +167,3 @@ function writeMd($section, $id, $owl, $shacl, $example, $context){
 }
 
 ?>
-
-
-
