@@ -46,7 +46,6 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* take the examples from ## Quickstart Examples and copy them in the individual sections. Note that we do not need the examples generation any more, so this can be removed
 
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
@@ -149,64 +148,6 @@ Databus can be customized, by changing shacl, the webid and posting additional d
 ## Roadmap - planned changes
 * license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.
 
-## Quickstart Examples
-
-Some examples to copy and adapt.
-
-### Dataset Version
-
-```json
-{
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
-	"@type": "dataid:Dataset",
-	"title": "DBpedia Ontology",
-	"abstract": "Registered a version of the DBpedia Ontology into my account",
-	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
-	"publisher": "https://databus.dbpedia.org/janni#this",
-	"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
-	"hasVersion": "2021-12-06",
-	"license": "http://creativecommons.org/licenses/by/4.0/",
-	"distribution": [{
-		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-		"@type": "dataid:Part",
-		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
-		"format": "nt",
-		"compression": "none",
-		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-		"byteSize": "4439722",
-		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-		"hasVersion": "2021-12-06",
-		"dcv:type": "parsed_sorted"
-    }]
-}
-
-# Automatically inferred after post
-	"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-	"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
-	"publisher"
-	"issued": "2021-12-06T11:34:17Z",
-    "issued": "2021-12-06T11:34:17Z",
-	"modified"
-	additional types
-```
-
-### Group
-```json
-{
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-	"@type": "Group",
-	"title": "Ontologies used in Project X" ,
-	"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
-	"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version."
-
-# Automatically inferred after post
-language tags
-
-}
-```
-
 ## Group
 
 <?php
@@ -230,8 +171,8 @@ $shacl='<#group-exists>
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .';
 
-$example='"@id": "https://databus.dbpedia.org/janni/examples",
-"@type": "dataid:Group",';
+$example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+"@type": "Group",';
 
 $context='"Group": "dataid:Group",
 
@@ -264,7 +205,7 @@ $shacl='<#en-title-group>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"title": "Example Group" ,';
+$example='"title": "Ontologies used in Project X" ,';
 
 $context='"title": {
     "@id": "dct:title",
@@ -294,7 +235,7 @@ $shacl='<#en-abstract-group>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"abstract": "TODO",';
+$example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
 $context='"abstract": {
       "@id": "dct:abstract",
@@ -324,7 +265,7 @@ $shacl='<#en-description-group>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"description": "This is an example group for API testing.",';
+$example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
 $context='"description": {
       "@id": "dct:description",
@@ -358,8 +299,8 @@ $shacl='<#dataset-exists>
   ] . ';
 
 
-$example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
-"@type": "Dataset",';
+$example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+"@type": "dataid:Dataset",';
 
 $context='"Dataset": "dataid:Dataset" ';
 
@@ -386,7 +327,7 @@ $shacl='<#has-title-dataid>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"title": "DBpedia Ontology Example",';
+$example='"title": "DBpedia Ontology",';
 
 $context='duplicate';
 
@@ -412,7 +353,7 @@ $shacl='<#has-abstract-dataid>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"abstract": "This is an example for API testing.",';
+$example='"abstract": "Registered a version of the DBpedia Ontology into my account",';
 
 $context='duplicate';
 
@@ -439,7 +380,7 @@ $shacl='<#has-description-dataid>
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
-$example='"description": "This is an example for API testing.",';
+$example='"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",';
 
 $context='duplicate';
 
@@ -467,7 +408,7 @@ $shacl='<#has-publisher>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .';
 
-$example='"publisher": "https://databus.dbpedia.org/janni#this",';
+$example='"publisher": TODO';
 
 $context='"publisher": {
       "@id": "dct:publisher",
@@ -494,7 +435,7 @@ $shacl='<#has-group>
 	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"group": "%DATABUS_URI%/%ACCOUNT%/examples",';
+$example='"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",';
 
 $context='"group": {
       "@id": "dataid:group",
@@ -521,7 +462,7 @@ $shacl='<#has-artifact>
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",';
+$example='"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",';
 
 $context='"artifact": {
       "@id": "dataid:artifact",
@@ -548,7 +489,7 @@ $shacl='<#has-version>
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",';
+$example='"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",';
 
 $context='"version": {
       "@id": "dataid:version",
@@ -581,7 +522,7 @@ $shacl='<#has-hasVersion-dataset>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .';
 
-$example='"hasVersion": "%VERSION%",';
+$example='"hasVersion": "2021-12-06",';
 
 $context='"hasVersion": {
       "@id": "dct:hasVersion",
@@ -614,7 +555,7 @@ $shacl='<#has-issued>
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .';
 
-$example='"issued": "%NOW%",';
+$example='"issued": "2021-12-06T11:34:17Z",';
 
 $context='"issued": {
       "@id": "dct:issued",
@@ -717,7 +658,18 @@ $shacl='<#has-distribution>
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .';
 
-$example='"distribution":"TODO"';
+$example='"distribution": [{
+          		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+          		"@type": "dataid:Part",
+          		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
+          		"format": "nt",
+          		"compression": "none",
+          		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+          		"byteSize": "4439722",
+          		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+          		"hasVersion": "2021-12-06",
+          		"dcv:type": "parsed_sorted"
+              }]';
 
 $context='"distribution": {
       "@type": "@id",
