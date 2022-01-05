@@ -32,7 +32,7 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS_RESOURCE_BASE_URL**: The base resource URL. All Databus resources will start with this URL prefix. Make sure that it matches the DNS entry pointing to your Databus server so that HTTP requests on the resource identifiers will point to your Databus deployment.
 * **DATABUS_OIDC_ISSUER_BASE_URL**: Base URL of your OIDC provider
 * **DATABUS_OIDC_CLIENT_ID**: Client Id of your OIDC client
-* **DATABUS_OIDC_SECTRET**: Client Secret of your OIDC client
+* **DATABUS_OIDC_SECRET**: Client Secret of your OIDC client
 * **VIRTUOSO_USER**: A virtuoso database user with write access (SPARQL_UPDATE)
 * **VIRTUOSO_PASSWORD**: The password of the VIRTUOSO_USER account
 
@@ -50,7 +50,7 @@ The Databus container accepts the following environment variables:
 * **DATABUS_DATABASE_URL**: The URL of your GStore database. Can be left as is. Change this only if you want to host your database elsewhere and you know what you are doing.
 * **DATABUS_OIDC_ISSUER_BASE_URL**: Base URL of your OIDC provider
 * **DATABUS_OIDC_CLIENT_ID**: Client Id of your OIDC client
-* **DATABUS_OIDC_SECTRET**: Client Secret of your OIDC client
+* **DATABUS_OIDC_SECRET**: Client Secret of your OIDC client
 
 The volumes of the Databus container are best left unchanged. The internal path of the volumes should not be altered. The ourside paths may be changed to any desired path. The keypair folder will store the private and public key of your Databus deployment. The users folder will hold a mini-database associating your OIDC users with Databus users.
 

@@ -72,9 +72,7 @@ module.exports = async function publishDataid(account, data, notify) {
       return { code: 400, message: response };
     }
 
-
     notify(`> SHACL validation successful.\n`);
-
 
     // Validate all identifiers...
     var datasetUri = datasetGraph['@id'];

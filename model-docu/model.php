@@ -1,26 +1,25 @@
+#!/usr/bin/php
 <?php
 
-
 /*
+# Usage:
 sudo apt install php7.4-cli
 php model.php > model.md
 
+RECOMMENDED if context or shacl was changed
+cat generated/context.json | jq
+cd generated/shacl/
+for i in `ls *.shacl` ; do rapper -gc $i  ; done
+
 Goal:
 * php script is a template to fill a markdown doc (stdout)
-* also generates context, shacl and example (these are the Single Source of Truth files)
+* also generates context, shacl (these are the Single Source of Truth SSoT files)
 * OWL should be taken from dataid, dct, dcat, etc. SSoT is elsewhere
 
 Success criteria:
-* context.json, shacl and example have a correct syntax.
-* model.md renders well and looks pretty
-
-comm -23 <(cat ../context.json | jq| grep '": {' | sort -u ) <(cat remainingFiles/context.json | jq | grep '": {' | sort -u)
-
-
-TODO 2 Fabian
-* migrate all content in model.php from ontologies, ../context.json, example file (generated from "slim") and server/app/common/shacl/
-* follow the order of example file in this doc
-* do header/footer for the generated files so they are valid
+* context.json, shacl have a correct syntax.
+* model.md renders well and looks pretty and serves as good docu
+* model.md can be viewed at github and might be converted to HTML and shipped with the bus later
 
 */
 
@@ -28,518 +27,742 @@ error_reporting( E_ALL | E_STRICT );
 require_once("function.php");
 
 $contextFile="generated/context.json";
+$markDownFile="model.md";
 $shaclDir="generated/shacl";
 $examplesDir="generated/examples";
 
-init($contextFile, $shaclDir, $examplesDir);
+init();
+
+
 ?>
 
 
-# Model
+TODO Design decisions:
+*  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
+* impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
+* formatExtension in or out?
+
+TODO all:
+* review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
+
+TODO Fabian:
+
+TODO Jan:
+* test the new shacl and context.jsonld, does it work?
+UPDATE context and shacl are not complete / correct, will test once that is the case
+
+TODO Johannes:
+* create the "missing" OWL statements for DataId
+
+# Databus Model
+
+Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working.
+
+## URI Design
+
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
+
+The following rules apply to the identifiers of the following Databus concepts:
+* Accounts *(foaf:account)*
+* Groups *(dataid:group / dataid:Group)*
+* Artifacts *(dataid:artifact / dataid:Artifact)*
+* Versions *(dataid:version / dataid:Version)*
+* Datasets *(dataid:Dataset)*
+* Distributions *(dcat:distrubution)*
+* Files *(dataid:file)*
+
+### General Rules
+
+* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
+* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+* A user namespace (e.g. `john`) must have at least 4 characters.
+
+### Account URI Rules
+
+* An account URI has exactly one path segment
+
+*Example:* https://databus.example.org/john
+
+### Group URI Rules
+
+* A group URI has exactly two path segments
+
+*Example:* https://databus.example.org/john/animals
+
+### Artifact URI Rules
+
+* An artifact URI has exactly three path segments.
+* An artifact URI contains the URI of its associated group
+
+*Example:* https://databus.example.org/john/animals/cats
+
+### Version URI Rules
+
+* A version URI has exactly four path segments
+* A version URI contains the URI of its associated artifact
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11
+
+### Dataset URI Rules
+
+* A dataset URI has exactly four path segments
+* A dataset URI contains the URI of its associated version
+* The hash of a dataset URI is the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
+
+### Part URI Rules
+
+* A part URI has exactly four path segments
+* A part URI contains the URI of its associated version
+* The hash of a dataset URI is NOT the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
+
+### File URI Rules
+
+* A file URI has exactly five path segments
+* A file URI contains the URI of its associated version
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
+
+## Structure
+TODO Sebastian:
+Group, Artifact, Version, CVS
+
+## Versioning
+TODO Denis:
+explain alphanumeric order and give an example query and also give some patterns (e.g. day vs. datetime as in Archivo vs. using version numbers 01.01.10 )
+
+## Timestamping
+* if dct:issue is given on post, this will be used
+* if not, then Databus inserts %now%
+* dct:modified is always set by Databus
+
+## Customization, Mods, Metadata Quality
+TODO Marvin:
+Databus can be customized, by changing shacl, the webid and posting additional data. Please give some best practices, when to use this customization mechanism and when to use mods. I think, that if people have metadata that can not be generated from the file and is available to uploading agent, then that could be included, e.g. if they have own identifiers. Or they could limit licenses to CC or few open licenses only. Then also how do mods increase metadata quality (consistency is one aspect here, see e.g. the comments in byteSize)
+
+
+
+## Roadmap - planned changes
+* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.
 
 ## Group
-<?php $section="group" ?>
 
-### <?=$id="group" ?>
 <?php
+$section="group";
+$id="group" ;
 $owl='missing';
 
 $shacl='<#group-exists>
-          a sh:NodeShape ;
-          sh:targetNode dataid:Group ;
-          sh:property [
-              sh:path [ sh:inversePath rdf:type ] ;
-              sh:minCount 1 ;
-              sh:maxCount 1;
-              sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
-          ] .';
+	a sh:NodeShape ;
+	sh:targetNode dataid:Group ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	] ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	    sh:nodekind sh:IRI ;
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
+      sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
+	] .';
 
-$example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples",
-"@type": "dataid:Group",';
+$example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+"@type": "Group",';
 
 $context='"Group": "dataid:Group",
-"group": {
-       "@id": "dataid:group",
-       "@type": "@id"
-     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+"group": {
+	"@id": "dataid:group",
+	"@type": "@id"
+	}';
+
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:title" ?>
+### title (Group)
+
 <?php
 $owl='dct:title
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A name given to the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Title"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#en-title>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+$shacl='<#en-title-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en. Each language MUST only occur once "@en ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"title": "Example Group" ,';
+$example='"title": "Ontologies used in Project X" ,';
 
 $context='"title": {
     "@id": "dct:title",
-    "@type": "xsd:string"
+    "@language": "en"
   }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:abstract" ?>
+### abstract (Group)
+
 <?php
 $owl='dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
-$shacl='<#en-abstract>
-          a sh:PropertyShape ;
-          sh:targetClass dataid:Group ;
-          sh:severity sh:Violation ;
-          sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
-          sh:path dct:abstract ;
-          sh:minCount 1 ;
-          sh:languageIn ("en") ;
-          sh:uniqueLang true .
-        ';
+$shacl='<#en-abstract-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"abstract": "This is an example group for API testing.",';
+$example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
 $context='"abstract": {
       "@id": "dct:abstract",
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:description" ?>
+### description (Group)
 <?php
 $owl='dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
+	rdfs:label "Description"@en ;
+	rdfs:comment "An account of the resource."@en ;
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
-$shacl='<#en-description>
-            a sh:PropertyShape ;
-            sh:targetClass dataid:Group ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+$shacl='<#en-description-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Group ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"description": "This is an example group for API testing.",';
+$example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
 $context='"description": {
       "@id": "dct:description",
-      "@type": "xsd:string",
       "@language": "en"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-## Dataset (DataId)
-<?php $section="dataid" ?>
+## Dataset Version - the DataId
 
-### <?=$id="dataid" ?>
 <?php
+$section="dataid" ;
 $owl='missing';
 
 $shacl='<#dataset-exists>
-          a sh:NodeShape ;
-          sh:targetNode dataid:Dataset ;
-          sh:property [
-              sh:path [ sh:inversePath rdf:type ] ;
-              sh:minCount 1 ;
-              sh:maxCount 1 ;
-              sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
-          ] .';
+	a sh:NodeShape ;
+	sh:targetNode dataid:Dataset ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+	  sh:nodekind sh:IRI ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
+    sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+  ] . ';
 
-$example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",
+
+$example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 "@type": "dataid:Dataset",';
 
 $context='"Dataset": "dataid:Dataset" ';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:title" ?>
+### title
 <?php
 $owl='dct:title
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A name given to the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Title"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#en-title>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
-            sh:path dct:title ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+$shacl='<#has-title-dataid>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
+	sh:path dct:title ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"title": "DBpedia Ontology Example",';
+$example='"title": "DBpedia Ontology",';
 
-$context='"title": {
-    "@id": "dct:title",
-    "@type": "xsd:string"
-  }';
+$context='duplicate';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:abstract" ?>
+### abstract
 <?php
 $owl='dct:abstract
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A summary of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Abstract"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
-$shacl='<#en-abstract>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:abstract ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+$shacl='<#has-abstract-dataid>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:abstract ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"abstract": "This is an example for API testing.",';
+$example='"abstract": "Registered a version of the DBpedia Ontology into my account",';
 
-$context='"abstract": {
-      "@id": "dct:abstract",
-      "@type": "xsd:string",
-      "@language": "en"
-    }';
+$context='duplicate';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:description" ?>
+### description
 <?php
 $owl='dct:description
-          dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An account of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Description"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:comment "An account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Description"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
-$shacl='<#en-description>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-            sh:path dct:description ;
-            sh:minCount 1 ;
-            sh:languageIn ("en") ;
-            sh:uniqueLang true .';
+$shacl='<#has-description-dataid>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:path dct:description ;
+	sh:minCount 1 ;
+	sh:languageIn ("en") ;
+	sh:uniqueLang true .';
 
-$example='"description": "This is an example for API testing.",';
+$example='"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",';
 
-$context='"description": {
-      "@id": "dct:description",
-      "@type": "xsd:string",
-      "@language": "en"
-    }';
+$context='duplicate';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:publisher" ?>
+### publisher
+
 <?php
 $owl='dct:publisher
-          dcam:rangeIncludes dct:Agent ;
-          dct:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "An entity responsible for making the resource available."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Publisher"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .';
+	dcam:rangeIncludes dct:Agent ;
+	rdfs:comment "An entity responsible for making the resource available."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Publisher"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .';
 
-$shacl='<#publisher-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
-            sh:path dct:publisher;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .';
+$shacl='<#has-publisher>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:publisher;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
 
-$example='"publisher": "%DATABUS_URI%/%ACCOUNT%#this",';
+$example='"publisher": TODO';
 
 $context='"publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:group" ?>
+### group
+
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#has-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
+	sh:path dataid:group ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"group": "%DATABUS_URI%/%ACCOUNT%/examples",';
+$example='"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",';
 
 $context='"group": {
       "@id": "dataid:group",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:artifact" ?>
+### artifact
+
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#has-artifact>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
+	sh:path dataid:group ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"artifact": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",';
+$example='"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",';
 
 $context='"artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:version" ?>
+### version
+
 <?php
 $owl='missing';
 
-$shacl='<#version-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "TODO Required property dataid:version MUST occur exactly once AND have URI/IRI as value AND match pattern"@en ;
-            sh:path dataid:version;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            #TODO specify version better
-            # sh:pattern "^https://databus.dbpedia.org/[^\\/]+/[^/]+/[^/]+/[^/]+$" ;
-            # all need to comply to URI path spec ?
-            # user: keycloak -> jan
-            # group: maven
-            # artifact: maven + some extra
-            # version: maven
-            sh:nodeKind sh:IRI .';
+$shacl='<#has-version>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+	sh:path dataid:version ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
 
-$example='"version": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",';
+$example='"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",';
 
 $context='"version": {
       "@id": "dataid:version",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:hasVersion" ?>
+### hasVersion
+
+Note: see section versioning above
+
 <?php
 $owl='dct:hasVersion
-          dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Has Version"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='missing';
+$shacl='<#has-hasVersion-dataset>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .';
 
-$example='"hasVersion": "%VERSION%",';
+$example='"hasVersion": "2021-12-06",';
 
 $context='"hasVersion": {
       "@id": "dct:hasVersion",
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:issued" ?>
+### issued
+
 <?php
 $owl='dct:issued
-          dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "Date of formal issuance of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Date Issued"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
 
-$shacl='<#issued-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
-            sh:path dct:issued;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:dateTime .';
+$shacl='<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
 
-$example='"issued": "%NOW%",';
+$example='"issued": "2021-12-06T11:34:17Z",';
 
 $context='"issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
+?>
+
+### modified
+
+Note: dct:modified is *always* set by the Databus on post.
+
+<?php
+$owl='dct:modified
+	rdfs:label "Date Modified"@en ;
+	rdfs:comment "Date on which the resource was changed."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .';
+
+$shacl='<#has-modified>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:modified;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
+
+$example='"modified": "%NOW%",';
+
+$context='"modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:dateTime"
+    }';
+
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dct:license" ?>
+### license
+
+Note:
+* see roadmap above for planned changes
+* must be an IRI
+* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
+
 <?php
 $owl='dct:license
-          dcam:rangeIncludes dct:LicenseDocument ;
-          dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
-          dct:issued "2004-06-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "License"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
+	rdfs:label "License"@en ;
+	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
+	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
+	dcam:rangeIncludes dct:LicenseDocument ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
 
-$shacl='<#license-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
-            sh:path dct:license;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .';
+$shacl='<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
 
 $example='"license": "http://creativecommons.org/licenses/by/4.0/",';
 
 $context='"license": {
+      "@context":{"@base": null },
       "@id": "dct:license",
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
+?>
+
+### distribution
+<?php
+$owl='dcat:distribution
+  a owl:ObjectProperty ;
+  rdfs:label "distribution"@en ;
+  rdfs:comment "An available distribution of the dataset."@en ;
+  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+  rdfs:domain dcat:Dataset ;
+  rdfs:range dcat:Distribution ;
+  rdfs:subPropertyOf dct:relation ;
+  skos:definition "An available distribution of the dataset."@en .';
+
+$shacl='<#has-distribution>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
+	sh:path dcat:distribution;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI .';
+
+$example='"distribution": [{
+          		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+          		"@type": "dataid:Part",
+          		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
+          		"format": "nt",
+          		"compression": "none",
+          		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+          		"byteSize": "4439722",
+          		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+          		"hasVersion": "2021-12-06",
+          		"dcv:type": "parsed_sorted"
+              }]';
+
+$context='"distribution": {
+      "@type": "@id",
+      "@id": "dcat:distribution"
+}';
+
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
+## Distribution (Part)
 
-
-## Distribution
-<?php $section="distribution" ?>
-
-### <?=$id="dcat:distribution" ?>
 <?php
-$owl=<<<XML
-dcat:Distribution
-        a rdfs:Class ;
-        a owl:Class ;
-        rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-        rdfs:label "Distribution"@en ;
-        skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-        skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
-      .
-XML;
+$section="distribution";
 
-$shacl='<#distribution-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dcat:distribution MUST occur exactly once AND have URI/IRI as value"@en ;
-            sh:path dcat:distribution;
-            sh:minCount 1 ;
-            sh:nodeKind sh:IRI .';
+$owl='dcat:Distribution
+	a owl:Class ;
+	rdfs:label "Distribution"@en ;
+	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;';
+
+$shacl='<#part-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Part ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+    sh:nodekind sh:IRI ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
+    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
+    ] . ';
 
 $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
-"@type": "dataid:SingleFile",';
+"@type": "Part",';
 
-$context='"distribution": "dcat:distribution"';
 
-table($section,$id,$owl,$shacl,$example,$context);
+$context='"Part": "dataid:Part" ';
+
+table($section,$owl,$shacl,$example,$context);
 ?>
 
-### <?=$id="dct:issued" ?>
+
+
+### issued (Distribution)
+
 <?php
 $owl='dct:issued
-          dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "Date of formal issuance of the resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Date Issued"@en ;
-          rdfs:range rdfs:Literal ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
 
-$shacl='<#issued-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
-            sh:path dct:issued;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:dateTime .';
+$shacl='<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
 
 $example='"issued": "%NOW%",';
 
-$context='"issued": {
-      "@id": "dct:issued",
-      "@type": "xsd:dateTime"
-    }';
+$context='duplicate';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:file" ?>
+### file
+
 <?php
 $owl='missing';
 
-$shacl='missing';
+$shacl='<#has-file>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
+	sh:path dataid:file;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+';
 
 $example='"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",';
 
@@ -548,46 +771,86 @@ $context='"file": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
+### format
 
-### <?=$id="dataid:formatExtension" ?>
+TODO Jan:
+* check sh:pattern
+
 <?php
 $owl='missing';
 
-$shacl='<#formatExtension-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
-            sh:path dataid:formatExtension;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:string .';
+$shacl='<#has-format>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:path dataid:format ;
+	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  """@en ;
+	sh:pattern "^\." ;
+	sh:datatype xsd:string ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .';
 
 $example='"format": "nt",';
+
+$context='"format": {
+      "@id": "dataid:format",
+      "@type": "xsd:string"
+    }';
+
+table($section,$owl,$shacl,$example,$context);
+?>
+
+
+### formatExtension
+
+TODO all:
+* is this needed? would it help to query this?
+
+<?php
+$owl='missing';
+
+$shacl='<#has-formatExtension>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path dataid:formatExtension;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .';
+
+$example='"formatExtension": "nt",';
 
 $context='"formatExtension": {
       "@id": "dataid:formatExtension",
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dataid:compression" ?>
+### compression
+
+TODO Jan:
+* Check sh:pattern
+
 <?php
 $owl='missing';
 
-$shacl='<#compression-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dataid:compression MUST occur exactly once AND have xsd:string as value"@en ;
-            sh:path dataid:compression;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:string .';
+$shacl='<#has-compression>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front """@en ;
+	sh:pattern "^\." ;
+	sh:path dataid:compression;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .';
 
 $example='"compression": "none",';
 
@@ -596,32 +859,30 @@ $context='"compression": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dcat:downloadURL" ?>
+### downloadURL
 <?php
-$owl=<<<XML
-    dcat:downloadURL
-    a rdf:Property ;
-    a owl:ObjectProperty ;
-    rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-    rdfs:domain dcat:Distribution ;
-    rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-    rdfs:label "download URL"@en ;
-    skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-    .
-    XML;
+$owl='dcat:downloadURL
+	a owl:ObjectProperty ;
+	rdfs:label "download URL"@en ;
+	rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;
+	rdfs:domain dcat:Distribution ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;';
 
-$shacl='<#downloadurl-violation>
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property  dcat:downloadURL MUST occur exactly once and have URI/IRI as value"@en ;
-            sh:path dcat:downloadURL ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:nodeKind sh:IRI .';
+$shacl='<#has-downloadURL>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:path dcat:downloadURL ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+';
 
 $example='"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",';
 
@@ -630,33 +891,39 @@ $context='"downloadURL": {
       "@type": "@id"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### <?=$id="dcat:bytesize" ?>
-<?php
-$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl 
-dcat:byteSize
-  a rdf:Property ;
-  a owl:DatatypeProperty ;
-  rdfs:comment "The size of a distribution in bytes."@en ;
-  rdfs:domain dcat:Distribution ;
-  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-  rdfs:label "byte size"@en ;
-  rdfs:range rdfs:Literal ;
-  skos:definition "The size of a distribution in bytes."@en ;
-  skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;';
+### bytesize
 
-$shacl='<#has-bytesize>   
-  a sh:PropertyShape ;
-  sh:targetClass dataid:SingleFile ;
-  sh:severity sh:Violation ;
-  sh:message "A dataid:SingleFile MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
-  sh:path dcat:byteSize ;
-  sh:datatype xsd:decimal ;
-  sh:maxCount 1 ;
-  sh:minCount 1 .  ';
+Note: Determining byteSize is not trivial for two reasons:
+1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system.
+2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption.
+
+We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
+
+<?php
+$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl
+dcat:byteSize
+	a owl:DatatypeProperty ;
+	rdfs:label "byte size"@en ;
+	rdfs:comment "The size of a distribution in bytes."@en ;
+	rdfs:domain dcat:Distribution ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	rdfs:range rdfs:Literal ;
+	skos:definition "The size of a distribution in bytes."@en ;
+	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;';
+
+$shacl='<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  ';
 
 $example='"byteSize": "4439722",';
 
@@ -664,27 +931,26 @@ $context='"byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
   }';
-
-
-table($section,$id,$owl,$shacl,$example,$context);
 ?>
 
 
 
-### <?=$id="dataid:sha256sum" ?>
+### sha256sum
+
 <?php
 $owl='missing';
 
-$shacl='<#sha256sum-violation>
-        #   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
-            a sh:PropertyShape ;
-            sh:severity sh:Violation ;
-            sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
-            sh:path dataid:sha256sum;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:datatype xsd:string ;
-            sh:pattern "^[a-f0-9]{64}$" .';
+$shacl='<#has-sha256sum>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path dataid:sha256sum;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string ;
+	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	sh:pattern "^[a-f0-9]{64}$" .';
 
 $example='"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",';
 
@@ -693,21 +959,30 @@ $context='"sha256sum": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
-### <?=$id="dct:hasVersion" ?>
+### hasVersion (Distribution)
+
+Note: see section versioning above
+
 <?php
 $owl='dct:hasVersion
-          dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
-          dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-          a rdf:Property ;
-          rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
-          rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-          rdfs:label "Has Version"@en ;
-          rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
+	rdfs:label "Has Version"@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
 
-$shacl='missing';
+$shacl='<#has-hasVersion-part>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .';
 
 $example='"hasVersion": "%VERSION%",';
 
@@ -716,47 +991,102 @@ $context='"hasVersion": {
       "@type": "xsd:string"
     }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
+
 ?>
 
-## Account
-<?php $section="account" ?>
+### signature/tractate
+TODO ??
 
-### <?=$id="foaf:name" ?>
+```
+<#signature-violation>
+#   dataid:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
+    a sh:PropertyShape ;
+    sh:severity sh:Violation ;
+    sh:message " TODO Optional property dataid:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
+    sh:path dataid:signature;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" .
+
+```
+
+
+
+##  Content variants
+TODO ??
+
 <?php
-$owl=<<<XML
-foaf:name
-  a rdf:Property, owl:DatatypeProperty ;
-  ns0:term_status "testing" ;
-  rdfs:label "name" ;
-  rdfs:comment "A name for some thing." ;
-  rdfs:domain owl:Thing ;
-  rdfs:range rdfs:Literal ;
-  rdfs:isDefinedBy foaf: ;
-  rdfs:subPropertyOf rdfs:label .
-XML;
+$owl='missing';
 
-$shacl='<#foaf-name>   
-a sh:PropertyShape ;
-sh:targetClass foaf:Person ;
-sh:severity sh:Violation ;
-sh:message "Required property foaf:name MUST be of type xsd:string and occur exactly once in foaf:Person."@en ;
-sh:path foaf:name ;
-sh:datatype xsd:string ;
-sh:minCount 1 ;
-sh:maxCount 1 .';
+$shacl='<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ;
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+';
 
-$example='';
+$example='missing';
 
-$context='"name": "foaf:name"';
+$context='"subPropertyOf" : {
+    "@id" : "rdfs:subPropertyOf",
+    "@type" : "@id"
+  }';
 
-table($section,$id,$owl,$shacl,$example,$context);
+table($section,$owl,$shacl,$example,$context);
 ?>
 
+## Remaining JSON-LD
+TODO ??
+
+<?php
+$owl='missing';
+
+$shacl='missing';
+
+$example='missing';
+
+$context='"maker": {
+    "@id": "foaf:maker",
+    "@type": "@id"
+  },
+  "primaryTopic": {
+    "@id": "foaf:primaryTopic",
+    "@type": "@id"
+  },
+  "name": {
+    "@id": "foaf:name",
+    "@type": "xsd:string"
+  },
+  "account": {
+    "@id": "foaf:account",
+    "@type": "@id"
+  },
+  "img": {
+    "@id": "foaf:img",
+    "@type": "@id"
+  },
+  "key": {
+    "@id": "cert:key"
+  },
+  "modulus": {
+    "@id": "cert:modulus"
+  },
+  "exponent": {
+    "@id": "cert:exponent"
+  },
+  "signature": {
+    "@id": "sec:signature",
+    "@type": "xsd:string"
+  },
+  "proof": {
+    "@id": "sec:proof"
+  }';
+
+
+table($section,$owl,$shacl,$example,$context);
+?>
 <?php
 headerFooter($contextFile, $shaclDir);
 ?>
-
-
-
-
