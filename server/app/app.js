@@ -103,6 +103,10 @@ async function loadDefaultContext() {
     console.log(err);
     console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
   }
+
+  // TODO: REMOVE!!
+  Constants.DATABUS_DEFAULT_CONTEXT_URL = 'https://downloads.dbpedia.org/databus/context.jsonld';
+
 }
 
 /**

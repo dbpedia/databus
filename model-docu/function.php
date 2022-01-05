@@ -43,6 +43,8 @@ function headerFooter($contextFile, $shaclDir){
 ';
 
     $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}";
+
+    
     file_put_contents($contextFile, $contextStr);
 
 

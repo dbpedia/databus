@@ -5,12 +5,13 @@ var streamify = require('streamify-string');
 const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
+const autocompleter = require('../common/dataid-autocomplete');
+const DatabusUris = require('../common/utils/databus-uris');
 
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 var proofType = 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1';
 
-const RDF_URIS = require('../publish/rdf-uris');
 
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0',
@@ -39,13 +40,14 @@ signer.init = function () {
 
 signer.expandAndCanonicalize = async function(graph) {
   var expandedGraph = await jsonld.flatten(await jsonld.expand(graph));
+  autocompleter.autocomplete(expandedGraph);
   return signer.canonicalize(expandedGraph);
 }
 
 
 signer.canonicalize = function (expandedGraph) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.DATASET);
+  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
 
   var tractate = '';
   tractate += `${tractateConfig.header}\n`;
@@ -55,7 +57,7 @@ signer.canonicalize = function (expandedGraph) {
 
   var shasums = [];
 
-  var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, RDF_URIS.SINGLE_FILE);
+  var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_SINGLE_FILE);
 
   for (var d in distributionGraphs) {
     var distributionGraph = distributionGraphs[d];

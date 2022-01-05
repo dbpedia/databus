@@ -1,19 +1,8 @@
 // COLOR PALETTE
-$color1: #4b6584;
-$color2: #45aaf2;
-$color3: #2bcbba;
-$color4: #3273DC;
-$color5: #00b398;
-
 $link: #3867d6;
 
-$banner: $color1;
-$banner-green: $color5;
 $highlight: #f5f5f5;
 $background: #f5f5f5;
-$primary: $color3;
-$secondary: $color2;
-$tertiary: $color4;
 $white: #fff;
 $icon-color: #b5b5b5;
 
@@ -23,38 +12,29 @@ $yasqe-disabled-border: #e6e6e6;
 $navbar-background: #24292e;
 
 $topic-header: #7a7a7a;
-
-
-$cyan: $color2;
-$turquoise: $color3;
-$blue: #3273DC;
 $grey-light: #dbdbdb;
 
-$entity-artifact: #78acd1;
-$entity-artifact-bg: #7ba0bb;
-    
-$entity-consumer: #71ccc1;
-$entity-consumer-bg: #81b8b2;
-
-$entity-group: #39698a;
-$entity-group-bg: #496272;
-
-$entity-version: $color3;
-$entity-version-bg: #50a16d;
-
-$entity-service: #634e74;
-$entity-collection: #8a8cb3;
-$entity-collection-bg: #8a8cb3;
-$entity-collection-editor-bg: #808199;
-
-
-$entity-blog: #cea65b;
-$entity-blog-bg: #b8985e;
 
 $hierarchy-lines: #dbdbdb;
-
 $icon-light: #dedede;
 $icon: #b5b5b5;
 
 $icon-circle-hover: #e6e6e6;
 $icon-circle-active: #dedede;
+
+// Entities
+
+$entity-artifact: #66a0c9;
+$entity-artifact-bg: #7BA0BB;
+    
+$entity-consumer: #737381;
+$entity-consumer-bg: #7e7e8a;
+
+$entity-group: #6e7699;
+$entity-group-bg: #7B89AB;
+
+$entity-version: #65bdb2;
+$entity-version-bg: #89BDB7;
+
+$entity-collection: #81b180;
+$entity-collection-bg: #94bd93;

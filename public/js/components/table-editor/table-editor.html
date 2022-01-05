@@ -146,9 +146,9 @@
                   </ul>
                 </div>
               </div>
-                <databus-icon shape="'eye'" style="margin-left: 12px;" on-click="$ctrl.analyzeFile(file)"
-                size="24"></databus-icon>
-                <databus-icon shape="'delete'" style="margin-left: 12px;" on-click="$ctrl.removeFileFromArtifact(file)"
+              <databus-icon shape="'eye'" style="margin-left: 12px;" on-click="$ctrl.analyzeFile(file)" size="24">
+              </databus-icon>
+              <databus-icon shape="'delete'" style="margin-left: 12px;" on-click="$ctrl.removeFileFromArtifact(file)"
                 size="24"></databus-icon>
             </div>
           </td>
@@ -156,10 +156,8 @@
             'opacity' : ($ctrl.analysisProcesses[file.uri] != undefined
               && !$ctrl.analysisProcesses[file.uri].isDone) ? 1 : 0 }">
 
-            <div
-              style="background-color:rgba(0, 200, 0, 0.2); height: 43px; width: 0%;"
-              ng-style="{ 'width' :  $ctrl.analysisProcesses[file.uri].progress + '%' }"
-            ></div>
+            <div style="background-color:rgba(0, 200, 0, 0.2); height: 43px; width: 0%;"
+              ng-style="{ 'width' :  $ctrl.analysisProcesses[file.uri].progress + '%' }"></div>
 
           </td>
         </tr>

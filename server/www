@@ -37,6 +37,9 @@ function masterProcess() {
   })
 
   initialize().then(function () {
+
+    var numCPUs = 1;
+    
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
 

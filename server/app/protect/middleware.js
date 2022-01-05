@@ -347,7 +347,8 @@ class DatabusProtect {
     return (req, res, next) => {
 
       // User already fetched and authenticated
-      if (req.databus != undefined && req.databus.authenticated) {
+      if (req.databus != undefined && req.databus.authenticated) { 
+        console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
         return next();
       }
 
@@ -368,7 +369,7 @@ class DatabusProtect {
         return next();
       }
 
-      console.log(`user: ${JSON.stringify(req.oidc.user)}`);
+      // console.log(`user: ${JSON.stringify(req.oidc.user)}`);
       req.databus.oidc_name = req.oidc.user.name;
       req.databus.oidc_email = req.oidc.user.email;
 
@@ -378,9 +379,10 @@ class DatabusProtect {
       if (user != undefined) {
         req.databus.accountName = user.username;
         req.databus.apiKeys = user.keys;
-        console.log(`Set databus.username of user [${req.oidc.user.sub}] to ${req.databus.accountName}`);
+        // console.log(`Set databus.username of user [${req.oidc.user.sub}] to ${req.databus.accountName}`);
       }
 
+      console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
       return next();
     }
   }

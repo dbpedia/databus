@@ -11,7 +11,7 @@ var defaultContext = require('../../../context.json');
 const dataidGroupUri = 'http://dataid.dbpedia.org/ns/core#Group';
 const groupFileName = 'group.jsonld';
 
-module.exports = async function publishGroup(account, data) {
+module.exports = async function publishGroup(account, data, notify) {
 
   try {
     
@@ -21,7 +21,7 @@ module.exports = async function publishGroup(account, data) {
 
     // No data - no publish
     if (expandedGraphs.length == 0) {
-      return { code: 200, message: 'Nothing to publish' };
+      return;
     }
 
     // More than one group specified - error
@@ -48,6 +48,8 @@ module.exports = async function publishGroup(account, data) {
     // Get the group graph (enforced by earlier SHACL test)
     var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, dataidGroupUri);
     var groupUri = groupGraph['@id'];
+
+    notify(`Publishing group ${groupUri}\n`);
 
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 

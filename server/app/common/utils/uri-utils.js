@@ -20,6 +20,10 @@ class UriUtils {
     return sanitizeUrl(result);
   }
 
+  static startsWith(base, uri) {
+    return base.startsWith(baseUrl) && uri.startsWith(base);
+  }
+
   static isResourceUri(uri, path) {
 
     if (!uri.startsWith(baseUrl)) {
@@ -33,10 +37,18 @@ class UriUtils {
     return true;
   }
 
+  static getResourcePathLength(uri) {
+    var parts = UriUtils.splitResourceUri(uri);
+    return parts.length;
+  }
+
   static splitResourceUri(uri) {
     uri = uri.replace(baseUrl, '');
     if(uri.startsWith('/')) {
       uri = uri.substr(1);
+    }
+    if(uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
     }
 
     return uri.split('/');
@@ -74,6 +86,10 @@ class UriUtils {
       uri = uri.substr(0, uri.lastIndexOf('/'));
     }
 
+    if(uri.includes('#')) {
+      uri = uri.substr(0, uri.lastIndexOf('#'));
+    }
+    
     return uri;
   }
 

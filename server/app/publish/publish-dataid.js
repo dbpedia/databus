@@ -1,6 +1,6 @@
 const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
-const RDF_URIS = require('./rdf-uris');
+const DatabusUris = require('../common/utils/databus-uris');
 
 
 var signer = require('../tractate/databus-tractate-suite');
@@ -13,45 +13,74 @@ var constructor = require('../common/execute-construct.js');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 const Constants = require('../common/constants');
 const dataidFileName = 'dataid.jsonld';
+const autocompleter = require('../common/dataid-autocomplete');
 
-module.exports = async function publishDataid(account, data) {
+
+function autocompleteResourceUri(expandedGraph, prop, navUpAmount) {
+  var uri = JsonldUtils.getFirstObjectUri(expandedGraph, prop);
+  if(uri == null) {
+    expandedGraph[prop] = { '@id' : UriUtils.navigateUp(datasetGraph['@id'], navUpAmount) };
+  }
+}
+
+
+module.exports = async function publishDataid(account, data, notify) {
 
   try {
 
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
     var report = '';
 
-    //console.log(data);
-    
-    // Select only interesting triples from the input data
+    var expandedGraph = await jsonld.flatten(data);
+    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
+    notify(`Publishing dataset ${datasetGraph["@id"]}.\n`);
+
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
 
-    // Convert to Jsonld in flattened form
-    var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
+    if(triples.length == 0) {
+      return;
+    }
 
-    // TODO: Generate dynamic shacl test ?
+    notify(`> Triples selected via construct query.\n`);
+
+    //console.log(triples);
+    expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
+    datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
+
+
+    var before = JSON.stringify(expandedGraph);
+    autocompleter.autocomplete(expandedGraph, accountUri);    
+    var after = JSON.stringify(expandedGraph);
+
+    if(before != after) {
+      notify(`> Auto-completed the input.\n`);
+    }
+    // Generate dynamic shacl test ?
 
     // Validate the group RDF with the shacl validation tool
+
+    
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
       var response = 'SHACL validation error:\n';
       for (var m in shaclResult.messages) {
-        response += `>>> ${shaclResult.messages[m]}\n`
+        response += `> ${shaclResult.messages[m]}\n`
       }
 
       return { code: 400, message: response };
     }
 
-    // Validate all identifiers (Identifiers must contain each other)...
-    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.DATASET);
+    notify(`> SHACL validation successful.\n`);
+
+    // Validate all identifiers...
     var datasetUri = datasetGraph['@id'];
 
-    var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_PUBLISHER);
-    var datasetGroupUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_GROUP);
-    var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_ARTIFACT);
-    var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROP_VERSION);
+    var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
+    var datasetGroupUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_GROUP_PROPERTY);
+    var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
+    var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
 
     // Prefix checks
     
@@ -90,9 +119,6 @@ module.exports = async function publishDataid(account, data) {
       };
     }
 
-
-
-
     // Check if group exists
     var group = await sparql.dataid.getGroupByUri(datasetGroupUri);
 
@@ -116,9 +142,8 @@ module.exports = async function publishDataid(account, data) {
     // TODO: More validataion!
 
 
-    console.log(`Publisher found: ${datasetPublisherUri}...`);
-
-    report += `-- Publisher: ${datasetPublisherUri}.\n`;
+    
+    notify(`> Publishing as ${datasetPublisherUri}.\n`);
 
     // Validate the publisher and account (<publisherUri> <foaf:account> <accountUri>)
     var isPublisherConnectedToAccount =
@@ -128,17 +153,17 @@ module.exports = async function publishDataid(account, data) {
       return { code: 400, message: 'The specified publisher is not associated with the requested account' };
     }
 
-    var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, RDF_URIS.PROOF);
+    var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.SEC_PROOF);
     var proofGraph = JsonldUtils.getGraphById(expandedGraph, proofId);
 
     console.log(proofGraph);
-
 
     // Not setting the proof is allowed!
     if (proofGraph == undefined) {
 
       // No proof yet, try to create one
-      console.log('No signature found...');
+
+      notify(`> No signature found.\n`);
 
       // Verify if this account is an internal one
       if (!datasetPublisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
@@ -146,16 +171,18 @@ module.exports = async function publishDataid(account, data) {
       }
 
       report += "-- Proof generated with internal key.\n";
+
+      notify(`> Generating signature.\n`);
       console.log('Internal account detected. Generating proof...');
       proofGraph = signer.createProof(expandedGraph);
-      datasetGraph[RDF_URIS.PROOF] = [proofGraph];
+      datasetGraph[DatabusUris.PROOF] = [proofGraph];
     }
 
     // Get the type of the proof graph
-    var proofType = JsonldUtils.getFirstObject(proofGraph, RDF_URIS.TYPE);
+    var proofType = JsonldUtils.getFirstObject(proofGraph, DatabusUris.JSONLD_TYPE);
 
     // console.log(`Proof found: ${proofType}`);
-    if (proofType != RDF_URIS.DB_TRACTATE_V1) {
+    if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
       return { code: 400, message: `Unkown proof type "${proofType}"\n` };
     }
 
@@ -166,17 +193,18 @@ module.exports = async function publishDataid(account, data) {
       return { code: 400, message: 'The provided signature is invalid\n' };
     }
 
-
-    report += "-- Proof validation successful.\n";
+    notify(`> Signature validation successful.\n`);
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
+
     var targetPath = `${datasetVersionUri}/${dataidFileName}`.replace(process.env.DATABUS_RESOURCE_BASE_URL, '');
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
 
-    report += `-- Dataset published to ${datasetUri}\n`;
+
+    notify(`Dataset published to ${datasetUri}\n`);
 
     // Return failure
     if (!publishResult.isSuccess) {
