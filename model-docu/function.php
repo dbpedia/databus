@@ -92,79 +92,36 @@ function table ($section, $owl, $shacl, $example, $context){
 
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
-	$mdString = "<table>"
-	.renderrdf($owl,$shacl)
-	.renderjson($example,$context)
-	."</table>";
-
+	$mdString = renderrdf($owl,$shacl).renderjson($example,$context);
 
 	echo $mdString;
 
 }
 
 function renderrdf($owl,$shacl){
-	return <<<XML
-<tr> <td>OWL</td> <td>SHACL</td> </tr>
-<tr><td>
-
+	return "
+###### OWL
 ```sql
 $owl
 ```
-
-</td><td>
-
+###### SHACL
 ```sql
 $shacl
 ```
-
-</td></tr>
-XML;
+";
 }
 
-
 function renderjson($example,$context){
-	return <<<XML
-<tr> <td>Example</td> <td>Context</td> </tr>
-<tr><td>
-
+	return "
+###### Example
 ```json
 $example
 ```
-
-</td><td>
-
+###### Context
 ```json
 $context
 ```
-
-</td></tr>
-XML;
-}
-
-
-
-
-function writeMd($section, $id, $owl, $shacl, $example, $context){
-    global $markDownFile;
-
-
-    //check if new section
-    $arrayOfLines = file($markDownFile);
-    $sections = preg_grep('/^## /', $arrayOfLines);
-    $lastSection = end($sections);
-    $lastSection = str_replace("## ", "", $lastSection);
-    $lastSection = trim($lastSection);
-
-    $thisSection = ucfirst($section);
-
-
-
-    if (strcmp($lastSection, $thisSection) !== 0) {
-        $mdString = "## $thisSection" .PHP_EOL.PHP_EOL . $mdString;
-    }
-
-
-    file_put_contents($markDownFile, $mdString .PHP_EOL, FILE_APPEND);
+";
 }
 
 ?>
