@@ -22,12 +22,14 @@ module.exports = async function publishDataid(account, data) {
     var report = '';
 
     //console.log(data);
+    
+    // Select only interesting triples from the input data
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
 
-    //console.log(triples);
+    // Convert to Jsonld in flattened form
     var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
 
-    // Generate dynamic shacl test ?
+    // TODO: Generate dynamic shacl test ?
 
     // Validate the group RDF with the shacl validation tool
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
@@ -42,7 +44,7 @@ module.exports = async function publishDataid(account, data) {
       return { code: 400, message: response };
     }
 
-    // Validate all identifiers...
+    // Validate all identifiers (Identifiers must contain each other)...
     var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, RDF_URIS.DATASET);
     var datasetUri = datasetGraph['@id'];
 
