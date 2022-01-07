@@ -1,4 +1,5 @@
 const JsonldUtils = require('../common/utils/jsonld-utils');
+const UriUtils = require('../common/utils/uri-utils');
 
 var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
@@ -45,11 +46,13 @@ module.exports = async function publishGroup(account, data, notify) {
       return { code: 400, message: response };
     }
 
+    notify(`> SHACL validation successful.\n`);
+
     // Get the group graph (enforced by earlier SHACL test)
     var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, dataidGroupUri);
     var groupUri = groupGraph['@id'];
 
-    notify(`Publishing group ${groupUri}\n`);
+    notify(`> Publishing group ${groupUri}\n`);
 
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
@@ -61,7 +64,7 @@ module.exports = async function publishGroup(account, data, notify) {
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
-    var targetPath = `${groupUri}/${groupFileName}`.replace(process.env.DATABUS_RESOURCE_BASE_URL, '');
+    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${groupFileName}`);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);

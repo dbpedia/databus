@@ -26,7 +26,7 @@ class DatabusUris {
   static SEC_PROOF = 'https://w3id.org/security#proof';
 
   // DATABUS
-  static DATABUS_TRACTATE_V1 = 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1';
+  static DATABUS_TRACTATE_V1 = 'http://dataid.dbpedia.org/ns/core#DatabusTractateV1';
 
   // RDF
   static RDF_PROPERTY = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property';

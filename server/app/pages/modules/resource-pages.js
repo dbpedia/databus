@@ -51,7 +51,7 @@ module.exports = function (router, protector) {
   router.get('/:account/:group', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
 
     var repo = req.params.account;
-    var path = req.path;
+    var path = req.params.group;
 
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/group.jsonld`,
@@ -149,7 +149,7 @@ module.exports = function (router, protector) {
   router.get('/:account/:group/:artifact/:version', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
 
     var repo = req.params.account;
-    var path = req.path;
+    var path = `${req.params.group}/${req.params.artifact}/${req.params.version}`;
 
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/dataid.jsonld`,

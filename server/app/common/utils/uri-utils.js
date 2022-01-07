@@ -93,6 +93,25 @@ class UriUtils {
     return uri;
   }
 
+  
+  static getPrunedPath(uri, steps) {
+
+    var url = new URL(uri);
+    var path = url.pathname;
+
+    if(steps == undefined) {
+      steps = 1;
+    }
+
+    path = path.substr(path.indexOf('/') + 1, path.length);
+
+    for(var i = 0; i < steps; i++) {
+      path = path.substr(path.indexOf('/') + 1, path.length);
+    }
+
+    return path;
+  }
+
   static sanitizeUri(uri) {
     return sanitizeUrl(uri);
   }

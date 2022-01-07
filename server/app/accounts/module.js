@@ -134,7 +134,8 @@ module.exports = function (router, protector) {
       var insertGraphs = expandedGraphs;
 
       var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
-      var targetPath = req.params.account + '/webid.jsonld';
+
+      var targetPath = 'webid.jsonld';
 
       console.log(`Target path: ${targetPath}`);
       console.log(JSON.stringify(compactedGraph));
@@ -232,7 +233,7 @@ module.exports = function (router, protector) {
   router.get('/:account', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
     var repo = req.params.account;
-    var path = `${req.params.account}/webid.jsonld`;
+    var path = `webid.jsonld`;
 
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
