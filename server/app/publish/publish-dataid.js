@@ -35,10 +35,15 @@ module.exports = async function publishDataid(account, data, notify) {
     var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
     notify(`Publishing dataset ${datasetGraph["@id"]}.\n`);
 
+    if(!datasetGraph["@id"].startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+      return { code: 400, message: `${datasetGraph["@id"]} does not start with the databus base URL ${process.env.DATABUS_RESOURCE_BASE_URL}` };
+    }
+
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
 
     if(triples.length == 0) {
-      return;
+      return { code: 400, message: `Construct query did not yield any triples` };
+   
     }
 
     notify(`> Triples selected via construct query.\n`);
@@ -74,16 +79,13 @@ module.exports = async function publishDataid(account, data, notify) {
 
     notify(`> SHACL validation successful.\n`);
 
-    // Validate all identifiers...
-    var datasetUri = datasetGraph['@id'];
 
+    var datasetUri = datasetGraph['@id'];
     var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
-    var datasetGroupUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_GROUP_PROPERTY);
-    var datasetArtifactUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
 
     // Prefix checks
-    
+    /*
 
     var expectedDatasetUri = `${datasetVersionUri}#Dataset`;
 
@@ -141,7 +143,7 @@ module.exports = async function publishDataid(account, data, notify) {
 
     // TODO: More validataion!
 
-
+    */
     
     notify(`> Publishing as ${datasetPublisherUri}.\n`);
 
