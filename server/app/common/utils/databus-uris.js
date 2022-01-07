@@ -20,6 +20,7 @@ class DatabusUris {
   static DCT_HAS_VERSION = 'http://purl.org/dc/terms/hasVersion';
   static DCT_ISSUED = 'http://purl.org/dc/terms/issued';
   static DCT_CREATED = 'http://purl.org/dc/terms/created';
+  static DCT_MODIFIED = 'http://purl.org/dc/terms/modified';
 
   // SEC
   static SEC_PROOF = 'https://w3id.org/security#proof';

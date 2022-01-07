@@ -1,6 +1,2 @@
-cd server
-npm install
-cd ../public
-npm install
-cd ..
+bash install.sh
 docker build -t databus .

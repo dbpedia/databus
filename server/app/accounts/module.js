@@ -235,7 +235,7 @@ module.exports = function (router, protector) {
     var path = `${req.params.account}/webid.jsonld`;
 
     let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}`,
+      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
       headers: {
         'Accept': 'application/ld+json'
       },

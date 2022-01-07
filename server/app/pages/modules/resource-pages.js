@@ -54,7 +54,7 @@ module.exports = function (router, protector) {
     var path = req.path;
 
     let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/group.jsonld`,
+      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/group.jsonld`,
       headers: {
         'Accept': 'application/ld+json'
       },
@@ -152,7 +152,7 @@ module.exports = function (router, protector) {
     var path = req.path;
 
     let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}/dataid.jsonld`,
+      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/dataid.jsonld`,
       headers: {
         'Accept': 'application/ld+json'
       },
@@ -196,7 +196,7 @@ module.exports = function (router, protector) {
       var path = req.path;
 
       let options = {
-        url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}`,
+        url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
         headers: {
           'Accept': 'application/ld+json'
         },

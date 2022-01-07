@@ -110,77 +110,82 @@ function getObjectValues(quads, subject, predicate) {
 
 signer.validate = async function (canonicalized, proof) {
 
-  var signature = proof['https://w3id.org/security#signature'][0]['@value'];
-  var tractateLines = canonicalized.split('\n');
-  var publisherUri = tractateLines[1];
-  var fetchUri = publisherUri;
+  try {
+    var signature = proof['https://w3id.org/security#signature'][0]['@value'];
+    var tractateLines = canonicalized.split('\n');
+    var publisherUri = tractateLines[1];
+    var fetchUri = publisherUri;
 
-  // TODO: remove this in production
-  if (fetchUri.startsWith(baseUrl)) {
-    fetchUri = fetchUri.replace(`${baseUrl}`, 'http://localhost:3000');
-  }
-
-  // Do a POST request with the passed query
-  var options = {
-    method: 'GET',
-    uri: fetchUri,
-    transform: function (body, response, resolveWithFullResponse) {
-      return { 'headers': response.headers, 'data': body };
-    }
-  };
-
-  console.log(`Fetching WebId document from ${publisherUri}...`);
-  // Await the response
-  var response = await rp(options);
-  var contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
-
-
-  if (contentType.startsWith("text/plain")) {
-    console.log('Content type is text/plain. Defaulting to text/turtle..');
-    contentType = 'text/turtle';
-  }
-
-  if(contentType.startsWith('application/json')) {
-    console.log('Content type is application/json. Changing to application/ld+json..');
-    contentType = 'application/ld+json';
-  }
-
-  console.log(`WebId content type ${contentType} detected. Parsing...`);
-  var quads = await parseRdfSync(contentType, response.data);
-  var keyNodes = getObjectValues(quads, publisherUri, 'http://www.w3.org/ns/auth/cert#key');
-
-  for (var k in keyNodes) {
-
-    var keyNode = keyNodes[k];
-    var modulus = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#modulus');
-    var exponent = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#exponent');
-
-    if (modulus.length != 1 || exponent.length != 1) {
-      continue;
+    // TODO: remove this in production
+    if (fetchUri.startsWith(baseUrl)) {
+      fetchUri = fetchUri.replace(`${baseUrl}`, 'http://localhost:3000');
     }
 
-    // Gotta love javascript madness
-    modulus = modulus[0];
-    exponent = exponent[0];
+    // Do a POST request with the passed query
+    var options = {
+      method: 'GET',
+      uri: fetchUri,
+      transform: function (body, response, resolveWithFullResponse) {
+        return { 'headers': response.headers, 'data': body };
+      }
+    };
 
-    console.log(`RSA key found. Creating key with\n ${modulus} / ${exponent}\n`);
+    console.log(`Fetching WebId document from ${publisherUri}...`);
+    // Await the response
+    var response = await rp(options);
+    var contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
 
-    var key = new NodeRSA();
-    key.importKey({
-      n: Buffer.from(modulus, 'hex'),
-      e: parseInt(exponent)
-    }, 'components-public');
 
-    console.log(`Verifying Signature:\n\n ${signature} \n\nagainst: \n\n${canonicalized}`);
-    if (key.verify(Buffer.from(canonicalized), Buffer.from(signature, 'base64'))) {
-      console.log(`Verification successful.`);
-      return true;
+    if (contentType.startsWith("text/plain")) {
+      console.log('Content type is text/plain. Defaulting to text/turtle..');
+      contentType = 'text/turtle';
     }
 
-  }
+    if(contentType.startsWith('application/json')) {
+      console.log('Content type is application/json. Changing to application/ld+json..');
+      contentType = 'application/ld+json';
+    }
 
-  console.log('Failed to verify.');
-  return false;
+    console.log(`WebId content type ${contentType} detected. Parsing...`);
+    var quads = await parseRdfSync(contentType, response.data);
+    var keyNodes = getObjectValues(quads, publisherUri, 'http://www.w3.org/ns/auth/cert#key');
+
+    for (var k in keyNodes) {
+
+      var keyNode = keyNodes[k];
+      var modulus = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#modulus');
+      var exponent = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#exponent');
+
+      if (modulus.length != 1 || exponent.length != 1) {
+        continue;
+      }
+
+      // Gotta love javascript madness
+      modulus = modulus[0];
+      exponent = exponent[0];
+
+      console.log(`RSA key found. Creating key with\n ${modulus} / ${exponent}\n`);
+
+      var key = new NodeRSA();
+      key.importKey({
+        n: Buffer.from(modulus, 'hex'),
+        e: parseInt(exponent)
+      }, 'components-public');
+
+      console.log(`Verifying Signature:\n\n ${signature} \n\nagainst: \n\n${canonicalized}`);
+      if (key.verify(Buffer.from(canonicalized), Buffer.from(signature, 'base64'))) {
+        console.log(`Verification successful.`);
+        return true;
+      }
+
+    }
+
+    console.log('Failed to verify.');
+    return false;
+  } catch(err) {
+    console.log('Failed to verify:' + err);
+    return false;
+  }
 }
 
 signer.sign = function (canonicalized) {

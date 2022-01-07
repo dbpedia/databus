@@ -49,7 +49,7 @@
     sh:minCount 1 ;
     sh:languageIn ("en") ;
     sh:uniqueLang true .
-  
+
 <#en-description>   
     a sh:PropertyShape ;
     sh:targetClass dataid:Group ;

@@ -14,7 +14,7 @@ db.addSaveListener = function (callback) {
 
 db.read = async function (repo, path) {
   let options = {
-    url: `${process.env.DATABUS_DATABASE_URL}/file/read?repo=${repo}&path=${path}`,
+    url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
     headers: {
       'Accept': 'application/ld+json'
     },
@@ -29,7 +29,7 @@ db.save = async function (repo, path, content) {
 
   try {
     var options = {
-      uri: `${databaseUri}/file/save?repo=${repo}&path=${path}`,
+      uri: `${databaseUri}/graph/save?repo=${repo}&path=${path}`,
       body: content,
       json: true
     };

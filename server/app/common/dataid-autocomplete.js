@@ -1,4 +1,4 @@
-
+// MODULE COMPLETES INPUT DATAIDS
 const JsonldUtils = require('./utils/jsonld-utils');
 const UriUtils = require('./utils/uri-utils');
 const DatabusUris = require('./utils/databus-uris');
@@ -74,12 +74,17 @@ autocompleter.autocomplete = function (expandedGraph) {
   for (var fileGraph of fileGraphs) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
+    }
 
+    if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
       fileGraph[DatabusUris.DCT_ISSUED] = [{}];
       fileGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
       fileGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
-
     }
+
+    fileGraph[DatabusUris.DCT_MODIFIED] = [{}];
+    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
   //console.log(`Autocompletion DONE ================`);

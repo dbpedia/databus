@@ -433,7 +433,22 @@ $shacl='<#has-group>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .';
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .
+  
+<#is-group-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the group URI of the associated group." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?group
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+        FILTER(!strstarts(str($this), str(?group)))
+			}
+			""" ;
+	] .';
 
 $example='"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",';
 
@@ -460,7 +475,22 @@ $shacl='<#has-artifact>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  
+<#is-artifact-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?artifact
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+        FILTER(!strstarts(str($this), str(?artifact)))
+			}
+			""" ;
+	] .';
 
 $example='"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",';
 
@@ -487,7 +517,22 @@ $shacl='<#has-version>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .';
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  
+<#is-version-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?version
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($this), str(?version)))
+			}
+			""" ;
+	] .';
 
 $example='"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",';
 
@@ -776,9 +821,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### format
 
-TODO Jan:
-* check sh:pattern
-
 <?php
 $owl='missing';
 
@@ -788,7 +830,7 @@ $shacl='<#has-format>
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
 	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  """@en ;
-	sh:pattern "^\." ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
 	sh:minCount 1 .';
@@ -835,9 +877,6 @@ table($section,$owl,$shacl,$example,$context);
 
 ### compression
 
-TODO Jan:
-* Check sh:pattern
-
 <?php
 $owl='missing';
 
@@ -846,7 +885,7 @@ $shacl='<#has-compression>
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front """@en ;
-	sh:pattern "^\." ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:path dataid:compression;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;

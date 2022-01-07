@@ -2,6 +2,7 @@ _site
 .sass-cache
 .jekyll-metadata
 node_modules
+dependencies
 package-lock.json
 data
 lookup-app/local-files

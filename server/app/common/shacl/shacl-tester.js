@@ -1,10 +1,16 @@
-// use https://www.npmjs.com/package/rdf-validate-shacl
+// TODO: Use JENA SHACL implementation instead! (SPARQL-SHACL needed)
+
 const SHACLValidator = require('rdf-validate-shacl');
 const factory = require('rdf-ext');
 const ParserN3 = require('@rdfjs/parser-n3');
 const ParserJsonld = require('@rdfjs/parser-jsonld');
 const Readable = require('stream').Readable;
 const fs = require('fs');
+var rp = require('request-promise');
+const path = require("path");
+
+var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;
+
 
 var instance = {}
 
@@ -44,11 +50,30 @@ async function loadDatasetN3Object(n3) {
 }
 
 
-
+// Runs a shacl validation on rdf in jsonld using the passed shacl file (ttl)
 async function validateJsonld(rdf, shaclFile) {
 
+  console.log(`validating group shacl`);
   try {
 
+    var options = {
+      formData : {
+        graph : JSON.stringify(rdf),
+        shacl : fs.createReadStream(path.resolve(__dirname, shaclFile))
+      },
+      method: 'POST',
+      uri : `${databaseUri}/shacl/validate`,
+      headers: {
+        'Content-Type' : 'multipart/form-data',
+      }
+    };
+
+    var res = await rp(options);
+    console.log(res);
+
+    return { isSuccess: true, message: 'SHACL validation successful.' };
+
+    /*
     if (instance.validators == null) {
       instance.validators = {};
     }
@@ -81,14 +106,12 @@ async function validateJsonld(rdf, shaclFile) {
     }
 
     return { isSuccess: true };
-
+*/
   } catch (err) {
     console.log('Error during dataid shacl test ' + err);
     return { isSuccess: false, message: err };
   }
 }
-
-
 
 async function validateN3(rdf, shaclFile) {
 
@@ -136,5 +159,4 @@ instance.validateWebIdRDF = async function (rdf) {
   return await validateJsonld(rdf, 'account-shacl.ttl');
 }
 
-// TODO
 module.exports = instance;
