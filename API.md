@@ -22,7 +22,6 @@ Before saving your inputs to the database, they will be validated in 3 steps:
 
 1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information. 
 2) **SHACL Validation** The result of the construct is validated with SHACL constraints. This makes sure that the information in your input is complete
-3) **URI Validation** As a last step, the URIs in your input are validated. The rules are described in the following chapter.
 
 ### URI Rules
 
@@ -36,6 +35,8 @@ The following rules apply to the identifiers of the following Databus concepts:
 * Datasets *(dataid:Dataset)*
 * Distributions *(dcat:distrubution)*
 * Files *(dataid:file)*
+
+All URI rules are enforced by the SHACL validation of the input.
 
 #### General Rules
 
