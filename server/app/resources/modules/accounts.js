@@ -1,57 +1,23 @@
-var databusResponse = require('../../../public/js/utils/databus-response');
-var databaseManager = require('../common/remote-database-manager');
-var sparql = require('../common/queries/sparql');
-var shaclTester = require('../common/shacl/shacl-tester');
-var defaultContext = require('../../../context.json');
+const ServerUtils = require('../../common/utils/server-utils');
+const DatabusCache = require('../../common/databus-cache');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+
+var databaseManager = require('../../common/remote-database-manager');
+var sparql = require('../../common/queries/sparql');
+var shaclTester = require('../../common/shacl/shacl-tester');
+var defaultContext = require('../../../../context.json');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
 const pem2jwk = require('pem-jwk').pem2jwk;
 
-var constructor = require('../common/execute-construct.js');
-var constructAccountQuery = require('../common/queries/constructs/construct-account.sparql');
-
-
-var ServerUtils = require('../common/utils/server-utils');
-const DatabusCache = require('../common/databus-cache');
-const e = require('express');
-
-var repoUrl = `${(process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL)}/repo`;
-
-function getTypedGraph(graphs, type) {
-  for (var g in graphs) {
-    var graph = graphs[g];
-
-    if (graph['@type'].includes(type)) {
-      return graph;
-    }
-  }
-
-  return null;
-}
-
-function getFirst(graph, key) {
-  var publishers = graph[key];
-
-  if (publishers == undefined || publishers.length < 1) {
-    return null;
-  }
-
-  return publishers[0];
-}
-
-function transferValue(graphFrom, graphTo, key) {
-  var value = getFirst(graphFrom, key);
-  console.log(value);
-  if (value instanceof String) {
-    graphTo[key] = [value];
-  }
-}
+var constructor = require('../../common/execute-construct.js');
+var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(120);
-  var pkeyPEM = fs.readFileSync(__dirname + '/../../keypair/public-key.pem', 'utf-8');
+  var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
   var publicKeyInfo = pem2jwk(pkeyPEM);
 
   let buff = Buffer.from(publicKeyInfo.n, 'base64');
@@ -70,12 +36,9 @@ module.exports = function (router, protector) {
         res.status(403).send(`You cannot edit the account data in a foreign namespace\n`);
         return false;
       }
-
      
       // Validate the group RDF with the shacl validation tool
       var shaclResult = await shaclTester.validateWebIdRDF(req.body);
-
-      
 
       // Return failure
       if (!shaclResult.isSuccess) {
@@ -96,18 +59,12 @@ module.exports = function (router, protector) {
         return;
       }
 
-      //if(expandedGraphs.length > 2) {
-      //  res.status(400).send('More than 2 subjects (foaf:Person, foaf:PersonalProfileDocument) specified\n');
-      //  return;
-      // }
-
-
       // Expected uris
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
       var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
 
       // Compare the specified id to the actual person uri
-      var personGraph = getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/Person');
+      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/Person');
      
       // Mismatch gives error
       if (personGraph['@id'] != personUri) {
@@ -116,7 +73,7 @@ module.exports = function (router, protector) {
       }
 
       // Compare the specified id to the actual person uri
-      var profileGraph = getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/PersonalProfileDocument');
+      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/PersonalProfileDocument');
      
       // Mismatch gives error
       if (profileGraph['@id'] != accountUri) {
@@ -139,7 +96,6 @@ module.exports = function (router, protector) {
 
       console.log(`Target path: ${targetPath}`);
       console.log(JSON.stringify(compactedGraph));
-
 
       // Save the data using the database manager
       var result = await databaseManager.save(req.params.account, targetPath, compactedGraph);
@@ -246,7 +202,6 @@ module.exports = function (router, protector) {
     console.log(`Piping to ${options.url}`);
     request(options).pipe(res);
   });
-
 }
 
 

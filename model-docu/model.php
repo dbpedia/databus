@@ -167,7 +167,7 @@ $shacl='<#group-exists>
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
-      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .';
 
@@ -294,7 +294,7 @@ $shacl='<#dataset-exists>
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
 	  sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#Dataset$" ;
     sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . ';
 
@@ -433,7 +433,7 @@ $shacl='<#has-group>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
   
 <#is-group-uri-correct>
 	a sh:NodeShape;
@@ -471,11 +471,11 @@ $shacl='<#has-artifact>
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
-	sh:path dataid:group ;
+	sh:path dataid:artifact ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
   
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
@@ -517,7 +517,7 @@ $shacl='<#has-version>
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
   
 <#is-version-uri-correct>
 	a sh:NodeShape;
@@ -749,7 +749,7 @@ $shacl='<#part-exists>
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#[a-zA-Z0-9\\\\-_\\\\.]{3,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . ';
 

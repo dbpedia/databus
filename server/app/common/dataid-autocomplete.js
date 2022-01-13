@@ -54,26 +54,30 @@ autocompleter.autocomplete = function (expandedGraph) {
 
   var timeString = new Date(Date.now()).toISOString();
 
-  if (datasetGraph[DatabusUris.DCT_CREATED] == undefined) {
-    datasetGraph[DatabusUris.DCT_CREATED] = [{}];
-    datasetGraph[DatabusUris.DCT_CREATED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
-    datasetGraph[DatabusUris.DCT_CREATED][0][DatabusUris.JSONLD_VALUE] = timeString;
+  if (datasetGraph[DatabusUris.DCT_ISSUED] == undefined) {
+    datasetGraph[DatabusUris.DCT_ISSUED] = [{}];
+    datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+    datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
-  datasetGraph[DatabusUris.DCT_ISSUED] = [{}];
-  datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
-  datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
+  datasetGraph[DatabusUris.DCT_MODIFIED] = [{}];
+  datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+  datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
 
   // Auto-generate resource entries
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_VERSION, 0);
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_ARTIFACT, 1);
 
-  var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_SINGLE_FILE);
+  var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
   // Auto-complete versions
   for (var fileGraph of fileGraphs) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
+    }
+
+    if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
+      fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] = fileGraph[DatabusUris.DATAID_FORMAT];
     }
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
@@ -82,9 +86,6 @@ autocompleter.autocomplete = function (expandedGraph) {
       fileGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
     }
 
-    fileGraph[DatabusUris.DCT_MODIFIED] = [{}];
-    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
-    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
   //console.log(`Autocompletion DONE ================`);

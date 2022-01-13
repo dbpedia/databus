@@ -1,18 +1,14 @@
-var express = require('express');
-var sparql = require('../common/queries/sparql');
-var databusCache = require('../common/databus-cache');
-var constants = require('../common/constants.js');
-var databaseManager = require('../common/remote-database-manager');
-var sparql = require('../common/queries/sparql');
-var shaclTester = require('../common/shacl/shacl-tester');
-var jsonld = require('jsonld');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const ServerUtils = require('../../common/utils/server-utils');
+const Constants = require('../../common/constants.js');
 
-const DatabusUtils = require('../../../public/js/utils/databus-utils');
-const ServerUtils = require('../common/utils/server-utils');
-const Constants = require('../common/constants.js');
-var constructor = require('../common/execute-construct.js');
-var constructCollection = require('../common/queries/constructs/construct-collection.sparql');
-const JsonldUtils = require('../common/utils/jsonld-utils');
+var sparql = require('../../common/queries/sparql');
+var databaseManager = require('../../common/remote-database-manager');
+var sparql = require('../../common/queries/sparql');
+var shaclTester = require('../../common/shacl/shacl-tester');
+var jsonld = require('jsonld');
+var constructor = require('../../common/execute-construct.js');
+var constructCollection = require('../../common/queries/constructs/construct-collection.sparql');
 
 module.exports = function (router, protector) {
 
@@ -137,6 +133,16 @@ module.exports = function (router, protector) {
 
   router.get('/:account/collections/:collection', ServerUtils.SPARQL_ACCEPTED, function (req, res, next) {
     sparql.collections.getCollectionQuery(req.params.account, req.params.collection).then(function (result) {
+      if (result != null) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send('Unable to find the collection.');
+      }
+    });
+  });
+
+  router.get('/:publisher/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
+    sparql.collections.getCollection(req.params.publisher, req.params.collection).then(function (result) {
       if (result != null) {
         res.status(200).send(result);
       } else {

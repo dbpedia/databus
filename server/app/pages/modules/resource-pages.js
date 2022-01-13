@@ -47,24 +47,7 @@ module.exports = function (router, protector) {
   router.get('/:account/apps', function (req, res, next) {
     return res.redirect('/' + req.params.account + '#apps');
   });
-
-  router.get('/:account/:group', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
-
-    var repo = req.params.account;
-    var path = req.params.group;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/group.jsonld`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
-  });
-
+  
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -72,7 +55,7 @@ module.exports = function (router, protector) {
 
       if (groupData == null) {
         res.status(404).send("Sorry can't find that group!");
-        return; AmQtweV7PuUY59F
+        return; 
       }
 
       let artifactData = await sparql.dataid.getArtifactsByGroup(req.params.account, req.params.group);
@@ -113,18 +96,6 @@ module.exports = function (router, protector) {
     }
   });
 
-
-  router.get('/:publisher/collections/:collection', ServerUtils.JSON_ACCEPTED, function (req, res, next) {
-
-    sparql.collections.getCollection(req.params.publisher, req.params.collection).then(function (result) {
-      if (result != null) {
-        res.status(200).send(result);
-      } else {
-        res.status(404).send('Unable to find the collection.');
-      }
-    });
-  });
-
   router.get('/:account/:group/:artifact', protector.checkSso(), async function (req, res, next) {
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -145,24 +116,6 @@ module.exports = function (router, protector) {
       res.status(404).send("Sorry can't find that!");
     }
   });
-
-  router.get('/:account/:group/:artifact/:version', ServerUtils.JSON_ACCEPTED, async function (req, res, next) {
-
-    var repo = req.params.account;
-    var path = `${req.params.group}/${req.params.artifact}/${req.params.version}`;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}/dataid.jsonld`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
-  });
-
 
   router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -186,64 +139,4 @@ module.exports = function (router, protector) {
       res.status(404).send('Sorry cant find that!');
     }
   });
-
-  router.get('/:account/:group/:artifact/:version/:file', async function (req, res, next) {
-
-    // Return dataids?
-    if (req.params.file.startsWith('dataid.')) {
-
-      var repo = req.params.account;
-      var path = req.path;
-
-      let options = {
-        url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-        headers: {
-          'Accept': 'application/ld+json'
-        },
-        json: true
-      };
-
-      console.log(`Piping to ${options.url}`);
-      request(options).pipe(res);
-      return;
-    }
-
-    try {
-      var result = await sparql.dataid.getDownloadUrl(req.params.account, req.params.group,
-        req.params.artifact, req.params.version, req.params.file);
-
-      if (result == null) {
-        res.status(404).send('Sorry can\'t find that!');
-        return;
-      }
-
-      res.redirect(307, result.downloadUrl);
-    } catch (err) {
-      console.log(err);
-      res.status(404).send('Sorry can\'t find that! ');
-    };
-  });
-
 }
-
-/*
-var dataRequests = [];
-dataRequests.push({ key: constants.KEY_AUTH, promise: dataLoader.loadUserData(req) });
-dataRequests.push({ key: constants.KEY_VERSION_DATA, promise: dataLoader.getVersionData(req.params.publisher, req.params.group, req.params.artifact, req.params.version) });
-dataRequests.push({ key: constants.KEY_SERVICES, promise: dataLoader.getServicesByGroup(req.params.publisher, req.params.group) });
-dataRequests.push({
-   key: constants.KEY_ACTIONS, promise: dataLoader.getVersionActions(
-      req.params.publisher,
-      req.params.group,
-      req.params.artifact,
-      req.params.version)
-});
-dataRequests.push({
-   key: constants.KEY_MODS, promise: dataLoader.getModsByVersion(
-      req.params.publisher,
-      req.params.group,
-      req.params.artifact,
-      req.params.version)
-});
-databusUtils.respondWithData(dataLoader, function (data) { return data.versionData.label; }, 'version', dataRequests, res);*/
-

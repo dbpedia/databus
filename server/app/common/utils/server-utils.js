@@ -93,7 +93,13 @@ class ServerUtils {
   }
 
   static HTML_ACCEPTED(req, res, next) {
-    return req.accepts("html") ? next() : next("route");
+    var acceptHeader = req.get('Accept');
+
+    if(acceptHeader == undefined) {
+      return next("route");
+    }
+
+    return acceptHeader.includes("html") ? next() : next("route");
   }
 
   static RDF_ACCEPTED(req, res, next) {

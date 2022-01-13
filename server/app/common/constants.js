@@ -1,31 +1,35 @@
 
-const Constants = {
+class Constants {
 
-   KEY_AUTH : 'auth',
-   KEY_FRONT : 'frontpage',
-   KEY_PUBLISHER: 'publisher',
-   KEY_SERVICES: 'services',
-   KEY_APPS: 'apps',
-   KEY_CHILDREN: 'children',
-   KEY_COLLECTIONS: 'collections',
-   KEY_COLLECTION: 'collection',
-   KEY_GROUP: 'group',
-   KEY_ARTIFACTS: 'artifacts',
-   KEY_ARTIFACT_VERSIONS: 'artifactVersions',
-   KEY_VERSION_DATA: 'versionData',
-   KEY_ACTIONS: 'actions',
-   KEY_MODS: 'mods',
+  static KEY_AUTH = 'auth';
+  static KEY_FRONT = 'frontpage';
+  static KEY_PUBLISHER = 'publisher';
+  static KEY_SERVICES = 'services';
+  static KEY_APPS = 'apps';
+  static KEY_CHILDREN = 'children';
+  static KEY_COLLECTIONS = 'collections';
+  static KEY_COLLECTION = 'collection';
+  static KEY_GROUP = 'group';
+  static KEY_ARTIFACTS = 'artifacts';
+  static KEY_ARTIFACT_VERSIONS = 'artifactVersions';
+  static KEY_VERSION_DATA = 'versionData';
+  static KEY_ACTIONS = 'actions';
+  static KEY_MODS = 'mods';
 
-   DATABUS_USER_CACHE_REFRESH : 0x01,
-   DATABUS_USER_ENTRY_UPDATE : 0x02,
-   DEFAULT_SPARQL_ENDPOINT_URL : 'http://localhost:8898/sparql',
-   DATAID_DEFAULT_IMAGE_URL : 'https://picsum.photos/id/223/320/320',
-   DEFAULT_DATABASE_URL : 'http://localhost:3002',
-   DATABUS_DEFAULT_CONTEXT_URL : "https://downloads.dbpedia.org/databus/context.jsonld",
+  static DATABUS_USER_CACHE_REFRESH = 0x01;
+  static DATABUS_USER_ENTRY_UPDATE = 0x02;
 
+  static DATAID_DEFAULT_IMAGE_URL = 'https://picsum.photos/id/223/320/320';
+  static DEFAULT_DATABASE_URL = 'http://localhost:3002';
+  static DATABUS_DEFAULT_CONTEXT_URL = "https://downloads.dbpedia.org/databus/context.jsonld";
 
-   
-  URI_DATABUS_TRACTATE_V1: 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1',
+  static DATABUS_FILE_GROUP = 'group.jsonld';
+  static DATABUS_FILE_DATAID = 'dataid.jsonld';
+  static DATABUS_FILE_WEBID = 'webid.jsonld';
+
+  static MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
+  static MESSGAGE_NOT_FOUND = 'Sorry, can\'t find that!\n';
+
 }
 
 module.exports = Constants;

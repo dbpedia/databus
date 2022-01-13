@@ -1,37 +1,23 @@
-var defaultContext = require('../../../context.json');
+const DEFAULT_CONTEXT_STRING = require('../../../context.json');
 
 const publishGroup = require('./publish-group');
 const publishDataId = require('./publish-dataid');
 const Constants = require('../common/constants');
 
-const RDF_URIS = {
-  DATASET: 'http://dataid.dbpedia.org/ns/core#Dataset',
-  DB_TRACTATE_V1: 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1',
-  PROP_PUBLISHER: 'http://purl.org/dc/terms/publisher',
-  PROOF: 'https://w3id.org/security#proof',
-  TYPE: '@type',
-  VERSION: 'http://dataid.dbpedia.org/ns/core#Version',
-  ARTIFACT: 'http://dataid.dbpedia.org/ns/core#Artifact',
-  GROUP: 'http://dataid.dbpedia.org/ns/core#Group',
-  PROP_VERSION: 'http://dataid.dbpedia.org/ns/core#version',
-  PROP_ARTIFACT: 'http://dataid.dbpedia.org/ns/core#artifact',
-  PROP_GROUP: 'http://dataid.dbpedia.org/ns/core#group'
-}
+const DatabusUris = require('../common/utils/databus-uris');
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
+const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
+const MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
+const MESSAGE_NOT_FOUND = 'Sorry can\'t find that!';
 
 module.exports = function (router, protector) {
 
-
   router.post('/system/publish', protector.protect(), async function (req, res, next) {
-
 
     try {
 
+      // Set return code to accepted
       res.status(202);
 
       // Get the account namespace
@@ -41,8 +27,8 @@ module.exports = function (router, protector) {
       var graph = req.body;
 
       // Replace context if graph uses default context
-      if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph['@context'] = defaultContext;
+      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
       }
 
       var groupResult = await publishGroup(account, graph, function (message) {
@@ -50,21 +36,17 @@ module.exports = function (router, protector) {
       });
 
       if (groupResult != undefined) {
-        if (groupResult.code > 201) {
-          res.end(groupResult.message);
-          return;
-        }
-
-        res.write(groupResult.message);
+        res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`)
       }
+
+      res.write('================================================\n');
 
       var dataIdResult = await publishDataId(account, graph, function (message) {
         res.write(message);
       });
 
-      if (dataIdResult.code > 201) {
-        res.end(dataIdResult.message);
-        return;
+      if (dataIdResult != undefined) {
+        res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.`)
       }
 
       res.end();
@@ -75,29 +57,36 @@ module.exports = function (router, protector) {
     }
   });
 
+  /**
+   * Publishing via PUT request
+   */
   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
-
     try {
 
       console.log('Upload request received at ' + req.originalUrl);
+
+      // Requesting a PUT on an uri outside of one's namespace is rejected
       if (req.params.account != req.databus.accountName) {
-        res.status(403).send('You cannot publish data in a foreign namespace.\n');
+        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
         return;
       }
 
-      var account = req.databus.accountName;
       var graph = req.body;
 
-      // Replace if default context
-      if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph['@context'] = defaultContext;
+      // Resolve the context if it is the default context
+      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
       }
 
-      var dataIdResult = await publishDataId(account, graph, function (message) {
-        console.log(message);
+      // Call the publishing routine and log to a string
+      var progress = '';
+
+      var dataIdResult = await publishDataId(req.databus.accountName, graph, function (message) {
+        progress += message;
       });
 
-
+      // Return the result with the logging string
+      dataIdResult.message = message + dataIdResult.message;
       res.status(dataIdResult.code).send(dataIdResult.message);
 
     } catch (err) {
@@ -108,28 +97,36 @@ module.exports = function (router, protector) {
 
 
   /**
-   * Publishing of groups
+   * Publishing of groups via PUT request
    */
   router.put('/:account/:group', protector.protect(), async function (req, res, next) {
 
     try {
 
+      // Requesting a PUT on an uri outside of one's namespace is rejected
       if (req.params.account != req.databus.accountName) {
-        res.status(403).send('You cannot edit groups in a foreign namespace.\n');
+        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
         return;
       }
 
       var account = req.databus.accountName;
 
-      // Find context:
       var graph = req.body;
-      var context = graph['@context'];
 
-      if (context == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph['@context'] = defaultContext;
+      // Resolve the context if it is the default context
+      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
       }
 
-      var groupResult = await publishGroup(account, graph);
+      // Call the publishing routine and log to a string
+      var progress = '';
+
+      var groupResult = await publishGroup(account, graph, function (message) {
+        progress += message;
+      });
+
+      // Return the result with the logging string
+      groupResult.message = message + groupResult.message;
       res.status(groupResult.code).send(groupResult.message);
 
     } catch (err) {
@@ -138,14 +135,6 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.delete('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
 
-
-  });
-
-  router.delete('/:account/:group', protector.protect(), async function (req, res, next) {
-
-
-  });
 
 }

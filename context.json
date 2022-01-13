@@ -95,7 +95,7 @@
     "@type": "@id"
   },
   "Dataset": "dataid:Dataset",
-  "SingleFile": "dataid:SingleFile",
+  "Part": "dataid:Part",
   "version": {
     "@id": "dataid:version",
     "@type": "@id"
@@ -109,7 +109,7 @@
     "@type": "xsd:string"
   },
   "format": {
-    "@id": "dataid:formatExtension",
+    "@id": "dataid:format",
     "@type": "xsd:string"
   },
   "compression": {

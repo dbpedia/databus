@@ -37,12 +37,10 @@ initialize(app, memoryStore).then(function () {
   app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
 
   // Create modules
-  require('./collections/module')(router, protector);
   require('./publish/module')(router, protector);
-  require('./accounts/module')(router, protector);
   require('./pages/module')(router, protector);
+  require('./resources/module')(router, protector);
   require('./tractate/module')(router, protector);
-
 
   app.use(protector.auth());
   // Attach router
@@ -116,11 +114,8 @@ async function loadDefaultContext() {
 async function initialize(app, memoryStore) {
 
 
-
-
   // CORS setup
   var originsWhitelist = [
-    'databus.dbpedia.org',
     'localhost:3000'
   ];
 

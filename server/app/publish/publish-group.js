@@ -1,24 +1,32 @@
 const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
+const DatabusUris = require('../common/utils/databus-uris');
 
 var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
-var sparql = require('../common/queries/sparql');
 var constructor = require('../common/execute-construct.js');
 var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
 var defaultContext = require('../../../context.json');
-
-const dataidGroupUri = 'http://dataid.dbpedia.org/ns/core#Group';
-const groupFileName = 'group.jsonld';
+const Constants = require('../common/constants');
 
 module.exports = async function publishGroup(account, data, notify) {
 
   try {
+
+    notify(`Publishing Group.\n`);
+
     
     // Get the desired triples from the data via construct query
     var triples = await constructor.executeConstruct(data, constructGroupQuery);
+
+    var tripleCount = triples.split(/\r\n|\r|\n/).length
+    notify(`> ${tripleCount} triples selected via construct query.\n`);
+
+
     var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
+
+   
 
     // No data - no publish
     if (expandedGraphs.length == 0) {
@@ -49,11 +57,10 @@ module.exports = async function publishGroup(account, data, notify) {
     notify(`> SHACL validation successful.\n`);
 
     // Get the group graph (enforced by earlier SHACL test)
-    var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, dataidGroupUri);
+    var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
     var groupUri = groupGraph['@id'];
 
-    notify(`> Publishing group ${groupUri}\n`);
-
+    
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     // Check for namespace violation
@@ -61,10 +68,12 @@ module.exports = async function publishGroup(account, data, notify) {
       return { code: 403, message: `Invalid group identifier ${groupUri}.\n` };
     }
 
+    notify(`> Saving to ${groupUri}\n`);
+
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
-    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${groupFileName}`);
+    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${Constants.DATABUS_FILE_GROUP}`);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
@@ -74,7 +83,7 @@ module.exports = async function publishGroup(account, data, notify) {
       return { code: 500, message: 'Internal database error.\n' };
     }
 
-    return { code: 200, message: 'Group saved successfully.\n' };
+    return { code: 200, message: 'Success.\n' };
 
   } catch (err) {
     console.log(err);

@@ -4,6 +4,7 @@ var jsonld = require('jsonld');
 var JsonldUtils = require('../common/utils/jsonld-utils');
 const Constants = require('../common/constants');
 var defaultContext = require('../../../context.json');
+const DatabusUris = require('../common/utils/databus-uris');
 
 module.exports = function (router, protector) {
 
@@ -46,7 +47,7 @@ module.exports = function (router, protector) {
       var expandedGraph = await jsonld.flatten(await jsonld.expand(graph));
 
       // Get the proof graph 
-      var proofGraph = JsonldUtils.getTypedGraph(expandedGraph, Constants.URI_DATABUS_TRACTATE_V1);
+      var proofGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_TRACTATE_V1);
 
       // Create the canonicalized form
       var canonicalizedForm = suite.canonicalize(expandedGraph);

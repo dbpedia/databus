@@ -53,7 +53,6 @@ async function loadDatasetN3Object(n3) {
 // Runs a shacl validation on rdf in jsonld using the passed shacl file (ttl)
 async function validateJsonld(rdf, shaclFile) {
 
-  console.log(`validating group shacl`);
   try {
 
     var options = {
@@ -69,7 +68,6 @@ async function validateJsonld(rdf, shaclFile) {
     };
 
     var res = await rp(options);
-    console.log(res);
 
     return { isSuccess: true, message: 'SHACL validation successful.' };
 
@@ -108,8 +106,10 @@ async function validateJsonld(rdf, shaclFile) {
     return { isSuccess: true };
 */
   } catch (err) {
-    console.log('Error during dataid shacl test ' + err);
-    return { isSuccess: false, message: err };
+
+    console.log(err.response.body);
+    //console.log('Error during dataid shacl test ' + err);
+    return { isSuccess: false, message: err.response.body };
   }
 }
 
@@ -144,11 +144,11 @@ async function validateN3(rdf, shaclFile) {
 
 
 instance.validateGroupRDF = async function (rdf) {
-  return await validateJsonld(rdf, 'group-shacl.ttl');
+  return await validateJsonld(rdf, './../../../../model-docu/generated/shacl/group.shacl');
 }
 
 instance.validateDataidRDF = async function (rdf) {
-  return await validateJsonld(rdf, 'dataid-shacl.ttl');
+  return await validateJsonld(rdf, './../../../../model-docu/generated/shacl/dataid.shacl');
 }
 
 instance.validateCollectionRDF = async function (rdf) {

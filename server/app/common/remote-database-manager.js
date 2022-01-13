@@ -21,8 +21,13 @@ db.read = async function (repo, path) {
     json: true
   };
 
-  var res = await rp.get(options);
-  return res;
+  try {
+    var res = await rp.get(options);
+    return res;
+
+  } catch (err) {
+    return null;
+  }
 }
 
 db.save = async function (repo, path, content) {

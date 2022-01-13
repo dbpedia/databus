@@ -16,7 +16,6 @@ module.exports = function (router, protector) {
 
     var auth = ServerUtils.getAuthInfoFromRequest(req);
 
-
     if (auth.info.accountName == undefined) {
       // Let the user create an account here
       res.render('account', {

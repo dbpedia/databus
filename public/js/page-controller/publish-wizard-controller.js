@@ -487,33 +487,13 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.runPublishSequence = async function () {
 
-
-    var basePath = DATABUS_RESOURCE_BASE_URL;
     var output = $scope.result;
     output.publishLog = [];
-    output.publishLog.push({ hasError: false, message: "Publishing..." });
 
 
     try {
-      //var groupId = output.groupUpdate['@graph'][0]['@id'];
-      //var relativeGroupPath = groupId.replace(basePath, '');
-
-
-
-      //      output.publishLog.push({ hasError: false, message: `Publishing group at ${relativeGroupPath} ...` });
       await $scope.postDeferred(output.updateData);
-      // await $scope.postDeferred(output.versionUpdate);
-
-      /*
-      output.publishLog.push({ hasError: false, message: "Done." });
-
-      var versionId = DatabusUtils.navigateUp(output.versionUpdate['@graph'][0]['@id'], 0);
-      var relativeVersionPath = versionId.replace(basePath, '');
-      output.publishLog.push({ hasError: false, message: `Publishing version at ${relativeVersionPath} ...` });
-      result = await $http.put(relativeVersionPath, output.versionUpdate);
-
-      output.publishLog.push({ hasError: false, message: "Done." });
-      */
+  
       $scope.session.isPublishing = false;
       $scope.$apply();
     } catch (err) {

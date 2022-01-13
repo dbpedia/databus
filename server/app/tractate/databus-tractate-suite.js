@@ -10,8 +10,6 @@ const DatabusUris = require('../common/utils/databus-uris');
 
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
-var proofType = 'https://databus.dbpedia.org/system/ontology#DatabusTractateV1';
-
 
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0',
@@ -57,7 +55,7 @@ signer.canonicalize = function (expandedGraph) {
 
   var shasums = [];
 
-  var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_SINGLE_FILE);
+  var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
   for (var d in distributionGraphs) {
     var distributionGraph = distributionGraphs[d];
@@ -77,7 +75,7 @@ signer.canonicalize = function (expandedGraph) {
 signer.createProof = function (datasetGraph) {
   
   return {
-    '@type': [proofType],
+    '@type': [DatabusUris.DATABUS_TRACTATE_V1],
     'https://w3id.org/security#signature': [{
       "@type": "http://www.w3.org/2001/XMLSchema#string",
       "@value": signer.sign(signer.canonicalize(datasetGraph))
@@ -111,7 +109,7 @@ function getObjectValues(quads, subject, predicate) {
 signer.validate = async function (canonicalized, proof) {
 
   try {
-    var signature = proof['https://w3id.org/security#signature'][0]['@value'];
+    var signature = proof[DatabusUris.SEC_SIGNATURE][0][DatabusUris.JSONLD_VALUE];
     var tractateLines = canonicalized.split('\n');
     var publisherUri = tractateLines[1];
     var fetchUri = publisherUri;
@@ -128,7 +126,7 @@ signer.validate = async function (canonicalized, proof) {
       transform: function (body, response, resolveWithFullResponse) {
         return { 'headers': response.headers, 'data': body };
       }
-    };
+    };  
 
     console.log(`Fetching WebId document from ${publisherUri}...`);
     // Await the response
