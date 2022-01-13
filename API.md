@@ -18,11 +18,10 @@ The following examples of the API usage use a non-existing example databus at `h
 
 Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
 
-Before saving your inputs to the database, they will be validated in 3 steps:
+Before saving your inputs to the database, they will be validated in 2 steps:
 
 1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information. 
-2) **SHACL Validation** The result of the construct is validated with SHACL constraints. This makes sure that the information in your input is complete
-3) **URI Validation** As a last step, the URIs in your input are validated. The rules are described in the following chapter.
+2) **SHACL Validation** The result of the construct query is validated with SHACL constraints. This makes sure that the information in your input is complete and formatted correctly
 
 ### URI Rules
 
@@ -36,6 +35,8 @@ The following rules apply to the identifiers of the following Databus concepts:
 * Datasets *(dataid:Dataset)*
 * Distributions *(dcat:distrubution)*
 * Files *(dataid:file)*
+
+All URI rules are enforced by the SHACL validation of the input.
 
 #### General Rules
 
