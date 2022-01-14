@@ -42,7 +42,9 @@ initialize(app, memoryStore).then(function () {
   require('./resources/module')(router, protector);
   require('./tractate/module')(router, protector);
 
+  // Use protection
   app.use(protector.auth());
+
   // Attach router
   app.use('/', router);
 
@@ -74,7 +76,6 @@ initialize(app, memoryStore).then(function () {
 async function loadDefaultContext() {
 
   try {
-
     // Overwrite default if configured
     if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
       Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
@@ -104,7 +105,7 @@ async function loadDefaultContext() {
 
   // TODO: REMOVE!!
   Constants.DATABUS_DEFAULT_CONTEXT_URL = 'https://downloads.dbpedia.org/databus/context.jsonld';
-
+  Constants.DATABUS_DEFAULT_CONTEXT_STRING = require('../../model-docu/generated/context.json');
 }
 
 /**

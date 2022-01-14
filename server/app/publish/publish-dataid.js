@@ -126,13 +126,13 @@ module.exports = async function publishDataid(account, data, notify) {
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
+    
+    // TODO enable this: compactedGraph[DatabusUris.JSONLD_CONTEXT] = Constants.DATABUS_DEFAULT_CONTEXT_URL;
 
     // Create the target path for the gstore
     var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
 
-
     notify(`> Saving to ${datasetUri}\n`);
-
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
@@ -143,7 +143,6 @@ module.exports = async function publishDataid(account, data, notify) {
     }
 
     return { code: 200, message: 'Success.\n' };
-
 
   } catch (err) {
     console.log(err);

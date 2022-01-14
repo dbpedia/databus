@@ -96,25 +96,29 @@ class DatabusUtils {
 
     var result = uri.substr(uri.lastIndexOf('/') + 1);
     result = result.substr(result.lastIndexOf('#') + 1);
-    result = result.substr(0, result.lastIndexOf('.'));
+
+    if (result.includes('.')) {
+      result = result.substr(0, result.lastIndexOf('.'));
+    }
+    
     return result;
   }
 
-  
+
   static navigateUp(uri, steps) {
 
-    if(steps == undefined) {
+    if (steps == undefined) {
       steps = 1;
     }
 
-    for(var i = 0; i < steps; i++) {
+    for (var i = 0; i < steps; i++) {
       uri = uri.substr(0, uri.lastIndexOf('/'));
     }
 
-    if(uri.includes('#')) {
+    if (uri.includes('#')) {
       uri = uri.substr(0, uri.lastIndexOf('#'));
     }
-    
+
     return uri;
   }
 
