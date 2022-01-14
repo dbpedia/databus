@@ -14,6 +14,10 @@
 
 "Group": "dataid:Group",
 
+"group": {
+	"@id": "dataid:group",
+	"@type": "@id"
+	},
 
 "title": {
     "@id": "dct:title",
@@ -37,11 +41,6 @@
       "@type": "@id"
     },
 
-"group": {
-      "@id": "dataid:group",
-      "@type": "@id"
-    },
-
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
@@ -50,6 +49,11 @@
 "version": {
       "@id": "dataid:version",
       "@type": "@id"
+    },
+
+"hasVersion": {
+      "@id": "dct:hasVersion",
+      "@type": "xsd:string"
     },
 
 "issued": {
@@ -100,13 +104,13 @@
       "@type": "@id"
     },
 
+"byteSize": {
+    "@id": "dcat:byteSize",
+    "@type": "xsd:decimal"
+  },
+
 "sha256sum": {
       "@id": "dataid:sha256sum",
-      "@type": "xsd:string"
-    },
-
-"hasVersion": {
-      "@id": "dct:hasVersion",
       "@type": "xsd:string"
     },
 

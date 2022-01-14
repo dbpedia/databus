@@ -452,10 +452,7 @@ $shacl='<#has-group>
 
 $example='"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",';
 
-$context='"group": {
-      "@id": "dataid:group",
-      "@type": "@id"
-    }';
+$context='duplicate';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -970,8 +967,10 @@ $context='"byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
   }';
-?>
 
+
+table($section,$owl,$shacl,$example,$context);
+?>
 
 
 ### sha256sum
@@ -1025,10 +1024,7 @@ $shacl='<#has-hasVersion-part>
 
 $example='"hasVersion": "%VERSION%",';
 
-$context='"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    }';
+$context='duplicate';
 
 table($section,$owl,$shacl,$example,$context);
 

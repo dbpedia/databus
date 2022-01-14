@@ -272,6 +272,16 @@
 	sh:nodeKind sh:IRI .
 
 
+<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  
+
 <#has-sha256sum>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
