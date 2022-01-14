@@ -1,10 +1,11 @@
-const DEFAULT_CONTEXT_STRING = require('../../../context.json');
 
 const publishGroup = require('./publish-group');
 const publishDataId = require('./publish-dataid');
 const Constants = require('../common/constants');
 
 const DatabusUris = require('../common/utils/databus-uris');
+
+var defaultContext = require('../common/context.json');
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
@@ -27,8 +28,8 @@ module.exports = function (router, protector) {
       var graph = req.body;
 
       // Replace context if graph uses default context
-      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
       var groupResult = await publishGroup(account, graph, function (message) {

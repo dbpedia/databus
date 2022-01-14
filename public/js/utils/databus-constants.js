@@ -33,5 +33,5 @@ const FACET_LASTEST_GROUP_VERSION_SUBQUERY =
 
 const FACET_SUBQUERY_UNION = "\n\tUNION";
 const DATABUS_RESOURCE_BASE_URL = "http://localhost:3000";
-const DATABUS_DEFAULT_CONTEXT_URL = "none";
+const DATABUS_DEFAULT_CONTEXT_URL = "https://downloads.dbpedia.org/databus/context.jsonld";
 const DATABUS_SPARQL_ENDPOINT_URL = "/system/sparql";

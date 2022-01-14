@@ -24,16 +24,19 @@ function writeClientVariables() {
 
   regex = new RegExp(/DATABUS_DEFAULT_CONTEXT_URL\s=\s"(.*)";/gm);
   clientConstants = clientConstants.replace(regex,
-    `DATABUS_DEFAULT_CONTEXT_URL = "${process.env.DATABUS_DEFAULT_CONTEXT_URL}";`);
+    `DATABUS_DEFAULT_CONTEXT_URL = "${Constants.DATABUS_DEFAULT_CONTEXT_URL}";`);
 
   fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
 }
 
 async function minifyClientJS() {
+  console.log(`Minifying client-side javascript...`);
   await minifier.minify('../../public/js', 'js', '../min/databus.min.js', '../min/databus.min.js.map');
 }
 
 function tryCreateKeyPair() {
+
+  console.log(`Creating or loading PEM key-pair...`);
 
   // Create RSA key paths
   var privateKeyFile = __dirname + '/../keypair/private-key.pem';
@@ -63,8 +66,50 @@ function tryCreateKeyPair() {
   }
 }
 
+async function loadDefaultContext() {
+
+  try {
+    // Overwrite default if configured
+    if (process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined) {
+      process.env.DATABUS_DEFAULT_CONTEXT_URL = Constants.DATABUS_DEFAULT_CONTEXT_URL;
+    }
+
+
+    console.log(`Loading default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}...`);
+
+    /*
+    // Set file path
+    var contextFile = __dirname + '/common/context.json';
+
+    // Request options
+    var contextOptions = {
+      method: 'GET',
+      uri: process.env.DATABUS_DEFAULT_CONTEXT_URL,
+      headers: { 'User-Agent': 'Request-Promise' },
+      json: true
+    };
+
+    // Request and save to file
+    var response = await rp(contextOptions);
+    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
+
+    */
+  } catch (err) {
+    console.log(err);
+    console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);
+  }
+  
+
+}
+
 module.exports = async function () {
+  console.log(`================================================`);
+  console.log(`Initializing...`);
+  await loadDefaultContext();
   writeClientVariables();
   await minifyClientJS();
   tryCreateKeyPair();
+  console.log(`Done initializing.`);
+  console.log(`================================================`);
+ 
 }

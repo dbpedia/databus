@@ -1,14 +1,14 @@
 const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
 const DatabusUris = require('../common/utils/databus-uris');
+const Constants = require('../common/constants');
 
 var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var constructor = require('../common/execute-construct.js');
 var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('../../../context.json');
-const Constants = require('../common/constants');
+var defaultContext = require('../common/context.json');
 
 module.exports = async function publishGroup(account, data, notify) {
 
@@ -16,7 +16,7 @@ module.exports = async function publishGroup(account, data, notify) {
 
     notify(`Publishing Group.\n`);
 
-    
+
     // Get the desired triples from the data via construct query
     var triples = await constructor.executeConstruct(data, constructGroupQuery);
 
@@ -26,7 +26,7 @@ module.exports = async function publishGroup(account, data, notify) {
 
     var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
-   
+
 
     // No data - no publish
     if (expandedGraphs.length == 0) {
@@ -44,11 +44,15 @@ module.exports = async function publishGroup(account, data, notify) {
     // Validate the group RDF with the shacl validation tool
     var shaclResult = await shaclTester.validateGroupRDF(expandedGraphs);
 
-    // Shacl validation unsuccessful - error
+    // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
-      var response = 'SHACL validation error:\n';
-      for (var m in shaclResult.messages) {
-        response += `>>> ${shaclResult.messages[m]}\n`
+
+      notify(`> SHACL validation error:\n`);
+
+      var messages = shaclResult.message.split(/\r\n|\r|\n/);
+      for (var message of messages) {
+
+        notify(`> ${message}\n`);
       }
 
       return { code: 400, message: response };
@@ -60,7 +64,7 @@ module.exports = async function publishGroup(account, data, notify) {
     var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
     var groupUri = groupGraph['@id'];
 
-    
+
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     // Check for namespace violation

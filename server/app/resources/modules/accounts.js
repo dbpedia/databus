@@ -1,14 +1,15 @@
 const ServerUtils = require('../../common/utils/server-utils');
 const DatabusCache = require('../../common/databus-cache');
 const JsonldUtils = require('../../common/utils/jsonld-utils');
+const Constants = require('../../common/constants');
 
 var databaseManager = require('../../common/remote-database-manager');
 var sparql = require('../../common/queries/sparql');
 var shaclTester = require('../../common/shacl/shacl-tester');
-var defaultContext = require('../../../../context.json');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
+var defaultContext = require('../../common/context.json');
 const pem2jwk = require('pem-jwk').pem2jwk;
 
 var constructor = require('../../common/execute-construct.js');

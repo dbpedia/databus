@@ -72,42 +72,6 @@ initialize(app, memoryStore).then(function () {
   })
 });
 
-
-async function loadDefaultContext() {
-
-  try {
-    // Overwrite default if configured
-    if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
-      Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
-    }
-
-    // Set file path
-    var contextFile = __dirname + '/../../context.json';
-
-    // Request options
-    var contextOptions = {
-      method: 'GET',
-      uri: Constants.DATABUS_DEFAULT_CONTEXT_URL,
-      headers: { 'User-Agent': 'Request-Promise' },
-      json: true
-    };
-
-    // Request and save to file
-    var response = await rp(contextOptions);
-    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
-
-    console.log(`Fetched default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-
-  } catch (err) {
-    console.log(err);
-    console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-  }
-
-  // TODO: REMOVE!!
-  Constants.DATABUS_DEFAULT_CONTEXT_URL = 'https://downloads.dbpedia.org/databus/context.jsonld';
-  Constants.DATABUS_DEFAULT_CONTEXT_STRING = require('../../model-docu/generated/context.json');
-}
-
 /**
  * Express app initialization
  * @param {the express app} app 
@@ -163,9 +127,6 @@ async function initialize(app, memoryStore) {
     saveUninitialized: true,
     store: memoryStore
   }));
-
-  await loadDefaultContext();
-
 
 }
 

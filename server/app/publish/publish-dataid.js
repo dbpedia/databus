@@ -8,7 +8,7 @@ var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var sparql = require('../common/queries/sparql');
-var defaultContext = require('../../../context.json');
+var defaultContext = require('../common/context.json');
 var constructor = require('../common/execute-construct.js');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 var autocompleter = require('../common/dataid-autocomplete');
@@ -49,8 +49,6 @@ module.exports = async function publishDataid(account, data, notify) {
     if (before != after) {
       notify(`> Auto-completed the input.\n`);
     }
-
-    console.log(after);
 
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);

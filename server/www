@@ -32,6 +32,17 @@ function broadcast(msg) {
 
 function masterProcess() {
 
+  console.log(`######`);
+  console.log(`#     #   ##   #####   ##   #####  #    #  ####`);
+  console.log(`#     #  #  #    #    #  #  #    # #    # #`);
+  console.log(`#     # #    #   #   #    # #####  #    #  ####`);
+  console.log(`#     # ######   #   ###### #    # #    #      #`);
+  console.log(`#     # #    #   #   #    # #    # #    # #    #`);
+  console.log(`######  #    #   #   #    # #####   ####   ####`);
+  console.log(``)
+  console.log(`================================================`);
+ 
+
   var userDatabase = new DatabusUserDatabase(userTablePath, function(table) {
     broadcast({ id : Constants.DATABUS_USER_CACHE_REFRESH, body: table });
   })
@@ -42,6 +53,8 @@ function masterProcess() {
     
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
+
+    console.log(`================================================`);
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);

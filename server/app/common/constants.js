@@ -22,7 +22,6 @@ class Constants {
   static DATAID_DEFAULT_IMAGE_URL = 'https://picsum.photos/id/223/320/320';
   static DEFAULT_DATABASE_URL = 'http://localhost:3002';
   static DATABUS_DEFAULT_CONTEXT_URL = 'https://downloads.dbpedia.org/databus/context.jsonld';
-  static DATABUS_DEFAULT_CONTEXT_STRING = '';
 
   static DATABUS_FILE_GROUP = 'group.jsonld';
   static DATABUS_FILE_DATAID = 'dataid.jsonld';
