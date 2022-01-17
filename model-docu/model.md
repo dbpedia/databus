@@ -133,7 +133,7 @@ missing
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
-      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" ;
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .
 ```
@@ -145,7 +145,7 @@ missing
 ```
 ###### Context
 ```json
-"Group": "dataid:Group",
+"Group": 		"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
@@ -185,10 +185,7 @@ dct:title
 ```
 ###### Context
 ```json
-"title": {
-    "@id": "dct:title",
-    "@language": "en"
-  }
+"title": 		{ "@id": "dct:title"}
 ```
 
 
@@ -222,10 +219,7 @@ dct:abstract
 ```
 ###### Context
 ```json
-"abstract": {
-      "@id": "dct:abstract",
-      "@language": "en"
-    }
+"abstract": 	{"@id": "dct:abstract"}
 ```
 
 
@@ -259,10 +253,7 @@ dct:description
 ```
 ###### Context
 ```json
-"description": {
-      "@id": "dct:description",
-      "@language": "en"
-    }
+"description": 	{"@id": "dct:description"}
 ```
 
 
@@ -287,7 +278,7 @@ missing
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
 	  sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#Dataset$" ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#Dataset$" ;
     sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
 ```
@@ -299,7 +290,7 @@ missing
 ```
 ###### Context
 ```json
-"Dataset": "dataid:Dataset" 
+"Dataset": 	"dataid:Dataset" 
 ```
 
 
@@ -460,7 +451,22 @@ missing
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+  
+<#is-group-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the group URI of the associated group." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?group
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+        FILTER(!strstarts(str($this), str(?group)))
+			}
+			""" ;
+	] .
 ```
 
 ###### Example
@@ -469,10 +475,7 @@ missing
 ```
 ###### Context
 ```json
-"group": {
-      "@id": "dataid:group",
-      "@type": "@id"
-    }
+duplicate
 ```
 
 
@@ -490,11 +493,26 @@ missing
 	sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
-	sh:path dataid:group ;
+	sh:path dataid:artifact ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+  
+<#is-artifact-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?artifact
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+        FILTER(!strstarts(str($this), str(?artifact)))
+			}
+			""" ;
+	] .
 ```
 
 ###### Example
@@ -528,7 +546,22 @@ missing
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+  
+<#is-version-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?version
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($this), str(?version)))
+			}
+			""" ;
+	] .
 ```
 
 ###### Example
@@ -577,10 +610,7 @@ dct:hasVersion
 ```
 ###### Context
 ```json
-"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    }
+"hasVersion": 	{"@id": "dct:hasVersion"}
 ```
 
 
@@ -785,7 +815,7 @@ dcat:Distribution
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}/[a-zA-Z0-9]{1,}#[a-zA-Z0-9]{1,}(?<!#Dataset)$" ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#[a-zA-Z0-9\\-_\\.=]{3,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . 
 ```
@@ -797,7 +827,7 @@ dcat:Distribution
 ```
 ###### Context
 ```json
-"Part": "dataid:Part" 
+"Part": 	"dataid:Part" 
 ```
 
 
@@ -873,9 +903,6 @@ missing
 
 ### format
 
-TODO Jan:
-* check sh:pattern
-
 
 ###### OWL
 ```sql
@@ -889,7 +916,7 @@ missing
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
 	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; xsd:string as value  """@en ;
-	sh:pattern "^\." ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
 	sh:minCount 1 .
@@ -901,10 +928,7 @@ missing
 ```
 ###### Context
 ```json
-"format": {
-      "@id": "dataid:format",
-      "@type": "xsd:string"
-    }
+"format":		{"@id": "dataid:format"}
 ```
 
 
@@ -937,17 +961,11 @@ missing
 ```
 ###### Context
 ```json
-"formatExtension": {
-      "@id": "dataid:formatExtension",
-      "@type": "xsd:string"
-    }
+"formatExtension": 	{"@id": "dataid:formatExtension"}
 ```
 
 
 ### compression
-
-TODO Jan:
-* Check sh:pattern
 
 
 ###### OWL
@@ -961,7 +979,7 @@ missing
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
-	sh:pattern "^\." ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:path dataid:compression;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
@@ -974,10 +992,7 @@ missing
 ```
 ###### Context
 ```json
-"compression": {
-      "@id": "dataid:compression",
-      "@type": "xsd:string"
-    }
+"compression": 	{"@id": "dataid:compression"}
 ```
 
 
@@ -1029,6 +1044,43 @@ Note: Determining byteSize is not trivial for two reasons:
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
 
+###### OWL
+```sql
+# excerpt from https://www.w3.org/ns/dcat2.ttl
+dcat:byteSize
+	a owl:DatatypeProperty ;
+	rdfs:label "byte size"@en ;
+	rdfs:comment "The size of a distribution in bytes."@en ;
+	rdfs:domain dcat:Distribution ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	rdfs:range rdfs:Literal ;
+	skos:definition "The size of a distribution in bytes."@en ;
+	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
+```
+###### SHACL
+```sql
+<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  
+```
+
+###### Example
+```json
+"byteSize": "4439722",
+```
+###### Context
+```json
+"byteSize": {
+    "@id": "dcat:byteSize",
+    "@type": "xsd:decimal"
+  }
+```
 
 
 ### sha256sum
@@ -1059,10 +1111,7 @@ missing
 ```
 ###### Context
 ```json
-"sha256sum": {
-      "@id": "dataid:sha256sum",
-      "@type": "xsd:string"
-    }
+"sha256sum": 		{"@id": "dataid:sha256sum"}
 ```
 
 ### hasVersion (Distribution)
@@ -1098,10 +1147,7 @@ dct:hasVersion
 ```
 ###### Context
 ```json
-"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    }
+duplicate
 ```
 
 ### signature/tractate
@@ -1180,10 +1226,7 @@ missing
     "@id": "foaf:primaryTopic",
     "@type": "@id"
   },
-  "name": {
-    "@id": "foaf:name",
-    "@type": "xsd:string"
-  },
+  "name": {"@id": "foaf:name"},
   "account": {
     "@id": "foaf:account",
     "@type": "@id"
@@ -1192,20 +1235,9 @@ missing
     "@id": "foaf:img",
     "@type": "@id"
   },
-  "key": {
-    "@id": "cert:key"
-  },
-  "modulus": {
-    "@id": "cert:modulus"
-  },
-  "exponent": {
-    "@id": "cert:exponent"
-  },
-  "signature": {
-    "@id": "sec:signature",
-    "@type": "xsd:string"
-  },
-  "proof": {
-    "@id": "sec:proof"
-  }
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+  "signature":	{"@id": "sec:signature"},
+  "proof":	{"@id": "sec:proof"}
 ```

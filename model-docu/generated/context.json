@@ -12,29 +12,20 @@
 	"sec": "https://w3id.org/security#",
 
 
-"Group": "dataid:Group",
+"Group": 		"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
 	"@type": "@id"
 	},
 
-"title": {
-    "@id": "dct:title",
-    "@language": "en"
-  },
+"title": 		{ "@id": "dct:title"},
 
-"abstract": {
-      "@id": "dct:abstract",
-      "@language": "en"
-    },
+"abstract": 	{"@id": "dct:abstract"},
 
-"description": {
-      "@id": "dct:description",
-      "@language": "en"
-    },
+"description": 	{"@id": "dct:description"},
 
-"Dataset": "dataid:Dataset" ,
+"Dataset": 	"dataid:Dataset" ,
 
 "publisher": {
       "@id": "dct:publisher",
@@ -51,10 +42,7 @@
       "@type": "@id"
     },
 
-"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    },
+"hasVersion": 	{"@id": "dct:hasVersion"},
 
 "issued": {
       "@id": "dct:issued",
@@ -77,27 +65,18 @@
       "@id": "dcat:distribution"
 },
 
-"Part": "dataid:Part" ,
+"Part": 	"dataid:Part" ,
 
 "file": {
       "@id": "dataid:file",
       "@type": "@id"
     },
 
-"format": {
-      "@id": "dataid:format",
-      "@type": "xsd:string"
-    },
+"format":		{"@id": "dataid:format"},
 
-"formatExtension": {
-      "@id": "dataid:formatExtension",
-      "@type": "xsd:string"
-    },
+"formatExtension": 	{"@id": "dataid:formatExtension"},
 
-"compression": {
-      "@id": "dataid:compression",
-      "@type": "xsd:string"
-    },
+"compression": 	{"@id": "dataid:compression"},
 
 "downloadURL": {
       "@id": "dcat:downloadURL",
@@ -109,10 +88,7 @@
     "@type": "xsd:decimal"
   },
 
-"sha256sum": {
-      "@id": "dataid:sha256sum",
-      "@type": "xsd:string"
-    },
+"sha256sum": 		{"@id": "dataid:sha256sum"},
 
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
@@ -127,10 +103,7 @@
     "@id": "foaf:primaryTopic",
     "@type": "@id"
   },
-  "name": {
-    "@id": "foaf:name",
-    "@type": "xsd:string"
-  },
+  "name": {"@id": "foaf:name"},
   "account": {
     "@id": "foaf:account",
     "@type": "@id"
@@ -139,20 +112,9 @@
     "@id": "foaf:img",
     "@type": "@id"
   },
-  "key": {
-    "@id": "cert:key"
-  },
-  "modulus": {
-    "@id": "cert:modulus"
-  },
-  "exponent": {
-    "@id": "cert:exponent"
-  },
-  "signature": {
-    "@id": "sec:signature",
-    "@type": "xsd:string"
-  },
-  "proof": {
-    "@id": "sec:proof"
-  }
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+  "signature":	{"@id": "sec:signature"},
+  "proof":	{"@id": "sec:proof"}
 }

@@ -174,7 +174,7 @@ $shacl='<#group-exists>
 $example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 "@type": "Group",';
 
-$context='"Group": "dataid:Group",
+$context='"Group": 		"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
@@ -207,10 +207,7 @@ $shacl='<#en-title-group>
 
 $example='"title": "Ontologies used in Project X" ,';
 
-$context='"title": {
-    "@id": "dct:title",
-    "@language": "en"
-  }';
+$context='"title": 		{ "@id": "dct:title"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -237,10 +234,7 @@ $shacl='<#en-abstract-group>
 
 $example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
-$context='"abstract": {
-      "@id": "dct:abstract",
-      "@language": "en"
-    }';
+$context='"abstract": 	{"@id": "dct:abstract"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -267,10 +261,7 @@ $shacl='<#en-description-group>
 
 $example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
-$context='"description": {
-      "@id": "dct:description",
-      "@language": "en"
-    }';
+$context='"description": 	{"@id": "dct:description"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -302,7 +293,7 @@ $shacl='<#dataset-exists>
 $example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 "@type": "dataid:Dataset",';
 
-$context='"Dataset": "dataid:Dataset" ';
+$context='"Dataset": 	"dataid:Dataset" ';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -566,10 +557,7 @@ $shacl='<#has-hasVersion-dataset>
 
 $example='"hasVersion": "2021-12-06",';
 
-$context='"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    }';
+$context='"hasVersion": 	{"@id": "dct:hasVersion"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -754,7 +742,7 @@ $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VER
 "@type": "Part",';
 
 
-$context='"Part": "dataid:Part" ';
+$context='"Part": 	"dataid:Part" ';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -834,10 +822,7 @@ $shacl='<#has-format>
 
 $example='"format": "nt",';
 
-$context='"format": {
-      "@id": "dataid:format",
-      "@type": "xsd:string"
-    }';
+$context='"format":		{"@id": "dataid:format"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -863,10 +848,7 @@ $shacl='<#has-formatExtension>
 
 $example='"formatExtension": "nt",';
 
-$context='"formatExtension": {
-      "@id": "dataid:formatExtension",
-      "@type": "xsd:string"
-    }';
+$context='"formatExtension": 	{"@id": "dataid:formatExtension"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -890,10 +872,7 @@ $shacl='<#has-compression>
 
 $example='"compression": "none",';
 
-$context='"compression": {
-      "@id": "dataid:compression",
-      "@type": "xsd:string"
-    }';
+$context='"compression": 	{"@id": "dataid:compression"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -992,10 +971,7 @@ $shacl='<#has-sha256sum>
 
 $example='"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",';
 
-$context='"sha256sum": {
-      "@id": "dataid:sha256sum",
-      "@type": "xsd:string"
-    }';
+$context='"sha256sum": 		{"@id": "dataid:sha256sum"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -1090,10 +1066,7 @@ $context='"maker": {
     "@id": "foaf:primaryTopic",
     "@type": "@id"
   },
-  "name": {
-    "@id": "foaf:name",
-    "@type": "xsd:string"
-  },
+  "name": {"@id": "foaf:name"},
   "account": {
     "@id": "foaf:account",
     "@type": "@id"
@@ -1102,22 +1075,11 @@ $context='"maker": {
     "@id": "foaf:img",
     "@type": "@id"
   },
-  "key": {
-    "@id": "cert:key"
-  },
-  "modulus": {
-    "@id": "cert:modulus"
-  },
-  "exponent": {
-    "@id": "cert:exponent"
-  },
-  "signature": {
-    "@id": "sec:signature",
-    "@type": "xsd:string"
-  },
-  "proof": {
-    "@id": "sec:proof"
-  }';
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+  "signature":	{"@id": "sec:signature"},
+  "proof":	{"@id": "sec:proof"}';
 
 
 table($section,$owl,$shacl,$example,$context);
