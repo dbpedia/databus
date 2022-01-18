@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+modelPHP='./model-docu/model.php'
+modelMD='./model-docu/model.md'
+
+PHP=`which php`
+
+echo "Script executed from: ${PWD}"s
+echo "test2"
+
+#execute model php
+$PHP $modelPHP > $modelMD
+
+#add created model.md to commit
+git add $modelMD
