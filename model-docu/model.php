@@ -47,7 +47,7 @@ TODO all:
 
 TODO Fabian:
 * pre commit hooks for whole team
-asads
+
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
 UPDATE context and shacl are not complete / correct, will test once that is the case
