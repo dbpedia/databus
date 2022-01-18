@@ -46,7 +46,7 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-*test
+* pre commit hooks for whole team
 
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
