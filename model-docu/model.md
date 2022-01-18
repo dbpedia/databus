@@ -10,6 +10,7 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
+*test
 
 TODO Jan:
 * test the new shacl and context.jsonld, does it work?
@@ -452,7 +453,7 @@ missing
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-group-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -498,7 +499,7 @@ missing
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -547,7 +548,7 @@ missing
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-version-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
