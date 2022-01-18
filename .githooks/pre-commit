@@ -5,6 +5,8 @@ modelMD='./model-docu/model.md'
 
 PHP=`which php`
 
+echo "test"
+
 #execute model php
 $PHP $modelPHP > $modelMD
 
