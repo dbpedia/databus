@@ -124,8 +124,30 @@ TODO Sebastian:
 Group, Artifact, Version, CVS
 
 ## Versioning
-TODO Denis:
-explain alphanumeric order and give an example query and also give some patterns (e.g. day vs. datetime as in Archivo vs. using version numbers 01.01.10 )
+
+The Version ID must adhere to URI, maven and filename standards, so the characters `\/:"<>|?*` are forbidden. Furthermore it needs to be at least three characters long.
+
+Apart from this rule the VersionIDs can contain any alphanumeric character (regardless of the case) and any of these seperator chars: `-._`. 
+
+### Sortable Timestamps
+
+Although the definition of the version ID is quite free and left to the user, there is a good practise: Setting the version in the form of `YYYY.MM.DD-HHMMSS` or `YYYY.MM.DD-HH.MM.SS`(unfortunately [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) is forbidden since `:` can't be used) has multiple advantages:
+	
+* Sorting the version strings (alphanumerically) results in sorting from oldest to latest, which can be used in multiple ways in SPARQL. 
+	For example setting `ORDER BY ?version` at the end of the query is an easy way of sorting versions of data chronologically. 
+	Furthermore you can use a filter like `FILTER(str(?version) >"2020.01.01")` to find all versions deployed in 2020 and later. 
+	This [query](https://databus.dbpedia.org/yasgui/#query=PREFIX+dataid%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcore%23%3E%0APREFIX+dct%3A++++%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+dcat%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0APREFIX+db%3A+++++%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2F%3E%0APREFIX+rdf%3A++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0ASELECT+DISTINCT+%3Ffile+%3Fversion+WHERE+%7B%0A%09GRAPH+%3Fg+%7B%0A%09%09%3Fdataset+dcat%3Adistribution+%3Fdistribution+.%0A%09%09%3Fdistribution+dataid%3Afile+%3Ffile+.%0A%09%09%3Fdataset+dataid%3Aartifact+%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2Fdbpedia%2Ftext%2Flong-abstracts%3E+.%0A++++%09%3Fdataset+dct%3AhasVersion+%3Fversion+.%0A++++%09FILTER(str(%3Fversion)+%3E+%222021.01.01%22)%0A%09%7D%0A%7D+ORDER+BY+%3Fversion%0A&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fdatabus.dbpedia.org%2Frepo%2Fsparql&requestMethod=POST&tabTitle=Query+2&headers=%7B%7D&outputFormat=table) gives an example how this can be used on the Databus to find DBpedia long abstracts later then 2021 and then order them chronologically.
+* You can set it according to your deploy schedule, e.g. if you deploy monthly you can just use `YYYY.MM`. 
+	You can also switch the versioning (e.g. to `YYYY.MM.DD`) and the sorting still stays intact.
+
+### General Notes about Versioning
+
+* Generally on the Databus the User has the complete control over its data. So it is possible to resubmit versions with the same version again, for example in the case of link rot or migrated data. 
+Usually in this case the `dataid:version` stays the same but `dct:issued` should change to make it transparent that this dataset has been modified.
+* If you plan on further tinkering a specific version of a Dataset (e.g. the first one) it can be helpful to document that by appending `-snapshot` or `-dev` to the version ID to document this and make it clear for the users. 
+This also helps in searching such Datasets with SPARQL.
+
+
 
 ## Timestamping
 * if dct:issue is given on post, this will be used
