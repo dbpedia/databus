@@ -10,11 +10,13 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* pre commit hooks for whole team
+* pre commit hooks -> make it better
+* adjust SHACL tests for title, abstract, description
 
 TODO Jan:
-* test the new shacl and context.jsonld, does it work?
-UPDATE context and shacl are not complete / correct, will test once that is the case
+* add sh:pattern for dct:version
+* add 200 char limit for abstract
+* simplify URI Design (take from MArvin's thesis)
 
 TODO Johannes:
 * create the "missing" OWL statements for DataId
