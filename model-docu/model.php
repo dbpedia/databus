@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-/* 
+/*
 # Usage:
 sudo apt install php7.4-cli
 php model.php > model.md
@@ -48,6 +48,7 @@ TODO all:
 TODO Fabian:
 * pre commit hooks -> make it better
 * adjust SHACL tests for title, abstract, description
+adssad
 
 TODO Jan:
 * add sh:pattern for dct:version
@@ -835,7 +836,7 @@ table($section,$owl,$shacl,$example,$context);
 
 ### formatExtension
 
-TODO Marvin: describe why formatExtension is practical  
+TODO Marvin: describe why formatExtension is practical
 TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
 
 
