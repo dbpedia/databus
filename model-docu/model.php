@@ -48,7 +48,6 @@ TODO all:
 TODO Fabian:
 * pre commit hooks -> make it better
 * adjust SHACL tests for title, abstract, description
-adssad
 
 TODO Jan:
 * add sh:pattern for dct:version
