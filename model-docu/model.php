@@ -214,7 +214,7 @@ $shacl='<#title-group>
 		sh:severity sh:Violation ;
 		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
-	] . ':
+	] . ';
 
 $example='"title": "Ontologies used in Project X" ,';
 

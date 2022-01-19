@@ -20,10 +20,10 @@
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
 	] ;
 	sh:property [
-    sh:path [ sh:inversePath rdf:type ] ;
-	  sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#Dataset$" ;
-    sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+		sh:path [ sh:inversePath rdf:type ] ;
+		  sh:nodekind sh:IRI ;
+		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#Dataset$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
 
 <#has-title-dataid>
@@ -76,7 +76,7 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-group-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -102,7 +102,7 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -128,7 +128,7 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
-  
+
 <#is-version-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;

@@ -12,7 +12,7 @@
 	"sec": "https://w3id.org/security#",
 
 
-"Group": 		"dataid:Group",
+"Group": 	"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
