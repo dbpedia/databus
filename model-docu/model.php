@@ -51,8 +51,7 @@ TODO Fabian:
 
 TODO Jan:
 * add sh:pattern for dct:version
-* add 200 char limit for abstract
-* simplify URI Design (take from MArvin's thesis)
+* simplify URI Design (take from Marvin's thesis) - needs discussion
 
 TODO Johannes:
 * create the "missing" OWL statements for DataId
@@ -230,9 +229,10 @@ $shacl='<#en-abstract-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Group ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
@@ -342,9 +342,10 @@ $shacl='<#has-abstract-dataid>
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
