@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 
-modelPHP='./model-docu/model.php'
-modelMD='./model-docu/model.md'
-
+# select PHP
 PHP=`which php`
 
-#execute model php
-$PHP $modelPHP > $modelMD
+# move to correct dir
+cd ./model-docu/
 
-#add created model.md to commit
-git add $modelMD
+# execute model php
+$PHP model.php > model.md
+
+# add created model.md to commit
+git add model.md
+git add generated/

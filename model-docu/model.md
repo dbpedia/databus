@@ -10,10 +10,7 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* pre commit hooks -> make it better
 * adjust SHACL tests for title, abstract, description
-test
-
 
 TODO Jan:
 * add sh:pattern for dct:version
