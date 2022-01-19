@@ -50,15 +50,16 @@ class DatabusCollectionWrapper {
   }
 
 
-  static createNew(label, description) {
+  static createNew(label, description, source) {
 
     var data = {};
+    data.uuid = DatabusCollectionUtils.uuidv4();
     data.label = label;
     data.description = description;
     data.content = {};
-    data.content.groups = [];
-    data.content.customQueries = [];
-    data.uuid = DatabusCollectionUtils.uuidv4();
+    data.content.generatedQuery = {};
+    data.content.generatedQuery.root = new QueryNode(null, null);
+    data.content.generatedQuery.root.addChild(new QueryNode(source, null));
 
     return data;
   }

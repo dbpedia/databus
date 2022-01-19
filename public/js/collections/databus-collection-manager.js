@@ -212,6 +212,7 @@ class DatabusCollectionManager {
     collection.content.generatedQuery = {};
     collection.content.generatedQuery.root = new QueryNode(null, null);
 
+
     for (var g in collection.content.groups) {
       var group = collection.content.groups[g];
       var groupNode = new QueryNode(group.uri, 'dataid:group');
@@ -386,12 +387,11 @@ class DatabusCollectionManager {
       return;
     }
 
-    let collection = DatabusCollectionWrapper.createNew(label, description);
+    let collection = DatabusCollectionWrapper.createNew(label, description, DATABUS_RESOURCE_BASE_URL);
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
     this.setActive(collection.uuid);
-
-    this.saveLocally()
+    this.saveLocally();
 
     callback(true);
   }

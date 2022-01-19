@@ -2,6 +2,7 @@ var http = require('http');
 var { spawn } = require('child_process');
 var remoteDatabaseManager = require('../../common/remote-database-manager');
 var indexingArgs = ['-jar', '../search/lookup-indexer.jar', '-conf', '../search/app-config-index.yml'];
+var cors = require('cors');
 
 module.exports = function (router, protector) {
 
@@ -59,13 +60,15 @@ module.exports = function (router, protector) {
 
   rebuildAndRedeploy();
 
+  /*
   router.get('/system/search-force-rebuild', async function (req, res, next) {
 
     await rebuildAndRedeploy();
     res.status(200).send('Done');
   });
+*/
 
-  router.get('/system/search', function (req, res, next) {
+  router.get('/system/search', cors(), function (req, res, next) {
 
     var query = req.query.query;
     var typeName = req.query.typeName;
