@@ -180,17 +180,7 @@
             padding: 1em;
           }
 
-          .ce-content-group {
-            padding: 0;
-            border: 1px solid #dbdbdb;
-            background-color: white;
-          }
-
-          .ce-content-group-header {
-            padding: .5em;
-            display: flex;
-            align-items: center;
-          }
+         
 
 
 
@@ -479,11 +469,19 @@
                     <div style="flex: 1;">Groups & Artifacts</div>
                   </div>
 
-                  <div style="flex: 1; display: flex; justify-content: flex-end;font-weight: initial;">
-                    <div class="button" ng-click="goToTab('add')">
-                      <databus-icon style="margin-right:8px;" color="'black'" shape="'add'" size="18">
-                      </databus-icon>Add Groups & Artifacts
+                  <div style="flex: 1; display: flex; justify-content: flex-end;font-weight: initial; margin-right: 1em;">
+                    <div class="field has-addons">
+                      <p class="control">
+                        <input class="input" placeholder="Enter Databus URI..." style="min-width: 300px;" input="searchInput"
+                          ng-model="session.databusUriToAdd" filters="searchFilters">
+                      </p>
+                      <p class="control">
+                        <a ng-click="addDatabusToCollection()" class="button is-version">
+                          Add Databus
+                        </a>
+                      </p>
                     </div>
+
                   </div>
                 </div>
 

@@ -80,21 +80,15 @@ async function initialize(app, memoryStore) {
 
 
   // CORS setup
-  var originsWhitelist = [
-    'localhost:3000'
-  ];
+  //var originsWhitelist = [
+  //  'localhost:3000'
+  //];
 
-  var corsOptions = {
-    origin: function (origin, callback) {
-      var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
-      callback(null, isWhitelisted);
-    }
-  }
 
   app.set('trust proxy', 'loopback');
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(cors(corsOptions));
+  // app.use(cors(corsOptions));
 
   // add a sparql file loading extension (simply read the file as a string)
   require.extensions['.sparql'] = function (module, filename) {

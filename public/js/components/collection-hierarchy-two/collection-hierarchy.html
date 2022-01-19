@@ -1,9 +1,36 @@
 <style>
+  .ce-content-group {
+    padding: 0;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+
+    margin-left: 4em;
+    margin-top: 16px;
+  }
+
+  .ce-content-source {
+    padding: 0;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+  }
+
+  .ce-content-source-header {
+    padding: .5em;
+    display: flex;
+    align-items: center;
+  }
+
+  .ce-content-group-header {
+    padding: .5em;
+    display: flex;
+    align-items: center;
+  }
+
   .ce-content-artifact {
     padding: 0;
     border: 1px solid #dbdbdb;
     background-color: white;
-    margin-left: 4em;
+    margin-left: 8em;
     margin-top: 16px;
     position: relative;
   }
@@ -20,7 +47,7 @@
     border: 1px solid #dbdbdb;
     border-bottom: none;
     background-color: white;
-    margin-left: 8em;
+    margin-left: 12em;
     margin-top: 1em;
   }
 
@@ -101,8 +128,20 @@
   }
 </style>
 
+<div class="ce-content-source" ng-repeat-start="sourceNode in $ctrl.root.childNodes track by sourceNode.uri"
+  ng-init="sourceView = $ctrl.view.sources[sourceNode.uri]">
 
-<div class="ce-content-group" ng-repeat-start="groupNode in $ctrl.root.childNodes track by groupNode.uri"
+  <div class=" ce-content-source-header">
+    <type-tag width="48" height="48" style="margin-right:18px" type="'Databus'"></type-tag>
+    <div style="flex: 1;">{{ sourceNode.uri }}</div>
+    <databus-icon style="margin-right:16px; cursor: pointer;" shape="'add'" size="24"
+    on-click="$ctrl.onAddContent()"></databus-icon>
+    <databus-icon style="margin-right:16px;cursor: pointer;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
+      on-click="$ctrl.removeNode(sourceNode)"></databus-icon>
+  </div>
+</div>
+
+<div class="ce-content-group" ng-repeat-start="groupNode in sourceNode.childNodes track by groupNode.uri"
   ng-init="groupView = $ctrl.view.groups[groupNode.uri]">
 
   <div class=" ce-content-group-header">
@@ -305,4 +344,5 @@
     </div>
   </div>
 </div>
+<div ng-repeat-end style="margin-bottom: 1em;"></div>
 <div ng-repeat-end style="margin-bottom: 1em;"></div>

@@ -34,6 +34,9 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
   ctrl.addToCollection = function(result) {
 
+    var currentSource = ctrl.searchSource;
+    var sourceNode = QueryNode.findChildByUri(ctrl.root, currentSource);
+
     if(result.inCollection) {
       QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
       // ctrl.onComponentAdded();
@@ -41,9 +44,9 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     }
     else {
       if(result.typeName[0].value == 'Group') {
-
         let node = new QueryNode(result.resource[0].value, 'dataid:group');
-        ctrl.root.addChild(node);
+
+        sourceNode.addChild(node);
         ctrl.onComponentAdded();
       }
 
@@ -55,7 +58,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
         if (groupNode == null) {
           groupNode = new QueryNode(groupUri, 'dataid:group');
-          ctrl.root.addChild(groupNode);
+          sourceNode.addChild(groupNode);
         }
 
         let node = new QueryNode(artifactUri, 'dataid:artifact');
@@ -73,9 +76,6 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     // }
 
     for(let r in ctrl.results) {
-
-
-
       ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
     }
 
@@ -105,7 +105,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
       $http({
         method: 'GET',
-        url: '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
+        url: ctrl.searchSource + '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
           + ctrl.searchInput,
       }).then(function successCallback(response) {
 
