@@ -196,15 +196,25 @@ $owl='dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#en-title-group>
-	a sh:PropertyShape ;
+$shacl='<#title-group>
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en. Each language MUST only occur once "@en ;
-	sh:path dct:title ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+	sh:property [
+		sh:path dct:title ;
+		sh:minCount 1 ;
+		sh:maxCount 1;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:datatype xsd:string ;
+		] ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . ':
 
 $example='"title": "Ontologies used in Project X" ,';
 
@@ -284,10 +294,10 @@ $shacl='<#dataset-exists>
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
 	] ;
 	sh:property [
-    sh:path [ sh:inversePath rdf:type ] ;
-	  sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#Dataset$" ;
-    sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+		sh:path [ sh:inversePath rdf:type ] ;
+		  sh:nodekind sh:IRI ;
+		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#Dataset$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . ';
 
 
