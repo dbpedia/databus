@@ -16,5 +16,4 @@ redeploy-remote.sh
 redeploy.sh
 start_azure.sh
 examples/example-metadata.jsonld
-model-docu/generated
 model-docu/myold_files
