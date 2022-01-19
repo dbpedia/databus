@@ -100,12 +100,12 @@ function table ($section, $owl, $shacl, $example, $context){
 
 function renderrdf($owl,$shacl){
 	return "
-###### OWL
 ```sql
+#OWL
 $owl
 ```
-###### SHACL
 ```sql
+# SHACL
 $shacl
 ```
 ";
@@ -113,12 +113,15 @@ $shacl
 
 function renderjson($example,$context){
 	return "
-###### Example
 ```json
+Example:
+
 $example
 ```
-###### Context
+
 ```json
+Context:
+
 $context
 ```
 ";

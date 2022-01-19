@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-/*
+/* 
 # Usage:
 sudo apt install php7.4-cli
 php model.php > model.md
@@ -37,7 +37,7 @@ init();
 ?>
 
 
-TODO Design decisions:
+TODO Design decisions  :
 *  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
 * impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
 * formatExtension in or out?
@@ -46,10 +46,12 @@ TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
+* pre commit hooks -> make it better
+* adjust SHACL tests for title, abstract, description
 
 TODO Jan:
-* test the new shacl and context.jsonld, does it work?
-UPDATE context and shacl are not complete / correct, will test once that is the case
+* add sh:pattern for dct:version
+* simplify URI Design (take from Marvin's thesis) - needs discussion
 
 TODO Johannes:
 * create the "missing" OWL statements for DataId
@@ -60,50 +62,41 @@ Databus runs on an RDF model made from DCAT, DCT and DataId properties. Addition
 
 ## URI Design
 
-The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
-
-The following rules apply to the identifiers of the following Databus concepts:
-* Accounts *(foaf:account)*
-* Groups *(dataid:group / dataid:Group)*
-* Artifacts *(dataid:artifact / dataid:Artifact)*
-* Versions *(dataid:version / dataid:Version)*
-* Datasets *(dataid:Dataset)*
-* Distributions *(dcat:distrubution)*
-* Files *(dataid:file)*
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus. All URI rules are enforced by the SHACL validation using these [shapes](https://github.com/dbpedia/databus/blob/master/model-docu/generated/shacl/dataid.shacl).
 
 ### General Rules
 
 * The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
-* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+* The first path segment of *ALL* URIs has to match the namespace of the publishing user (example namespace: `john`)
 * A user namespace (e.g. `john`) must have at least 4 characters.
 
-### Account URI Rules
+### Account URI Rules *(foaf:account)*
 
 * An account URI has exactly one path segment
 
 *Example:* https://databus.example.org/john
 
-### Group URI Rules
+### Group URI Rules *(dataid:Group)*
 
 * A group URI has exactly two path segments
 
 *Example:* https://databus.example.org/john/animals
 
-### Artifact URI Rules
+### Artifact URI Rules *(dataid:Artifact)*
 
 * An artifact URI has exactly three path segments.
 * An artifact URI contains the URI of its associated group
 
 *Example:* https://databus.example.org/john/animals/cats
 
-### Version URI Rules
+### Version URI Rules *(dataid:Version)*
 
 * A version URI has exactly four path segments
 * A version URI contains the URI of its associated artifact
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11
 
-### Dataset URI Rules
+### Dataset URI Rules *(dataid:Dataset)*
 
 * A dataset URI has exactly four path segments
 * A dataset URI contains the URI of its associated version
@@ -111,7 +104,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
 
-### Part URI Rules
+### Part URI Rules *(dataid:Part)*
 
 * A part URI has exactly four path segments
 * A part URI contains the URI of its associated version
@@ -119,7 +112,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
 
-### File URI Rules
+### File URI Rules (dataid:file)
 
 * A file URI has exactly five path segments
 * A file URI contains the URI of its associated version
@@ -174,7 +167,7 @@ $shacl='<#group-exists>
 $example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 "@type": "Group",';
 
-$context='"Group": "dataid:Group",
+$context='"Group": 	"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
@@ -195,22 +188,29 @@ $owl='dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#en-title-group>
-	a sh:PropertyShape ;
+$shacl='<#title-group>
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en. Each language MUST only occur once "@en ;
-	sh:path dct:title ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+	sh:property [
+		sh:path dct:title ;
+		sh:minCount 1 ;
+		sh:maxCount 1;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+		sh:datatype xsd:string ;
+		] ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . ';
 
 $example='"title": "Ontologies used in Project X" ,';
 
-$context='"title": {
-    "@id": "dct:title",
-    "@language": "en"
-  }';
+$context='"title": 		{ "@id": "dct:title"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -229,18 +229,16 @@ $shacl='<#en-abstract-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Group ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
 $example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
-$context='"abstract": {
-      "@id": "dct:abstract",
-      "@language": "en"
-    }';
+$context='"abstract": 	{"@id": "dct:abstract"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -267,10 +265,7 @@ $shacl='<#en-description-group>
 
 $example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
-$context='"description": {
-      "@id": "dct:description",
-      "@language": "en"
-    }';
+$context='"description": 	{"@id": "dct:description"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -292,17 +287,17 @@ $shacl='<#dataset-exists>
 	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
 	] ;
 	sh:property [
-    sh:path [ sh:inversePath rdf:type ] ;
-	  sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#Dataset$" ;
-    sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+		sh:path [ sh:inversePath rdf:type ] ;
+		  sh:nodekind sh:IRI ;
+		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#Dataset$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . ';
 
 
 $example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 "@type": "dataid:Dataset",';
 
-$context='"Dataset": "dataid:Dataset" ';
+$context='"Dataset": 	"dataid:Dataset" ';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -347,9 +342,10 @@ $shacl='<#has-abstract-dataid>
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .';
 
@@ -434,7 +430,7 @@ $shacl='<#has-group>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
-  
+
 <#is-group-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -473,7 +469,7 @@ $shacl='<#has-artifact>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
-  
+
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -515,7 +511,7 @@ $shacl='<#has-version>
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
   sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" .
-  
+
 <#is-version-uri-correct>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -566,10 +562,7 @@ $shacl='<#has-hasVersion-dataset>
 
 $example='"hasVersion": "2021-12-06",';
 
-$context='"hasVersion": {
-      "@id": "dct:hasVersion",
-      "@type": "xsd:string"
-    }';
+$context='"hasVersion": 	{"@id": "dct:hasVersion"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -754,7 +747,7 @@ $example='"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VER
 "@type": "Part",';
 
 
-$context='"Part": "dataid:Part" ';
+$context='"Part": 	"dataid:Part" ';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -834,10 +827,7 @@ $shacl='<#has-format>
 
 $example='"format": "nt",';
 
-$context='"format": {
-      "@id": "dataid:format",
-      "@type": "xsd:string"
-    }';
+$context='"format":		{"@id": "dataid:format"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -863,10 +853,7 @@ $shacl='<#has-formatExtension>
 
 $example='"formatExtension": "nt",';
 
-$context='"formatExtension": {
-      "@id": "dataid:formatExtension",
-      "@type": "xsd:string"
-    }';
+$context='"formatExtension": 	{"@id": "dataid:formatExtension"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -890,10 +877,7 @@ $shacl='<#has-compression>
 
 $example='"compression": "none",';
 
-$context='"compression": {
-      "@id": "dataid:compression",
-      "@type": "xsd:string"
-    }';
+$context='"compression": 	{"@id": "dataid:compression"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -992,10 +976,7 @@ $shacl='<#has-sha256sum>
 
 $example='"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",';
 
-$context='"sha256sum": {
-      "@id": "dataid:sha256sum",
-      "@type": "xsd:string"
-    }';
+$context='"sha256sum": 		{"@id": "dataid:sha256sum"}';
 
 table($section,$owl,$shacl,$example,$context);
 ?>
@@ -1090,10 +1071,7 @@ $context='"maker": {
     "@id": "foaf:primaryTopic",
     "@type": "@id"
   },
-  "name": {
-    "@id": "foaf:name",
-    "@type": "xsd:string"
-  },
+  "name": {"@id": "foaf:name"},
   "account": {
     "@id": "foaf:account",
     "@type": "@id"
@@ -1102,22 +1080,11 @@ $context='"maker": {
     "@id": "foaf:img",
     "@type": "@id"
   },
-  "key": {
-    "@id": "cert:key"
-  },
-  "modulus": {
-    "@id": "cert:modulus"
-  },
-  "exponent": {
-    "@id": "cert:exponent"
-  },
-  "signature": {
-    "@id": "sec:signature",
-    "@type": "xsd:string"
-  },
-  "proof": {
-    "@id": "sec:proof"
-  }';
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+  "signature":	{"@id": "sec:signature"},
+  "proof":	{"@id": "sec:proof"}';
 
 
 table($section,$owl,$shacl,$example,$context);
