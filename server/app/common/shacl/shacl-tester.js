@@ -56,14 +56,14 @@ async function validateJsonld(rdf, shaclFile) {
   try {
 
     var options = {
-      formData : {
-        graph : JSON.stringify(rdf),
-        shacl : fs.createReadStream(path.resolve(__dirname, shaclFile))
+      formData: {
+        graph: JSON.stringify(rdf),
+        shacl: fs.createReadStream(path.resolve(__dirname, shaclFile))
       },
       method: 'POST',
-      uri : `${databaseUri}/shacl/validate`,
+      uri: `${databaseUri}/shacl/validate`,
       headers: {
-        'Content-Type' : 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       }
     };
 
@@ -106,6 +106,11 @@ async function validateJsonld(rdf, shaclFile) {
     return { isSuccess: true };
 */
   } catch (err) {
+
+    if (err.response == undefined) {
+      console.log(err);
+      return { isSuccess: false, message: err };
+    }
 
     console.log(err.response.body);
     //console.log('Error during dataid shacl test ' + err);
