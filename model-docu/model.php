@@ -37,7 +37,7 @@ init();
 ?>
 
 
-TODO Design decisions :
+TODO Design decisions  :
 *  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
 * impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
 * formatExtension in or out?
