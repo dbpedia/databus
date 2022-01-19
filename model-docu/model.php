@@ -175,7 +175,7 @@ $shacl='<#group-exists>
 $example='"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 "@type": "Group",';
 
-$context='"Group": 		"dataid:Group",
+$context='"Group": 	"dataid:Group",
 
 "group": {
 	"@id": "dataid:group",
