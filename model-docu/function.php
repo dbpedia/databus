@@ -28,9 +28,8 @@ function headerFooter($contextFile, $shaclDir){
     $contextStr = substr_replace(trim($contextStr) ,"",-1);
 
     $contextPrefix ='{
-	"@language": "en",
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
-    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+  "dcv": "http://dataid.dbpedia.org/ns/cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 	"dct": "http://purl.org/dc/terms/",
 	"dcat": "http://www.w3.org/ns/dcat#",

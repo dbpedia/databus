@@ -100,7 +100,7 @@ async function loadDefaultContext() {
 
     console.log(`Loading default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}...`);
 
-    /*
+    
     // Set file path
     var contextFile = __dirname + '/common/context.json';
 
@@ -116,7 +116,7 @@ async function loadDefaultContext() {
     var response = await rp(contextOptions);
     fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
 
-    */
+    
   } catch (err) {
     console.log(err);
     console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);

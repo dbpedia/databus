@@ -90,6 +90,7 @@ module.exports = async function publishDataid(account, data, notify) {
     // Fetch the proof graph
     var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.SEC_PROOF);
     var proofGraph = JsonldUtils.getGraphById(expandedGraph, proofId);
+    var generatingSignature = false;
 
     // Not setting the proof is allowed!
     if (proofGraph == undefined) {
@@ -103,7 +104,8 @@ module.exports = async function publishDataid(account, data, notify) {
       }
 
       notify(`> Generating signature.\n`);
-      console.log('Internal account detected. Generating proof...');
+      generatingSignature = true;
+
       proofGraph = signer.createProof(expandedGraph);
       datasetGraph[DatabusUris.PROOF] = [proofGraph];
     }
@@ -120,7 +122,14 @@ module.exports = async function publishDataid(account, data, notify) {
     var validationSuccess = await signer.validate(signer.canonicalize(expandedGraph), proofGraph);
 
     if (!validationSuccess) {
-      return { code: 400, message: 'The provided signature is invalid\n' };
+
+      if(generatingSignature) {
+        notify('Failed to generate signature. Please contact an administrator.\n');
+        return { code: 500, message: null };
+      } else {
+        notify('The provided signature was invalid.\n');
+        return { code: 400, message: null };
+      }
     }
 
     notify(`> Signature validation successful.\n`);

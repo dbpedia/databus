@@ -1,7 +1,6 @@
 {
-	"@language": "en",
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
-    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+  "dcv": "http://dataid.dbpedia.org/ns/cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 	"dct": "http://purl.org/dc/terms/",
 	"dcat": "http://www.w3.org/ns/dcat#",
@@ -19,11 +18,11 @@
 	"@type": "@id"
 	},
 
-"title": 		{ "@id": "dct:title"},
+"title": 		{ "@id": "dct:title", "@language" : "en" },
 
-"abstract": 	{"@id": "dct:abstract"},
+"abstract": 	{ "@id": "dct:abstract", "@language" : "en" },
 
-"description": 	{"@id": "dct:description"},
+"description": 	{ "@id": "dct:description", "@language" : "en" },
 
 "Dataset": 	"dataid:Dataset" ,
 
