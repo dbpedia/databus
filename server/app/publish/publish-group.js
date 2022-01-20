@@ -23,7 +23,7 @@ module.exports = async function publishGroup(account, data, notify) {
     if (triples.length == 0) {
 
     notify(`Construct query did not yield any triples. Nothing to publish.\n`);
-      return { code: 200, message: null };
+      return { code: 100, message: null };
     }
 
     var tripleCount = triples.split(/\r\n|\r|\n/).length
