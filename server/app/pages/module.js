@@ -12,7 +12,7 @@ module.exports = function (router, protector) {
   var cache = new LayeredCache(15, 6000);
 
   /* GET home page. */
-  router.get('/', protector.checkSso(), async function (req, res, next) {
+  router.get('/', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     var indexCacheKey = 'index';
 

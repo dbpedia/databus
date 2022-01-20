@@ -234,7 +234,7 @@
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; xsd:string as value  """@en ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ;
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;

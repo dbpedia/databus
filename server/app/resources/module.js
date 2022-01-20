@@ -1,14 +1,19 @@
 const Constants = require('../common/constants.js');
 const ServerUtils = require('../common/utils/server-utils.js');
 
-var request = require('request');
-var database = require('../common/remote-database-manager');
+var request = require('request');var database = require('../common/remote-database-manager');
 
 
 module.exports = function (router, protector) {
 
   require('./modules/collections')(router, protector);
   require('./modules/accounts')(router, protector);
+
+
+  router.get('/', ServerUtils.NOT_HTML_ACCEPTED, async function(req, res, next) {
+    var manifest = require('../../manifest.ttl');
+    res.status(200).send(`${manifest}\n`);
+  });
 
   router.get('/:account/:group', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 

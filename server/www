@@ -18,6 +18,10 @@ var userTablePath = __dirname + '/users/namespaces.csv';
  */
 
 
+
+
+initializeExtensions();
+
 if (cluster.isMaster) {
   masterProcess();
 } else {
@@ -155,3 +159,19 @@ function onError(error) {
   }
 }
 
+function initializeExtensions() {
+  // add a sparql file loading extension (simply read the file as a string)
+  require.extensions['.sparql'] = function (module, filename) {
+   module.exports = fs.readFileSync(filename, 'utf8');
+ };
+
+ require.extensions['.md'] = function (module, filename) {
+   module.exports = fs.readFileSync(filename, 'utf8');
+ };
+ require.extensions['.ttl'] = function (module, filename) {
+   module.exports = fs.readFileSync(filename, 'utf8');
+ };
+ require.extensions['.html'] = function (module, filename) {
+   module.exports = fs.readFileSync(filename, 'utf8');
+ };
+}
