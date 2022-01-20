@@ -1,5 +1,0 @@
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-"@type": "Group",
-"title": "Ontologies used in Project X" ,
-"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
-"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",

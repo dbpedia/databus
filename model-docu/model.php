@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-/* 
+/*
 # Usage:
 sudo apt install php7.4-cli
 php model.php > model.md
@@ -38,15 +38,14 @@ init();
 
 
 TODO Design decisions  :
-*  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
-* impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
-* formatExtension in or out?
+* RESOLVED language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
+* RESOLVED impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
+* formatExtension in or out?  New Issue, very similar to format
 
 TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* pre commit hooks -> make it better
 * adjust SHACL tests for title, abstract, description
 
 TODO Jan:
@@ -856,7 +855,7 @@ $shacl='<#has-format>
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; xsd:string as value  """@en ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; 
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
@@ -872,8 +871,9 @@ table($section,$owl,$shacl,$example,$context);
 
 ### formatExtension
 
-TODO all:
-* is this needed? would it help to query this?
+TODO Marvin: describe why formatExtension is practical
+TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
+
 
 <?php
 $owl='missing';

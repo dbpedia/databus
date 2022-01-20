@@ -1,5 +1,6 @@
 var sparql = require('../common/queries/sparql');
 var request = require('request');
+var cors = require('cors');
 
 const ServerUtils = require('../common/utils/server-utils.js');
 const DatabusCache = require('../common/databus-cache');
@@ -11,7 +12,7 @@ module.exports = function (router, protector) {
   var cache = new LayeredCache(15, 6000);
 
   /* GET home page. */
-  router.get('/', protector.checkSso(), async function (req, res, next) {
+  router.get('/', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     var indexCacheKey = 'index';
 
@@ -56,12 +57,12 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/sparql', function (req, res) {
+  router.get('/system/sparql', cors(), function (req, res) {
     var url = `${process.env.DATABUS_DATABASE_URL}${req.originalUrl.replace('/system', '')}`;
     request(url).pipe(res);
   });
 
-  router.post('/system/sparql', async function (req, res) {
+  router.post('/system/sparql', cors(), async function (req, res) {
 
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var query = req.body.query;

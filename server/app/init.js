@@ -9,9 +9,10 @@ const crypto = require("crypto");
 const Constants = require('./common/constants.js');
 
 
+
 function writeClientVariables() {
 
-  console.log(`Writing client environment variables`);
+  console.log(`Writing client environment variables...`);
 
   // Write environment variables to client constants
   var constantsFile = './../public/js/utils/databus-constants.js';
@@ -27,6 +28,28 @@ function writeClientVariables() {
     `DATABUS_DEFAULT_CONTEXT_URL = "${Constants.DATABUS_DEFAULT_CONTEXT_URL}";`);
 
   fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
+}
+
+function writeManifest() {
+
+  console.log(`Writing manifest...`);
+
+  // Write environment variables to client constants
+  var manifestFile = './manifest.ttl';
+
+  var manifest = require('./manifest-template.ttl');
+
+  var placeholderMappings = {
+    DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL
+  };
+
+  for (var placeholder in placeholderMappings) {
+    var re = new RegExp('%' + placeholder + '%', "g");
+    manifest = manifest.replace(re, placeholderMappings[placeholder]);
+  }
+
+  fs.writeFileSync(manifestFile, manifest, ['utf8']);
+
 }
 
 async function minifyClientJS() {
@@ -98,7 +121,7 @@ async function loadDefaultContext() {
     console.log(err);
     console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);
   }
-  
+
 
 }
 
@@ -107,9 +130,10 @@ module.exports = async function () {
   console.log(`Initializing...`);
   await loadDefaultContext();
   writeClientVariables();
+  writeManifest();
   await minifyClientJS();
   tryCreateKeyPair();
   console.log(`Done initializing.`);
   console.log(`================================================`);
- 
+
 }

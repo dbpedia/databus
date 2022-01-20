@@ -40,9 +40,10 @@
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .
 
@@ -234,7 +235,7 @@
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message """A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; xsd:string as value  """@en ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;

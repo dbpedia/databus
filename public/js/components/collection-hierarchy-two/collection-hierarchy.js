@@ -91,41 +91,45 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     ctrl.view = {};
     ctrl.view.groups = {};
     ctrl.view.artifacts = {};
+    ctrl.view.sources = {};
 
-    for (var g in ctrl.root.childNodes) {
+    for (var s in ctrl.root.childNodes) {
 
+      var sourceNode = ctrl.root.childNodes[s];
+      sourceNode.expanded = true;
 
-      var groupNode = ctrl.root.childNodes[g];
-      groupNode.expanded = true;
+      for (var g in sourceNode.childNodes) {
 
+        var groupNode = sourceNode.childNodes[g];
+        groupNode.expanded = true;
 
-      ctrl.view.groups[groupNode.uri] = {};
+        ctrl.view.groups[groupNode.uri] = {};
 
+        ctrl.$http.get('/system/pages/artifacts-by-group',
+          { params: { uri: groupNode.uri } })
+          .then(function (result) {
+            ctrl.view.groups[groupNode.uri].artifacts = result.data;
+          });
 
-      ctrl.$http.get('/system/pages/artifacts-by-group',
-        { params: { uri: groupNode.uri } })
-        .then(function (result) {
-          ctrl.view.groups[groupNode.uri].artifacts = result.data;
-        });
+        ctrl.query(groupNode);
 
-      ctrl.query(groupNode);
+        for (var a in groupNode.childNodes) {
 
-      for (var a in groupNode.childNodes) {
+          var artifactNode = groupNode.childNodes[a];
 
-        var artifactNode = groupNode.childNodes[a];
+          ctrl.view.artifacts[artifactNode.uri] = {};
 
-        ctrl.view.artifacts[artifactNode.uri] = {};
+          ctrl.$http.get('/system/pages/facets', {
+            params: { uri: artifactNode.uri, type: 'artifact' }
+          }).then(function (result) {
 
-        ctrl.$http.get('/system/pages/facets', {
-          params: { uri: artifactNode.uri, type: 'artifact' }
-        }).then(function (result) {
-
-          result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-          var artifactUri = result.config.params.uri;
-          var groupUri = DatabusUtils.navigateUp(artifactUri);
-          ctrl.view.artifacts[artifactUri].facets = result.data;
-          ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
-        });
+            result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+            var artifactUri = result.config.params.uri;
+            var groupUri = DatabusUtils.navigateUp(artifactUri);
+            ctrl.view.artifacts[artifactUri].facets = result.data;
+            ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
+          });
+        }
       }
     }
   }

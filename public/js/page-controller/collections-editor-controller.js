@@ -5,42 +5,42 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.accountName = data.auth.info.accountName;
   $scope.location = $location;
 
-  $scope.$watch("location.hash()", function(newVal, oldVal) {
+  $scope.$watch("location.hash()", function (newVal, oldVal) {
 
-    if($scope.session == undefined) {
+    if ($scope.session == undefined) {
       return;
     }
 
-    if(newVal == 'import') {
+    if (newVal == 'import') {
       $scope.session.activeTab = 5;
       return;
     }
 
-    if(newVal == 'add') {
+    if (newVal == 'add') {
       $scope.session.activeTab = 4;
       return;
     }
 
-    if(newVal == 'query') {
+    if (newVal == 'query') {
       $scope.session.activeTab = 3;
       return;
     }
-  
-    if(newVal == 'preview') {
+
+    if (newVal == 'preview') {
       $scope.session.activeTab = 2;
       return;
     }
 
-    if(newVal == 'edit') {
+    if (newVal == 'edit') {
       $scope.session.activeTab = 1;
       return;
     }
 
     $scope.session.activeTab = 0;
-    
+
   }, true);
 
-  $scope.goToTab = function(value) {
+  $scope.goToTab = function (value) {
     $location.hash(value);
     window.scrollTo(0, 0);
   }
@@ -49,7 +49,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
   }
 
-  $scope.createAccount = function() {
+  $scope.createAccount = function () {
     window.location = '/system/account';
   }
 
@@ -64,8 +64,8 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     return;
   }
 
-  $scope.getCollectionJson = function() {
-    var copy =  DatabusCollectionUtils.createCleanCopy($scope.collectionManager.activeCollection);
+  $scope.getCollectionJson = function () {
+    var copy = DatabusCollectionUtils.createCleanCopy($scope.collectionManager.activeCollection);
     delete copy.uuid;
 
     return copy;
@@ -81,26 +81,37 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     $scope.session = {};
     $scope.session.activeTab = 0;
     $scope.session.showDescription = true;
-    $scope.session.showGroups = collectionManager.activeCollection.content.generatedQuery.root.childNodes.length > 0;
-    $scope.session.showQueries = collectionManager.activeCollection.content.customQueries.length > 0;
+
+    if (collectionManager.activeCollection.content.generatedQuery != undefined) {
+      $scope.session.showGroups = collectionManager.activeCollection.content.generatedQuery.root.childNodes.length > 0;
+    }
+
+    if (collectionManager.activeCollection.content.customQueries != undefined) {
+      $scope.session.showQueries = collectionManager.activeCollection.content.customQueries.length > 0;
+    }
   }
 
-  if (collectionManager.activeCollection.content.generatedQuery.root.childNodes.length == 0) {
-    $scope.session.showGroups = false;
+
+  if (collectionManager.activeCollection.content.generatedQuery != undefined) {
+    if (collectionManager.activeCollection.content.generatedQuery.root.childNodes.length == 0) {
+      $scope.session.showGroups = false;
+    }
   }
 
-  if (collectionManager.activeCollection.content.customQueries.length == 0) {
-    $scope.session.showQueries = false;
+  if (collectionManager.activeCollection.content.customQueries != undefined) {
+    if (collectionManager.activeCollection.content.customQueries.length == 0) {
+      $scope.session.showQueries = false;
+    }
   }
 
   $scope.$watch('statusCode', function (newVal, oldVal) {
 
-    if($scope.timer != null) {
+    if ($scope.timer != null) {
       $timeout.cancel($scope.timer);
     }
 
-    if($scope.statusCode != 0) {
-      $scope.timer = $timeout(function() {
+    if ($scope.statusCode != 0) {
+      $scope.timer = $timeout(function () {
         $scope.statusCode = 0;
       }, 2000);
     }
@@ -193,6 +204,16 @@ SELECT DISTINCT ?file WHERE {\n\
 
     }
 
+  }
+
+  $scope.addDatabusToCollection = function() {
+
+    if($scope.collectionManager.activeCollection == undefined) {
+      return;
+    }
+
+    var rootNode = QueryNode.createFrom($scope.collectionManager.activeCollection.content.generatedQuery.root);
+    rootNode.addChild(new QueryNode($scope.session.databusUriToAdd, null));
   }
 
   $scope.doStuffWhenInitialized = function () {

@@ -104,7 +104,7 @@ class ServerUtils {
 
   static RDF_ACCEPTED(req, res, next) {
     var acceptHeader = req.get('Accept');
-    return acceptHeader.includes('turtle') ? next() : next("route");
+    return acceptHeader.includes('rdf+turtle') ? next() : next("route");
   }
 
   static SPARQL_ACCEPTED(req, res, next) {

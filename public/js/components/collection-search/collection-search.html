@@ -2,6 +2,16 @@
 
   <div class="field" style="display: flex;">
     <div class="control" style="flex:1;">
+      
+      <autofill-dropdown style="margin-right: 0.5em;" placeholder="Enter facet..."
+      input="artifactView.addFilterFacetInput" on-change="$ctrl.onAddFilterFacetInputChanged(artifactView)"
+      values="$ctrl.getFacetLabels(artifactView)">
+    </autofill-dropdown>
+
+
+
+      <input class="input" type="text" ng-model="$ctrl.searchSource"
+        ng-change="$ctrl.search()" placeholder="Databus URI">
       <input class="input" focus-me="$ctrl.autoFocus" type="text" ng-model="$ctrl.searchInput"
         ng-change="$ctrl.search()" placeholder="Search the Databus...">
     </div>

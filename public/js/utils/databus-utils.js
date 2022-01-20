@@ -104,6 +104,18 @@ class DatabusUtils {
     return result;
   }
 
+  static isValidHttpUrl(string) {
+    let url;
+    
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;  
+    }
+  
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
 
   static navigateUp(uri, steps) {
 

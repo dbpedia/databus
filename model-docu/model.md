@@ -2,21 +2,19 @@
 	
 
 TODO Design decisions  :
-*  language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
-* impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
-* formatExtension in or out?
+* RESOLVED language tag vs. xsd:string vs. nothing in title,abstract,description https://github.com/dbpedia/databus/issues/6
+* RESOLVED impose a limit on dct:abstract? 200 chars? https://github.com/dbpedia/databus/issues/7
+* formatExtension in or out?  New Issue, very similar to format
 
 TODO all:
 * review this document and write usefull things in the individual sections, e.g. cool queries, things you noted while using the databus and also pitfalls or gaps.
 
 TODO Fabian:
-* pre commit hooks -> make it better
 * adjust SHACL tests for title, abstract, description
 
 TODO Jan:
 * add sh:pattern for dct:version
-* add 200 char limit for abstract
-* simplify URI Design (take from MArvin's thesis)
+* simplify URI Design (take from Marvin's thesis) - needs discussion
 
 TODO Johannes:
 * create the "missing" OWL statements for DataId
@@ -27,50 +25,41 @@ Databus runs on an RDF model made from DCAT, DCT and DataId properties. Addition
 
 ## URI Design
 
-The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
-
-The following rules apply to the identifiers of the following Databus concepts:
-* Accounts *(foaf:account)*
-* Groups *(dataid:group / dataid:Group)*
-* Artifacts *(dataid:artifact / dataid:Artifact)*
-* Versions *(dataid:version / dataid:Version)*
-* Datasets *(dataid:Dataset)*
-* Distributions *(dcat:distrubution)*
-* Files *(dataid:file)*
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus. All URI rules are enforced by the SHACL validation using these [shapes](https://github.com/dbpedia/databus/blob/master/model-docu/generated/shacl/dataid.shacl).
 
 ### General Rules
 
 * The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
-* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+* The first path segment of *ALL* URIs has to match the namespace of the publishing user (example namespace: `john`)
 * A user namespace (e.g. `john`) must have at least 4 characters.
 
-### Account URI Rules
+### Account URI Rules *(foaf:account)*
 
 * An account URI has exactly one path segment
 
 *Example:* https://databus.example.org/john
 
-### Group URI Rules
+### Group URI Rules *(dataid:Group)*
 
 * A group URI has exactly two path segments
 
 *Example:* https://databus.example.org/john/animals
 
-### Artifact URI Rules
+### Artifact URI Rules *(dataid:Artifact)*
 
 * An artifact URI has exactly three path segments.
 * An artifact URI contains the URI of its associated group
 
 *Example:* https://databus.example.org/john/animals/cats
 
-### Version URI Rules
+### Version URI Rules *(dataid:Version)*
 
 * A version URI has exactly four path segments
 * A version URI contains the URI of its associated artifact
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11
 
-### Dataset URI Rules
+### Dataset URI Rules *(dataid:Dataset)*
 
 * A dataset URI has exactly four path segments
 * A dataset URI contains the URI of its associated version
@@ -78,7 +67,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
 
-### Part URI Rules
+### Part URI Rules *(dataid:Part)*
 
 * A part URI has exactly four path segments
 * A part URI contains the URI of its associated version
@@ -86,7 +75,7 @@ The following rules apply to the identifiers of the following Databus concepts:
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
 
-### File URI Rules
+### File URI Rules (dataid:file)
 
 * A file URI has exactly five path segments
 * A file URI contains the URI of its associated version
@@ -225,9 +214,10 @@ dct:abstract
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Group ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:abstract MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:abstract MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .
 ```
@@ -375,9 +365,10 @@ dct:abstract
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
+	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
 	sh:path dct:abstract ;
 	sh:minCount 1 ;
+	sh:maxLength 200 ;
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .
 ```
@@ -1010,8 +1001,9 @@ Context:
 
 ### formatExtension
 
-TODO all:
-* is this needed? would it help to query this?
+TODO Marvin: describe why formatExtension is practical
+TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
+
 
 
 ```sql

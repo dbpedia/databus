@@ -25,29 +25,33 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
   }
 
   // TODO Fabian
-  ctrl.isInCollection = function(result) {
+  ctrl.isInCollection = function (result) {
     let uri = result.resource[0].value;
     let node = QueryNode.findChildByUri(ctrl.root, uri);
 
     return node != null;
   }
 
-  ctrl.addToCollection = function(result) {
 
-    if(result.inCollection) {
+  ctrl.addToCollection = function (result) {
+
+    var currentSource = ctrl.searchSource;
+    var sourceNode = QueryNode.findChildByUri(ctrl.root, currentSource);
+
+    if (result.inCollection) {
       QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
       // ctrl.onComponentAdded();
       // ctrl.collectionManager.saveLocally();
     }
     else {
-      if(result.typeName[0].value == 'Group') {
-
+      if (result.typeName[0].value == 'Group') {
         let node = new QueryNode(result.resource[0].value, 'dataid:group');
-        ctrl.root.addChild(node);
+
+        sourceNode.addChild(node);
         ctrl.onComponentAdded();
       }
 
-      if(result.typeName[0].value == 'Artifact') {
+      if (result.typeName[0].value == 'Artifact') {
 
         var artifactUri = result.resource[0].value;
         let groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
@@ -55,7 +59,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
         if (groupNode == null) {
           groupNode = new QueryNode(groupUri, 'dataid:group');
-          ctrl.root.addChild(groupNode);
+          sourceNode.addChild(groupNode);
         }
 
         let node = new QueryNode(artifactUri, 'dataid:artifact');
@@ -72,21 +76,22 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     //  }
     // }
 
-    for(let r in ctrl.results) {
-
-
-
+    for (let r in ctrl.results) {
       ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
     }
 
     ctrl.collectionManager.saveLocally();
 
-      console.log(ctrl.root);
+    console.log(ctrl.root);
   }
 
   $interval(function () {
 
     if (ctrl.searchChanged) {
+
+      if (!DatabusUtils.isValidHttpUrl(ctrl.searchSource)) {
+        return;
+      }
 
       var typeFilters = '?typeName=Artifact Group';
 
@@ -103,29 +108,34 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
       ctrl.lastQuery = ctrl.searchInput;
 
-      $http({
-        method: 'GET',
-        url: '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
-          + ctrl.searchInput,
-      }).then(function successCallback(response) {
+      try {
 
-        if (ctrl.lastQuery != response.data.query) {
-          return;
-        }
+        $http({
+          method: 'GET',
+          url: ctrl.searchSource + '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
+            + ctrl.searchInput,
+        }).then(function successCallback(response) {
 
-        ctrl.results = response.data.docs;
+          if (ctrl.lastQuery != response.data.query) {
+            return;
+          }
 
-        for (var r in ctrl.results) {
-          ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
-        }
+          ctrl.results = response.data.docs;
+
+          for (var r in ctrl.results) {
+            ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
+          }
 
 
-      }, function errorCallback(response) {
-      });
+        }, function errorCallback(response) {
+        });
+      } catch(err) {
+        
+      }
 
-      ctrl.searchChanged = false;
-    };
-  }, ctrl.searchCooldown);
+        ctrl.searchChanged = false;
+      };
+    }, ctrl.searchCooldown);
 
   ctrl.search = function () {
     ctrl.searchChanged = true;

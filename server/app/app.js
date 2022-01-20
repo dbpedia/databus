@@ -9,12 +9,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var fs = require('fs');
-var cors = require('cors');
 var bodyParser = require("body-parser");
-var minifier = require("./minifier.js");
-var rp = require('request-promise');
-const crypto = require("crypto");
-const Constants = require('./common/constants.js');
 
 
 
@@ -80,36 +75,17 @@ async function initialize(app, memoryStore) {
 
 
   // CORS setup
-  var originsWhitelist = [
-    'localhost:3000'
-  ];
+  //var originsWhitelist = [
+  //  'localhost:3000'
+  //];
 
-  var corsOptions = {
-    origin: function (origin, callback) {
-      var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
-      callback(null, isWhitelisted);
-    }
-  }
 
   app.set('trust proxy', 'loopback');
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(cors(corsOptions));
+  // app.use(cors(corsOptions));
 
-  // add a sparql file loading extension (simply read the file as a string)
-  require.extensions['.sparql'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-
-  require.extensions['.md'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-  require.extensions['.ttl'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-  require.extensions['.html'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
+ 
 
   // view engine setup
   app.set('views', path.join(__dirname, '../../public/templates'));
