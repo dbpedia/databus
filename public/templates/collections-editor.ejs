@@ -2,6 +2,7 @@
   <div ng-controller="CollectionsEditorController" ng-cloak>
 
     <!-- Header -->
+    <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
 
     <!-- NOT LOGGED IN VIEW-->
     <div class="section" ng-if="!authenticated" style="min-height: 500px;">
@@ -26,7 +27,8 @@
       </div>
     </div>
 
-    <div class="section" ng-if="authenticated && !hasAccount" style="min-height: 600px; display: flex; align-items: center;">
+    <div class="section" ng-if="authenticated && !hasAccount"
+      style="min-height: 600px; display: flex; align-items: center;">
       <div class="container">
         <p class="collection-editor-info-text">You need to create a user account in order to publish data.</p>
         <br />
@@ -180,7 +182,7 @@
             padding: 1em;
           }
 
-         
+
 
 
 
@@ -191,17 +193,17 @@
           }
 
           .ce-alert {
-            display:flex; 
-            align-items:center; 
+            display: flex;
+            align-items: center;
             background-color: rgb(233 244 231);
-            border-radius: 1em; 
-            border: 1px solid rgb(178, 199, 178); 
+            border-radius: 1em;
+            border: 1px solid rgb(178, 199, 178);
             padding: 0.5em 1em;
-            pointer-events: none; 
-            position: fixed; 
-            bottom: 6em; 
-            left: 50%; 
-            transform: translate(-50%, 0); 
+            pointer-events: none;
+            position: fixed;
+            bottom: 6em;
+            left: 50%;
+            transform: translate(-50%, 0);
             z-index: 10000;
           }
         </style>
@@ -220,26 +222,31 @@
             <div class="ce-sidebar-caption">
               Active Collection
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 1 }" ng-click="goToTab('edit')">
+            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 1 }"
+              ng-click="goToTab('edit')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'edit'" size="24">
               </databus-icon>
               Edit Content<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 2 }" ng-click="goToTab('preview')">
+            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 2 }"
+              ng-click="goToTab('preview')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'eye'" size="24">
               </databus-icon>
               Preview<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 3 }" ng-click="goToTab('query')">
+            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 3 }"
+              ng-click="goToTab('query')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'help'" size="24">
               </databus-icon>
               Query<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 4 }" ng-click="goToTab('add')">
+            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 4 }"
+              ng-click="goToTab('add')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'add'" size="24"></databus-icon>
               Add Groups & Artifacts<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 5 }" ng-click="goToTab('import')">
+            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 5 }"
+              ng-click="goToTab('import')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'download'" size="24"></databus-icon>
               Import & Export<div class="ce-sidebar-button-pointer"></div>
             </div>
@@ -263,8 +270,8 @@
                 <div class="ce-content-hint">Click a collection to set it as the active collection. Click the active
                   collection to start editing.</div>
 
-                  <div style="margin-bottom: .5em; margin-top: 1em; display: flex;">                  
-                    <div class="button" ng-click="createNewCollection()" style="margin-right: .5em;">
+                <div style="margin-bottom: .5em; margin-top: 1em; display: flex;">
+                  <div class="button" ng-click="createNewCollection()" style="margin-right: .5em;">
                     <databus-icon style="margin-right:8px;" color="'black'" shape="'add'" size="24"></databus-icon>
                     Create New Collection
                   </div>
@@ -279,7 +286,7 @@
                   </div>
                 </div>
 
-                  
+
                 <div style="margin-bottom: 1em;">
                   <div ng-repeat="collection in collectionManager.local" class="ce-content-collection"
                     ng-class="{ 'is-active' : collection.uuid == collectionManager.activeCollection.uuid }">
@@ -300,7 +307,7 @@
                       <span ng-if="collection.uuid == collectionManager.activeCollection.uuid">ACTIVE</span>
                     </div>
 
-                
+
 
 
                     <collection-status style="margin-right: 64px;" is-published="collection.isPublished"
@@ -310,7 +317,7 @@
                   </div>
 
                 </div>
-            
+
 
               </div>
 
@@ -328,8 +335,9 @@
 
                   <div class="field has-addons" style="margin: 0;">
                     <p class="control">
-                      <button class="button" ng-click="saveCollection()" >
-                        <databus-icon class="is-white" style="margin-right:12px;" color="'black'" shape="'upload'" size="24">
+                      <button class="button" ng-click="saveCollection()">
+                        <databus-icon class="is-white" style="margin-right:12px;" color="'black'" shape="'upload'"
+                          size="24">
                         </databus-icon>Commit Collection
                       </button>
                     </p>
@@ -469,11 +477,12 @@
                     <div style="flex: 1;">Groups & Artifacts</div>
                   </div>
 
-                  <div style="flex: 1; display: flex; justify-content: flex-end;font-weight: initial; margin-right: 1em;">
+                  <div
+                    style="flex: 1; display: flex; justify-content: flex-end;font-weight: initial; margin-right: 1em;">
                     <div class="field has-addons">
                       <p class="control">
-                        <input class="input" placeholder="Enter Databus URI..." style="min-width: 300px;" input="searchInput"
-                          ng-model="session.databusUriToAdd" filters="searchFilters">
+                        <input class="input" placeholder="Enter Databus URI..." style="min-width: 300px;"
+                          input="searchInput" ng-model="session.databusUriToAdd" filters="searchFilters">
                       </p>
                       <p class="control">
                         <a ng-click="addDatabusToCollection()" class="button is-version">
@@ -489,7 +498,7 @@
                 <div class="ce-content-body" ng-if="session.showGroups">
 
                   <collection-hierarchy-two collection="collectionManager.activeCollection"
-                    on-change="onActiveCollectionChanged()">
+                    on-change="onActiveCollectionChanged()" on-add-content="onAddContent(source)">
                   </collection-hierarchy-two>
                 </div>
 
@@ -569,7 +578,8 @@
 
                 <div class="ce-content-header" style="margin-bottom: 1em;">Preview of "{{
                   collectionManager.activeCollection.label }}"</div>
-                <div class="ce-content-hint">This page shows a preview of how other users will see your collection once it is published.</div>
+                <div class="ce-content-hint">This page shows a preview of how other users will see your collection once
+                  it is published.</div>
 
                 <div style="padding: 1em; background-color: white; border: 1px solid #dbdbdb;">
                   <collection-statistics collection="collectionManager.activeCollection">
@@ -584,7 +594,8 @@
               <div ng-if="session.activeTab == 3">
 
                 <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <div class="ce-content-header" style="flex: 1;">Query of "{{ collectionManager.activeCollection.label }}"</div>
+                  <div class="ce-content-header" style="flex: 1;">Query of "{{ collectionManager.activeCollection.label
+                    }}"</div>
                   <p class="control">
                     <button class="button" ng-click="queryToClipboard()">
                       <databus-icon style="margin-right:12px;" color="'#333'" shape="'copy'" size="24">
@@ -602,7 +613,7 @@
                 <div ng-if="collectionQuery !== undefined">
                   <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
                 </div>
-               
+
 
               </div>
 
@@ -620,7 +631,7 @@
                   search result.</b>.</div>
 
                 <collection-search on-component-added="onComponentAdded()"
-                  collection="collectionManager.activeCollection">
+                  target-databus-url="session.targetDatabusUrl" collection="collectionManager.activeCollection">
                 </collection-search>
 
               </div>
@@ -629,11 +640,13 @@
               <div ng-if="session.activeTab == 5">
 
                 <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <div class="ce-content-header" style="flex: 1;">Import / Export Content for "{{ collectionManager.activeCollection.label }}"</div>
-                 
+                  <div class="ce-content-header" style="flex: 1;">Import / Export Content for "{{
+                    collectionManager.activeCollection.label }}"</div>
+
                 </div>
 
-                <div class="ce-content-hint">You can download the JSON of a collection or import the contents of a collection below.</div>
+                <div class="ce-content-hint">You can download the JSON of a collection or import the contents of a
+                  collection below.</div>
 
                 <div style="display: flex; margin-bottom: .5em; align-items: center;">
                   <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Export</h1>
@@ -645,13 +658,15 @@
                   </p>
                 </div>
                 <pre>{{ collectionJson | json }}</pre>
-                <br/>
-                
-                <br/> <br/><div style="display: flex; margin-bottom: .5em; align-items: center;">
+                <br />
+
+                <br /> <br />
+                <div style="display: flex; margin-bottom: .5em; align-items: center;">
                   <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Import</h1>
-                 
+
                 </div>
-                <textarea class="input" style="min-height: 300px; margin-bottom: 0.5em;" ng-model="loadFromJsonString"></textarea>
+                <textarea class="input" style="min-height: 300px; margin-bottom: 0.5em;"
+                  ng-model="loadFromJsonString"></textarea>
                 <p class="control">
                   <button class="button" ng-click="loadFromJson(loadFromJsonString)">
                     <databus-icon style="margin-right:12px;" color="'#333'" shape="'import'" size="24">
@@ -665,39 +680,39 @@
           </div>
         </div>
 
-       
-          
-          <div ng-if="statusCode > 0 && getStatusSuccess()" class="ce-alert">
-            
-            <svg class="dashing" width="32" height="32" version="1.1"
-              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" ng-if="getStatusSuccess()">
-              <circle class="path circle" fill="none" stroke="rgb(105, 144, 105)" stroke-width="5" stroke-miterlimit="10"
-                cx="65.1" cy="65.1" r="62.1" />
-              <polyline class="path check" fill="none" stroke="rgb(105, 144, 105)" stroke-width="5"
-                stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
-            </svg>
-            <div class="field" style="margin-left:1em; color: rgb(105, 144, 105);">
-              <div>{{ getStatusMessage(statusCode) }}</div>
-            </div>
-          </div>
 
-          <div ng-if="statusCode > 0 && !getStatusSuccess()"  class="ce-alert"
-            style="background-color: #ffa1a1; border-color: #df8a8a">
-        
-            <svg class="dashing" width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 130.2 130.2" ng-if="!getStatusSuccess()">
-              <circle class="path circle" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-miterlimit="10"
-                cx="65.1" cy="65.1" r="62.1" />
-              <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
-                stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
-              <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
-                stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
-            </svg>
 
-            <div class="field" style="margin-left:1em; color: rgb(202, 71, 71)">
-              <div>{{ getStatusMessage(statusCode) }}</div>
-            </div>
+        <div ng-if="statusCode > 0 && getStatusSuccess()" class="ce-alert">
+
+          <svg class="dashing" width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 130.2 130.2" ng-if="getStatusSuccess()">
+            <circle class="path circle" fill="none" stroke="rgb(105, 144, 105)" stroke-width="5" stroke-miterlimit="10"
+              cx="65.1" cy="65.1" r="62.1" />
+            <polyline class="path check" fill="none" stroke="rgb(105, 144, 105)" stroke-width="5" stroke-linecap="round"
+              stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+          </svg>
+          <div class="field" style="margin-left:1em; color: rgb(105, 144, 105);">
+            <div>{{ getStatusMessage(statusCode) }}</div>
           </div>
+        </div>
+
+        <div ng-if="statusCode > 0 && !getStatusSuccess()" class="ce-alert"
+          style="background-color: #ffa1a1; border-color: #df8a8a">
+
+          <svg class="dashing" width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 130.2 130.2" ng-if="!getStatusSuccess()">
+            <circle class="path circle" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-miterlimit="10"
+              cx="65.1" cy="65.1" r="62.1" />
+            <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
+              stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+            <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
+              stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+          </svg>
+
+          <div class="field" style="margin-left:1em; color: rgb(202, 71, 71)">
+            <div>{{ getStatusMessage(statusCode) }}</div>
+          </div>
+        </div>
 
 
 

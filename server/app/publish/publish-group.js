@@ -20,6 +20,12 @@ module.exports = async function publishGroup(account, data, notify) {
     // Get the desired triples from the data via construct query
     var triples = await constructor.executeConstruct(data, constructGroupQuery);
 
+    if (triples.length == 0) {
+
+    notify(`Construct query did not yield any triples. Nothing to publish.\n`);
+      return { code: 200, message: null };
+    }
+
     var tripleCount = triples.split(/\r\n|\r|\n/).length
     notify(`> ${tripleCount} triples selected via construct query.\n`);
 

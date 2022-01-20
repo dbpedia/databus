@@ -47,7 +47,7 @@ module.exports = function (router, protector) {
       });
 
       if (dataIdResult != undefined) {
-        res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.`)
+        res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`)
       }
 
       res.end();

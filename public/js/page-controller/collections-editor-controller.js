@@ -134,6 +134,11 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.username = data.auth.info.accountName;
   $scope.modalTime = 1000;
 
+  $scope.onAddContent = function(source) {
+    $scope.session.targetDatabusUrl = source;
+    $scope.goToTab('add');
+  }
+
   $scope.updateStatistics = function (collection) {
     if (collection.uri === undefined) {
       $scope.statistics = null;
@@ -206,14 +211,53 @@ SELECT DISTINCT ?file WHERE {\n\
 
   }
 
-  $scope.addDatabusToCollection = function() {
+  $scope.addDatabusToCollection = function () {
 
-    if($scope.collectionManager.activeCollection == undefined) {
+    if ($scope.collectionManager.activeCollection == undefined) {
       return;
     }
 
-    var rootNode = QueryNode.createFrom($scope.collectionManager.activeCollection.content.generatedQuery.root);
-    rootNode.addChild(new QueryNode($scope.session.databusUriToAdd, null));
+    var req = {
+      method: 'GET',
+      url: $scope.session.databusUriToAdd,
+      headers: {
+        'Accept': 'application/rdf+turtle'
+      }
+    }
+
+    $http(req).then(function (res) {
+      const parser = new N3.Parser();
+      parser.parse(res.data,
+        (error, quad, prefixes) => {
+          if (quad) {
+
+            var resultUrl = new URL(quad.subject.id);
+            var expectedUrl = new URL($scope.session.databusUriToAdd);
+
+            if (resultUrl.href == expectedUrl.href
+              && quad.predicate.id == `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+              && quad.object.id == `http://dataid.dbpedia.org/ns/core#Databus`) {
+
+              // It is indeed a Databus!
+              var rootNode = QueryNode.createFrom($scope.collectionManager.activeCollection.content.generatedQuery.root);
+              
+              var url = (resultUrl.href.substr(-1) === '/') ? resultUrl.href.slice(0, -1) : resultUrl.href;
+              rootNode.addChild(new QueryNode(url, null));
+
+              $scope.onActiveCollectionChanged();
+              $scope.$apply();
+            }
+          }
+        });
+
+
+    });
+
+
+    // check for valid Databus
+
+    //var rootNode = QueryNode.createFrom($scope.collectionManager.activeCollection.content.generatedQuery.root);
+    //rootNode.addChild(new QueryNode($scope.session.databusUriToAdd, null));
   }
 
   $scope.doStuffWhenInitialized = function () {

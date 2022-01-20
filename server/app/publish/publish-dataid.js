@@ -19,11 +19,14 @@ module.exports = async function publishDataid(account, data, notify) {
 
     notify(`Publishing DataId.\n`);
 
+    console.log(data);
+
     // Fetch only relevant triples from the input via construct query
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
 
     if (triples.length == 0) {
-      return { code: 400, message: `Construct query did not yield any triples` };
+      notify(`Construct query did not yield any triples. Nothing to publish.\n`)
+      return { code: 200, message: null };
     }
 
     var tripleCount = triples.split(/\r\n|\r|\n/).length

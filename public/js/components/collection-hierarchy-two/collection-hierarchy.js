@@ -20,6 +20,9 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     }
   }
   
+  ctrl.onAddContentClicked = function(sourceNode) {
+    ctrl.onAddContent({ source : sourceNode.uri });
+  }
 
   ctrl.isLastChild = function(group, artifact) {
 

@@ -6,8 +6,30 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
   ctrl.results = [];
   ctrl.collectionManager = collectionManager;
 
+
+
+  
+
+
+
   ctrl.formatResult = function (result) {
     return $sce.trustAsHtml(result);
+  }
+
+  ctrl.getDatabusUrls = function () {
+
+    if (ctrl.databusUrls != undefined) {
+      return ctrl.databusUrls;
+    }
+
+    ctrl.databusUrls = [];
+    var root = ctrl.collection.content.generatedQuery.root;
+
+    for (var sourceNode of root.childNodes) {
+      ctrl.databusUrls.push(sourceNode.uri);
+    }
+
+    return ctrl.databusUrls;
   }
 
   ctrl.$onInit = function () {
@@ -35,7 +57,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
   ctrl.addToCollection = function (result) {
 
-    var currentSource = ctrl.searchSource;
+    var currentSource = ctrl.targetDatabusUrl;
     var sourceNode = QueryNode.findChildByUri(ctrl.root, currentSource);
 
     if (result.inCollection) {
@@ -89,7 +111,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
     if (ctrl.searchChanged) {
 
-      if (!DatabusUtils.isValidHttpUrl(ctrl.searchSource)) {
+      if (!DatabusUtils.isValidHttpUrl(ctrl.targetDatabusUrl)) {
         return;
       }
 
@@ -112,7 +134,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
         $http({
           method: 'GET',
-          url: ctrl.searchSource + '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
+          url: ctrl.targetDatabusUrl + '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
             + ctrl.searchInput,
         }).then(function successCallback(response) {
 
@@ -126,16 +148,15 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
             ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
           }
 
-
         }, function errorCallback(response) {
         });
-      } catch(err) {
-        
+      } catch (err) {
+
       }
 
-        ctrl.searchChanged = false;
-      };
-    }, ctrl.searchCooldown);
+      ctrl.searchChanged = false;
+    };
+  }, ctrl.searchCooldown);
 
   ctrl.search = function () {
     ctrl.searchChanged = true;

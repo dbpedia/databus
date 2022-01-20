@@ -31,7 +31,7 @@ function autocompleteResourceEntry(expandedGraph, prop, navUpAmount) {
 autocompleter.autocomplete = function (expandedGraph) {
 
   var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
-  var datasetUri = datasetGraph['@id'];
+  var datasetUri = datasetGraph[DatabusUris.JSONLD_ID];
 
   // check path length (has to be four)
   if (UriUtils.getResourcePathLength(datasetUri) != 4) {
@@ -74,6 +74,10 @@ autocompleter.autocomplete = function (expandedGraph) {
   for (var fileGraph of fileGraphs) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
+    }
+
+    if(fileGraph[DatabusUris.DATAID_FORMAT] == undefined) {
+      fileGraph[DatabusUris.DATAID_FORMAT] = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION];
     }
 
     if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {

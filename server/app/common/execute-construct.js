@@ -16,12 +16,22 @@ function escapeQuotes(value) {
  */
 self.executeConstruct = async function (jsonld, query) {
 
-  var store = await self.createStore();
+  try {
+    
+    var store = await self.createStore();
 
-  var tripleCount = await self.loadJsonld(store, jsonld);
-  var graph = await self.queryStore(store, query);
-  var triples = self.convertToN3(graph);
-  return triples;
+    var tripleCount = await self.loadJsonld(store, jsonld);
+    console.log(tripleCount);
+
+    var graph = await self.queryStore(store, query);
+    var triples = self.convertToN3(graph);
+
+
+    return triples;
+  } catch(err) {
+    console.log(err);
+    return '';
+  }
 }
 
 self.convertToN3 = function (graph) {

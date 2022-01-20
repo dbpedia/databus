@@ -155,7 +155,8 @@ databusApplication.component('collectionHierarchyTwo', {
   controller: ['$http', '$location', '$sce', '$scope', CollectionHierarchyControllerTwo],
   bindings: {
     collection: '=',
-    onChange: '&'
+    onChange: '&',
+    onAddContent: '&'
   }
 });
 
@@ -177,6 +178,7 @@ databusApplication.component('collectionSearch', {
   controller: ['collectionManager', '$http', '$interval', '$sce', CollectionSearchController],
   bindings: {
     collection: '=',
+    targetDatabusUrl: '<',
     onComponentAdded: '&'
   }
 });

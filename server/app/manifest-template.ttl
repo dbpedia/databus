@@ -7,4 +7,4 @@
 @prefix dct:   <http://purl.org/dc/terms/> .
 
 <> a dataid:Databus ;
-    dct:hasVersion "2.0" .
+    dct:hasVersion "2.0b" .

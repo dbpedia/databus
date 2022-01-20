@@ -135,7 +135,7 @@
     <type-tag width="48" height="48" style="margin-right:18px" type="'Databus'"></type-tag>
     <div style="flex: 1;">{{ sourceNode.uri }}</div>
     <databus-icon style="margin-right:16px; cursor: pointer;" shape="'add'" size="24"
-    on-click="$ctrl.onAddContent()"></databus-icon>
+      on-click="$ctrl.onAddContentClicked(sourceNode)"></databus-icon>
     <databus-icon style="margin-right:16px;cursor: pointer;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
       on-click="$ctrl.removeNode(sourceNode)"></databus-icon>
   </div>
@@ -144,6 +144,9 @@
 <div class="ce-content-group" ng-repeat-start="groupNode in sourceNode.childNodes track by groupNode.uri"
   ng-init="groupView = $ctrl.view.groups[groupNode.uri]">
 
+  <div class="ce-artifact-tree-line">
+  </div>
+  
   <div class=" ce-content-group-header">
     <type-tag width="48" height="48" style="margin-right:18px" type="'Group'"></type-tag>
     <div style="flex: 1;">{{ groupNode.uri }}</div>
