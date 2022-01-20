@@ -31,15 +31,13 @@
 	sh:targetClass dataid:Group ;
 	sh:property [
 		sh:path dct:title ;
-		sh:minCount 1 ;
-		sh:maxCount 1;
 		sh:severity sh:Violation ;
 		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
-		sh:minCount 1 ;
-		sh:maxCount 1 ;
-		sh:datatype xsd:string ;
-		] ;
-	sh:property [
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
 		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;

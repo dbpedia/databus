@@ -181,7 +181,7 @@ Databus can be customized, by changing shacl, the webid and posting additional d
 
 Some examples to copy and adapt. 
 
-### Dataset Version
+### Dataset Version Example
 
 ```json
 {
@@ -219,7 +219,7 @@ Some examples to copy and adapt.
 	additional types
 ```
 
-### Group
+### Group Example
 ```json
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
@@ -228,10 +228,6 @@ Some examples to copy and adapt.
 	"title": "Ontologies used in Project X" ,
 	"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
 	"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version."
-
-# Automatically inferred after post
-language tags
-
 }
 ```
 
@@ -288,15 +284,13 @@ $shacl='<#title-group>
 	sh:targetClass dataid:Group ;
 	sh:property [
 		sh:path dct:title ;
-		sh:minCount 1 ;
-		sh:maxCount 1;
 		sh:severity sh:Violation ;
 		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
-		sh:minCount 1 ;
-		sh:maxCount 1 ;
-		sh:datatype xsd:string ;
-		] ;
-	sh:property [
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
 		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
