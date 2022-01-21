@@ -225,7 +225,6 @@ missing
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .
 ```
-Context:
 ```json
 "Group": 	"dataid:Group",
 
@@ -271,7 +270,6 @@ dct:title
 		sh:uniqueLang true ;
 	] . 
 ```
-Context:
 ```json
 "title": 		{ "@id": "dct:title", "@language" : "en" }
 ```
@@ -312,7 +310,6 @@ dct:abstract
 	    sh:maxLength 200 ;
 	] . 
 ```
-Context:
 ```json
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
 ```
@@ -352,7 +349,6 @@ dct:description
 		sh:uniqueLang true ;
 	] . 
 ```
-Context:
 ```json
 "description": 	{ "@id": "dct:description", "@language" : "en" }
 ```
@@ -387,7 +383,6 @@ missing
 		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
 ```
-Context:
 ```json
 "Dataset": 	"dataid:Dataset" 
 ```
@@ -528,7 +523,6 @@ dct:publisher
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-Context:
 ```json
 "publisher": {
       "@id": "dct:publisher",
@@ -615,7 +609,6 @@ missing
 			""" ;
 	] .
 ```
-Context:
 ```json
 "artifact": {
       "@id": "dataid:artifact",
@@ -662,7 +655,6 @@ missing
 			""" ;
 	] .
 ```
-Context:
 ```json
 "version": {
       "@id": "dataid:version",
@@ -700,7 +692,6 @@ dct:hasVersion
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .
 ```
-Context:
 ```json
 "hasVersion": 	{"@id": "dct:hasVersion"}
 ```
@@ -735,7 +726,6 @@ dct:issued
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .
 ```
-Context:
 ```json
 "issued": {
       "@id": "dct:issued",
@@ -773,7 +763,6 @@ dct:modified
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .
 ```
-Context:
 ```json
 "modified": {
       "@id": "dct:modified",
@@ -816,7 +805,6 @@ dct:license
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-Context:
 ```json
 "license": {
       "@context":{"@base": null },
@@ -864,7 +852,6 @@ dcat:distribution
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-Context:
 ```json
 "distribution": {
       "@type": "@id",
@@ -907,7 +894,6 @@ dcat:Distribution
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . 
 ```
-Context:
 ```json
 "Part": 	"dataid:Part" 
 ```
@@ -967,7 +953,6 @@ missing
 	sh:nodeKind sh:IRI .
 
 ```
-Context:
 ```json
 "file": {
       "@id": "dataid:file",
@@ -998,7 +983,6 @@ missing
 	sh:maxCount 1 ;
 	sh:minCount 1 .
 ```
-Context:
 ```json
 "format":		{"@id": "dataid:format"}
 ```
@@ -1030,7 +1014,6 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
-Context:
 ```json
 "formatExtension": 	{"@id": "dataid:formatExtension"}
 ```
@@ -1059,7 +1042,6 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
-Context:
 ```json
 "compression": 	{"@id": "dataid:compression"}
 ```
@@ -1093,7 +1075,6 @@ dcat:downloadURL
 	sh:nodeKind sh:IRI .
 
 ```
-Context:
 ```json
 "downloadURL": {
       "@id": "dcat:downloadURL",
@@ -1139,7 +1120,6 @@ dcat:byteSize
 	sh:maxCount 1 ;
 	sh:minCount 1 .  
 ```
-Context:
 ```json
 "byteSize": {
     "@id": "dcat:byteSize",
@@ -1172,7 +1152,6 @@ missing
 	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
-Context:
 ```json
 "sha256sum": 		{"@id": "dataid:sha256sum"}
 ```
@@ -1246,7 +1225,6 @@ missing
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
 
 ```
-Context:
 ```json
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
@@ -1269,7 +1247,6 @@ missing
 ```turtle
 missing
 ```
-Context:
 ```json
 "maker": {
     "@id": "foaf:maker",
