@@ -111,12 +111,11 @@ Example (JSON-LD):
 ```json
 $example
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 $owl
 ```
 ```turtle
-# SHACL
 $shacl
 ```
 ".$cstring;

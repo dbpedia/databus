@@ -204,12 +204,11 @@ Example (JSON-LD):
 "@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 "@type": "Group",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#group-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Group ;
@@ -244,8 +243,8 @@ Example (JSON-LD):
 ```json
 "title": "Ontologies used in Project X" ,
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:title
 	rdfs:label "Title"@en ;
 	rdfs:comment "A name given to the resource."@en ;
@@ -254,7 +253,6 @@ dct:title
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
 ```turtle
-# SHACL
 <#title-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
@@ -286,8 +284,8 @@ Example (JSON-LD):
 ```json
 "abstract": "Collected ontologies to be used in Project X as dependencies for development.",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:abstract
 	rdfs:label "Abstract"@en ;
 	rdfs:comment "A summary of the resource."@en ;
@@ -295,7 +293,6 @@ dct:abstract
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
 ```turtle
-# SHACL
 <#en-abstract-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
@@ -327,8 +324,8 @@ Example (JSON-LD):
 ```json
 "description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:description
 	rdfs:label "Description"@en ;
 	rdfs:comment "An account of the resource."@en ;
@@ -337,7 +334,6 @@ dct:description
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
 ```turtle
-# SHACL
 <#description-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
@@ -370,12 +366,11 @@ Example (JSON-LD):
 "@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 "@type": "dataid:Dataset",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#dataset-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Dataset ;
@@ -404,8 +399,8 @@ Example (JSON-LD):
 ```json
 "title": "DBpedia Ontology",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:title
 	rdfs:label "Title"@en ;
 	rdfs:comment "A name given to the resource."@en ;
@@ -414,7 +409,6 @@ dct:title
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
 ```turtle
-# SHACL
 <#title-dataid>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Dataset ;
@@ -441,8 +435,8 @@ Example (JSON-LD):
 ```json
 "abstract": "Registered a version of the DBpedia Ontology into my account",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:abstract
 	rdfs:label "Abstract"@en ;
 	rdfs:comment "A summary of the resource."@en ;
@@ -450,7 +444,6 @@ dct:abstract
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
 ```turtle
-# SHACL
 <#abstract-dataid>
 	a sh:NodeShape ;
     sh:targetClass dataid:Dataset ;
@@ -478,8 +471,8 @@ Example (JSON-LD):
 ```json
 "description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:description
 	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
 	rdfs:comment "An account of the resource."@en ;
@@ -488,7 +481,6 @@ dct:description
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
 ```turtle
-# SHACL
 <#description-dataid>
 	a sh:NodeShape ;
     sh:targetClass dataid:Dataset ;
@@ -516,8 +508,8 @@ Example (JSON-LD):
 ```json
 "publisher": TODO
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:publisher
 	dcam:rangeIncludes dct:Agent ;
 	rdfs:comment "An entity responsible for making the resource available."@en ;
@@ -526,7 +518,6 @@ dct:publisher
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
 ```
 ```turtle
-# SHACL
 <#has-publisher>
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;
@@ -553,12 +544,11 @@ Example (JSON-LD):
 ```json
 "group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -594,12 +584,11 @@ Example (JSON-LD):
 ```json
 "artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-artifact>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -642,12 +631,11 @@ Example (JSON-LD):
 ```json
 "version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-version>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -692,8 +680,8 @@ Example (JSON-LD):
 ```json
 "hasVersion": "2021-12-06",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:hasVersion
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
 	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
@@ -702,7 +690,6 @@ dct:hasVersion
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
 ```turtle
-# SHACL
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -726,8 +713,8 @@ Example (JSON-LD):
 ```json
 "issued": "2021-12-06T11:34:17Z",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:issued
 	rdfs:label "Date Issued"@en ;
 	rdfs:comment "Date of formal issuance of the resource."@en ;
@@ -738,7 +725,6 @@ dct:issued
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
 ```turtle
-# SHACL
 <#has-issued>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -766,8 +752,8 @@ Example (JSON-LD):
 ```json
 "modified": "%NOW%",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:modified
 	rdfs:label "Date Modified"@en ;
 	rdfs:comment "Date on which the resource was changed."@en ;
@@ -777,7 +763,6 @@ dct:modified
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
 ```
 ```turtle
-# SHACL
 <#has-modified>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -810,8 +795,8 @@ Example (JSON-LD):
 ```json
 "license": "http://creativecommons.org/licenses/by/4.0/",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:license
 	rdfs:label "License"@en ;
 	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
@@ -821,7 +806,6 @@ dct:license
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
 ```
 ```turtle
-# SHACL
 <#has-license>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -858,8 +842,8 @@ Example (JSON-LD):
           		"dcv:type": "parsed_sorted"
               }]
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dcat:distribution
   a owl:ObjectProperty ;
   rdfs:label "distribution"@en ;
@@ -871,7 +855,6 @@ dcat:distribution
   skos:definition "An available distribution of the dataset."@en .
 ```
 ```turtle
-# SHACL
 <#has-distribution>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -898,8 +881,8 @@ Example (JSON-LD):
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "Part",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dcat:Distribution
 	a owl:Class ;
 	rdfs:label "Distribution"@en ;
@@ -909,7 +892,6 @@ dcat:Distribution
 	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
 ```
 ```turtle
-# SHACL
 <#part-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Part ;
@@ -939,8 +921,8 @@ Example (JSON-LD):
 ```json
 "issued": "%NOW%",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:issued
 	rdfs:label "Date Issued"@en ;
 	rdfs:comment "Date of formal issuance of the resource."@en ;
@@ -950,7 +932,6 @@ dct:issued
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
 ```turtle
-# SHACL
 <#has-issued>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -970,12 +951,11 @@ Example (JSON-LD):
 ```json
 "file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-file>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1002,12 +982,11 @@ Example (JSON-LD):
 ```json
 "format": "nt",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1036,12 +1015,11 @@ Example (JSON-LD):
 ```json
 "formatExtension": "nt",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-formatExtension>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1065,12 +1043,11 @@ Example (JSON-LD):
 ```json
 "compression": "none",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-compression>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1094,8 +1071,8 @@ Example (JSON-LD):
 ```json
 "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dcat:downloadURL
 	a owl:ObjectProperty ;
 	rdfs:label "download URL"@en ;
@@ -1105,7 +1082,6 @@ dcat:downloadURL
 	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 ```
 ```turtle
-# SHACL
 <#has-downloadURL>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1139,8 +1115,8 @@ Example (JSON-LD):
 ```json
 "byteSize": "4439722",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 # excerpt from https://www.w3.org/ns/dcat2.ttl
 dcat:byteSize
 	a owl:DatatypeProperty ;
@@ -1153,7 +1129,6 @@ dcat:byteSize
 	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
 ```
 ```turtle
-# SHACL
 <#has-bytesize>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1180,12 +1155,11 @@ Example (JSON-LD):
 ```json
 "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#has-sha256sum>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1212,8 +1186,8 @@ Example (JSON-LD):
 ```json
 "hasVersion": "%VERSION%",
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
@@ -1222,7 +1196,6 @@ dct:hasVersion
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
 ```turtle
-# SHACL
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -1260,12 +1233,11 @@ Example (JSON-LD):
 ```json
 missing
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 <#properties-are-cvs>
 	a sh:PropertyShape ;
 	sh:targetClass rdf:Property ;
@@ -1290,12 +1262,11 @@ Example (JSON-LD):
 ```json
 missing
 ```
+Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#OWL
 missing
 ```
 ```turtle
-# SHACL
 missing
 ```
 Context:
