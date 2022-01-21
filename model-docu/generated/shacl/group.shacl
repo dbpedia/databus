@@ -44,7 +44,7 @@
 		sh:uniqueLang true ;
 	] . 
 
-<#en-abstract-group>
+<#abstract-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
 	sh:property [

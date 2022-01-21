@@ -313,7 +313,7 @@ $owl='dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
-$shacl='<#en-abstract-group>
+$shacl='<#abstract-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
 	sh:property [

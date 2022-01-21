@@ -291,7 +291,7 @@ dct:abstract
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
 ```turtle
-<#en-abstract-group>
+<#abstract-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
 	sh:property [
