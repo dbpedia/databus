@@ -1,5 +1,4 @@
 #!/usr/bin/php
-
 # Databus Model
 <?php
 /*
