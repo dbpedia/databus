@@ -199,11 +199,11 @@ Some examples to copy and adapt.
 ## Group
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#group-exists>
 	a sh:NodeShape ;
@@ -222,16 +222,13 @@ missing
 	] .
 ```
 
-```json
 Example:
-
+```json
 "@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 "@type": "Group",
 ```
-
-```json
 Context:
-
+```json
 "Group": 	"dataid:Group",
 
 "group": {
@@ -244,7 +241,7 @@ Context:
 ### title (Group)
 
 
-```sql
+```turtle
 #OWL
 dct:title
 	rdfs:label "Title"@en ;
@@ -253,7 +250,7 @@ dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
-```sql
+```ttl
 # SHACL
 <#title-group>
 	a sh:NodeShape ;
@@ -274,15 +271,12 @@ dct:title
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "title": "Ontologies used in Project X" ,
 ```
-
-```json
 Context:
-
+```json
 "title": 		{ "@id": "dct:title", "@language" : "en" }
 ```
 
@@ -290,7 +284,7 @@ Context:
 ### abstract (Group)
 
 
-```sql
+```turtle
 #OWL
 dct:abstract
 	rdfs:label "Abstract"@en ;
@@ -298,7 +292,7 @@ dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
-```sql
+```ttl
 # SHACL
 <#en-abstract-group>
 	a sh:NodeShape ;
@@ -320,22 +314,19 @@ dct:abstract
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "abstract": "Collected ontologies to be used in Project X as dependencies for development.",
 ```
-
-```json
 Context:
-
+```json
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
 ```
 
 
 ### description (Group)
 
-```sql
+```turtle
 #OWL
 dct:description
 	rdfs:label "Description"@en ;
@@ -344,7 +335,7 @@ dct:description
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
-```sql
+```ttl
 # SHACL
 <#description-group>
 	a sh:NodeShape ;
@@ -365,15 +356,12 @@ dct:description
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
 ```
-
-```json
 Context:
-
+```json
 "description": 	{ "@id": "dct:description", "@language" : "en" }
 ```
 
@@ -381,11 +369,11 @@ Context:
 ## Dataset Version - the DataId
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#dataset-exists>
 	a sh:NodeShape ;
@@ -404,23 +392,20 @@ missing
   ] . 
 ```
 
-```json
 Example:
-
+```json
 "@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 "@type": "dataid:Dataset",
 ```
-
-```json
 Context:
-
+```json
 "Dataset": 	"dataid:Dataset" 
 ```
 
 
 ### title
 
-```sql
+```turtle
 #OWL
 dct:title
 	rdfs:label "Title"@en ;
@@ -429,7 +414,7 @@ dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
-```sql
+```ttl
 # SHACL
 <#title-dataid>
 	a sh:NodeShape ;
@@ -450,22 +435,19 @@ dct:title
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "title": "DBpedia Ontology",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
 
 ### abstract
 
-```sql
+```turtle
 #OWL
 dct:abstract
 	rdfs:label "Abstract"@en ;
@@ -473,7 +455,7 @@ dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
-```sql
+```ttl
 # SHACL
 <#abstract-dataid>
 	a sh:NodeShape ;
@@ -495,22 +477,19 @@ dct:abstract
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "abstract": "Registered a version of the DBpedia Ontology into my account",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
 
 ### description
 
-```sql
+```turtle
 #OWL
 dct:description
 	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
@@ -519,7 +498,7 @@ dct:description
 	rdfs:label "Description"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
-```sql
+```ttl
 # SHACL
 <#description-dataid>
 	a sh:NodeShape ;
@@ -540,15 +519,12 @@ dct:description
 	] . 
 ```
 
-```json
 Example:
-
+```json
 "description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
@@ -556,7 +532,7 @@ duplicate
 ### publisher
 
 
-```sql
+```turtle
 #OWL
 dct:publisher
 	dcam:rangeIncludes dct:Agent ;
@@ -565,7 +541,7 @@ dct:publisher
 	rdfs:label "Publisher"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
 ```
-```sql
+```ttl
 # SHACL
 <#has-publisher>
 	a sh:PropertyShape ;
@@ -578,15 +554,12 @@ dct:publisher
 	sh:nodeKind sh:IRI .
 ```
 
-```json
 Example:
-
+```json
 "publisher": TODO
 ```
-
-```json
 Context:
-
+```json
 "publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
@@ -597,11 +570,11 @@ Context:
 ### group
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-group>
 	a sh:PropertyShape ;
@@ -630,15 +603,12 @@ missing
 	] .
 ```
 
-```json
 Example:
-
+```json
 "group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
@@ -646,11 +616,11 @@ duplicate
 ### artifact
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-artifact>
 	a sh:PropertyShape ;
@@ -679,15 +649,12 @@ missing
 	] .
 ```
 
-```json
 Example:
-
+```json
 "artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
 ```
-
-```json
 Context:
-
+```json
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
@@ -698,11 +665,11 @@ Context:
 ### version
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-version>
 	a sh:PropertyShape ;
@@ -731,15 +698,12 @@ missing
 	] .
 ```
 
-```json
 Example:
-
+```json
 "version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 ```
-
-```json
 Context:
-
+```json
 "version": {
       "@id": "dataid:version",
       "@type": "@id"
@@ -752,7 +716,7 @@ Context:
 Note: see section versioning above
 
 
-```sql
+```turtle
 #OWL
 dct:hasVersion
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
@@ -761,7 +725,7 @@ dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
-```sql
+```ttl
 # SHACL
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
@@ -774,15 +738,12 @@ dct:hasVersion
 	sh:nodeKind sh:Literal .
 ```
 
-```json
 Example:
-
+```json
 "hasVersion": "2021-12-06",
 ```
-
-```json
 Context:
-
+```json
 "hasVersion": 	{"@id": "dct:hasVersion"}
 ```
 
@@ -790,7 +751,7 @@ Context:
 ### issued
 
 
-```sql
+```turtle
 #OWL
 dct:issued
 	rdfs:label "Date Issued"@en ;
@@ -801,7 +762,7 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
-```sql
+```ttl
 # SHACL
 <#has-issued>
 	a sh:PropertyShape ;
@@ -814,15 +775,12 @@ dct:issued
 	sh:datatype xsd:dateTime .
 ```
 
-```json
 Example:
-
+```json
 "issued": "2021-12-06T11:34:17Z",
 ```
-
-```json
 Context:
-
+```json
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
@@ -834,7 +792,7 @@ Context:
 Note: dct:modified is *always* set by the Databus on post.
 
 
-```sql
+```turtle
 #OWL
 dct:modified
 	rdfs:label "Date Modified"@en ;
@@ -844,7 +802,7 @@ dct:modified
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
 ```
-```sql
+```ttl
 # SHACL
 <#has-modified>
 	a sh:PropertyShape ;
@@ -857,15 +815,12 @@ dct:modified
 	sh:datatype xsd:dateTime .
 ```
 
-```json
 Example:
-
+```json
 "modified": "%NOW%",
 ```
-
-```json
 Context:
-
+```json
 "modified": {
       "@id": "dct:modified",
       "@type": "xsd:dateTime"
@@ -882,7 +837,7 @@ Note:
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 
-```sql
+```turtle
 #OWL
 dct:license
 	rdfs:label "License"@en ;
@@ -892,7 +847,7 @@ dct:license
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
 ```
-```sql
+```ttl
 # SHACL
 <#has-license>
 	a sh:PropertyShape ;
@@ -905,15 +860,12 @@ dct:license
 	sh:nodeKind sh:IRI .
 ```
 
-```json
 Example:
-
+```json
 "license": "http://creativecommons.org/licenses/by/4.0/",
 ```
-
-```json
 Context:
-
+```json
 "license": {
       "@context":{"@base": null },
       "@id": "dct:license",
@@ -923,7 +875,7 @@ Context:
 
 ### distribution
 
-```sql
+```turtle
 #OWL
 dcat:distribution
   a owl:ObjectProperty ;
@@ -935,7 +887,7 @@ dcat:distribution
   rdfs:subPropertyOf dct:relation ;
   skos:definition "An available distribution of the dataset."@en .
 ```
-```sql
+```ttl
 # SHACL
 <#has-distribution>
 	a sh:PropertyShape ;
@@ -947,9 +899,8 @@ dcat:distribution
 	sh:nodeKind sh:IRI .
 ```
 
-```json
 Example:
-
+```json
 "distribution": [{
           		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
           		"@type": "dataid:Part",
@@ -963,10 +914,8 @@ Example:
           		"dcv:type": "parsed_sorted"
               }]
 ```
-
-```json
 Context:
-
+```json
 "distribution": {
       "@type": "@id",
       "@id": "dcat:distribution"
@@ -977,7 +926,7 @@ Context:
 ## Distribution (Part)
 
 
-```sql
+```turtle
 #OWL
 dcat:Distribution
 	a owl:Class ;
@@ -987,7 +936,7 @@ dcat:Distribution
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
 ```
-```sql
+```ttl
 # SHACL
 <#part-exists>
 	a sh:NodeShape ;
@@ -1005,16 +954,13 @@ dcat:Distribution
     ] . 
 ```
 
-```json
 Example:
-
+```json
 "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
 "@type": "Part",
 ```
-
-```json
 Context:
-
+```json
 "Part": 	"dataid:Part" 
 ```
 
@@ -1023,7 +969,7 @@ Context:
 ### issued (Distribution)
 
 
-```sql
+```turtle
 #OWL
 dct:issued
 	rdfs:label "Date Issued"@en ;
@@ -1033,7 +979,7 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
-```sql
+```ttl
 # SHACL
 <#has-issued>
 	a sh:PropertyShape ;
@@ -1046,15 +992,12 @@ dct:issued
 	sh:datatype xsd:dateTime .
 ```
 
-```json
 Example:
-
+```json
 "issued": "%NOW%",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
@@ -1062,11 +1005,11 @@ duplicate
 ### file
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-file>
 	a sh:PropertyShape ;
@@ -1080,15 +1023,12 @@ missing
 
 ```
 
-```json
 Example:
-
+```json
 "file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
 ```
-
-```json
 Context:
-
+```json
 "file": {
       "@id": "dataid:file",
       "@type": "@id"
@@ -1098,11 +1038,11 @@ Context:
 ### format
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-format>
 	a sh:PropertyShape ;
@@ -1116,15 +1056,12 @@ missing
 	sh:minCount 1 .
 ```
 
-```json
 Example:
-
+```json
 "format": "nt",
 ```
-
-```json
 Context:
-
+```json
 "format":		{"@id": "dataid:format"}
 ```
 
@@ -1136,11 +1073,11 @@ TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of
 
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-formatExtension>
 	a sh:PropertyShape ;
@@ -1153,15 +1090,12 @@ missing
 	sh:datatype xsd:string .
 ```
 
-```json
 Example:
-
+```json
 "formatExtension": "nt",
 ```
-
-```json
 Context:
-
+```json
 "formatExtension": 	{"@id": "dataid:formatExtension"}
 ```
 
@@ -1169,11 +1103,11 @@ Context:
 ### compression
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-compression>
 	a sh:PropertyShape ;
@@ -1187,22 +1121,19 @@ missing
 	sh:datatype xsd:string .
 ```
 
-```json
 Example:
-
+```json
 "compression": "none",
 ```
-
-```json
 Context:
-
+```json
 "compression": 	{"@id": "dataid:compression"}
 ```
 
 
 ### downloadURL
 
-```sql
+```turtle
 #OWL
 dcat:downloadURL
 	a owl:ObjectProperty ;
@@ -1212,7 +1143,7 @@ dcat:downloadURL
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 ```
-```sql
+```ttl
 # SHACL
 <#has-downloadURL>
 	a sh:PropertyShape ;
@@ -1226,15 +1157,12 @@ dcat:downloadURL
 
 ```
 
-```json
 Example:
-
+```json
 "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
 ```
-
-```json
 Context:
-
+```json
 "downloadURL": {
       "@id": "dcat:downloadURL",
       "@type": "@id"
@@ -1251,7 +1179,7 @@ Note: Determining byteSize is not trivial for two reasons:
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
 
-```sql
+```turtle
 #OWL
 # excerpt from https://www.w3.org/ns/dcat2.ttl
 dcat:byteSize
@@ -1264,7 +1192,7 @@ dcat:byteSize
 	skos:definition "The size of a distribution in bytes."@en ;
 	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
 ```
-```sql
+```ttl
 # SHACL
 <#has-bytesize>
 	a sh:PropertyShape ;
@@ -1277,15 +1205,12 @@ dcat:byteSize
 	sh:minCount 1 .  
 ```
 
-```json
 Example:
-
+```json
 "byteSize": "4439722",
 ```
-
-```json
 Context:
-
+```json
 "byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
@@ -1296,11 +1221,11 @@ Context:
 ### sha256sum
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#has-sha256sum>
 	a sh:PropertyShape ;
@@ -1315,15 +1240,12 @@ missing
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
 
-```json
 Example:
-
+```json
 "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 ```
-
-```json
 Context:
-
+```json
 "sha256sum": 		{"@id": "dataid:sha256sum"}
 ```
 
@@ -1332,7 +1254,7 @@ Context:
 Note: see section versioning above
 
 
-```sql
+```turtle
 #OWL
 dct:hasVersion
 	rdfs:label "Has Version"@en ;
@@ -1341,7 +1263,7 @@ dct:hasVersion
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
-```sql
+```ttl
 # SHACL
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
@@ -1354,15 +1276,12 @@ dct:hasVersion
 	sh:nodeKind sh:Literal .
 ```
 
-```json
 Example:
-
+```json
 "hasVersion": "%VERSION%",
 ```
-
-```json
 Context:
-
+```json
 duplicate
 ```
 
@@ -1388,11 +1307,11 @@ TODO ??
 TODO ??
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 <#properties-are-cvs>
 	a sh:PropertyShape ;
@@ -1403,15 +1322,12 @@ missing
 
 ```
 
-```json
 Example:
-
+```json
 missing
 ```
-
-```json
 Context:
-
+```json
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
@@ -1422,24 +1338,21 @@ Context:
 TODO ??
 
 
-```sql
+```turtle
 #OWL
 missing
 ```
-```sql
+```ttl
 # SHACL
 missing
 ```
 
-```json
 Example:
-
+```json
 missing
 ```
-
-```json
 Context:
-
+```json
 "maker": {
     "@id": "foaf:maker",
     "@type": "@id"
