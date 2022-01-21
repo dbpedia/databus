@@ -112,11 +112,11 @@ $owl
 $shacl
 ```
 
-Context:
+".($context!="duplicate")?"Context:
 ```json
 $context
 ```
-";
+":"";
 }
 
 ?>
