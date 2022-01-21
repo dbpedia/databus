@@ -198,6 +198,34 @@ Some examples to copy and adapt.
 
 ## Group
 
+
+Example (JSON-LD):
+```json
+"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+"@type": "Group",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#group-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Group ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	] ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	    sh:nodekind sh:IRI ;
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
+      sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
+	] .
+```
 Context:
 ```json
 "Group": 	"dataid:Group",
@@ -211,6 +239,40 @@ Context:
 
 ### title (Group)
 
+
+Example (JSON-LD):
+```json
+"title": "Ontologies used in Project X" ,
+```
+```turtle
+#OWL
+dct:title
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
+```
+```turtle
+# SHACL
+<#title-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+```
 Context:
 ```json
 "title": 		{ "@id": "dct:title", "@language" : "en" }
@@ -219,6 +281,40 @@ Context:
 
 ### abstract (Group)
 
+
+Example (JSON-LD):
+```json
+"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
+```
+```turtle
+#OWL
+dct:abstract
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+```
+```turtle
+# SHACL
+<#en-abstract-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
+```
 Context:
 ```json
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
@@ -226,6 +322,40 @@ Context:
 
 
 ### description (Group)
+
+Example (JSON-LD):
+```json
+"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
+```
+```turtle
+#OWL
+dct:description
+	rdfs:label "Description"@en ;
+	rdfs:comment "An account of the resource."@en ;
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+```
+```turtle
+# SHACL
+<#description-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+```
 Context:
 ```json
 "description": 	{ "@id": "dct:description", "@language" : "en" }
@@ -234,6 +364,34 @@ Context:
 
 ## Dataset Version - the DataId
 
+
+Example (JSON-LD):
+```json
+"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+"@type": "dataid:Dataset",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#dataset-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Dataset ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	] ;
+	sh:property [
+		sh:path [ sh:inversePath rdf:type ] ;
+		  sh:nodekind sh:IRI ;
+		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#Dataset$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+  ] . 
+```
 Context:
 ```json
 "Dataset": 	"dataid:Dataset" 
@@ -241,28 +399,144 @@ Context:
 
 
 ### title
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"title": "DBpedia Ontology",
+```
+```turtle
+#OWL
+dct:title
+	rdfs:label "Title"@en ;
+	rdfs:comment "A name given to the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
+```
+```turtle
+# SHACL
+<#title-dataid>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
 ```
 
 
 ### abstract
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"abstract": "Registered a version of the DBpedia Ontology into my account",
+```
+```turtle
+#OWL
+dct:abstract
+	rdfs:label "Abstract"@en ;
+	rdfs:comment "A summary of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
+```
+```turtle
+# SHACL
+<#abstract-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
 ```
 
 
 ### description
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
+```
+```turtle
+#OWL
+dct:description
+	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
+	rdfs:comment "An account of the resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Description"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
+```
+```turtle
+# SHACL
+<#description-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
 ```
 
 
 ### publisher
 
+
+Example (JSON-LD):
+```json
+"publisher": TODO
+```
+```turtle
+#OWL
+dct:publisher
+	dcam:rangeIncludes dct:Agent ;
+	rdfs:comment "An entity responsible for making the resource available."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Publisher"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
+```
+```turtle
+# SHACL
+<#has-publisher>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:publisher;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+```
 Context:
 ```json
 "publisher": {
@@ -274,14 +548,84 @@ Context:
 
 ### group
 
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
+	sh:path dataid:group ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-group-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the group URI of the associated group." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?group
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+        FILTER(!strstarts(str($this), str(?group)))
+			}
+			""" ;
+	] .
 ```
 
 
 ### artifact
 
+
+Example (JSON-LD):
+```json
+"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-artifact>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
+	sh:path dataid:artifact ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-artifact-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?artifact
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+        FILTER(!strstarts(str($this), str(?artifact)))
+			}
+			""" ;
+	] .
+```
 Context:
 ```json
 "artifact": {
@@ -293,6 +637,43 @@ Context:
 
 ### version
 
+
+Example (JSON-LD):
+```json
+"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-version>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+	sh:path dataid:version ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-version-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?version
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($this), str(?version)))
+			}
+			""" ;
+	] .
+```
 Context:
 ```json
 "version": {
@@ -306,6 +687,32 @@ Context:
 
 Note: see section versioning above
 
+
+Example (JSON-LD):
+```json
+"hasVersion": "2021-12-06",
+```
+```turtle
+#OWL
+dct:hasVersion
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:label "Has Version"@en ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
+```
+```turtle
+# SHACL
+<#has-hasVersion-dataset>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .
+```
 Context:
 ```json
 "hasVersion": 	{"@id": "dct:hasVersion"}
@@ -314,6 +721,34 @@ Context:
 
 ### issued
 
+
+Example (JSON-LD):
+```json
+"issued": "2021-12-06T11:34:17Z",
+```
+```turtle
+#OWL
+dct:issued
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
+```
+```turtle
+# SHACL
+<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+```
 Context:
 ```json
 "issued": {
@@ -326,6 +761,33 @@ Context:
 
 Note: dct:modified is *always* set by the Databus on post.
 
+
+Example (JSON-LD):
+```json
+"modified": "%NOW%",
+```
+```turtle
+#OWL
+dct:modified
+	rdfs:label "Date Modified"@en ;
+	rdfs:comment "Date on which the resource was changed."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
+```
+```turtle
+# SHACL
+<#has-modified>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:modified;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+```
 Context:
 ```json
 "modified": {
@@ -343,6 +805,33 @@ Note:
 * license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
+
+Example (JSON-LD):
+```json
+"license": "http://creativecommons.org/licenses/by/4.0/",
+```
+```turtle
+#OWL
+dct:license
+	rdfs:label "License"@en ;
+	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
+	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
+	dcam:rangeIncludes dct:LicenseDocument ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
+```
+```turtle
+# SHACL
+<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+```
 Context:
 ```json
 "license": {
@@ -353,6 +842,45 @@ Context:
 ```
 
 ### distribution
+
+Example (JSON-LD):
+```json
+"distribution": [{
+          		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+          		"@type": "dataid:Part",
+          		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
+          		"format": "nt",
+          		"compression": "none",
+          		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+          		"byteSize": "4439722",
+          		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+          		"hasVersion": "2021-12-06",
+          		"dcv:type": "parsed_sorted"
+              }]
+```
+```turtle
+#OWL
+dcat:distribution
+  a owl:ObjectProperty ;
+  rdfs:label "distribution"@en ;
+  rdfs:comment "An available distribution of the dataset."@en ;
+  rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+  rdfs:domain dcat:Dataset ;
+  rdfs:range dcat:Distribution ;
+  rdfs:subPropertyOf dct:relation ;
+  skos:definition "An available distribution of the dataset."@en .
+```
+```turtle
+# SHACL
+<#has-distribution>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
+	sh:path dcat:distribution;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI .
+```
 Context:
 ```json
 "distribution": {
@@ -364,6 +892,39 @@ Context:
 
 ## Distribution (Part)
 
+
+Example (JSON-LD):
+```json
+"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
+"@type": "Part",
+```
+```turtle
+#OWL
+dcat:Distribution
+	a owl:Class ;
+	rdfs:label "Distribution"@en ;
+	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
+```
+```turtle
+# SHACL
+<#part-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Part ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+    sh:nodekind sh:IRI ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#[a-zA-Z0-9\\-_\\.=]{3,}(?<!#Dataset)$" ;
+    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
+    ] . 
+```
 Context:
 ```json
 "Part": 	"dataid:Part" 
@@ -373,14 +934,59 @@ Context:
 
 ### issued (Distribution)
 
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"issued": "%NOW%",
+```
+```turtle
+#OWL
+dct:issued
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
+```
+```turtle
+# SHACL
+<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
 ```
 
 
 ### file
 
+
+Example (JSON-LD):
+```json
+"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-file>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
+	sh:path dataid:file;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+```
 Context:
 ```json
 "file": {
@@ -391,6 +997,28 @@ Context:
 
 ### format
 
+
+Example (JSON-LD):
+```json
+"format": "nt",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-format>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:path dataid:format ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:datatype xsd:string ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .
+```
 Context:
 ```json
 "format":		{"@id": "dataid:format"}
@@ -403,6 +1031,27 @@ TODO Marvin: describe why formatExtension is practical
 TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
 
 
+
+Example (JSON-LD):
+```json
+"formatExtension": "nt",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-formatExtension>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path dataid:formatExtension;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+```
 Context:
 ```json
 "formatExtension": 	{"@id": "dataid:formatExtension"}
@@ -411,6 +1060,28 @@ Context:
 
 ### compression
 
+
+Example (JSON-LD):
+```json
+"compression": "none",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-compression>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:path dataid:compression;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+```
 Context:
 ```json
 "compression": 	{"@id": "dataid:compression"}
@@ -418,6 +1089,34 @@ Context:
 
 
 ### downloadURL
+
+Example (JSON-LD):
+```json
+"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+```
+```turtle
+#OWL
+dcat:downloadURL
+	a owl:ObjectProperty ;
+	rdfs:label "download URL"@en ;
+	rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+	rdfs:domain dcat:Distribution ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+```
+```turtle
+# SHACL
+<#has-downloadURL>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:path dcat:downloadURL ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+```
 Context:
 ```json
 "downloadURL": {
@@ -435,6 +1134,36 @@ Note: Determining byteSize is not trivial for two reasons:
 
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
+
+Example (JSON-LD):
+```json
+"byteSize": "4439722",
+```
+```turtle
+#OWL
+# excerpt from https://www.w3.org/ns/dcat2.ttl
+dcat:byteSize
+	a owl:DatatypeProperty ;
+	rdfs:label "byte size"@en ;
+	rdfs:comment "The size of a distribution in bytes."@en ;
+	rdfs:domain dcat:Distribution ;
+	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
+	rdfs:range rdfs:Literal ;
+	skos:definition "The size of a distribution in bytes."@en ;
+	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
+```
+```turtle
+# SHACL
+<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  
+```
 Context:
 ```json
 "byteSize": {
@@ -446,6 +1175,29 @@ Context:
 
 ### sha256sum
 
+
+Example (JSON-LD):
+```json
+"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#has-sha256sum>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path dataid:sha256sum;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string ;
+	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	sh:pattern "^[a-f0-9]{64}$" .
+```
 Context:
 ```json
 "sha256sum": 		{"@id": "dataid:sha256sum"}
@@ -455,9 +1207,31 @@ Context:
 
 Note: see section versioning above
 
-Context:
+
+Example (JSON-LD):
 ```json
-duplicate
+"hasVersion": "%VERSION%",
+```
+```turtle
+#OWL
+dct:hasVersion
+	rdfs:label "Has Version"@en ;
+	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
+	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
+```
+```turtle
+# SHACL
+<#has-hasVersion-part>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .
 ```
 
 ### signature/tractate
@@ -481,6 +1255,25 @@ TODO ??
 ##  Content variants
 TODO ??
 
+
+Example (JSON-LD):
+```json
+missing
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ;
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+
+```
 Context:
 ```json
 "subPropertyOf" : {
@@ -492,6 +1285,19 @@ Context:
 ## Remaining JSON-LD
 TODO ??
 
+
+Example (JSON-LD):
+```json
+missing
+```
+```turtle
+#OWL
+missing
+```
+```turtle
+# SHACL
+missing
+```
 Context:
 ```json
 "maker": {

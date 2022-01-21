@@ -98,6 +98,14 @@ function table ($section, $owl, $shacl, $example, $context){
 }
 
 function render($owl,$shacl,$example,$context){
+	$cstring="";
+	if(trim($context)!="duplicate"){
+		$cstring = "Context:
+```json
+$context
+```
+";}
+
 	return "
 Example (JSON-LD):
 ```json
@@ -111,12 +119,6 @@ $owl
 # SHACL
 $shacl
 ```
-
-".($context!="duplicate")?"Context:
-```json
-$context
-```
-":"";
+".$cstring;
 }
-
 ?>
