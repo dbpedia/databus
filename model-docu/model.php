@@ -315,15 +315,23 @@ $owl='dct:abstract
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
 $shacl='<#en-abstract-group>
-	a sh:PropertyShape ;
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:abstract MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
-	sh:path dct:abstract ;
-	sh:minCount 1 ;
-	sh:maxLength 200 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+	sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . ';
 
 $example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
@@ -342,15 +350,23 @@ $owl='dct:description
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
-$shacl='<#en-description-group>
-	a sh:PropertyShape ;
+$shacl='<#description-group>
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-	sh:path dct:description ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+	sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . ';
 
 $example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
@@ -401,15 +417,23 @@ $owl='dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#has-title-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
-	sh:path dct:title ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+$shacl='<#title-dataid>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . ';
 
 $example='"title": "DBpedia Ontology",';
 
@@ -427,16 +451,24 @@ $owl='dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
-$shacl='<#has-abstract-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
-	sh:path dct:abstract ;
-	sh:minCount 1 ;
-	sh:maxLength 200 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+$shacl='<#abstract-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . ';
 
 $example='"abstract": "Registered a version of the DBpedia Ontology into my account",';
 
@@ -455,15 +487,23 @@ $owl='dct:description
 	rdfs:label "Description"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
-$shacl='<#has-description-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-	sh:path dct:description ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .';
+$shacl='<#description-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . ';
 
 $example='"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",';
 

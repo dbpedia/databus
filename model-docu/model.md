@@ -301,15 +301,23 @@ dct:abstract
 ```sql
 # SHACL
 <#en-abstract-group>
-	a sh:PropertyShape ;
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:abstract MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
-	sh:path dct:abstract ;
-	sh:minCount 1 ;
-	sh:maxLength 200 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
+	sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
 ```
 
 ```json
@@ -338,15 +346,23 @@ dct:description
 ```
 ```sql
 # SHACL
-<#en-description-group>
-	a sh:PropertyShape ;
+<#description-group>
+	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:description MUST occur at least once AND have one @en "@en ;
-	sh:path dct:description ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
+	sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
 ```
 
 ```json
@@ -415,15 +431,23 @@ dct:title
 ```
 ```sql
 # SHACL
-<#has-title-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en " ;
-	sh:path dct:title ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
+<#title-dataid>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
 ```
 
 ```json
@@ -451,16 +475,24 @@ dct:abstract
 ```
 ```sql
 # SHACL
-<#has-abstract-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have less than 200 characters AND have one @en "@en ;
-	sh:path dct:abstract ;
-	sh:minCount 1 ;
-	sh:maxLength 200 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
+<#abstract-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
 ```
 
 ```json
@@ -489,15 +521,23 @@ dct:description
 ```
 ```sql
 # SHACL
-<#has-description-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-	sh:path dct:description ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
+<#description-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
 ```
 
 ```json
