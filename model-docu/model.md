@@ -199,6 +199,11 @@ Some examples to copy and adapt.
 ## Group
 
 
+Example (JSON-LD):
+```json
+"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+"@type": "Group",
+```
 ```turtle
 #OWL
 missing
@@ -222,11 +227,6 @@ missing
 	] .
 ```
 
-Example:
-```json
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-"@type": "Group",
-```
 Context:
 ```json
 "Group": 	"dataid:Group",
@@ -241,6 +241,10 @@ Context:
 ### title (Group)
 
 
+Example (JSON-LD):
+```json
+"title": "Ontologies used in Project X" ,
+```
 ```turtle
 #OWL
 dct:title
@@ -271,10 +275,6 @@ dct:title
 	] . 
 ```
 
-Example:
-```json
-"title": "Ontologies used in Project X" ,
-```
 Context:
 ```json
 "title": 		{ "@id": "dct:title", "@language" : "en" }
@@ -284,6 +284,10 @@ Context:
 ### abstract (Group)
 
 
+Example (JSON-LD):
+```json
+"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
+```
 ```turtle
 #OWL
 dct:abstract
@@ -314,10 +318,6 @@ dct:abstract
 	] . 
 ```
 
-Example:
-```json
-"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
-```
 Context:
 ```json
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
@@ -326,6 +326,10 @@ Context:
 
 ### description (Group)
 
+Example (JSON-LD):
+```json
+"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
+```
 ```turtle
 #OWL
 dct:description
@@ -356,10 +360,6 @@ dct:description
 	] . 
 ```
 
-Example:
-```json
-"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
-```
 Context:
 ```json
 "description": 	{ "@id": "dct:description", "@language" : "en" }
@@ -369,6 +369,11 @@ Context:
 ## Dataset Version - the DataId
 
 
+Example (JSON-LD):
+```json
+"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+"@type": "dataid:Dataset",
+```
 ```turtle
 #OWL
 missing
@@ -392,11 +397,6 @@ missing
   ] . 
 ```
 
-Example:
-```json
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
-"@type": "dataid:Dataset",
-```
 Context:
 ```json
 "Dataset": 	"dataid:Dataset" 
@@ -405,6 +405,10 @@ Context:
 
 ### title
 
+Example (JSON-LD):
+```json
+"title": "DBpedia Ontology",
+```
 ```turtle
 #OWL
 dct:title
@@ -435,10 +439,6 @@ dct:title
 	] . 
 ```
 
-Example:
-```json
-"title": "DBpedia Ontology",
-```
 Context:
 ```json
 duplicate
@@ -447,6 +447,10 @@ duplicate
 
 ### abstract
 
+Example (JSON-LD):
+```json
+"abstract": "Registered a version of the DBpedia Ontology into my account",
+```
 ```turtle
 #OWL
 dct:abstract
@@ -477,10 +481,6 @@ dct:abstract
 	] . 
 ```
 
-Example:
-```json
-"abstract": "Registered a version of the DBpedia Ontology into my account",
-```
 Context:
 ```json
 duplicate
@@ -489,6 +489,10 @@ duplicate
 
 ### description
 
+Example (JSON-LD):
+```json
+"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
+```
 ```turtle
 #OWL
 dct:description
@@ -519,10 +523,6 @@ dct:description
 	] . 
 ```
 
-Example:
-```json
-"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
-```
 Context:
 ```json
 duplicate
@@ -532,6 +532,10 @@ duplicate
 ### publisher
 
 
+Example (JSON-LD):
+```json
+"publisher": TODO
+```
 ```turtle
 #OWL
 dct:publisher
@@ -554,10 +558,6 @@ dct:publisher
 	sh:nodeKind sh:IRI .
 ```
 
-Example:
-```json
-"publisher": TODO
-```
 Context:
 ```json
 "publisher": {
@@ -570,6 +570,10 @@ Context:
 ### group
 
 
+Example (JSON-LD):
+```json
+"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+```
 ```turtle
 #OWL
 missing
@@ -603,10 +607,6 @@ missing
 	] .
 ```
 
-Example:
-```json
-"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-```
 Context:
 ```json
 duplicate
@@ -616,6 +616,10 @@ duplicate
 ### artifact
 
 
+Example (JSON-LD):
+```json
+"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
+```
 ```turtle
 #OWL
 missing
@@ -649,10 +653,6 @@ missing
 	] .
 ```
 
-Example:
-```json
-"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
-```
 Context:
 ```json
 "artifact": {
@@ -665,6 +665,10 @@ Context:
 ### version
 
 
+Example (JSON-LD):
+```json
+"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
+```
 ```turtle
 #OWL
 missing
@@ -698,10 +702,6 @@ missing
 	] .
 ```
 
-Example:
-```json
-"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
-```
 Context:
 ```json
 "version": {
@@ -716,6 +716,10 @@ Context:
 Note: see section versioning above
 
 
+Example (JSON-LD):
+```json
+"hasVersion": "2021-12-06",
+```
 ```turtle
 #OWL
 dct:hasVersion
@@ -738,10 +742,6 @@ dct:hasVersion
 	sh:nodeKind sh:Literal .
 ```
 
-Example:
-```json
-"hasVersion": "2021-12-06",
-```
 Context:
 ```json
 "hasVersion": 	{"@id": "dct:hasVersion"}
@@ -751,6 +751,10 @@ Context:
 ### issued
 
 
+Example (JSON-LD):
+```json
+"issued": "2021-12-06T11:34:17Z",
+```
 ```turtle
 #OWL
 dct:issued
@@ -775,10 +779,6 @@ dct:issued
 	sh:datatype xsd:dateTime .
 ```
 
-Example:
-```json
-"issued": "2021-12-06T11:34:17Z",
-```
 Context:
 ```json
 "issued": {
@@ -792,6 +792,10 @@ Context:
 Note: dct:modified is *always* set by the Databus on post.
 
 
+Example (JSON-LD):
+```json
+"modified": "%NOW%",
+```
 ```turtle
 #OWL
 dct:modified
@@ -815,10 +819,6 @@ dct:modified
 	sh:datatype xsd:dateTime .
 ```
 
-Example:
-```json
-"modified": "%NOW%",
-```
 Context:
 ```json
 "modified": {
@@ -837,6 +837,10 @@ Note:
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 
+Example (JSON-LD):
+```json
+"license": "http://creativecommons.org/licenses/by/4.0/",
+```
 ```turtle
 #OWL
 dct:license
@@ -860,10 +864,6 @@ dct:license
 	sh:nodeKind sh:IRI .
 ```
 
-Example:
-```json
-"license": "http://creativecommons.org/licenses/by/4.0/",
-```
 Context:
 ```json
 "license": {
@@ -875,6 +875,21 @@ Context:
 
 ### distribution
 
+Example (JSON-LD):
+```json
+"distribution": [{
+          		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+          		"@type": "dataid:Part",
+          		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
+          		"format": "nt",
+          		"compression": "none",
+          		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+          		"byteSize": "4439722",
+          		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+          		"hasVersion": "2021-12-06",
+          		"dcv:type": "parsed_sorted"
+              }]
+```
 ```turtle
 #OWL
 dcat:distribution
@@ -899,21 +914,6 @@ dcat:distribution
 	sh:nodeKind sh:IRI .
 ```
 
-Example:
-```json
-"distribution": [{
-          		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-          		"@type": "dataid:Part",
-          		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
-          		"format": "nt",
-          		"compression": "none",
-          		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-          		"byteSize": "4439722",
-          		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-          		"hasVersion": "2021-12-06",
-          		"dcv:type": "parsed_sorted"
-              }]
-```
 Context:
 ```json
 "distribution": {
@@ -926,6 +926,11 @@ Context:
 ## Distribution (Part)
 
 
+Example (JSON-LD):
+```json
+"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
+"@type": "Part",
+```
 ```turtle
 #OWL
 dcat:Distribution
@@ -954,11 +959,6 @@ dcat:Distribution
     ] . 
 ```
 
-Example:
-```json
-"@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#ontology--DEV_type=parsed_sorted.nt",
-"@type": "Part",
-```
 Context:
 ```json
 "Part": 	"dataid:Part" 
@@ -969,6 +969,10 @@ Context:
 ### issued (Distribution)
 
 
+Example (JSON-LD):
+```json
+"issued": "%NOW%",
+```
 ```turtle
 #OWL
 dct:issued
@@ -992,10 +996,6 @@ dct:issued
 	sh:datatype xsd:dateTime .
 ```
 
-Example:
-```json
-"issued": "%NOW%",
-```
 Context:
 ```json
 duplicate
@@ -1005,6 +1005,10 @@ duplicate
 ### file
 
 
+Example (JSON-LD):
+```json
+"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
+```
 ```turtle
 #OWL
 missing
@@ -1023,10 +1027,6 @@ missing
 
 ```
 
-Example:
-```json
-"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
-```
 Context:
 ```json
 "file": {
@@ -1038,6 +1038,10 @@ Context:
 ### format
 
 
+Example (JSON-LD):
+```json
+"format": "nt",
+```
 ```turtle
 #OWL
 missing
@@ -1056,10 +1060,6 @@ missing
 	sh:minCount 1 .
 ```
 
-Example:
-```json
-"format": "nt",
-```
 Context:
 ```json
 "format":		{"@id": "dataid:format"}
@@ -1073,6 +1073,10 @@ TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of
 
 
 
+Example (JSON-LD):
+```json
+"formatExtension": "nt",
+```
 ```turtle
 #OWL
 missing
@@ -1090,10 +1094,6 @@ missing
 	sh:datatype xsd:string .
 ```
 
-Example:
-```json
-"formatExtension": "nt",
-```
 Context:
 ```json
 "formatExtension": 	{"@id": "dataid:formatExtension"}
@@ -1103,6 +1103,10 @@ Context:
 ### compression
 
 
+Example (JSON-LD):
+```json
+"compression": "none",
+```
 ```turtle
 #OWL
 missing
@@ -1121,10 +1125,6 @@ missing
 	sh:datatype xsd:string .
 ```
 
-Example:
-```json
-"compression": "none",
-```
 Context:
 ```json
 "compression": 	{"@id": "dataid:compression"}
@@ -1133,6 +1133,10 @@ Context:
 
 ### downloadURL
 
+Example (JSON-LD):
+```json
+"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
+```
 ```turtle
 #OWL
 dcat:downloadURL
@@ -1157,10 +1161,6 @@ dcat:downloadURL
 
 ```
 
-Example:
-```json
-"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-```
 Context:
 ```json
 "downloadURL": {
@@ -1179,6 +1179,10 @@ Note: Determining byteSize is not trivial for two reasons:
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
 
+Example (JSON-LD):
+```json
+"byteSize": "4439722",
+```
 ```turtle
 #OWL
 # excerpt from https://www.w3.org/ns/dcat2.ttl
@@ -1205,10 +1209,6 @@ dcat:byteSize
 	sh:minCount 1 .  
 ```
 
-Example:
-```json
-"byteSize": "4439722",
-```
 Context:
 ```json
 "byteSize": {
@@ -1221,6 +1221,10 @@ Context:
 ### sha256sum
 
 
+Example (JSON-LD):
+```json
+"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+```
 ```turtle
 #OWL
 missing
@@ -1240,10 +1244,6 @@ missing
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
 
-Example:
-```json
-"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-```
 Context:
 ```json
 "sha256sum": 		{"@id": "dataid:sha256sum"}
@@ -1254,6 +1254,10 @@ Context:
 Note: see section versioning above
 
 
+Example (JSON-LD):
+```json
+"hasVersion": "%VERSION%",
+```
 ```turtle
 #OWL
 dct:hasVersion
@@ -1276,10 +1280,6 @@ dct:hasVersion
 	sh:nodeKind sh:Literal .
 ```
 
-Example:
-```json
-"hasVersion": "%VERSION%",
-```
 Context:
 ```json
 duplicate
@@ -1307,6 +1307,10 @@ TODO ??
 TODO ??
 
 
+Example (JSON-LD):
+```json
+missing
+```
 ```turtle
 #OWL
 missing
@@ -1322,10 +1326,6 @@ missing
 
 ```
 
-Example:
-```json
-missing
-```
 Context:
 ```json
 "subPropertyOf" : {
@@ -1338,6 +1338,10 @@ Context:
 TODO ??
 
 
+Example (JSON-LD):
+```json
+missing
+```
 ```turtle
 #OWL
 missing
@@ -1347,10 +1351,6 @@ missing
 missing
 ```
 
-Example:
-```json
-missing
-```
 Context:
 ```json
 "maker": {

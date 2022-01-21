@@ -91,14 +91,18 @@ function table ($section, $owl, $shacl, $example, $context){
 
 	file_put_contents("$examplesDir/$section.example.jsonld",$example .PHP_EOL,FILE_APPEND);
 
-	$mdString = renderrdf($owl,$shacl).renderjson($example,$context);
+	$mdString = render($owl,$shacl,$example,$context);
 
 	echo $mdString;
 
 }
 
-function renderrdf($owl,$shacl){
+function render($owl,$shacl,$example,$context){
 	return "
+Example (JSON-LD):
+```json
+$example
+```
 ```turtle
 #OWL
 $owl
@@ -107,15 +111,7 @@ $owl
 # SHACL
 $shacl
 ```
-";
-}
 
-function renderjson($example,$context){
-	return "
-Example:
-```json
-$example
-```
 Context:
 ```json
 $context
