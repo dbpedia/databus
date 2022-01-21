@@ -1,6 +1,7 @@
 #!/usr/bin/php
-<?php
 
+# Databus Model
+<?php
 /*
 # Usage:
 sudo apt install php7.4-cli
@@ -35,7 +36,6 @@ init();
 
 
 ?>
-# Databus Model
 
 
 TODO Design decisions  :
