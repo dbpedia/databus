@@ -103,7 +103,7 @@ function renderrdf($owl,$shacl){
 #OWL
 $owl
 ```
-```ttl
+```turtle
 # SHACL
 $shacl
 ```

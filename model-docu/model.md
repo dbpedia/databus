@@ -203,7 +203,7 @@ Some examples to copy and adapt.
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#group-exists>
 	a sh:NodeShape ;
@@ -250,7 +250,7 @@ dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
-```ttl
+```turtle
 # SHACL
 <#title-group>
 	a sh:NodeShape ;
@@ -292,7 +292,7 @@ dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
-```ttl
+```turtle
 # SHACL
 <#en-abstract-group>
 	a sh:NodeShape ;
@@ -335,7 +335,7 @@ dct:description
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
-```ttl
+```turtle
 # SHACL
 <#description-group>
 	a sh:NodeShape ;
@@ -373,7 +373,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#dataset-exists>
 	a sh:NodeShape ;
@@ -414,7 +414,7 @@ dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
-```ttl
+```turtle
 # SHACL
 <#title-dataid>
 	a sh:NodeShape ;
@@ -455,7 +455,7 @@ dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
-```ttl
+```turtle
 # SHACL
 <#abstract-dataid>
 	a sh:NodeShape ;
@@ -498,7 +498,7 @@ dct:description
 	rdfs:label "Description"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
-```ttl
+```turtle
 # SHACL
 <#description-dataid>
 	a sh:NodeShape ;
@@ -541,7 +541,7 @@ dct:publisher
 	rdfs:label "Publisher"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-publisher>
 	a sh:PropertyShape ;
@@ -574,7 +574,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-group>
 	a sh:PropertyShape ;
@@ -620,7 +620,7 @@ duplicate
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-artifact>
 	a sh:PropertyShape ;
@@ -669,7 +669,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-version>
 	a sh:PropertyShape ;
@@ -725,7 +725,7 @@ dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
@@ -762,7 +762,7 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-issued>
 	a sh:PropertyShape ;
@@ -802,7 +802,7 @@ dct:modified
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-modified>
 	a sh:PropertyShape ;
@@ -847,7 +847,7 @@ dct:license
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-license>
 	a sh:PropertyShape ;
@@ -887,7 +887,7 @@ dcat:distribution
   rdfs:subPropertyOf dct:relation ;
   skos:definition "An available distribution of the dataset."@en .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-distribution>
 	a sh:PropertyShape ;
@@ -936,7 +936,7 @@ dcat:Distribution
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
 ```
-```ttl
+```turtle
 # SHACL
 <#part-exists>
 	a sh:NodeShape ;
@@ -979,7 +979,7 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-issued>
 	a sh:PropertyShape ;
@@ -1009,7 +1009,7 @@ duplicate
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-file>
 	a sh:PropertyShape ;
@@ -1042,7 +1042,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-format>
 	a sh:PropertyShape ;
@@ -1077,7 +1077,7 @@ TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-formatExtension>
 	a sh:PropertyShape ;
@@ -1107,7 +1107,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-compression>
 	a sh:PropertyShape ;
@@ -1143,7 +1143,7 @@ dcat:downloadURL
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 ```
-```ttl
+```turtle
 # SHACL
 <#has-downloadURL>
 	a sh:PropertyShape ;
@@ -1192,7 +1192,7 @@ dcat:byteSize
 	skos:definition "The size of a distribution in bytes."@en ;
 	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
 ```
-```ttl
+```turtle
 # SHACL
 <#has-bytesize>
 	a sh:PropertyShape ;
@@ -1225,7 +1225,7 @@ Context:
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#has-sha256sum>
 	a sh:PropertyShape ;
@@ -1263,7 +1263,7 @@ dct:hasVersion
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
-```ttl
+```turtle
 # SHACL
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
@@ -1311,7 +1311,7 @@ TODO ??
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 <#properties-are-cvs>
 	a sh:PropertyShape ;
@@ -1342,7 +1342,7 @@ TODO ??
 #OWL
 missing
 ```
-```ttl
+```turtle
 # SHACL
 missing
 ```
