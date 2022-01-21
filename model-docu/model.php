@@ -35,6 +35,7 @@ init();
 
 
 ?>
+# Databus Model
 
 
 TODO Design decisions  :
@@ -55,7 +56,6 @@ TODO Jan:
 TODO Johannes:
 * create the "missing" OWL statements for DataId
 
-# Databus Model
 
 Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working.
 
