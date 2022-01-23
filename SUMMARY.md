@@ -11,7 +11,7 @@
 * [Model](docs/model.md)
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)
-
+* [Documentation](model-docu/model.md)
 
 ## Usage
 * [Examples](examples/README.md)
