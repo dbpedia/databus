@@ -582,9 +582,13 @@ table($section,$owl,$shacl,$example,$context);
 ?>
 
 
-### artifact
+### artifact 
+
 
 <?php
+autonote();
+
+
 $owl='missing';
 
 $shacl='<#has-artifact>
