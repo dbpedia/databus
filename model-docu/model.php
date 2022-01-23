@@ -56,179 +56,27 @@ TODO Johannes:
 * create the "missing" OWL statements for DataId
 
 
-Databus runs on an RDF model made from DCAT, DCT and DataId properties. Additional SHACL constraints are imposed to guarantee clean metadata. The default format we are propagating is JSON-LD, however, other RDF serializations are also working.
+
 
 ## URI Design
-
-The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus. All URI rules are enforced by the SHACL validation using these [shapes](https://github.com/dbpedia/databus/blob/master/model-docu/generated/shacl/dataid.shacl).
-
-### General Rules
-
-* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
-* The first path segment of *ALL* URIs has to match the namespace of the publishing user (example namespace: `john`)
-* A user namespace (e.g. `john`) must have at least 4 characters.
-
-### Account URI Rules *(foaf:account)*
-
-* An account URI has exactly one path segment
-
-*Example:* https://databus.example.org/john
-
-### Group URI Rules *(dataid:Group)*
-
-* A group URI has exactly two path segments
-
-*Example:* https://databus.example.org/john/animals
-
-### Artifact URI Rules *(dataid:Artifact)*
-
-* An artifact URI has exactly three path segments.
-* An artifact URI contains the URI of its associated group
-
-*Example:* https://databus.example.org/john/animals/cats
-
-### Version URI Rules *(dataid:Version)*
-
-* A version URI has exactly four path segments
-* A version URI contains the URI of its associated artifact
-
-*Example:* https://databus.example.org/john/animals/cats/2021-11-11
-
-### Dataset URI Rules *(dataid:Dataset)*
-
-* A dataset URI has exactly four path segments
-* A dataset URI contains the URI of its associated version
-* The hash of a dataset URI is the string `Dataset`
-
-*Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
-
-### Part URI Rules *(dataid:Part)*
-
-* A part URI has exactly four path segments
-* A part URI contains the URI of its associated version
-* The hash of a dataset URI is NOT the string `Dataset`
-
-*Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
-
-### File URI Rules (dataid:file)
-
-* A file URI has exactly five path segments
-* A file URI contains the URI of its associated version
-
-*Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
+moved to docs/uridesign.md
 
 ## Structure
 TODO Sebastian:
 Group, Artifact, Version, CVS
 
 ## Versioning
-
-The Version ID must adhere to URI, maven and filename standards, so the characters `\/:"<>|?*` are forbidden. Furthermore it needs to be at least three characters long.
-
-Apart from this rule the VersionIDs can contain any alphanumeric character (regardless of the case) and any of these seperator chars: `-._`. 
-
-### Sortable Timestamps
-
-Although the definition of the version ID is quite free and left to the user, there is a good practise: Setting the version in the form of `YYYY.MM.DD-hhmmss`, `YYYY.MM.DD-hh.mm.ss` or `YYYY.MM.DDThhmmss` ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) conform) has multiple advantages:
-	
-* Sorting the version strings (alphanumerically) results in sorting from oldest to latest, which can be used in multiple ways in SPARQL. For example setting `ORDER BY ?version` at the end of the query is an easy way of sorting versions of data chronologically. Furthermore you can use a filter like `FILTER(str(?version) >"2020.01.01")` to find all versions deployed in 2020 and later. 
-* You can set it according to your deploy schedule, e.g. if you deploy monthly you can just use `YYYY.MM`. 
-	You can also switch the versioning (e.g. to `YYYY.MM.DD`) and the sorting still stays intact.
-* 	This query provides an example how this can be used on the Databus to find DBpedia long abstracts later then 2021 and then order them chronologically:
-```
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dct:    <http://purl.org/dc/terms/>
-PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-PREFIX db:     <https://databus.dbpedia.org/>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?file ?version WHERE {
-	GRAPH ?g {
-		?dataset dcat:distribution ?distribution .
-		?distribution dataid:file ?file .
-		?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/text/long-abstracts> .
-    	?dataset dct:hasVersion ?version .
-    	FILTER(str(?version) > "2021.01.01")
-	}
-} ORDER BY ?version
-```
-
-### General Notes about Versioning
-
-* Generally on the Databus the User has the complete control over its data. So it is possible to resubmit versions with the same version again, for example in the case of link rot or migrated data. 
-Usually in this case the `dataid:version` and `dct:hasVersion` stays the same but `dct:issued` should change (it defaults to *now* if not explicitly set) to make it transparent that this dataset has been modified.
-* If you plan on further tinkering a specific version of a Dataset (e.g. the first one) it can be helpful to document that by appending `-snapshot` or `-dev` to the version ID to document this and make it clear for the users. 
-This also helps in searching such Datasets with SPARQL.
-
-
-
-## Timestamping
-* if dct:issue is given on post, this will be used
-* if not, then Databus inserts %now%
-* dct:modified is always set by Databus
+moved to docs/versioning.md
 
 ## Customization, Mods, Metadata Quality
-TODO Marvin:
-Databus can be customized, by changing shacl, the webid and posting additional data. Please give some best practices, when to use this customization mechanism and when to use mods. I think, that if people have metadata that can not be generated from the file and is available to uploading agent, then that could be included, e.g. if they have own identifiers. Or they could limit licenses to CC or few open licenses only. Then also how do mods increase metadata quality (consistency is one aspect here, see e.g. the comments in byteSize)
+moved to docs/customization
 
 
 
-## Roadmap - planned changes
-* license can be any URI at the moment, however, these URIs are not validated and in most cases they are not proper [linked data](https://www.w3.org/DesignIssues/LinkedData.html), i.e. they violate rule 3, do not resolve properly and do not provide usefull information. We plan to intensify collaboration with dalicc.net and implement mappings and more stricter checks.
 
 ## Quickstart Examples
 
-Some examples to copy and adapt. 
-
-### Dataset Version Example
-
-```json
-{
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
-	"@type": "dataid:Dataset",
-	"title": "DBpedia Ontology",
-	"abstract": "Registered a version of the DBpedia Ontology into my account",
-	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
-	"publisher": "https://databus.dbpedia.org/janni#this",
-	"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
-	"hasVersion": "2021-12-06",
-	"license": "http://creativecommons.org/licenses/by/4.0/",
-	"distribution": [{
-		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-		"@type": "dataid:Part",
-		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
-		"format": "nt",
-		"compression": "none",
-		"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-		"byteSize": "4439722",
-		"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-		"hasVersion": "2021-12-06",
-		"dcv:type": "parsed_sorted"
-    }]
-}
-
-# Automatically inferred after post
-	"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-	"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
-	"publisher"
-	"issued": "2021-12-06T11:34:17Z",
-    "issued": "2021-12-06T11:34:17Z",
-	"modified"
-	additional types
-```
-
-### Group Example
-```json
-{
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-	"@type": "Group",
-	"title": "Ontologies used in Project X" ,
-	"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
-	"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version."
-}
-```
+moved to docs/model.md
 
 
 ## Group

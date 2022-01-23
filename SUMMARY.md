@@ -2,13 +2,22 @@
 
 ## Overview
 * [Databus](docs/overview.md)
-  * [Unique Selling Points](docs/uniquesellingpoints.md)
-  * [Use Cases](docs/usecases.md)
-  
+* [Unique Selling Points](docs/uniquesellingpoints.md)
+* [Use Cases](docs/usecases.md)
+* [Customizing, Mods, Metadata Quality](docs/mods.md)
+* [Roadmap](docs/roadmap.md)
+
+## Model
+* [Model](docs/model.md)
+* [URI Design](docs/uridesign.md)
+* [Versioning](docs/versioning.md)
+
+
 ## Usage
+* [Examples](examples/README.md)
 * [Databus API](README.md)
 * [Development Environment](devenv/README.md)
-* [Examples](examples/README.md)
+
 
 
 ## Technical
