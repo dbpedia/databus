@@ -14,4 +14,5 @@ $PHP finalize.php
 
 # add created model.md to commit
 git add ../docs/group.md
+git add ../docs/dataid.md
 git add generated/
