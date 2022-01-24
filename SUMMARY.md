@@ -11,7 +11,9 @@
 * [Model](docs/model.md)
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)
-* [Documentation](model-docu/model.md)
+* [Group](docs/group.md)
+* [DataId](docs/dataid.md)
+
 
 ## Usage
 * [Examples](examples/README.md)
