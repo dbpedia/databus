@@ -473,6 +473,7 @@ $context='"distribution": {
 }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+exit;
 ?>
 
 
