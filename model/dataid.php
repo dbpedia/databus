@@ -36,7 +36,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### title
+## title
 <?php
 $owl='dct:title
 	rdfs:label "Title"@en ;
@@ -71,7 +71,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### abstract
+## abstract
 <?php
 $owl='dct:abstract
 	rdfs:label "Abstract"@en ;
@@ -106,7 +106,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### description
+## description
 <?php
 $owl='dct:description
 	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
@@ -141,7 +141,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### publisher
+## publisher
 
 <?php
 $owl='dct:publisher
@@ -172,7 +172,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### group
+## group
 
 <?php
 $owl='missing';
@@ -211,7 +211,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### artifact 
+## artifact 
 
 
 <?php
@@ -257,7 +257,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### version
+## version
 
 <?php
 $owl='missing';
@@ -299,7 +299,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### hasVersion
+## hasVersion
 
 Note: see section versioning above
 
@@ -329,7 +329,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### issued
+## issued
 
 <?php
 $owl='dct:issued
@@ -361,7 +361,7 @@ $context='"issued": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-### modified
+## modified
 
 Note: dct:modified is *always* set by the Databus on post.
 
@@ -395,7 +395,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### license
+## license
 
 Note:
 * see roadmap above for planned changes
@@ -433,7 +433,7 @@ $context='"license": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-### distribution
+## distribution
 <?php
 $owl='dcat:distribution
   a owl:ObjectProperty ;
@@ -515,7 +515,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 
 
 
-### issued (Distribution)
+## issued (Distribution)
 
 <?php
 $owl='dct:issued
@@ -544,7 +544,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### file
+## file
 
 <?php
 $owl='missing';
@@ -570,7 +570,7 @@ $context='"file": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-### format
+## format
 
 <?php
 $owl='missing';
@@ -594,7 +594,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### formatExtension
+## formatExtension
 
 TODO Marvin: describe why formatExtension is practical
 TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
@@ -621,7 +621,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### compression
+## compression
 
 <?php
 $owl='missing';
@@ -645,7 +645,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### downloadURL
+## downloadURL
 <?php
 $owl='dcat:downloadURL
 	a owl:ObjectProperty ;
@@ -677,7 +677,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### bytesize
+## bytesize
 
 Note: Determining byteSize is not trivial for two reasons:
 1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system.
@@ -719,7 +719,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### sha256sum
+## sha256sum
 
 <?php
 $owl='missing';
@@ -743,7 +743,7 @@ $context='"sha256sum": 		{"@id": "dataid:sha256sum"}';
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-### hasVersion (Distribution)
+## hasVersion (Distribution)
 
 Note: see section versioning above
 
@@ -773,7 +773,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 
 ?>
 
-### signature/tractate
+## signature/tractate
 TODO ??
 
 ```
