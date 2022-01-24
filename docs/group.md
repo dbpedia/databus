@@ -39,7 +39,6 @@ missing
 	}
 ```
 
-```
 
 ## title (Group)
 
@@ -83,7 +82,6 @@ dct:title
 "title": 		{ "@id": "dct:title", "@language" : "en" }
 ```
 
-```
 
 ## abstract (Group)
 
@@ -127,7 +125,6 @@ dct:abstract
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
 ```
 
-```
 
 ## description (Group)
 
@@ -170,5 +167,4 @@ dct:description
 "description": 	{ "@id": "dct:description", "@language" : "en" }
 ```
 
-```
 

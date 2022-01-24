@@ -62,7 +62,6 @@ $owl
 ```turtle
 $shacl
 ```
-".$cstring."
-```";
+".$cstring."";
 }
 ?>
