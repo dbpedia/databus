@@ -87,5 +87,33 @@
     "@type": "xsd:decimal"
   },
 
-"sha256sum": 		{"@id": "dataid:sha256sum"}
+"sha256sum": 		{"@id": "dataid:sha256sum"},
+
+"subPropertyOf" : {
+    "@id" : "rdfs:subPropertyOf",
+    "@type" : "@id"
+  },
+
+"maker": {
+    "@id": "foaf:maker",
+    "@type": "@id"
+  },
+  "primaryTopic": {
+    "@id": "foaf:primaryTopic",
+    "@type": "@id"
+  },
+  "name": {"@id": "foaf:name"},
+  "account": {
+    "@id": "foaf:account",
+    "@type": "@id"
+  },
+  "img": {
+    "@id": "foaf:img",
+    "@type": "@id"
+  },
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+  "signature":	{"@id": "sec:signature"},
+  "proof":	{"@id": "sec:proof"}
 }

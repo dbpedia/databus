@@ -329,3 +329,11 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .
 
+<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ;
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+
+

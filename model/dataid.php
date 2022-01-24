@@ -770,7 +770,6 @@ $example='"hasVersion": "%VERSION%",';
 $context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-exit;
 
 ?>
 
