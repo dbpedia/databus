@@ -7,8 +7,10 @@ PHP=`which php`
 cd ./model-docu/
 
 # execute model php
-$PHP model.php > model.md
+$PHP init.php 
+$PHP group.php > ../docs/group.md
+$PHP finalize.php 
 
 # add created model.md to commit
-git add model.md
+git add docs/group.md
 git add generated/
