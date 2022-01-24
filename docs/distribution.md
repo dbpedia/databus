@@ -4,9 +4,9 @@
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"@type": "Part",
 }
 ```
@@ -36,7 +36,7 @@ dcat:Distribution
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . 
 ```
-```json
+```javascript
 "Part": 	"dataid:Part" 
 ```
 
@@ -45,9 +45,9 @@ dcat:Distribution
 ## issued 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"issued": "%NOW%",
 }
 ```
@@ -78,9 +78,9 @@ dct:issued
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
 }
 ```
@@ -100,7 +100,7 @@ missing
 	sh:nodeKind sh:IRI .
 
 ```
-```json
+```javascript
 "file": {
       "@id": "dataid:file",
       "@type": "@id"
@@ -111,9 +111,9 @@ missing
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"format": "nt",
 }
 ```
@@ -133,7 +133,7 @@ missing
 	sh:maxCount 1 ;
 	sh:minCount 1 .
 ```
-```json
+```javascript
 "format":		{"@id": "dataid:format"}
 ```
 
@@ -146,9 +146,9 @@ TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"formatExtension": "nt",
 }
 ```
@@ -167,7 +167,7 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
-```json
+```javascript
 "formatExtension": 	{"@id": "dataid:formatExtension"}
 ```
 
@@ -176,9 +176,9 @@ missing
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"compression": "none",
 }
 ```
@@ -198,7 +198,7 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
-```json
+```javascript
 "compression": 	{"@id": "dataid:compression"}
 ```
 
@@ -206,9 +206,9 @@ missing
 ## downloadURL
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
 }
 ```
@@ -234,7 +234,7 @@ dcat:downloadURL
 	sh:nodeKind sh:IRI .
 
 ```
-```json
+```javascript
 "downloadURL": {
       "@id": "dcat:downloadURL",
       "@type": "@id"
@@ -252,9 +252,9 @@ We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do no
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"byteSize": "4439722",
 }
 ```
@@ -282,7 +282,7 @@ dcat:byteSize
 	sh:maxCount 1 ;
 	sh:minCount 1 .  
 ```
-```json
+```javascript
 "byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
@@ -294,9 +294,9 @@ dcat:byteSize
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 }
 ```
@@ -317,7 +317,7 @@ missing
 	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
-```json
+```javascript
 "sha256sum": 		{"@id": "dataid:sha256sum"}
 ```
 
@@ -327,9 +327,9 @@ Note: see section versioning above
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"hasVersion": "%VERSION%",
 }
 ```
@@ -377,9 +377,9 @@ TODO ??
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	missing
 }
 ```
@@ -396,7 +396,7 @@ missing
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
 
 ```
-```json
+```javascript
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
@@ -408,9 +408,9 @@ TODO ??
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	missing
 }
 ```
@@ -421,7 +421,7 @@ missing
 ```turtle
 missing
 ```
-```json
+```javascript
 "maker": {
     "@id": "foaf:maker",
     "@type": "@id"

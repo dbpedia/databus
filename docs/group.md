@@ -3,9 +3,9 @@
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 	"@type": "Group",
 }
 ```
@@ -30,7 +30,7 @@ missing
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .
 ```
-```json
+```javascript
 "Group": 	"dataid:Group",
 
 "group": {
@@ -44,9 +44,9 @@ missing
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 	"title": "Ontologies used in Project X" ,
 }
 ```
@@ -78,7 +78,7 @@ dct:title
 		sh:uniqueLang true ;
 	] . 
 ```
-```json
+```javascript
 "title": 		{ "@id": "dct:title", "@language" : "en" }
 ```
 
@@ -87,9 +87,9 @@ dct:title
 
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 	"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
 }
 ```
@@ -121,7 +121,7 @@ dct:abstract
 	    sh:maxLength 200 ;
 	] . 
 ```
-```json
+```javascript
 "abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
 ```
 
@@ -129,9 +129,9 @@ dct:abstract
 ## description (Group)
 
 Example (JSON-LD):
-```json
+```javascript
 {	
-"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 	"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",
 }
 ```
@@ -163,7 +163,7 @@ dct:description
 		sh:uniqueLang true ;
 	] . 
 ```
-```json
+```javascript
 "description": 	{ "@id": "dct:description", "@language" : "en" }
 ```
 

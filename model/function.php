@@ -38,19 +38,19 @@ function render($owl,$shacl,$example,$context,$section,$sectionExampleURI){
 	// prepare context string
 	$cstring="";
 	if(trim($context)!="duplicate"){
-		$cstring = "```json
+		$cstring = "```javascript
 $context
 ```
 ";}
 	//prepare example string 
 	//TODO change URI
-    $exstring= "\"@id\": \"$sectionExampleURI\",
+    $exstring= "	\"@id\": \"$sectionExampleURI\",
 	$example";
 
 
 	return "
 Example (JSON-LD):
-```json
+```javascript
 {	
 $exstring
 }
