@@ -473,7 +473,6 @@ $context='"distribution": {
 }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-exit;
 ?>
 
 
@@ -771,6 +770,7 @@ $example='"hasVersion": "%VERSION%",';
 $context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+exit;
 
 ?>
 

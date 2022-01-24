@@ -62,5 +62,30 @@
 "distribution": {
       "@type": "@id",
       "@id": "dcat:distribution"
-}
+},
+
+"Part": 	"dataid:Part" ,
+
+"file": {
+      "@id": "dataid:file",
+      "@type": "@id"
+    },
+
+"format":		{"@id": "dataid:format"},
+
+"formatExtension": 	{"@id": "dataid:formatExtension"},
+
+"compression": 	{"@id": "dataid:compression"},
+
+"downloadURL": {
+      "@id": "dcat:downloadURL",
+      "@type": "@id"
+    },
+
+"byteSize": {
+    "@id": "dcat:byteSize",
+    "@type": "xsd:decimal"
+  },
+
+"sha256sum": 		{"@id": "dataid:sha256sum"}
 }
