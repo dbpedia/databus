@@ -9,10 +9,11 @@
 
 ## Model
 * [Model](docs/model.md)
+  * [Group](docs/group.md)
+  * [DataId](docs/dataid.md)
+  * [Distribution](docs/distribution.md)
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)
-* [Group](docs/group.md)
-* [DataId](docs/dataid.md)
 
 
 ## Usage
