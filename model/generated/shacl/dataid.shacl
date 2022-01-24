@@ -1,0 +1,339 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+<#dataset-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Dataset ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	] ;
+	sh:property [
+		sh:path [ sh:inversePath rdf:type ] ;
+		  sh:nodekind sh:IRI ;
+		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#Dataset$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+  ] . 
+
+<#title-dataid>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+
+<#abstract-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
+
+<#description-dataid>
+	a sh:NodeShape ;
+    sh:targetClass dataid:Dataset ;
+    sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+
+<#has-publisher>
+	a sh:PropertyShape ;
+  sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:publisher;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+<#has-group>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
+	sh:path dataid:group ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-group-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the group URI of the associated group." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?group
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+        FILTER(!strstarts(str($this), str(?group)))
+			}
+			""" ;
+	] .
+
+<#has-artifact>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
+	sh:path dataid:artifact ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-artifact-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?artifact
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+        FILTER(!strstarts(str($this), str(?artifact)))
+			}
+			""" ;
+	] .
+
+<#has-version>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+	sh:path dataid:version ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI  ;
+  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" .
+
+<#is-version-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Dataset URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?version
+			WHERE {
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($this), str(?version)))
+			}
+			""" ;
+	] .
+
+<#has-hasVersion-dataset>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .
+
+<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+
+<#has-modified>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:modified;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+
+<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+<#has-distribution>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
+	sh:path dcat:distribution;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI .
+
+<#part-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Part ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+    sh:nodekind sh:IRI ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#[a-zA-Z0-9\\-_\\.=]{3,}(?<!#Dataset)$" ;
+    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
+    ] . 
+
+<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+
+<#has-file>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
+	sh:path dataid:file;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+
+<#has-format>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:path dataid:format ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:datatype xsd:string ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .
+
+<#has-formatExtension>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path dataid:formatExtension;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+
+<#has-compression>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:path dataid:compression;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+
+<#has-downloadURL>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:path dcat:downloadURL ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+
+<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  
+
+<#has-sha256sum>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path dataid:sha256sum;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string ;
+	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	sh:pattern "^[a-f0-9]{64}$" .
+
+<#has-hasVersion-part>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .
+
+<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ;
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+
+

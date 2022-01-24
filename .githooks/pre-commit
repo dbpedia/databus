@@ -9,6 +9,7 @@ cd ./model/
 # execute model php
 $PHP init.php 
 $PHP group.php > ../docs/group.md
+$PHP dataid.php > ../docs/dataid.md
 $PHP finalize.php 
 
 # add created model.md to commit
