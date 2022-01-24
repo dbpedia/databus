@@ -41,7 +41,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### title (Group)
+## title (Group)
 
 <?php
 $owl='dct:title
@@ -77,7 +77,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### abstract (Group)
+## abstract (Group)
 
 <?php
 $owl='dct:abstract
@@ -113,7 +113,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### description (Group)
+## description (Group)
 <?php
 $owl='dct:description
 	rdfs:label "Description"@en ;

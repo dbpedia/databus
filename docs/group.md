@@ -41,7 +41,7 @@ missing
 
 ```
 
-### title (Group)
+## title (Group)
 
 
 Example (JSON-LD):
@@ -85,7 +85,7 @@ dct:title
 
 ```
 
-### abstract (Group)
+## abstract (Group)
 
 
 Example (JSON-LD):
@@ -129,7 +129,7 @@ dct:abstract
 
 ```
 
-### description (Group)
+## description (Group)
 
 Example (JSON-LD):
 ```json
