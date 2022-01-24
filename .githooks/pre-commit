@@ -4,7 +4,7 @@
 PHP=`which php`
 
 # move to correct dir
-cd ./model-docu/
+cd ./model/
 
 # execute model php
 $PHP init.php 
@@ -12,5 +12,5 @@ $PHP group.php > ../docs/group.md
 $PHP finalize.php 
 
 # add created model.md to commit
-git add docs/group.md
+git add ../docs/group.md
 git add generated/
