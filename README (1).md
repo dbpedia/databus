@@ -1,100 +1,265 @@
-# Databus
+# Databus API
 
-## Status
-This repo develops Databus version 2.0, which is a major upgrade of version 1.3-beta (currently running at http://dbpedia.databus.org)
-If you install it and find problems, please report in issue tracker to help us test this new version. 
+## General 
 
-**API docu:** https://github.com/dbpedia/databus/blob/master/API.md
+### Creating an API Token
 
-**Development setup:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
+Once the Databus has been started with the correct configuration, you can use the login button on the web interface to log in to your OIDC provider account. Once you are successfully logged in, you can navigate to your account page by using the 'My Account' button on the landing page or using the dropdown in the upper right corner of the screen.
 
-## Requirements
+You will be asked to specify a namespace. Choose this namespace carefully, as it will be visible in all your databus URIs. The namespace can only be changed by an admin later.
 
-In order to run the On-Premise Databus Application you will need `docker` and `docker-compose` installed on your machine.
-* `docker`: 20.10.2 or higher
-* `docker-compose`: 1.25.0 or higher
+Navigate to the settings tab on your account page and scroll to the 'API Keys' section. Enter a display name for your API key (this is only for better distinguishability) and click 'Create' to create the key. You can use the copy icon on the API key to copy the key value to your clipboard.
+
+Use any API key in the `x-api-key` header of your API calls to authenticate yourself.
+
+The following examples of the API usage use a non-existing example databus at `https://databus.example.org`. The user performing the requests will be John who is using the namespace `john`. John has already created an API token on his account page with a value of `27b29848-69c6-4eaf`.
+
+### Input Validation Workflow
+
+Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
+
+Before saving your inputs to the database, they will be validated in 2 steps:
+
+1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information. 
+2) **SHACL Validation** The result of the construct query is validated with SHACL constraints. This makes sure that the information in your input is complete and formatted correctly
+
+### URI Rules
+
+The URIs in your input have to follow a specific pattern in order to be accepted by the API. Make sure that your URIs reflect the hierarchical structure of the Databus.
+
+The following rules apply to the identifiers of the following Databus concepts:
+* Accounts *(foaf:account)*
+* Groups *(dataid:group / dataid:Group)*
+* Artifacts *(dataid:artifact / dataid:Artifact)*
+* Versions *(dataid:version / dataid:Version)*
+* Datasets *(dataid:Dataset)*
+* Distributions *(dcat:distrubution)*
+* Files *(dataid:file)*
+
+All URI rules are enforced by the SHACL validation of the input.
+
+#### General Rules
+
+* The URI has to start with the base URI of the Databus instance (example case: `https://databus.example.org`)
+* The first path segment of the URI has to match the namespace of the publishing user (example case: `john`)
+
+#### Account URI Rules
+
+* An account URI has exactly one path segment
+
+*Example:* https://databus.example.org/john
+
+#### Group URI Rules
+
+* A group URI has exactly two path segments
+
+*Example:* https://databus.example.org/john/animals
+
+#### Artifact URI Rules
+
+* An artifact URI has exactly three path segments. 
+* An artifact URI contains the URI of its associated group
+
+*Example:* https://databus.example.org/john/animals/cats
+
+#### Version URI Rules
+
+* A version URI has exactly four path segments
+* A version URI contains the URI of its associated artifact
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11
+
+#### Dataset URI Rules
+
+* A dataset URI has exactly four path segments
+* A dataset URI contains the URI of its associated version
+* The hash of a dataset URI is the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
+
+#### Distribution URI Rules
+
+* A distribution URI has exactly four path segments
+* A distribution URI contains the URI of its associated version
+* The hash of a dataset URI is NOT the string `Dataset`
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
+
+#### File URI Rules
+
+* A file URI has exactly five path segments
+* A file URI contains the URI of its associated version
+
+*Example:* https://databus.example.org/john/animals/cats/2021-11-11/video_library.ttl
+
+## Accounts
+
+### Update Account Information
+```http
+PUT /$username
+```
+#### Headers
+
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+#### Parameters
+| Parameter | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username |
+
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
 
 
-## Starting the Databus Server
+## Groups
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
+### Create / Update Group
+```http
+PUT /$username/$group
+```
+#### Headers
+
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+#### Parameters
+| Parameter | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username | 
+| `$group` | The target group identifier |
+
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
+* The uri of the dataid:Group has to match the request uri. 
+
+#### Example:
+John wants to create the group `general` to later publish some of his artifacts. He issues the following `PUT` request:
 
 ```
-docker-compose up
+curl -X PUT -H "Content-Type: application/json" -H "x-api-key: 27b29848-69c6-4eaf" -d "./group.jsonld" https://databus.example.org/john/general
 ```
 
-The Databus should be available at `http://localhost:3000`.
+The contents of the file `./group.jsonld` are the following:
 
-## Basic Configuration
+```
+{
+  "@id": "https://databus.example.org/john/general",
+  "@type": "http://dataid.dbpedia.org/ns/core#Group",
+  "http://purl.org/dc/terms/title": {
+    "@value": "General",
+    "@language": "en"
+  },
+  "http://purl.org/dc/terms/abstract": {
+    "@value": "General artifacts.",
+    "@language": "en"
+  },
+  "http://purl.org/dc/terms/description": {
+    "@value": "This group contains various general artifacts.",
+    "@language": "en"
+  }
+}
+```
 
-Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
-
-* **DATABUS_RESOURCE_BASE_URL**: The base resource URL. All Databus resources will start with this URL prefix. Make sure that it matches the DNS entry pointing to your Databus server so that HTTP requests on the resource identifiers will point to your Databus deployment.
-* **DATABUS_OIDC_ISSUER_BASE_URL**: Base URL of your OIDC provider
-* **DATABUS_OIDC_CLIENT_ID**: Client Id of your OIDC client
-* **DATABUS_OIDC_SECRET**: Client Secret of your OIDC client
-* **VIRTUOSO_USER**: A virtuoso database user with write access (SPARQL_UPDATE)
-* **VIRTUOSO_PASSWORD**: The password of the VIRTUOSO_USER account
-
-
-## Advanced Configuration
-
-The configuration can be adjusted by modifying the docker-compose.yml file directly. The compose file starts 3 docker containers.
-
-### Databus Container
-
-The Databus container holds the Databus server application (port 3000) and search API (port 8080). The internal ports can be mapped to an outside port using the docker-compose port settings. Mapping the port of the search API is optional.
-
-The Databus container accepts the following environment variables:
-* **DATABUS_RESOURCE_BASE_URL**: The base resource URL. All Databus resources will start with this URL prefix. Make sure that it matches the DNS entry pointing to your Databus server so that HTTP requests on the resource identifiers will point to your Databus deployment.
-* **DATABUS_DATABASE_URL**: The URL of your GStore database. Can be left as is. Change this only if you want to host your database elsewhere and you know what you are doing.
-* **DATABUS_OIDC_ISSUER_BASE_URL**: Base URL of your OIDC provider
-* **DATABUS_OIDC_CLIENT_ID**: Client Id of your OIDC client
-* **DATABUS_OIDC_SECRET**: Client Secret of your OIDC client
-
-The volumes of the Databus container are best left unchanged. The internal path of the volumes should not be altered. The ourside paths may be changed to any desired path. The keypair folder will store the private and public key of your Databus deployment. The users folder will hold a mini-database associating your OIDC users with Databus users.
-
-### GStore Container
-
-The GStore is a git-repository / triple store hybrid database. It stores chunks of RDF data both as files in a git repository and graphs in a triple store. This allows rollback of commits AND sending of SPARQL queries. The default GStore configuration operates with an internal git repository (can be changed to an external repository, please refer to the GStore documentation) and a Virtuoso triple store. 
-
-The GStore Container accepts the following environment variables:
-* **VIRT_USER**: The admin user of your virtuoso deployment
-* **VIRT_PASS**: The admin password of your virtuoso deployment
-* **VIRT_URI**: The uri of the virtuoso deployment. Keep this as is unless you want to host your virtuoso triple store elsewhere.
-
-### Virtuoso Container
-
-The Virtuoso container is the triple store database.
-
-The Virtuoso Container accepts the following environment variables:
-* **DBA_PASSWORD**: Admin password
-* **SPARQL_UPDATE**: Needs to be set to true to allow updates
-* **DEFAULT_GRAPH**: Set this to your DATABUS_RESOURCE_BASE_URL setting
+Note that the *@id* of the supplied graph has to be the same as the request uri. Additionally, the uri has to be in John's namespace `john`.
 
 
-## OIDC Configuration
+## Datasets (Artifacts and Versions)
 
-### OIDC Client Configuration
+Databus artifacts and versions can be created implicitly by sending a DataId document to the Databus API. 
 
-Follow the documentation of your OIDC provider to configure a client. Connect the client to the deployed Databus instance by setting the following environment variables on Datbaus startup:
+A [DataId](http://dataid.dbpedia.org/ns/core.html) is an RDF metadata document with an entity of rdf:type [dataid:Dataset](http://dataid.dbpedia.org/ns/core#Dataset) at its heart. The contents of the document then associate the Dataset with 
+* The containing files and their metadata
+* A Databus version
+* A Databus artifact
+* A Databus group
 
-* **DATABUS_OIDC_ISSUER_BASE_URL**: The base URL of your OIDC provider
-* **DATABUS_OIDC_CLIENT_ID**: The client id of the configured client at the OIDC provider
-* **DATABUS_OIDC_SECRET**: the client secret of the configured client at the OIDC provider
+While Databus **groups** have to be created by a separate API call, Databus **artifacts** and **versions** information need to be put into the DataId document.
 
-When configuring the client at the OIDC provider, you will be most likely asked to specify a callback URI for redirects after a login. The callback values need to be set to the following values:
+### Create / Update Version
 
-**Callback**
-`https://databus.example.org/system/callback`
+```http
+PUT /$username/$group/$artifact/$version
+```
+#### Headers
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
 
-**Logout**
-`https://databus.example.org/system/logout`
+#### Parameters
+| Parameter | Description |
+| :--- | :--- | 
+| `$username` | Your Databus username |
+| `$group` | The group identifier for your artifact version |
+| `$artifact` | The artifact identifier for your artifact version |
+| `$version` | The version identifier for your artifact version |
 
-**Login**
-`https://databus.example.org/system/login`
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-version.sparql)
+* The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+#### Responses
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 200 | `OK` | Artifact version updated |
+| 201 | `CREATED` | Artifact version created | 
+| 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
-### OIDC Providers 
+### Remove Version
 
-Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
+```http
+DELETE /$username/$group/$artifact/$version
+```
+#### Headers
+| Header | Value |
+| :--- | :--- | 
+| X-Api-Token | **Required** Your Databus API Key |
+#### Responses
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 204 | `NO CONTENT` | Artifact version deleted successfully |
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
+## Generic
+
+Alternatively to the specific API calls, you can merge the RDF content you want to publish into a single input. The following API call will then try to find Databus entities in your input automatically.
+
+### Add Content
+
+```http
+PUT /system/publish
+```
+#### Headers
+| Header | Value |
+| :--- | :--- | 
+| x-api-key | **Required** Your Databus API Key |
+| Content-Type | **Required** application/json | 
+
+#### Body
+* The input data must be supplied as JSON-LD 
+* The input data will be filtered with the following construct queries
+  * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
+  * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
+* Each construct query result will then be validated with their corresponding SHACL shape (e.g. group construct query result validated by group SHACL shapes)
+  * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
+  * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
+
+#### Responses
+| Status Codes | Status | Description |
+| :--- | :--- | :--- | 
+| 200 | `OK` | Content created or updated |
+| 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 500 | `INTERNAL SERVER ERROR` | Internal server error | 
