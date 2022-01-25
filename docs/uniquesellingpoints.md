@@ -10,9 +10,12 @@ description: >-
 
 The DataID model is a stable vocabulary bult on DCAT (a W3C vocabulary to describe datasets), DCMI (Dublin Core Metadata Initiative vocabulary to describe resources) and Prov-O (W3C provenance vocabulary) and forms the core of the Databus. DataID and Databus patches several shortcomings of DCAT and DCMI:
 
-* Databus distinguishes between version of a dataset and the dataset artifact, an important individuation that allows to discover updates, i.e. new versions of the same dataset (artifact).
+* DataID/Databus contains the "right" kind of information to re-publish to other repositories automatically, including Kaggle, CKAN, Zenodo,&#x20;
+* Databus distinguishes between version of a dataset and the dataset artifact, an important individuation that allows to discover updates, i.e. new versions of the same dataset (artifact).&#x20;
 * Strict datatype validation with SHACL (a W3C standard created by DBpedia) guarantees that each Databus deployment uses exactly the same kind of data as the next for the \~25 core properties, no wiggle space that might result in application break down or extra coding if/else when switching Databuses.&#x20;
 * Data publishers only need to provide one format, our download client handles compression (e.g. gzip to bzip2), format conversion between equivalent formats (e.g. turtle to rdf/xml) and mappings (e.g. csv to rdf).  This is very convenient for applications and software as you can download X different dataset versions as Y and load them into Z in an automated manner.         &#x20;
+
+## Extensibility
 
 ## Standardized, de-central and scalable
 
