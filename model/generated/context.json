@@ -1,6 +1,6 @@
 {
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
-  "dcv": "http://dataid.dbpedia.org/ns/cv#",
+	"dcv": "http://dataid.dbpedia.org/ns/cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 	"dct": "http://purl.org/dc/terms/",
 	"dcat": "http://www.w3.org/ns/dcat#",
@@ -62,58 +62,5 @@
 "distribution": {
       "@type": "@id",
       "@id": "dcat:distribution"
-},
-
-"Part": 	"dataid:Part" ,
-
-"file": {
-      "@id": "dataid:file",
-      "@type": "@id"
-    },
-
-"format":		{"@id": "dataid:format"},
-
-"formatExtension": 	{"@id": "dataid:formatExtension"},
-
-"compression": 	{"@id": "dataid:compression"},
-
-"downloadURL": {
-      "@id": "dcat:downloadURL",
-      "@type": "@id"
-    },
-
-"byteSize": {
-    "@id": "dcat:byteSize",
-    "@type": "xsd:decimal"
-  },
-
-"sha256sum": 		{"@id": "dataid:sha256sum"},
-
-"subPropertyOf" : {
-    "@id" : "rdfs:subPropertyOf",
-    "@type" : "@id"
-  },
-
-"maker": {
-    "@id": "foaf:maker",
-    "@type": "@id"
-  },
-  "primaryTopic": {
-    "@id": "foaf:primaryTopic",
-    "@type": "@id"
-  },
-  "name": {"@id": "foaf:name"},
-  "account": {
-    "@id": "foaf:account",
-    "@type": "@id"
-  },
-  "img": {
-    "@id": "foaf:img",
-    "@type": "@id"
-  },
-  "key": 	{"@id": "cert:key"},
-  "modulus":	{"@id": "cert:modulus"},
-  "exponent":	{"@id": "cert:exponent"},
-  "signature":	{"@id": "sec:signature"},
-  "proof":	{"@id": "sec:proof"}
+}
 }
