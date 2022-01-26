@@ -12,16 +12,25 @@ Over three years, we implemented and designed the Databus to build a solid found
 
 * automated downloads and retrieving updates
 * core metadata is minimal, user need to provide some textual documentation, a license URL and bytesize, sha256sum of files.&#x20;
-* License URLs are mapped to Dallic to make them machine-understandable (see [Roadmap](roadmap.md))
+* License URLs are mapped to [Dalicc](https://dalicc.net) to make them machine-understandable (see [Roadmap](roadmap.md))
 * Mappings are collected centrally to transform data and can be re-used (see [Roadmap](roadmap.md))
 * Additional metadata is computed by re-usable apps called Mods, which detect compression and format (TrueType Mod), count triples and statistics (VOID Mod), online checks (OnlineCheck Mod), syntax and encoding analysis.&#x20;
 * We envision a lot more smart Mods that provide a new class of applications built on Databus metadata, such as data search, classifying data with ontologies and contextualization, automatic patching/repair and automatic selection of data to train AI. &#x20;
 
 
 
-## Collaboration on Data
+## Community Collaboration - Incentives for Open Data
 
 
+
+## FAIR? - we are measurably FAIRer
+
+We believe that the [FAIR data principles](https://en.wikipedia.org/wiki/FAIR\_data) are underspecied and not strict enough, leading to repositories that claim to be FAIR without delivering. Here are some points that make the Databus FAIRer:
+
+* Metadata is CC-0 per default and can be queried and exported or bulk downloaded
+* All datasets that are online and open access can be bulk downloaded programmatically. In fact Mods do so to generate more metadata. Please respect their license.&#x20;
+* Stable IDs for everything, even collections (user-created data catalogues) to be able to reference exactly the right part of a dataset (e.g. version or file)
+* Linked Data already fulfills all FAIR requirements. Read about our vision in "[FAIR Linked Data - Towards a Linked Data backbone for users and machines](https://dl.acm.org/doi/10.1145/3442442.3451364)" ([pdf](https://svn.aksw.org/papers/2021/sci-k\_fair-linked-data/public.pdf))
 
 ## Fighting the Anti-Pattern: Data Quality Creep&#x20;
 
