@@ -5,6 +5,7 @@
 * [Databus](README.md)
 * [🚀 Unique Selling Points](docs/uniquesellingpoints.md)
 * [Use Cases](docs/usecases.md)
+  * [Automated deployment of DBpedia Services](docs/dbpediadeployment.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
 
