@@ -13,6 +13,7 @@ Over three years, we implemented and designed the Databus to build a solid found
 * trade-off between a slightly higher learning curve vs. the everyday grind of data massaging
 * automated downloads and retrieving updates
 * core metadata is minimal, user need to provide some textual documentation, a license URL and bytesize, sha256sum of files.&#x20;
+* concepts were inspired by solid frameworks such as Maven, Git/Github, Linked Data, Steam
 * License URLs are mapped to [Dalicc](https://dalicc.net) to make them machine-understandable (see [Roadmap](roadmap.md))
 * Mappings are collected centrally to transform data and can be re-used (see [Roadmap](roadmap.md))
 * Additional metadata is computed by re-usable apps called Mods, which detect compression and format (TrueType Mod), count triples and statistics (VOID Mod), online checks (OnlineCheck Mod), syntax and encoding analysis.&#x20;
