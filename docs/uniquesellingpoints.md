@@ -6,6 +6,20 @@ description: >-
 
 # 🚀 Unique Selling Points
 
+## Data and Metadata Quality Control Patterns
+
+
+
+## Anti-Pattern: Data Quality Creep&#x20;
+
+Data providers delay publication to achieve better data quality first before publication and sharing. However, very important, external feedback by consumers, customers and application builders (data quality = fitness for use) will only be given once the data is published and used (point of truth). Delaying publication will also delay the time feedback is given. This results in a non agile and non-productive release workflow.&#x20;
+
+Databus implements rapid-prototyping and test-driven development patterns for data engineering:
+
+* For Github and Git it is commonly acceptable that the first dozens or hundreds of commits do not contain working software. For data publication, the opposite is the case.
+* .&#x20;
+  * DBpedia's data releases took 6 months then 9, then 17, then over 2 years as we focused on quality exclusively. &#x20;
+
 ## Low-code Application Deployment
 
 * Build collections of datasets and files via list of URIs, SPARQL or the graphical collection builder and insert them into any software or application as data dependency
