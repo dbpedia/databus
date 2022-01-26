@@ -23,9 +23,13 @@ Over three years, we implemented and designed the Databus to build a solid found
 
 ## Community Collaboration - Incentives for Open Data
 
-Open Data should be less altruistic and provide clearer benefits to data providers. Databus support this by clearer community building around datasets and **capturing upstream contributions** and therefore the ability to relieve the burden of publishers. At the moment, open data publishers are normally in an unbalanced situation. They provide data without monetary compensation, but are still expected to update and improve data quality. Normally, small teams or indivudals do it on the side. On the other hand, users that download the data invest a tremendous amount of effort in data quality, i.e. they fix syntax and encoding, enrich, transform, integrate and map it to make their applications work. A file downloaded 10,000 times with 1 hour invested by each consumer is 5.7 years FTE (10000 ÷8÷216).     &#x20;
+Open Data should be less altruistic and provide clearer benefits to data providers. Databus support this by clearer community building around datasets and **capturing upstream contributions** and therefore the ability to relieve the burden of publishers. At the moment, open data publishers are normally in an unbalanced situation. They provide data without monetary compensation, but are still expected to update and improve data quality. Normally, small teams or individuals do it on the side. On the other hand, users that download the data invest a tremendous amount of effort in data quality, i.e. they fix syntax and encoding, enrich, transform, re-combine, integrate and map it to make their applications work. A file downloaded 10,000 times with 1 hour invested by each consumer is 5.7 years FTE (10000 ÷8÷216).  We estimate that data consumers actually spend 10-100 times more effort on data quality than the original provider.      &#x20;
 
-* Easy forking and patching&#x20;
+* Easy forking and patching: Consumers can re-publish fixed data on the same Databus
+* Community extensions: Integrations, transformations and enrichments by the community can be published on the Databus and either be included in the releases or offered alongside the dataset. Databus makes it easy to build platform economies capturing community-generated value.&#x20;
+* The community can docker their data cleaning programs, Mods and Applications and give them back.  &#x20;
+* Databus has a config option to: 1. count downloads anonymously, 2. require registration to connect user accounts to downloads
+* The same mechanism works of course in closed environment, e.g. enterprise networks, projects, collaboration across departments.&#x20;
 
 
 
