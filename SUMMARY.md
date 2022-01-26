@@ -24,11 +24,3 @@
 * [Databus API](<README (1).md>)
 * [Development Environment](devenv/README.md)
 
-## Technical
-
-* [model-docu](model-docu/README.md)
-  * [Databus Model](technical/model-docu/databus-model.md)
-* [server](server/README.md)
-  * [app](server/app/README.md)
-    * [pages](server/app/pages/README.md)
-      * [documentation](server/app/pages/documentation.md)

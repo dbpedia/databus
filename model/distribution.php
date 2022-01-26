@@ -1,27 +1,26 @@
+#!/usr/bin/php
 # Distribution (Part)
 
-**auto-generated from model/*.php via pre-commit hook. Edit in PHP in git and enable hook with `cd .git/hooks && ln -s ../../.githooks/pre-commit pre-commit`**
+<?php
+error_reporting( E_ALL | E_STRICT );
+require_once("function.php");
+init();
 
+?>
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"@type": "Part",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-dcat:Distribution
+<?php
+$section="dataid";
+$sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt";
+
+$owl='dcat:Distribution
 	a owl:Class ;
 	rdfs:label "Distribution"@en ;
 	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
-```
-```turtle
-<#part-exists>
+	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;';
+
+$shacl='<#part-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Part ;
 	sh:property [
@@ -32,37 +31,31 @@ dcat:Distribution
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#[a-zA-Z0-9\\-_\\.=]{3,}(?<!#Dataset)$" ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}#[a-zA-Z0-9\\\\-_\\\\.=]{3,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
-    ] . 
-```
-```javascript
-"Part": 	"dataid:Part" 
-```
+    ] . ';
+
+$example='"@type": "Part",';
+
+
+$context='"Part": 	"dataid:Part" ';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 
 ## issued 
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"issued": "%NOW%",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-dct:issued
+<?php
+$owl='dct:issued
 	rdfs:label "Date Issued"@en ;
 	rdfs:comment "Date of formal issuance of the resource."@en ;
 	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:range rdfs:Literal ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
-```
-```turtle
-<#has-issued>
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
+
+$shacl='<#has-issued>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -70,26 +63,22 @@ dct:issued
 	sh:path dct:issued;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:datatype xsd:dateTime .
-```
+	sh:datatype xsd:dateTime .';
+
+$example='"issued": "%NOW%",';
+
+$context='duplicate';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## file
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-file>
+$shacl='<#has-file>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -98,44 +87,40 @@ missing
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
+';
 
-```
-```javascript
-"file": {
+$example='"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",';
+
+$context='"file": {
       "@id": "dataid:file",
       "@type": "@id"
-    }
-```
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 ## format
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"format": "nt",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-format>
+$shacl='<#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; 
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
-	sh:minCount 1 .
-```
-```javascript
-"format":		{"@id": "dataid:format"}
-```
+	sh:minCount 1 .';
+
+$example='"format": "nt",';
+
+$context='"format":		{"@id": "dataid:format"}';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## formatExtension
@@ -144,20 +129,10 @@ TODO Marvin: describe why formatExtension is practical
 TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
 
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"formatExtension": "nt",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-formatExtension>
+$shacl='<#has-formatExtension>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -165,65 +140,51 @@ missing
 	sh:path dataid:formatExtension;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:datatype xsd:string .
-```
-```javascript
-"formatExtension": 	{"@id": "dataid:formatExtension"}
-```
+	sh:datatype xsd:string .';
+
+$example='"formatExtension": "nt",';
+
+$context='"formatExtension": 	{"@id": "dataid:formatExtension"}';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## compression
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"compression": "none",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-compression>
+$shacl='<#has-compression>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
-	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front """@en ;
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:path dataid:compression;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:datatype xsd:string .
-```
-```javascript
-"compression": 	{"@id": "dataid:compression"}
-```
+	sh:datatype xsd:string .';
+
+$example='"compression": "none",';
+
+$context='"compression": 	{"@id": "dataid:compression"}';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## downloadURL
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-dcat:downloadURL
+<?php
+$owl='dcat:downloadURL
 	a owl:ObjectProperty ;
 	rdfs:label "download URL"@en ;
-	rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
+	rdfs:comment "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;
 	rdfs:domain dcat:Distribution ;
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
-```
-```turtle
-<#has-downloadURL>
+	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution\'s dct:format and/or dcat:mediaType."@en ;';
+
+$shacl='<#has-downloadURL>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -232,14 +193,17 @@ dcat:downloadURL
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
+';
 
-```
-```javascript
-"downloadURL": {
+$example='"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",';
+
+$context='"downloadURL": {
       "@id": "dcat:downloadURL",
       "@type": "@id"
-    }
-```
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## bytesize
@@ -250,17 +214,8 @@ Note: Determining byteSize is not trivial for two reasons:
 
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"byteSize": "4439722",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-# excerpt from https://www.w3.org/ns/dcat2.ttl
+<?php
+$owl='# excerpt from https://www.w3.org/ns/dcat2.ttl
 dcat:byteSize
 	a owl:DatatypeProperty ;
 	rdfs:label "byte size"@en ;
@@ -269,10 +224,9 @@ dcat:byteSize
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	rdfs:range rdfs:Literal ;
 	skos:definition "The size of a distribution in bytes."@en ;
-	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
-```
-```turtle
-<#has-bytesize>
+	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;';
+
+$shacl='<#has-bytesize>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -280,32 +234,26 @@ dcat:byteSize
 	sh:path dcat:byteSize ;
 	sh:datatype xsd:decimal ;
 	sh:maxCount 1 ;
-	sh:minCount 1 .  
-```
-```javascript
-"byteSize": {
+	sh:minCount 1 .  ';
+
+$example='"byteSize": "4439722",';
+
+$context='"byteSize": {
     "@id": "dcat:byteSize",
     "@type": "xsd:decimal"
-  }
-```
+  }';
+
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## sha256sum
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-sha256sum>
+$shacl='<#has-sha256sum>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -315,35 +263,28 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string ;
 	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
-	sh:pattern "^[a-f0-9]{64}$" .
-```
-```javascript
-"sha256sum": 		{"@id": "dataid:sha256sum"}
-```
+	sh:pattern "^[a-f0-9]{64}$" .';
+
+$example='"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",';
+
+$context='"sha256sum": 		{"@id": "dataid:sha256sum"}';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 ## hasVersion (Distribution)
 
 Note: see section versioning above
 
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"hasVersion": "%VERSION%",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-dct:hasVersion
+<?php
+$owl='dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:comment "A related resource that is a version, edition, or adaptation of the described resource."@en ;
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
-```
-```turtle
-<#has-hasVersion-part>
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .';
+
+$shacl='<#has-hasVersion-part>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
@@ -351,8 +292,15 @@ dct:hasVersion
 	sh:path dct:hasVersion ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal .
-```
+	sh:nodeKind sh:Literal .';
+
+$example='"hasVersion": "%VERSION%",';
+
+$context='duplicate';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+
+?>
 
 ## signature/tractate
 TODO ??
@@ -375,54 +323,38 @@ TODO ??
 ##  Content variants
 TODO ??
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	missing
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#properties-are-cvs>
+$shacl='<#properties-are-cvs>
 	a sh:PropertyShape ;
 	sh:targetClass rdf:Property ;
 	sh:path rdfs:subPropertyOf ;
 	sh:hasValue dataid:contentVariant ;
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+';
 
-```
-```javascript
-"subPropertyOf" : {
+$example='missing';
+
+$context='"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
-  }
-```
+  }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 ## Remaining JSON-LD
 TODO ??
 
+<?php
+$owl='missing';
 
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	missing
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-missing
-```
-```javascript
-"maker": {
+$shacl='missing';
+
+$example='missing';
+
+$context='"maker": {
     "@id": "foaf:maker",
     "@type": "@id"
   },
@@ -443,6 +375,9 @@ missing
   "modulus":	{"@id": "cert:modulus"},
   "exponent":	{"@id": "cert:exponent"},
   "signature":	{"@id": "sec:signature"},
-  "proof":	{"@id": "sec:proof"}
-```
+  "proof":	{"@id": "sec:proof"}';
+
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 

@@ -218,3 +218,122 @@
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .
 
+<#part-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Part ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	] ;
+	sh:property [
+    sh:path [ sh:inversePath rdf:type ] ;
+    sh:nodekind sh:IRI ;
+    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}#[a-zA-Z0-9\\-_\\.=]{3,}(?<!#Dataset)$" ;
+    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
+    ] . 
+
+<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .
+
+<#has-file>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
+	sh:path dataid:file;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+
+<#has-format>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:path dataid:format ;
+	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:datatype xsd:string ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .
+
+<#has-formatExtension>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path dataid:formatExtension;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+
+<#has-compression>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:pattern "^[a-z0-9]{1,8}$" ;
+	sh:path dataid:compression;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string .
+
+<#has-downloadURL>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:path dcat:downloadURL ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+
+<#has-bytesize>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:path dcat:byteSize ;
+	sh:datatype xsd:decimal ;
+	sh:maxCount 1 ;
+	sh:minCount 1 .  
+
+<#has-sha256sum>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path dataid:sha256sum;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:string ;
+	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	sh:pattern "^[a-f0-9]{64}$" .
+
+<#has-hasVersion-part>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Part ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
+	sh:path dct:hasVersion ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal .
+
+<#properties-are-cvs>
+	a sh:PropertyShape ;
+	sh:targetClass rdf:Property ;
+	sh:path rdfs:subPropertyOf ;
+	sh:hasValue dataid:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+
+

@@ -15,7 +15,8 @@ function headerFooterContext($contextFile){
     // removes last comma
     $contextStr = substr_replace(trim($contextStr) ,"",-1);
 
-    $contextPrefix ='{
+    $contextPrefix ='{ 
+"@context": {
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
 	"dcv": "http://dataid.dbpedia.org/ns/cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
@@ -29,7 +30,7 @@ function headerFooterContext($contextFile){
 
 ';
 
-    $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}";
+    $contextStr = $contextPrefix .PHP_EOL .$contextStr .PHP_EOL ."}}";
 
     
     file_put_contents($contextFile, $contextStr);
