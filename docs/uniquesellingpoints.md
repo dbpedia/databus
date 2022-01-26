@@ -8,17 +8,21 @@ description: >-
 
 ## Data and Metadata Quality Control Patterns
 
-
+Databus implements rapid-prototyping and test-driven development patterns for data engineering:
 
 ## Anti-Pattern: Data Quality Creep&#x20;
 
-Data providers delay publication to achieve better data quality first before publication and sharing. However, very important, external feedback by consumers, customers and application builders (data quality = fitness for use) will only be given once the data is published and used (point of truth). Delaying publication will also delay the time feedback is given. This results in a non agile and non-productive release workflow.&#x20;
+Data providers delay publication to achieve better data quality first before publication and sharing. Very important, external feedback by consumers, customers and application builders will, however, only be given once the data is published and used. Data quality = "fitness for use" and therefore the point of usage is the "point of truth", telling truthfully, whether data quality is sufficient for usage. Delaying publication will also delay the time feedback is given. This results in a non agile and non-productive release workflow.&#x20;
 
-Databus implements rapid-prototyping and test-driven development patterns for data engineering:
-
-* For Github and Git it is commonly acceptable that the first dozens or hundreds of commits do not contain working software. For data publication, the opposite is the case.
-* .&#x20;
-  * DBpedia's data releases took 6 months then 9, then 17, then over 2 years as we focused on quality exclusively. &#x20;
+* For Github and Git it is commonly acceptable that the first dozens or hundreds of commits do not contain working software. For data publication, the opposite is often the case, i.e. only published if providers assume that it is sufficient.
+* Without a consumer or application, data quality is not assessable. Often serious problems are only reported after publication in particular: "unable to download", "syntax errors when parsing", "typos in schema/properties", "non-conforming datatypes", etc.&#x20;
+* Databus process:&#x20;
+  1. under your username create an artifact and publish the data into it as soon as possible
+  2. start building:
+     1. &#x20;applications
+     2. tests
+  3. iterate in an agile manner and re-publish until the application works and the tests are green. &#x20;
+* DBpedia's data releases took 6 months then 9, then 17, then over 2 years as we focused on quality exclusively. Now, we release every three month with a better bugfixing flow, immediate quality control and tests, resulting in an agile and productive system.
 
 ## Low-code Application Deployment
 
