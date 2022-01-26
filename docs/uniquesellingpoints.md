@@ -1,10 +1,16 @@
 ---
 description: >-
   Below, we list some points that we consider unique advantages of the Databus
-  over other data and metadata repositories (without naming them explicitly):
+  over other data and metadata repositories (without naming them explicitly).
 ---
 
 # 🚀 Unique Selling Points
+
+## Low-code Application Deployment
+
+* Build collections of datasets and files via list of URIs, SPARQL or the graphical collection builder and insert them into any software or application as data dependency
+* Each application normally comes with small differences in data quality requirements, i.e. some need bzip2 instead of gzip, some need other transformations. These cn be automated with just a few lines of glue code to match the application.
+* See how we deploy the various web services of DBpedia in the DBpedia application deployment use case. &#x20;
 
 ## Interoperability
 
