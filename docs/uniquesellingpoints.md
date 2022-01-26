@@ -4,7 +4,7 @@ description: >-
   over other data and metadata repositories (without naming them explicitly).
 ---
 
-# 🚀 Unique Selling Points
+# 🚀 Unique Selling Points (Draft)
 
 ## High-degree of Automation and Re-use
 
@@ -21,6 +21,10 @@ Over three years, we implemented and designed the Databus to build a solid found
 
 
 ## Community Collaboration - Incentives for Open Data
+
+Open Data should be less altruistic and provide clearer benefits to data providers. Databus support this by clearer community building around datasets and **capturing upstream contributions** and therefore the ability to relieve the burden of publishers. At the moment, open data publishers are normally in an unbalanced situation. They provide data without monetary compensation, but are still expected to update and improve data quality. Normally, small teams or indivudals do it on the side. On the other hand, users that download the data invest a tremendous amount of effort in data quality, i.e. they fix syntax and encoding, enrich, transform, integrate and map it to make their applications work. A file downloaded 10,000 times with 1 hour invested by each consumer is 5.7 years FTE (10000 ÷8÷216).     &#x20;
+
+* Easy forking and patching&#x20;
 
 
 

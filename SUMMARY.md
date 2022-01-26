@@ -3,7 +3,7 @@
 ## Overview
 
 * [Databus](README.md)
-* [🚀 Unique Selling Points](docs/uniquesellingpoints.md)
+* [🚀 Unique Selling Points (Draft)](docs/uniquesellingpoints.md)
 * [Use Cases](docs/usecases.md)
   * [Automated deployment of DBpedia Services](docs/dbpediadeployment.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
@@ -23,4 +23,3 @@
 * [Examples](examples/README.md)
 * [Databus API](<README (1).md>)
 * [Development Environment](devenv/README.md)
-
