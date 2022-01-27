@@ -27,7 +27,10 @@ Over three years, we implemented and designed the Databus to build a solid found
 
 ## Iterative, Interdependent Knowledge Extraction Workflows
 
-Databus development was driven by several knowledge extraction projects, in particular Wikipedia to DBpedia, building very large knowledge graphs (FlexiFusion) extracting supply-chain information from the Web ([PLASS](https://plass.io)), tender and maintenance report (PDF, CSV) analysis with NLP in Siemens and [DrimCO](https://drimco.net),  and crawling an ontologies from the web (Archivo).
+Databus development was driven by several knowledge extraction projects, in particular Wikipedia to DBpedia, building very large knowledge graphs (FlexiFusion) extracting supply-chain information from the Web ([PLASS](https://plass.io)), tender and maintenance report (PDF, CSV) analysis with NLP in Siemens and [DrimCO](https://drimco.net),  and crawling of ontologies from the web ([Archivo](https://archivo.dbpedia.org)).
+
+* monolithic "pipelines" can be modularized by capturing results at each step on the bus, thus forming a "data network". This allows for automatic (better and cheaper) quality control of individual components. Data from later nodes in the network can be used to improve earlier steps such as ironing out text analysis failures or other issues.&#x20;
+* the data network allows to re-generate and test individual parts better and also improves re-usability in other workflows
 
 ## Community Collaboration - Incentives for Open Data
 
