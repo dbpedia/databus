@@ -4,7 +4,7 @@ description: >-
   over other data and metadata repositories (without naming them explicitly).
 ---
 
-# 🚀 Unique Selling Points (Draft)
+# 🚀 Unique Features (Draft)
 
 ## High-degree of Automation and Re-use
 
