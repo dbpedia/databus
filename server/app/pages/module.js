@@ -141,8 +141,6 @@ module.exports = function (router, protector) {
         uri = uri.substr(0, uri.length - 1);
       }
 
-      console.log(uri);
-
       if (req.query.type == 'group') {
         var facets = await facetsCache.get(uri, async () => await sparql.pages.getGroupFacets(uri));
         res.status(200).send(facets);

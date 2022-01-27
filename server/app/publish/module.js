@@ -3,7 +3,7 @@ const publishGroup = require('./publish-group');
 const publishDataId = require('./publish-dataid');
 const Constants = require('../common/constants');
 
-const DatabusUris = require('../common/utils/databus-uris');
+const DatabusUris = require('../../../public/js/utils/databus-uris');
 
 var defaultContext = require('../common/context.json');
 

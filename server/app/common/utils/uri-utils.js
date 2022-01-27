@@ -1,5 +1,7 @@
-var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
-var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || 'localhost';
+if(require != undefined) {
+  var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
+  var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || 'localhost';
+}
 
 class UriUtils {
 
@@ -43,7 +45,10 @@ class UriUtils {
   }
 
   static splitResourceUri(uri) {
-    uri = uri.replace(baseUrl, '');
+
+    var url = new URL(uri);
+    uri = url.pathname;
+
     if(uri.startsWith('/')) {
       uri = uri.substr(1);
     }
@@ -121,4 +126,5 @@ class UriUtils {
   }
 }
 
-module.exports = UriUtils;
+if(typeof module === "object" && module && module.exports)
+  module.exports = UriUtils;

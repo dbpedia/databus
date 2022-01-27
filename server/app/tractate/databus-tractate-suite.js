@@ -6,7 +6,7 @@ const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const autocompleter = require('../common/dataid-autocomplete');
-const DatabusUris = require('../common/utils/databus-uris');
+const DatabusUris = require('../../../public/js/utils/databus-uris');
 
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;

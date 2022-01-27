@@ -1,6 +1,6 @@
 const JsonldUtils = require('../common/utils/jsonld-utils');
 const UriUtils = require('../common/utils/uri-utils');
-const DatabusUris = require('../common/utils/databus-uris');
+const DatabusUris = require('../../../public/js/utils/databus-uris');
 const Constants = require('../common/constants');
 
 var shaclTester = require('../common/shacl/shacl-tester');
@@ -58,10 +58,10 @@ module.exports = async function publishGroup(account, data, notify) {
       var messages = shaclResult.message.split(/\r\n|\r|\n/);
       for (var message of messages) {
 
-        notify(`> ${message}\n`);
+        notify(`> * ${message}\n`);
       }
 
-      return { code: 400, message: response };
+      return { code: 400, message: null };
     }
 
     notify(`> SHACL validation successful.\n`);

@@ -26,7 +26,7 @@ function UriBreadcrumbsController() {
 
       ctrl.entries.push({
         label: extension,
-        uri: '/' + pathSoFar
+        uri: url.origin + '/' + pathSoFar
       });
     }
   }

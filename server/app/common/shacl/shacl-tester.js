@@ -149,11 +149,11 @@ async function validateN3(rdf, shaclFile) {
 
 
 instance.validateGroupRDF = async function (rdf) {
-  return await validateJsonld(rdf, './../../../../model-docu/generated/shacl/group.shacl');
+  return await validateJsonld(rdf, './../../../../model/generated/shacl/group.shacl');
 }
 
 instance.validateDataidRDF = async function (rdf) {
-  return await validateJsonld(rdf, './../../../../model-docu/generated/shacl/dataid.shacl');
+  return await validateJsonld(rdf, './../../../../model/generated/shacl/dataid.shacl');
 }
 
 instance.validateCollectionRDF = async function (rdf) {

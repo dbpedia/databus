@@ -19,11 +19,11 @@
 	"@type": "@id"
 	},
 
-"title": 		{ "@id": "dct:title", "@language" : "en" },
+"title": { "@id": "dct:title" },
 
-"abstract": 	{ "@id": "dct:abstract", "@language" : "en" },
+"abstract": { "@id": "dct:abstract" },
 
-"description": 	{ "@id": "dct:description", "@language" : "en" },
+"description": { "@id": "dct:description" },
 
 "Dataset": 	"dataid:Dataset" ,
 

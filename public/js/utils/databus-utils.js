@@ -179,6 +179,27 @@ class DatabusUtils {
     return data;
   }
 
+
+  static getResourcePathLength(uri) {
+    var parts = DatabusUtils.splitResourceUri(uri);
+    return parts.length;
+  }
+
+  static splitResourceUri(uri) {
+
+    var url = new URL(uri);
+    uri = url.pathname;
+
+    if(uri.startsWith('/')) {
+      uri = uri.substr(1);
+    }
+    if(uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
+    }
+
+    return uri.split('/');
+  }
+
   static exportToJsonFile(jsonData) {
 
     var ignoreKeys = [

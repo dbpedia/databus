@@ -14,6 +14,8 @@ class QueryBuilder {
     this.artifactUriPlaceholder = artifactUriPlaceholder;
     this.optionsPlaceholder = optionsPlaceholder;
 
+   
+
     this.queryPlaceholderFacet = "%FACET%";
     this.queryPlaceholderValue = "%VALUE%";
     this.defaultSubquery = `\n\t{ ?distribution <%FACET%> '%VALUE%'${this.stringSuffix}. }`;
@@ -23,7 +25,7 @@ class QueryBuilder {
 
     var prefixMatches = query.match(/PREFIX\s+[^\s]+\s+[^\s]+/g);
 
-    for(var i in prefixMatches) {
+    for (var i in prefixMatches) {
       var prefixValues = prefixMatches[i].split(/\s+/g);
       prefixes[prefixValues[1]] = prefixValues[2];
     }
@@ -34,27 +36,27 @@ class QueryBuilder {
   }
 
   static hasGeneratedQuery(content) {
-    return content.generatedQuery != undefined 
+    return content.generatedQuery != undefined
       && content.generatedQuery.root != undefined
-      && content.generatedQuery.root.childNodes != undefined 
+      && content.generatedQuery.root.childNodes != undefined
       && content.generatedQuery.root.childNodes.length > 0;
   }
 
 
   static hasContent(content) {
-    if(QueryBuilder.hasCustomQueries(content)) {
-        return true;
+    if (QueryBuilder.hasCustomQueries(content)) {
+      return true;
     }
 
-    if(QueryBuilder.hasGeneratedQuery(content)) {
-        return true;
+    if (QueryBuilder.hasGeneratedQuery(content)) {
+      return true;
     }
 
-    return false;  
+    return false;
   }
 
   static assignParents(queryNode) {
-    for(var i = 0; i < queryNode.childNodes.length; i++) {
+    for (var i = 0; i < queryNode.childNodes.length; i++) {
       queryNode.childNodes[i].parent = queryNode;
       QueryBuilder.assignParents(queryNode.childNodes[i]);
     }
@@ -62,24 +64,33 @@ class QueryBuilder {
 
   createCollectionQuery(content, wrapperQuery, wrapperQueryPlaceHolder) {
 
-    if(wrapperQuery == undefined) {
+    if (wrapperQuery == undefined) {
       wrapperQuery = QUERY_DEFAULT_SELECTION;
     }
 
-    if(wrapperQueryPlaceHolder == undefined) {
+    if (wrapperQueryPlaceHolder == undefined) {
       wrapperQueryPlaceHolder = QUERY_DEFAULT_SELECTION_PLACEHOLDER;
     }
 
     // collect prefixes:
     var prefixes = {};
 
-    if(!QueryBuilder.hasContent(content)) {
+    if (!QueryBuilder.hasContent(content)) {
       return this.emptyFallback;
     }
 
+    //return this.createNodeSubquery(node, 2, false);
+
+    return this.createQuery(content.generatedQuery.root, 
+      DatabusSparql.DEFAULT_PREFIXES,
+      DatabusSparql.DEFAULT_FILE_SELECT,
+      DatabusSparql.DEFAULT_FILE_TEMPLATE,
+      null, `%QUERY%`);
+
+    /*
     // find prefix lines in custom queries
-    for(var i in content.customQueries) {
-      
+    for (var i in content.customQueries) {
+
     }
 
     // initialize an empty result
@@ -87,11 +98,11 @@ class QueryBuilder {
 
     var query = "";
 
-    if(QueryBuilder.hasGeneratedQuery(content)) {
+    if (QueryBuilder.hasGeneratedQuery(content)) {
 
       QueryBuilder.assignParents(content.generatedQuery.root);
       var generatedQuery = this.createFileQuery(content.generatedQuery.root)
-      
+
       this.extractPrefixes(prefixes, generatedQuery);
       query += "\n\t{";
       query += "\n" + this.removePrefixes(generatedQuery);
@@ -101,11 +112,11 @@ class QueryBuilder {
     }
 
     // add the custom queries (without prefixes)
-    for(var i in content.customQueries) {
+    for (var i in content.customQueries) {
 
       this.extractPrefixes(prefixes, content.customQueries[i].query);
 
-      if(!isFirstSubquery) {
+      if (!isFirstSubquery) {
         query += "\n\tUNION";
       } else {
         isFirstSubquery = false;
@@ -117,20 +128,20 @@ class QueryBuilder {
 
     // start with a "select ?file"..
     query = wrapperQuery.replace(wrapperQueryPlaceHolder, query);
-    
+
     // add the prefixes to the top
-    for(var prefix in prefixes) {
+    for (var prefix in prefixes) {
       query = "PREFIX " + prefix + " " + prefixes[prefix] + "\n" + query;
     }
 
     // and done
-    return query;
+    return query;*/
   }
 
   groupHasOverride(group) {
-    for(var j in group.artifacts) {
+    for (var j in group.artifacts) {
       var artifact = group.artifacts[j];
-      
+
 
     }
   }
@@ -143,10 +154,10 @@ class QueryBuilder {
     var mergedSettings = {};
 
     // Set parent settings state
-    for(var p in parentSettings) {
+    for (var p in parentSettings) {
       var setting = parentSettings[p];
 
-      if(mergedSettings[setting.facet] == undefined) {
+      if (mergedSettings[setting.facet] == undefined) {
         mergedSettings[setting.facet] = {};
       }
 
@@ -154,10 +165,10 @@ class QueryBuilder {
     }
 
     // Override with child settings
-    for(var s in childSettings) {
+    for (var s in childSettings) {
       var setting = childSettings[s];
 
-      if(mergedSettings[setting.facet] == undefined) {
+      if (mergedSettings[setting.facet] == undefined) {
         mergedSettings[setting.facet] = {};
       }
 
@@ -172,19 +183,65 @@ class QueryBuilder {
   // =================================
 
 
-  createQuery(groupNode, wrapperQuery, placeholder, indent) {
+  createQuery(node, prefixes, select, template, aggregate, templateInsertionKey) {
 
     this.result = '';
     this.cvCounter = 0;
-    this.createNodeSubquery(groupNode, indent);
+    this.select = select;
+    this.template = template;
+    this.templateInsertionKey = templateInsertionKey;
+    this.prefixes = prefixes;
+    this.aggregate = aggregate;
 
-    if (this.result == "") return null;
-    
-    var re = new RegExp(placeholder, "g");
-    return wrapperQuery.replace(re, this.result);
+
+    this.appendPrefixes();
+    this.appendLine(this.select, 0);
+    this.appendLine(`{`, 0);
+    this.createNodeSubquery(node, 1, false);
+    this.appendLine(`}`, 0);
+
+    if(this.aggregate != undefined) {
+      this.appendLine(this.aggregate, 0);
+    }
+    return this.result;
+
+  }
+  
+
+  appendPrefixes() {
+    for (var line of this.prefixes) {
+      this.appendLine(line, 0);
+    }
   }
 
-  createFileQuery(groupNode) {
+  appendTemplateHeader(indent) {
+    for (var line of this.template) {
+
+      if (line == this.templateInsertionKey) {
+        break;
+      }
+
+      this.appendLine(line, indent);
+    }
+  }
+
+  appendTemplateFooter(indent) {
+    var write = false;
+
+    for (var line of this.template) {
+
+      if (write) {
+        this.appendLine(line, indent);
+      }
+
+      if (line == this.templateInsertionKey) {
+        write = true;
+      }
+
+    }
+  }
+
+  createFileQuery(node) {
 
     this.cvCounter = 0;
 
@@ -199,7 +256,7 @@ class QueryBuilder {
     this.appendLine('GRAPH ?g {', 1)
     this.appendLine('?dataset dcat:distribution ?distribution .', 2);
     this.appendLine('?distribution dataid:file ?file .', 2);
-    this.createNodeSubquery(groupNode, 2);
+    this.createNodeSubquery(node, 2, false);
     this.appendLine('}', 1);
     this.appendLine('}', 0);
 
@@ -225,9 +282,9 @@ class QueryBuilder {
     this.appendLine("?distribution dataid:formatExtension ?format .", 2);
     this.appendLine("OPTIONAL { ?distribution ?p  ?var. ?p rdfs:subPropertyOf dataid:contentVariant . }", 2);
     this.appendLine("?distribution dataid:compression ?compression .", 2);
-    this.appendLine("?distribution dcat:byteSize ?size ." , 2);
+    this.appendLine("?distribution dcat:byteSize ?size .", 2);
     this.appendLine("OPTIONAL { ?distribution dataid:preview ?preview . }", 2);
-    this.createNodeSubquery(node, 2);
+    this.createNodeSubquery(node, 2, false);
     this.appendLine('}', 1)
     this.appendLine('} GROUP BY ?artifact ?file ?version ?format ?size ?compression ?preview', 0);
 
@@ -239,26 +296,65 @@ class QueryBuilder {
    * a UNION of child node queries (this function is called revursively on the child nodes)
    * @param {*} node 
    */
-  createNodeSubquery(node, indent) {
+  createNodeSubquery(node, indent, hasService) {
     // Initialize empty result
-    
+
+    if (hasService == undefined) {
+      hasService = false;
+    }
+
+    // Get source...
+    var sourceUri = this.findSourceUri(node);
+
+    if(!hasService && sourceUri != null) {
+
+      if (sourceUri != DATABUS_RESOURCE_BASE_URL) {
+        this.appendLine(`SERVICE <${sourceUri}/system/sparql>`, indent);
+        this.appendLine(`{`, indent);
+        this.appendTemplateHeader(indent + 1);
+        this.createNodeSubquery(node, indent + 2, true);
+        this.appendTemplateFooter(indent + 1);
+        this.appendLine(`}`, indent);
+  
+      } else {
+        this.appendTemplateHeader(indent);
+        this.createNodeSubquery(node, indent + 1, true);
+        this.appendTemplateFooter(indent);
+      }
+
+      return;
+    }
+   
+
     // If a node property was set, add it as a restriction
-    if(node.property != undefined) {
+    if (node.property != undefined) {
       this.appendLine(`?dataset ${node.property} <${node.uri}> .`, indent);
-    } 
+      // If no property was set, we are dealing with a source node
+    } else {
+
+    }
 
     // Create the node facets sub query 
     this.createNodeFacetsSubquery(node, indent);
 
     // Call recursively on the children and UNION the results
-    for(var i in node.childNodes) {
-      if(i > 0) this.appendLine('UNION', indent);
+    for (var i in node.childNodes) {
+      if (i > 0) this.appendLine('UNION', indent);
       this.appendLine('{', indent);
-      this.createNodeSubquery(node.childNodes[i], indent + 1);
+      this.createNodeSubquery(node.childNodes[i], indent + 1, hasService);
       this.appendLine('}', indent);;
     }
 
     return this.result;
+  }
+
+  findSourceUri(node) {
+    if (node.uri == null) {
+      return null;
+    }
+
+    var url = new URL(node.uri);
+    return url.origin;
   }
 
   /**
@@ -271,13 +367,13 @@ class QueryBuilder {
     var facetUris = this.findAllNodeFacets(node);
 
     // Iterate over all the facet settings of the node
-    for(var i in facetUris) {
+    for (var i in facetUris) {
 
       var facetUri = facetUris[i];
 
       // We only add facets to the node if the facet is not overriden by any child nodes
-      if(!this.hasFacetOverride(node, facetUri)) {
-        
+      if (!this.hasFacetOverride(node, facetUri)) {
+
         // We create the subquery while merging the facet settings from this node to the root of the query tree
         this.createFacetSubquery(node, facetUri, indent);
       }
@@ -288,32 +384,32 @@ class QueryBuilder {
   hasFacetOverride(node, facetUri) {
 
     // If we don't have any children, there are no overrides
-    if(node.childNodes.length == 0) {
+    if (node.childNodes.length == 0) {
       return false;
     }
 
     // ======= SPECIAL TREATMENT OF VERSION/LATEST =======
     // Treat as if overriden (leaf nodes already excluded)
     // ===================================================
-    if(facetUri == 'http://purl.org/dc/terms/hasVersion') {
-      for(var i in node.facetSettings[facetUri]) {
-        if(node.facetSettings[facetUri][i].value == '$latest') {
+    if (facetUri == 'http://purl.org/dc/terms/hasVersion') {
+      for (var i in node.facetSettings[facetUri]) {
+        if (node.facetSettings[facetUri][i].value == '$latest') {
           return true;
         }
       }
     }
 
     // Iterate through the child nodes
-    for(var i in node.childNodes) {
+    for (var i in node.childNodes) {
       var childNode = node.childNodes[i];
 
       // If the child node overrides the facet then yes, we have an override
-      if(childNode.facetSettings[facetUri] != undefined) {
+      if (childNode.facetSettings[facetUri] != undefined) {
         return true;
       }
 
       // If any of the child node's children has an override, we have an override
-      if(this.hasFacetOverride(childNode, facetUri)) {
+      if (this.hasFacetOverride(childNode, facetUri)) {
         return true;
       }
     }
@@ -333,15 +429,17 @@ class QueryBuilder {
 
     // If we add a facet setting, we have to include the facets of all the ancestor nodes
     var settings = this.createEnrichedSettings(node, facetUri);
-    settings = settings.filter(function(s) {
+    settings = settings.filter(function (s) {
       return s.checked;
     });
 
-    if(settings.length == 1) {
+    if (settings.length == 0) {
+      this.appendLine(`{ ?distribution <${facetUri}> "" . }`, indent);
+    } else if (settings.length == 1) {
       var facetSettingEntry = settings[0];
-      if(!facetSettingEntry.checked) return;
+      if (!facetSettingEntry.checked) return;
 
-      if(facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
+      if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
         // Add the special latest version facet value restriction.
         this.appendLine('{', indent);
         this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
@@ -357,21 +455,21 @@ class QueryBuilder {
         this.appendLine(`{ ?distribution <${facetUri}> '${facetSettingEntry.value}'${this.stringSuffix} . }`, indent);
       }
     }
-    else if(settings.length > 1) {
+    else if (settings.length > 1) {
 
       // More than one value for this facet
 
-      if(facetUri == 'http://purl.org/dc/terms/hasVersion') {
+      if (facetUri == 'http://purl.org/dc/terms/hasVersion') {
 
-         // Iterate..
-        for(var i in settings) {
+        // Iterate..
+        for (var i in settings) {
 
           var facetSettingEntry = settings[i];
-          if(!facetSettingEntry.checked) continue;
+          if (!facetSettingEntry.checked) continue;
 
-          if(!first) this.appendLine("UNION", indent);
+          if (!first) this.appendLine("UNION", indent);
 
-          if(facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
+          if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
             // Add the special latest version facet value restriction.
             this.appendLine('{', indent);
             this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
@@ -395,15 +493,15 @@ class QueryBuilder {
         this.appendLine('{', indent);
         this.appendLine(`?distribution <${facetUri}> ?c${this.cvCounter} .`, indent + 1);
         this.appendLine(`VALUES ?c${this.cvCounter} {`, indent + 1);
-        
-        for(var i in settings) {
+
+        for (var i in settings) {
           var facetSettingEntry = settings[i];
-          if(!facetSettingEntry.checked) continue;
+          if (!facetSettingEntry.checked) continue;
           this.appendLine(`'${facetSettingEntry.value}'${this.stringSuffix}`, indent + 2);
         }
         this.appendLine(`}`, indent + 1);
         this.appendLine(`}`, indent);
-        this.cvCounter++; 
+        this.cvCounter++;
       }
     }
   }
@@ -416,20 +514,20 @@ class QueryBuilder {
   findAllNodeFacets(node) {
     var facetUris = [];
 
-    for(var facetUri in node.facetSettings) {
+    for (var facetUri in node.facetSettings) {
       facetUris.push(facetUri);
     }
 
     var parentNode = node.parent;
 
-    while(parentNode != undefined) {
+    while (parentNode != undefined) {
 
-      for(var facetUri in parentNode.facetSettings) {
-        if(!this.hasFacetOverride(parentNode, facetUri)) {
+      for (var facetUri in parentNode.facetSettings) {
+        if (!this.hasFacetOverride(parentNode, facetUri)) {
           continue;
         }
 
-        if(facetUris.includes(facetUri)) {
+        if (facetUris.includes(facetUri)) {
           continue;
         }
 
@@ -450,25 +548,25 @@ class QueryBuilder {
    */
   createEnrichedSettings(node, facetUri) {
     var result = [];
-    for(var i in node.facetSettings[facetUri]) {
+    for (var i in node.facetSettings[facetUri]) {
       result.push(node.facetSettings[facetUri][i]);
     }
 
     var parentNode = node.parent;
 
-    while(parentNode != undefined) {
+    while (parentNode != undefined) {
 
-      for(var i in parentNode.facetSettings[facetUri]) {
+      for (var i in parentNode.facetSettings[facetUri]) {
         var parentSetting = parentNode.facetSettings[facetUri][i];
         var hasSetting = false;
-        for(var j in result) {
-          if(result[j].value == parentSetting.value) {
+        for (var j in result) {
+          if (result[j].value == parentSetting.value) {
             hasSetting = true;
             break;
           }
         }
-  
-        if(!hasSetting) {
+
+        if (!hasSetting) {
           result.push(parentSetting);
         }
       }
@@ -477,7 +575,7 @@ class QueryBuilder {
     }
 
 
-    return result;   
+    return result;
   }
 
   /**
@@ -486,7 +584,7 @@ class QueryBuilder {
    * @param {*} indent 
    */
   appendLine(line, indent) {
-    for(var i = 0; i < indent; i++) this.result += '\t';
+    for (var i = 0; i < indent; i++) this.result += '\t';
     this.result += line;
     this.result += '\n';
   }
@@ -499,11 +597,11 @@ class QueryBuilder {
 
   what() {
 
-    if(this.groupHasOverride(group)) {
-      for(var j in group.artifacts) {
+    if (this.groupHasOverride(group)) {
+      for (var j in group.artifacts) {
         var artifact = group.artifacts[j];
 
-        if(!isFirstSubquery) {
+        if (!isFirstSubquery) {
           query += FACET_SUBQUERY_UNION;
         } else {
           isFirstSubquery = false;
@@ -531,18 +629,18 @@ class QueryBuilder {
 
     var options = '';
 
-    for(var f in settings) {
+    for (var f in settings) {
 
       var facet = settings[f];
       var facetQueries = [];
 
-      for(var v in facet) {
+      for (var v in facet) {
 
-        if(facet[v]) {
+        if (facet[v]) {
 
-          if(v == FACET_LASTEST_VERSION_SUBQUERY_KEY) {
+          if (v == FACET_LASTEST_VERSION_SUBQUERY_KEY) {
             facetQueries.push(this.latestVersionSubquery.replace(this.artifactUriPlaceholder, resourceUri));
-         } else {
+          } else {
             facetQueries.push(this.defaultSubquery
               .replace(FACET_DEFAULT_SUBQUERY_PLACEHOLDER_FACET, f)
               .replace(FACET_DEFAULT_SUBQUERY_PLACEHOLDER_VALUE, v));
@@ -552,8 +650,8 @@ class QueryBuilder {
 
       var subquery = '';
 
-      for(var i in facetQueries) {
-        if(i > 0) {
+      for (var i in facetQueries) {
+        if (i > 0) {
           subquery += FACET_SUBQUERY_UNION;
         }
 
@@ -567,5 +665,5 @@ class QueryBuilder {
   }
 }
 
-if(typeof module === "object" && module && module.exports)
-   module.exports = QueryBuilder;
+if (typeof module === "object" && module && module.exports)
+  module.exports = QueryBuilder;

@@ -1,3 +1,4 @@
+
 class DatabusUris {
 
   // JSONLD
@@ -40,4 +41,5 @@ class DatabusUris {
   static XSD_DATE_TIME = 'http://www.w3.org/2001/XMLSchema#dateTime';
 }
 
-module.exports = DatabusUris;
+if(typeof module === "object" && module && module.exports)
+   module.exports = DatabusUris;

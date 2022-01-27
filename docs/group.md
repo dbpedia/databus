@@ -79,7 +79,7 @@ dct:title
 	] . 
 ```
 ```javascript
-"title": 		{ "@id": "dct:title", "@language" : "en" }
+"title": { "@id": "dct:title" }
 ```
 
 
@@ -122,7 +122,7 @@ dct:abstract
 	] . 
 ```
 ```javascript
-"abstract": 	{ "@id": "dct:abstract", "@language" : "en" }
+"abstract": { "@id": "dct:abstract" }
 ```
 
 
@@ -164,7 +164,7 @@ dct:description
 	] . 
 ```
 ```javascript
-"description": 	{ "@id": "dct:description", "@language" : "en" }
+"description": { "@id": "dct:description" }
 ```
 
 
