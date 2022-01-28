@@ -10,3 +10,8 @@ The Databus was designed to capture metadata for every file you can imagine. It 
 
 With the help of the Databus Mods subsystem, several custom metadata layers can be added, to facilitate a unified way to access and manage this metadata extension tailored to your specific use case. This enables to build even more complex systems like Meta-Registries that integrate or enhance heterogenous metadata catalogues from different registries in a flexible and extensible way.&#x20;
 
+### Meta registry of existing files
+
+
+
+### Enhancement with Mods
