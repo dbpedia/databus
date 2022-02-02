@@ -47,6 +47,46 @@ Some examples to copy and adapt. Example SPARQL queries.
 
 
 ```json
+{
+	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
+	"@id": "https://databus.example.org/john/animals/cats/2022-02-02#Dataset",
+	"@type": "dataid:Dataset",
+	"title": "Cat Facts",
+	"abstract": "A collection of facts about cats.",
+	"description": "A collection of facts about cats. Contains data about cat species and specific famous cats.",
+	"hasVersion": "2022-02-02",
+	"license": "http://creativecommons.org/licenses/by/4.0/",
+	"distribution": [
+    {
+      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=species.nt",
+      "@type": "dataid:Part",
+      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=species.nt",
+      "format": "nt",
+      "compression": "none",
+      "downloadURL": "https://storage.example.org/files/john/animals/cat_species.nt",
+      "byteSize": "4439722",
+      "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+      "dcv:topic": "species"
+    },
+    {
+      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=famous.nt",
+      "@type": "dataid:Part",
+      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=famous.nt",
+      "format": "nt",
+      "compression": "none",
+      "downloadURL": "https://storage.example.org/files/john/animals/famous_cats.nt",
+      "byteSize": "4439722",
+      "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
+      "dcv:topic": "famous"
+    }
+  ]
+}
+```
+
+
+Example input after auto-completion
+
+```json
 [
   {
     "@context": "http://downloads.dbpedia.org/databus/context.jsonld",
@@ -110,44 +150,8 @@ Some examples to copy and adapt. Example SPARQL queries.
 ]
 ```
 
-Example input after auto-completion
 
-```json
-{
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.example.org/john/animals/cats/2022-02-02#Dataset",
-	"@type": "dataid:Dataset",
-	"title": "Cat Facts",
-	"abstract": "A collection of facts about cats.",
-	"description": "A collection of facts about cats. Contains data about cat species and specific famous cats.",
-	"hasVersion": "2022-02-02",
-	"license": "http://creativecommons.org/licenses/by/4.0/",
-	"distribution": [
-    {
-      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=species.nt",
-      "@type": "dataid:Part",
-      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=species.nt",
-      "format": "nt",
-      "compression": "none",
-      "downloadURL": "https://storage.example.org/files/john/animals/cat_species.nt",
-      "byteSize": "4439722",
-      "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-      "dcv:topic": "species"
-    },
-    {
-      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=famous.nt",
-      "@type": "dataid:Part",
-      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=famous.nt",
-      "format": "nt",
-      "compression": "none",
-      "downloadURL": "https://storage.example.org/files/john/animals/famous_cats.nt",
-      "byteSize": "4439722",
-      "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-      "dcv:topic": "famous"
-    }
-  ]
-}
-```
+
 
 
 ### SPARQL Queries
