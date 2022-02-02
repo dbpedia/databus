@@ -367,6 +367,9 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     return false;
   }
 
+  ctrl.isLocalDatabusNode = function(node) {
+    return node.uri == DATABUS_RESOURCE_BASE_URL;
+  }
   ctrl.addFilter = function (node, facet, values, checked) {
 
     if (values == null) {

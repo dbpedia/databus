@@ -17,7 +17,7 @@ module.exports = function (router, protector) {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
 
       var publishers = await sparql.accounts.getPublishersByAccount(auth.info.accountName);
-     
+
 
       res.render('publish-wizard', {
         title: 'Publish Data',
@@ -93,7 +93,7 @@ module.exports = function (router, protector) {
     if (header['content-disposition'] != undefined) {
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
-      console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
+      // console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
       parseFormatAndCompression(result, filename);
 
       return result;
@@ -122,10 +122,24 @@ module.exports = function (router, protector) {
     var nameComponents = value.split('/');
 
     nameComponents = nameComponents[nameComponents.length - 1].split('.');
-    result.format = nameComponents
 
-    result.format = nameComponents.length > 1 ? nameComponents[1] : 'none';
-    result.compression = nameComponents.length > 2 ? nameComponents[2] : 'none';
+    if (nameComponents[nameComponents.length - 1].includes('#')) {
+      nameComponents[nameComponents.length - 1] = nameComponents[nameComponents.length - 1].split('#')[0]
+    }
+
+    if (nameComponents.length > 2) {
+      result.compression = nameComponents[nameComponents.length - 1];
+      result.format = nameComponents[nameComponents.length - 2];
+    } else if (nameComponents.length > 1) {
+      result.compression = 'none';
+      result.format = nameComponents[nameComponents.length - 1];
+    } else {
+      result.compression = 'none';
+      result.format = 'none';
+    }
+
+
+
   }
 
   async function fetchLinksRecursive(baseUrl, path, depth) {

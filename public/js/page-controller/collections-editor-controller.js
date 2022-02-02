@@ -4,6 +4,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.authenticated = data.auth.authenticated;
   $scope.accountName = data.auth.info.accountName;
   $scope.location = $location;
+  $scope.baseUrl = DATABUS_RESOURCE_BASE_URL;
 
   $scope.$watch("location.hash()", function (newVal, oldVal) {
 

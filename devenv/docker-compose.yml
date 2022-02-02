@@ -24,7 +24,7 @@ services:
   virtuoso:
     logging:
       driver: none
-    image: "openlink/virtuoso-opensource-7"
+    image: "tenforce/virtuoso"
     container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"

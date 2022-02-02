@@ -21,7 +21,7 @@ self.executeConstruct = async function (jsonld, query) {
     var store = await self.createStore();
 
     var tripleCount = await self.loadJsonld(store, jsonld);
-    console.log(tripleCount);
+    // console.log(tripleCount);
 
     var graph = await self.queryStore(store, query);
     var triples = self.convertToN3(graph);

@@ -26,7 +26,14 @@
     padding: .5em;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
+
+  .ce-content-source-body {
+    padding: 1em;
+    border-top: 1px solid #dbdbdb;
+  }
+
 
   .ce-content-collection-header {
     padding: .5em;
@@ -41,6 +48,12 @@
     align-items: center;
     cursor: pointer;
   }
+
+  .ce-content-group-body {
+    padding: 1em;
+    border-top: 1px solid #dbdbdb;
+  }
+
 
   .ce-content-artifact {
     padding: 0;
@@ -154,7 +167,7 @@
   .mini-filter-view div:first-child {
     background-color: #f6f6f6;
     padding: .1em .35em;
-
+    color: #aaa;
     border-right: 1px solid #dbdbdb;
     height: 30px;
   }
@@ -170,7 +183,7 @@
 
   <div class=" ce-content-collection-header">
     <type-tag width="48" height="48" style="margin-right:18px" type="'Collection'"></type-tag>
-    <div style="flex: 1;">{{ collection.uri }}</div>
+    <div style="flex: 1;">{{ $ctrl.collection.label }}</div>
   </div>
 </div>
 
@@ -179,91 +192,99 @@
 
   <div class="ce-content-source">
 
-    <div class="ce-artifact-tree-line">
-    </div>
-
+    <div class="ce-artifact-tree-line"></div>
     <div ng-if="!$ctrl.isLastChild($ctrl.root, sourceNode)" class="ce-artifact-to-artifact-tree-line"></div>
 
-
-    <div class=" ce-content-source-header">
+    <div class=" ce-content-source-header" ng-click="$ctrl.toggleExpand(sourceView)">
       <type-tag width="48" height="48" style="margin-right:18px" type="'Databus'"></type-tag>
       <div style="flex: 1;">{{ sourceNode.uri }}</div>
 
-      <div style="position: relative;">
-        <databus-icon style="margin-right:16px; cursor: pointer; display: flex;" shape="'add'" size="24"
-          ng-click="sourceView.showSearchResults=true;$ctrl.updateSearchResults(sourceView);"
-          ng-focus="sourceView.showSearchResults=true"></databus-icon>
+      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!sourceView.expanded" shape="'max'" size="24">
+      </databus-icon>
+      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="sourceView.expanded" shape="'min'" size="24">
+      </databus-icon>
 
-        <div ng-if="sourceView.showSearchResults"
-          style="position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 1000;"
-          ng-click="sourceView.showSearchResults=false;"></div>
 
-        <div ng-if="sourceView.showSearchResults" style="position: absolute; z-index: 100000; border: 1px solid #dbdbdb; 
-      background-color: white; margin-top: .5em; right: 1em;
-      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1); min-width: 550px;">
 
-          <div style="display: flex; ">
-            <div style="flex:1; text-align: center; border-right: 1px solid #dbdbdb; text-transform: uppercase;
-          color: #aaa;
-          font-size: .85em;
-          letter-spacing: .1em; cursor: pointer;
-          padding: .05em;">Artifacts</div>
-            <div style="flex:1; text-align: center; background-color: #eee; border-bottom: 1px solid #dbdbdb;
-          text-transform: uppercase;
-          color: #aaa;
-          font-size: .85em;
-          letter-spacing: .05em; cursor: pointer;
-          padding: .1em;">Custom SPARQL</div>
+
+    </div>
+
+    <div class="ce-content-source-body" ng-if="sourceView.expanded">
+
+
+      <div>
+
+
+        <div style="display: flex; margin-bottom: 0.5em; ">
+
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="answer">
+              Groups & Artifacts
+            </label>
+            <label class="radio">
+              <input type="radio" name="answer">
+              Custom SPARQL Query
+            </label>
           </div>
 
-          <div style="padding: 1em">
-            <div style="display: flex;">
-              <div class="field" style="display: flex; line-height: 1; margin-bottom: 0; width: 100%;">
-                <div class="control has-icons-left has-icons-right" style="flex:1;">
-                  <input class="input" type="text" ng-model="sourceView.search"
-                    ng-change="$ctrl.searchNode(sourceNode, sourceView)"
-                    ng-keydown="$ctrl.handleKey($event, sourceView)" placeholder="Search Databus...">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-search"></i>
-                  </span>
-                </div>
+    
+        </div>
+
+        <div >
+          <div style="display: flex;">
+            <div class="field" style="display: flex; line-height: 1; margin-bottom: 0; width: 100%;">
+              <div class="control has-icons-left has-icons-right" style="flex:1;">
+                <input class="input" type="text" ng-model="sourceView.search"
+                  ng-change="$ctrl.searchNode(sourceNode, sourceView)" ng-keydown="$ctrl.handleKey($event, sourceView)"
+                  placeholder="Search Databus for resources to add...">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-search"></i>
+                </span>
               </div>
-
-
             </div>
 
-            <div style="margin-top: 1.1em" ng-if="sourceView.searchResults.length > 0">
 
-              <div ng-repeat="result in sourceView.searchResults">
-                <div style="display: flex;">
-                  <entity-card style="flex: 1;" label="result.label[0].highlight" type="result.typeName[0].value"
-                    uri="result.resource[0].value" desc="result.comment[0].highlight">
-                  </entity-card>
-                  <div>
-                    <div class="is-clickable button" ng-click="$ctrl.addToCollection(sourceNode, sourceView, result)"
-                      ng-class="{ 'is-success' : result.inCollection }" style="width: 48px; height: 48px;">
-                      <span ng-if="result.inCollection" class="icon is-small">
-                        <i class="fas fa-check"></i>
-                      </span>
-                      <span ng-if="!result.inCollection" class="icon is-small">
-                        <i class="fas fa-plus"></i>
-                      </span>
+          </div>
 
-                    </div>
+          <div style="margin-top: 1.1em" ng-if="sourceView.searchResults.length > 0">
+
+            <div ng-repeat="result in sourceView.searchResults">
+              <div style="display: flex;">
+                <entity-card style="flex: 1;" label="result.label[0].highlight" type="result.typeName[0].value"
+                  uri="result.resource[0].value" desc="result.comment[0].highlight">
+                </entity-card>
+                <div>
+                  <div class="is-clickable button" ng-click="$ctrl.addToCollection(sourceNode, sourceView, result)"
+                    ng-class="{ 'is-success' : result.inCollection }" style="width: 48px; height: 48px;">
+                    <span ng-if="result.inCollection" class="icon is-small">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span ng-if="!result.inCollection" class="icon is-small">
+                      <i class="fas fa-plus"></i>
+                    </span>
+
                   </div>
                 </div>
-
-                <div ng-if="!$last" class="is-divider" style="margin: 1em 0"></div>
               </div>
+
+              <div ng-if="!$last" class="is-divider" style="margin: 1em 0"></div>
             </div>
           </div>
         </div>
+
+        <div style="display: flex; margin-top: .75em;" ng-if="!$ctrl.readonly && !$ctrl.isLocalDatabusNode(sourceNode)">
+          <div style="flex: 1"></div>
+          <button class="button is-danger is-outlined" ng-click="$ctrl.removeNode(sourceNode)">
+            Remove Databus
+          </button>
+        </div>
+
       </div>
 
-
-      <databus-icon style="margin-right:16px;cursor: pointer;" ng-if="!$ctrl.readonly" shape="'delete'" size="24"
-        on-click="$ctrl.removeNode(sourceNode)"></databus-icon>
     </div>
+
+
   </div>
 
   <div style="position: relative;" ng-repeat-start="groupNode in sourceNode.childNodes track by groupNode.uri"
@@ -291,29 +312,25 @@
           style="display: flex; align-items: center; margin-left: 0.5em;">
 
           <div ng-repeat="(uri, setting) in groupNode.facetSettings">
-            <div class="mini-filter-view">
+            <div ng-if="setting.length > 0" class="mini-filter-view">
               <div>{{ groupView.facets[uri].label}}</div>
               <div>
                 <span ng-repeat="value in setting">
-                  {{ value.value }}<span ng-if="!$last">,</span>
-                </span>
-                <span ng-if="setting.length == 0" style="color: #a3a3a3;">
-                  <i>None</i>
+                  <span ng-if="value.value == ''" style="color: #a3a3a3;">
+                    <i>None</i>
+                  </span>
+                  <span ng-if="value.value != ''">{{ value.value }}</span><span ng-if="!$last">, </span>
                 </span>
               </div>
             </div>
           </div>
         </div>
-
-
-
         <div style="flex: 1;"></div>
 
-
-        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.expanded" shape="'max'" size="24"
-          ></databus-icon>
-        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24"
-          ></databus-icon>
+        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.expanded" shape="'max'" size="24">
+        </databus-icon>
+        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24">
+        </databus-icon>
 
       </div>
 
@@ -391,13 +408,49 @@
 
           <div ng-if="$ctrl.objSize(artifactNode.facetSettings) > 0 && !artifactView.expanded"
             style="display: flex; align-items: center; margin-left: 0.5em;">
-  
+
+
+            <div ng-if="setting.length > 0" class="mini-filter-view">
+              <div>{{ groupView.facets[uri].label}}</div>
+              <div>
+                <span ng-repeat="value in setting">
+                  <span ng-if="value.value == ''" style="color: #a3a3a3;">
+                    <i>None</i>
+                  </span>
+                  <span ng-if="value.value != ''">
+                    {{ value.value }}
+                  </span>
+                  <span ng-if="!$last">,</span>
+                </span>
+              </div>
+            </div>
+
+
             <div ng-repeat="(uri, setting) in artifactNode.facetSettings">
-              <div class="mini-filter-view">
+              <div ng-if="setting.length > 0" class="mini-filter-view">
                 <div>{{ artifactView.facets[uri].label}}</div>
                 <div>
                   <span ng-repeat="value in setting">
-                    <span ng-if="value.checked">{{ value.value }}</span><span ng-if="!value.checked"><del>{{ value.value }}</del></span><span ng-if="!$last">,</span>
+
+                    <span ng-if="value.checked">
+                      <span ng-if="value.value == ''" style="color: #a3a3a3;">
+                        <i>None</i>
+                      </span>
+                      <span ng-if="value.value != ''">
+                        {{ value.value }}
+                      </span>
+                    </span>
+                    <span ng-if="!value.checked">
+                      <del>
+                        <span ng-if="value.value == ''" style="color: #a3a3a3;">
+                          <i>None</i>
+                        </span>
+                        <span ng-if="value.value != ''">
+                          {{ value.value }}
+                        </span>
+                      </del>
+                    </span>
+                    <span ng-if="!$last">,</span>
                   </span>
                 </div>
               </div>
@@ -406,10 +459,9 @@
 
 
           <div style="flex: 1;"></div>
-          <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24"
-            ></databus-icon>
-          <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"
-            ></databus-icon>
+          <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24">
+          </databus-icon>
+          <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"></databus-icon>
         </div>
 
         <div class="ce-content-group-body " ng-if="artifactView.expanded">

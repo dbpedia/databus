@@ -395,6 +395,76 @@ missing
 	sh:hasValue dataid:contentVariant ;
 	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
 
+<#cvs-are-complete>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts." ;
+    sh:select """
+      SELECT ?this ?bindingCount ?distCount ?propCount
+      {
+        {
+          SELECT ?this (COUNT(?cvProperty) AS ?bindingCount) {
+            ?this a  <http://dataid.dbpedia.org/ns/core#Dataset> .
+            ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+            ?cvProperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://dataid.dbpedia.org/ns/core#contentVariant> .
+            ?dist ?cvProperty ?cvValue
+          } GROUP BY ?this
+        }
+        {
+          SELECT ?this (COUNT(DISTINCT ?cvProperty) AS ?propCount) {
+            ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+            ?cvProperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://dataid.dbpedia.org/ns/core#contentVariant> .
+            ?dist ?cvProperty ?cvValue .
+          } GROUP BY ?this
+        }
+        {
+          SELECT ?this (COUNT(DISTINCT ?dist) AS ?distCount) {
+            ?this a  <http://dataid.dbpedia.org/ns/core#Dataset> .
+            ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+          } GROUP BY ?this
+        }
+      
+        FILTER((?distCount * ?propCount) != ?bindingCount)
+      }
+			""" ;
+	] .
+
+<#parts-are-distinguishable-by-cv>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "All dataid:Parts MUST be distinguishable by either format, compression OR at least one content variant dimension." ;
+    sh:select """
+      SELECT ?this ?distinguishableDistCount ?distCount WHERE
+      {
+        {
+          SELECT ?this (COUNT(DISTINCT ?cvString) AS ?distinguishableDistCount) WHERE {
+            ?this a  <http://dataid.dbpedia.org/ns/core#Dataset> .
+            ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+            {
+              SELECT ?dist (CONCAT(STR(?format), ",", STR(?compression), ",", (GROUP_CONCAT(DISTINCT ?cvTuple; SEPARATOR=","))) AS ?cvString) WHERE {
+                ?dist a <http://dataid.dbpedia.org/ns/core#Part> .
+                ?dist ?cvProperty ?cvValue .
+                ?dist <http://dataid.dbpedia.org/ns/core#format> ?format .
+                ?dist <http://dataid.dbpedia.org/ns/core#compression> ?compression .
+                ?cvProperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://dataid.dbpedia.org/ns/core#contentVariant> .
+                BIND (CONCAT(STR(?cvProperty),"=",STR(?cvValue)) AS ?cvTuple)
+              } GROUP BY ?dist ?format ?compression
+            }
+          } GROUP BY ?this
+        }
+        {
+          SELECT ?this (COUNT(DISTINCT ?dist) AS ?distCount) WHERE {
+            ?this a  <http://dataid.dbpedia.org/ns/core#Dataset> .
+            ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+          } GROUP BY ?this
+        }
+        FILTER(?distCount != ?distinguishableDistCount)
+      }
+			""" ;
+	] .
+
 ```
 ```javascript
 "subPropertyOf" : {

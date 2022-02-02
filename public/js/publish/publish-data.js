@@ -295,6 +295,7 @@ class PublishData {
             + index + ' (' +
             cvHints.join(', ') + ').';
 
+          // TODO UNCOMMENT
           files[f].errors.push({ key: 'err_duplicate_file', message: errorMessage });
         }
       }

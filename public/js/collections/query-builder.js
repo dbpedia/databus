@@ -433,9 +433,7 @@ class QueryBuilder {
       return s.checked;
     });
 
-    if (settings.length == 0) {
-      this.appendLine(`{ ?distribution <${facetUri}> "" . }`, indent);
-    } else if (settings.length == 1) {
+   if (settings.length == 1) {
       var facetSettingEntry = settings[0];
       if (!facetSettingEntry.checked) return;
 

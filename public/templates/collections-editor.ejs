@@ -151,7 +151,6 @@
             background-color: white;
             display: flex;
             align-items: center;
-            cursor: pointer;
           }
 
           .ce-content-collection-active-hint {
@@ -186,12 +185,7 @@
 
 
 
-          .ce-content-group-body {
-            padding: 1em;
-
-            border-top: 1px solid #dbdbdb;
-          }
-
+         
           .ce-alert {
             display: flex;
             align-items: center;
@@ -427,7 +421,7 @@
                         <td>
                           <input type="text" class="input" ng-model="form.identifier.value" />
                           <div>Collection will be accessible at <span
-                              style="color:#3867d6">https://databus.dbpedia.org/{{username}}/collections/{{form.identifier.value.length
+                              style="color:#3867d6">{{ baseUrl }}/{{username}}/collections/{{form.identifier.value.length
                               > 0 ? form.identifier.value : '...'}}</span></div>
                           <div class="has-text-danger" ng-if="form.identifier.error">{{
                             getStatusMessage(form.identifier.error) }}</div>
@@ -474,19 +468,19 @@
                   <div style="flex: 2; display: flex; align-items: center;"
                     ng-click="session.showGroups = !session.showGroups">
                     <expandable-arrow is-readonly="true" expanded="session.showGroups"></expandable-arrow>
-                    <div style="flex: 1;">Groups & Artifacts</div>
+                    <div style="flex: 1;">Content</div>
                   </div>
 
                   <div
                     style="flex: 1; display: flex; justify-content: flex-end;font-weight: initial; margin-right: 1em;">
                     <div class="field has-addons">
                       <p class="control">
-                        <input class="input" placeholder="Enter Databus URI..." style="min-width: 300px;"
+                        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 300px;"
                           input="searchInput" ng-model="session.databusUriToAdd" filters="searchFilters">
                       </p>
                       <p class="control">
                         <a ng-click="addDatabusToCollection()" class="button is-version">
-                          Add Databus
+                          Add Resource
                         </a>
                       </p>
                     </div>

@@ -89,14 +89,14 @@ class DataIdCreator {
         var cv = version.contentVariants[c];
         var value = file.contentVariants[cv.id];
 
-        if (value == undefined) {
-          value = "";
+        if (value == undefined || value == "") {
+          continue;
         }
 
         variantSuffix += '_' + cv.id + '=' + value;
       }
 
-      var fileName = DatabusUtils.uriToName(file.uri);
+      var fileName = artifact.id; // DatabusUtils.uriToName(file.uri);
 
       var distributionUri = `${versionUri}#${fileName}`;
       var fileUri = `${versionUri}/${fileName}${variantSuffix}`;
@@ -131,7 +131,7 @@ class DataIdCreator {
         if (value == undefined) {
           value = "";
         }
-        distribution['dataid-cv:' + cv.id] = value;
+        distribution['dcv:' + cv.id] = value;
 
         if (!customVariants.includes(cv.id)) {
           customVariants.push(cv.id);

@@ -19,7 +19,7 @@ module.exports = async function publishDataid(account, data, notify) {
 
     notify(`Publishing DataId.\n`);
 
-    console.log(data);
+    // console.log(data);
 
     // Fetch only relevant triples from the input via construct query
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
@@ -53,6 +53,8 @@ module.exports = async function publishDataid(account, data, notify) {
       notify(`> Auto-completed the input.\n`);
     }
 
+    console.log(JSON.stringify(expandedGraph, null, 3));
+
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
 
@@ -67,7 +69,7 @@ module.exports = async function publishDataid(account, data, notify) {
         notify(`> * ${message}\n`);
       }
 
-      return { code: 400, message: response };
+      return { code: 400, message: null };
     }
 
     notify(`> SHACL validation successful.\n`);
