@@ -10,10 +10,15 @@ The following document supplies a list of inferrable properties that can optiona
 | dataid:group | @id of dataid:Dataset |
 | dataid:artifact | @id of dataid:Dataset |
 | dataid:version | @id of dataid:Dataset |
-| dataid:Artifact | dataid:artifact |
-| dataid:Version | dataid:version |
 | dct:issued | *current time* |
 | dct:modified | *current time (always set by server)* |
 | dataid:format | dataid:formatExtension |
 | dataid:formatExtension | dataid:format *(either format or formatExtension need to be present)* |
 | dct:hasVersion *of dataid:Part* | dct:hasVersion *of dataid:Dataset* |
+
+
+| Type   | Inferred from |
+|------------|---------------|
+| dataid:Artifact | dataid:artifact *of dataid:Dataset* |
+| dataid:Version | dataid:version *of dataid:Dataset* |
+| rdf:Property *with rdfs:subPropertyOf dataid:contentVariant* | *all properties starting with dcv:* |
