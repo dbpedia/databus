@@ -69,12 +69,9 @@ class DataIdCreator {
     }
 
     if (!data.signature.autoGenerateSignature) {
-      graph["sec:proof"] = {
-        '@type': ["dataid:DatabusTractateV1"],
-        'sec:signature': [{
-          "@type": "http://www.w3.org/2001/XMLSchema#string",
-          "@value": data.signature.userSignature
-        }]
+      graph["proof"] = {
+        '@type': "dataid:DatabusTractateV1",
+        'signature': data.signature.userSignature
       };
     }
 

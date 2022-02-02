@@ -542,3 +542,27 @@ dcat:distribution
 }
 ```
 
+## proof
+
+
+Example (JSON-LD):
+```javascript
+{	
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+	"proof": {
+  "@type": "dataid:DatabusTractateV1",
+  "signature": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+}
+}
+```
+Spec (OWL, SHACL, JSON-LD Context)
+```turtle
+missing
+```
+```turtle
+
+```
+```javascript
+"signature":	{"@id": "sec:signature"},
+"proof":	{"@id": "sec:proof"}
+```

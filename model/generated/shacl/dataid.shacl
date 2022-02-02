@@ -218,6 +218,8 @@
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .
 
+
+
 <#part-exists>
 	a sh:NodeShape ;
 	sh:targetNode dataid:Part ;

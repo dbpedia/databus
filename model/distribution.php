@@ -443,9 +443,7 @@ $context='"maker": {
   },
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},
-  "exponent":	{"@id": "cert:exponent"},
-  "signature":	{"@id": "sec:signature"},
-  "proof":	{"@id": "sec:proof"}';
+  "exponent":	{"@id": "cert:exponent"}';
 
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);

@@ -475,3 +475,20 @@ $context='"distribution": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
+## proof
+
+<?php
+$owl='missing';
+
+$shacl='';
+
+$example='"proof": {
+  "@type": "dataid:DatabusTractateV1",
+  "signature": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+}';
+
+$context='"signature":	{"@id": "sec:signature"},
+"proof":	{"@id": "sec:proof"}';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
