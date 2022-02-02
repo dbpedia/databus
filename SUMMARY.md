@@ -20,6 +20,7 @@
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)
 * [Content Variants](docs/content-variants.md)
+* [Auto-Completion](docs/auto-completion.md)
 
 ## Usage
 
