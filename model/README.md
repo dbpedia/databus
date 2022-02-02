@@ -1,6 +1,6 @@
 # Model Generation:
 sudo apt install php7.4-cli
-php model.php > model.md
+./.git/hooks/pre-commit
 
 RECOMMENDED if context or shacl was changed
 cat generated/context.json | jq
@@ -14,7 +14,7 @@ Goal:
 
 Success criteria:
 * context.json, shacl have a correct syntax.
-* model.md renders well and looks pretty and serves as good docu
-* model.md can be viewed at github and might be converted to HTML and shipped with the bus later
+* renders well and looks pretty and serves as good docu
+* can be viewed in Gitbook 
 
 
