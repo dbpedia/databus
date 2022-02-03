@@ -48,7 +48,7 @@ Some examples to copy and adapt. Example SPARQL queries.
 
 ```json
 {
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
+  "@context": "http://downloads.dbpedia.org/databus/context.jsonld",
 	"@id": "https://databus.example.org/john/animals/cats/2022-02-02#Dataset",
 	"@type": "dataid:Dataset",
 	"title": "Cat Facts",

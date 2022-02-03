@@ -19,6 +19,8 @@ class DatabusUris {
   static DATAID_ARTIFACT_PROPERTY = 'http://dataid.dbpedia.org/ns/core#artifact';
   static DATAID_FORMAT = 'http://dataid.dbpedia.org/ns/core#format';
   static DATAID_FORMAT_EXTENSION = 'http://dataid.dbpedia.org/ns/core#formatExtension';
+  static DATAID_CONTENT_VARIANT = 'http://dataid.dbpedia.org/ns/core#contentVariant';
+  static DATAID_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
 
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';
@@ -36,6 +38,9 @@ class DatabusUris {
 
   // RDF
   static RDF_PROPERTY = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property';
+
+  // RDFS
+  static RDFS_SUB_PROPERTY_OF = 'http://www.w3.org/2000/01/rdf-schema#subPropertyOf';
 
   // XSD
   static XSD_DATE_TIME = 'http://www.w3.org/2001/XMLSchema#dateTime';

@@ -125,9 +125,11 @@ class DataIdCreator {
         var cv = version.contentVariants[c];
         var value = file.contentVariants[cv.id];
 
-        if (value == undefined) {
-          value = "";
+        if (value == undefined || value == "") {
+          continue;
+          // value = "";
         }
+        
         distribution['dcv:' + cv.id] = value;
 
         if (!customVariants.includes(cv.id)) {
@@ -143,6 +145,8 @@ class DataIdCreator {
       "@graph": [graph]
     }
 
+    /*
+
     for (var c in customVariants) {
       var cv = customVariants[c];
 
@@ -154,6 +158,7 @@ class DataIdCreator {
         }
       });
     }
+    */
 
     return result;
   }

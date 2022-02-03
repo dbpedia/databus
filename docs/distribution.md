@@ -445,11 +445,13 @@ missing
             {
               SELECT ?dist (CONCAT(STR(?format), ",", STR(?compression), ",", (GROUP_CONCAT(DISTINCT ?cvTuple; SEPARATOR=","))) AS ?cvString) WHERE {
                 ?dist a <http://dataid.dbpedia.org/ns/core#Part> .
-                ?dist ?cvProperty ?cvValue .
                 ?dist <http://dataid.dbpedia.org/ns/core#format> ?format .
                 ?dist <http://dataid.dbpedia.org/ns/core#compression> ?compression .
-                ?cvProperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://dataid.dbpedia.org/ns/core#contentVariant> .
-                BIND (CONCAT(STR(?cvProperty),"=",STR(?cvValue)) AS ?cvTuple)
+                OPTIONAL { 
+                  ?dist ?cvProperty ?cvValue .
+                  ?cvProperty <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://dataid.dbpedia.org/ns/core#contentVariant> .
+                  BIND (CONCAT(STR(?cvProperty),"=",STR(?cvValue)) AS ?cvTuple)
+                }
               } GROUP BY ?dist ?format ?compression
             }
           } GROUP BY ?this
