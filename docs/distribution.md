@@ -1,16 +1,18 @@
-# Distribution (Part)
+# Distribution
 
-**auto-generated from model/*.php via pre-commit hook. Edit in PHP in git and enable hook with `cd .git/hooks && ln -s ../../.githooks/pre-commit pre-commit`**
-
+**auto-generated from model/\*.php via pre-commit hook. Edit in PHP in git and enable hook with `cd .git/hooks && ln -s ../../.githooks/pre-commit pre-commit`**
 
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"@type": "Part",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 dcat:Distribution
 	a owl:Class ;
@@ -20,6 +22,7 @@ dcat:Distribution
 	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
 	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
 ```
+
 ```turtle
 <#part-exists>
 	a sh:NodeShape ;
@@ -36,22 +39,24 @@ dcat:Distribution
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . 
 ```
+
 ```javascript
 "Part": 	"dataid:Part" 
 ```
 
-
-
-## issued 
+## issued
 
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"issued": "%NOW%",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 dct:issued
 	rdfs:label "Date Issued"@en ;
@@ -61,6 +66,7 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
+
 ```turtle
 <#has-issued>
 	a sh:PropertyShape ;
@@ -73,21 +79,23 @@ dct:issued
 	sh:datatype xsd:dateTime .
 ```
 
-
 ## file
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"file": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%/ontology--DEV_type=parsed_sorted.nt",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#has-file>
 	a sh:PropertyShape ;
@@ -98,8 +106,8 @@ missing
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
-
 ```
+
 ```javascript
 "file": {
       "@id": "dataid:file",
@@ -109,18 +117,21 @@ missing
 
 ## format
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"format": "nt",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#has-format>
 	a sh:PropertyShape ;
@@ -133,29 +144,30 @@ missing
 	sh:maxCount 1 ;
 	sh:minCount 1 .
 ```
+
 ```javascript
 "format":		{"@id": "dataid:format"}
 ```
 
-
 ## formatExtension
 
-TODO Marvin: describe why formatExtension is practical
-TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
-
-
+TODO Marvin: describe why formatExtension is practical TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
 
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"formatExtension": "nt",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#has-formatExtension>
 	a sh:PropertyShape ;
@@ -167,25 +179,28 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
+
 ```javascript
 "formatExtension": 	{"@id": "dataid:formatExtension"}
 ```
 
-
 ## compression
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"compression": "none",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#has-compression>
 	a sh:PropertyShape ;
@@ -198,21 +213,24 @@ missing
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
+
 ```javascript
 "compression": 	{"@id": "dataid:compression"}
 ```
 
-
 ## downloadURL
 
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 dcat:downloadURL
 	a owl:ObjectProperty ;
@@ -222,6 +240,7 @@ dcat:downloadURL
 	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
 	skos:definition "The URL of the downloadable file in a given format. E.g. CSV file or RDF file. The format is indicated by the distribution's dct:format and/or dcat:mediaType."@en ;
 ```
+
 ```turtle
 <#has-downloadURL>
 	a sh:PropertyShape ;
@@ -232,8 +251,8 @@ dcat:downloadURL
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
-
 ```
+
 ```javascript
 "downloadURL": {
       "@id": "dcat:downloadURL",
@@ -241,24 +260,26 @@ dcat:downloadURL
     }
 ```
 
-
 ## bytesize
 
 Note: Determining byteSize is not trivial for two reasons:
+
 1. intuitively, one would think that bytesize is a clearly determinable value, but different functions (e.g. for different programming language) return different bytesizes and are only comparable in the same system.
 2. More often than expected determining bytesize fails, e.g. disk read problem, network problems or file corruption.
 
 We are reusing `dcat:byteSize` here, which uses `xsd:decimal`. However, we do not deem this ideal and would rather opt to `xsd:double` as it supports the `NaN` value. So in any case, where bytesize calculation fails, please put 0.
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"byteSize": "4439722",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 # excerpt from https://www.w3.org/ns/dcat2.ttl
 dcat:byteSize
@@ -271,6 +292,7 @@ dcat:byteSize
 	skos:definition "The size of a distribution in bytes."@en ;
 	skos:scopeNote "The size in bytes can be approximated when the precise size is not known. The literal value of dcat:byteSize should by typed as xsd:decimal."@en ;
 ```
+
 ```turtle
 <#has-bytesize>
 	a sh:PropertyShape ;
@@ -282,6 +304,7 @@ dcat:byteSize
 	sh:maxCount 1 ;
 	sh:minCount 1 .  
 ```
+
 ```javascript
 "byteSize": {
     "@id": "dcat:byteSize",
@@ -289,21 +312,23 @@ dcat:byteSize
   }
 ```
 
-
 ## sha256sum
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#has-sha256sum>
 	a sh:PropertyShape ;
@@ -317,6 +342,7 @@ missing
 	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
+
 ```javascript
 "sha256sum": 		{"@id": "dataid:sha256sum"}
 ```
@@ -325,15 +351,17 @@ missing
 
 Note: see section versioning above
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"hasVersion": "%VERSION%",
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 dct:hasVersion
 	rdfs:label "Has Version"@en ;
@@ -342,6 +370,7 @@ dct:hasVersion
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
+
 ```turtle
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
@@ -355,6 +384,7 @@ dct:hasVersion
 ```
 
 ## signature/tractate
+
 TODO ??
 
 ```
@@ -367,26 +397,27 @@ TODO ??
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
     sh:pattern "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" .
-
 ```
 
+## Content variants
 
-
-##  Content variants
-TODO ??
-
+See comment about in the SHACL section about verifying CVs, TODO needs more testing
 
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	missing
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 <#properties-are-cvs>
 	a sh:PropertyShape ;
@@ -430,6 +461,8 @@ missing
 			""" ;
 	] .
 
+# Note: this query works because of the primary partition of the database (Virtuoso)
+# this means that the cvs are returned in a particular order and therefore they are comparable
 <#parts-are-distinguishable-by-cv>
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
@@ -466,8 +499,8 @@ missing
       }
 			""" ;
 	] .
-
 ```
+
 ```javascript
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
@@ -476,23 +509,28 @@ missing
 ```
 
 ## Remaining JSON-LD
+
 TODO ??
 
-
 Example (JSON-LD):
+
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	missing
 }
 ```
+
 Spec (OWL, SHACL, JSON-LD Context)
+
 ```turtle
 missing
 ```
+
 ```turtle
 missing
 ```
+
 ```javascript
 "maker": {
     "@id": "foaf:maker",
@@ -515,4 +553,3 @@ missing
   "modulus":	{"@id": "cert:modulus"},
   "exponent":	{"@id": "cert:exponent"}
 ```
-
