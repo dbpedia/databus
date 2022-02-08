@@ -18,7 +18,7 @@ services:
       VIRT_URI: "http://virtuoso:8890"
       GIT_ROOT: "/root/git"
     ports:
-      - "3002:8080"
+      - "127.0.0.1:3002:8080"
     volumes:
       - ./data/repo:/root/git
   virtuoso:
@@ -31,6 +31,6 @@ services:
       SPARQL_UPDATE: "true"
       DEFAULT_GRAPH: "http://localhost:3000"
     ports:
-      - "3003:8890"
+      - "127.0.0.1:3003:8890"
     volumes: 
       - ./data/virtuoso:/data

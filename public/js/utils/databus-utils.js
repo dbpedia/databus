@@ -100,19 +100,19 @@ class DatabusUtils {
     if (result.includes('.')) {
       result = result.substr(0, result.lastIndexOf('.'));
     }
-    
+
     return result;
   }
 
   static isValidHttpUrl(string) {
     let url;
-    
+
     try {
       url = new URL(string);
     } catch (_) {
-      return false;  
+      return false;
     }
-  
+
     return url.protocol === "http:" || url.protocol === "https:";
   }
 
@@ -190,10 +190,10 @@ class DatabusUtils {
     var url = new URL(uri);
     uri = url.pathname;
 
-    if(uri.startsWith('/')) {
+    if (uri.startsWith('/')) {
       uri = uri.substr(1);
     }
-    if(uri.endsWith('/')) {
+    if (uri.endsWith('/')) {
       uri = uri.substr(0, uri.length - 1);
     }
 
@@ -222,6 +222,49 @@ class DatabusUtils {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
+  }
+
+  static async parseN3(data, maxQuads) {
+    return new Promise((resolve, reject) => {
+
+      const quads = [];
+      const prefixes = [];
+
+      const parser = new N3.Parser();
+
+      parser.parse(data, (e, q, p) => {
+        if (e) {
+          reject(e);
+          return;
+        }
+
+        if (quads.length > maxQuads || q == null) {
+          resolve({ quads: quads, prefixes: prefixes });
+        }
+
+        if (q) {
+          quads.push(q);
+        }
+      });
+    });
+  }
+
+  static async parseDatabusManifest(data) {
+
+    var parsedData = await DatabusUtils.parseN3(data, 100);
+
+    for (var quad of parsedData.quads) {
+
+      if (quad.predicate.id == `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+        && quad.object.id == `http://dataid.dbpedia.org/ns/core#Databus`) {
+
+        return {
+          uri : quad.subject.id
+        }
+      }
+    }
+
+    return undefined;
   }
 
 }

@@ -84,31 +84,6 @@
     }
 }
 
-.is-service {
-    
-    path {
-        fill: $entity-service; 
-        &.is-white {
-            fill: $white;
-        }
-    }
-
-    &.title {
-        color: $entity-service;
-    }
-
-    &.tag:not(body) {
-        background-color: $entity-service;
-        color: $white;
-    }
-
-    &.databus-banner {
-        background-image: url("../img/banner-background.png");
-        background-repeat: repeat;
-        background-color: $entity-service;
-        background-size: 150px;
-    }
-}
 
 .grey-out .tag:not(body) {
     background-color: $icon-light !important;
@@ -183,39 +158,6 @@
     &.databus-banner {
         background-image: url("../img/banner-background.png");
         background-repeat: repeat;
-        background-color: $entity-collection-editor-bg;
-        background-size: 150px;
-    }
-}
-
-.is-blog {
-    
-    path {
-        fill: $entity-blog; 
-        &.is-white {
-            fill: $white;
-        }
-    }
-
-    &.button {
-        background-color: $entity-blog;
-        color: $white;
-        border: none;
-    }
-
-    &.title {
-        color: $entity-blog;
-    }
-
-    &.tag:not(body) {
-        background-color: $entity-blog;
-        color: $white;
-    }
-
-    &.databus-banner {
-        background-image: url("../img/banner-background.png");
-        background-repeat: repeat;
-        background-color: $entity-blog-bg;
         background-size: 150px;
     }
 }

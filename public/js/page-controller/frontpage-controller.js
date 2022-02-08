@@ -13,7 +13,7 @@ function FrontPageController($scope, $sce) {
   $scope.activityChartData = data.activityData;
   $scope.recentUploadsData = data.recentUploadsData;
   $scope.uploadRankingData = data.rankingData;
-
+  $scope.databusName = DATABUS_NAME;
 
   $scope.auth = data.auth;
 

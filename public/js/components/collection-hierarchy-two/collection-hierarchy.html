@@ -184,6 +184,20 @@
   <div class=" ce-content-collection-header">
     <type-tag width="48" height="48" style="margin-right:18px" type="'Collection'"></type-tag>
     <div style="flex: 1;">{{ $ctrl.collection.label }}</div>
+
+    <div class="field has-addons" style="margin-right: .5em">
+      <p class="control">
+        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 300px;"
+          input="searchInput" ng-model="$ctrl.databusUriToAdd" filters="searchFilters">
+      </p>
+      <p class="control">
+        <a ng-click="$ctrl.onAddResource($ctrl.databusUriToAdd)" class="button is-version">
+          Add Resource
+        </a>
+      </p>
+
+  </div>
+
   </div>
 </div>
 
@@ -217,12 +231,13 @@
 
         <div style="display: flex; margin-bottom: 0.5em; ">
 
+          <b style="margin-right: 0.75em;">Add Content:</b>
           <div class="control">
             <label class="radio">
-              <input type="radio" name="answer">
+              <input type="radio" ng-model="sourceView.addMode" value="artifact" name="answer">
               Groups & Artifacts
             </label>
-            <label class="radio">
+            <label class="radio" ng-model="sourceView.addMode" value="custom">
               <input type="radio" name="answer">
               Custom SPARQL Query
             </label>

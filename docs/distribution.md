@@ -375,6 +375,8 @@ TODO ??
 ##  Content variants
 TODO ??
 
+The shape `<#parts-are-distinguishable-by-cv>` relies on a ordering of results in the *GROUP BY* and consequentially *GROUP_CONCAT* instruction that is agnostic of the ordering of properties in the data. This seems to work for Apache JENA and Virtuoso but has not been tested with other SPARQL engines.
+
 
 Example (JSON-LD):
 ```javascript
@@ -399,7 +401,7 @@ missing
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
 	sh:sparql [
-		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts." ;
+		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts exactly ONCE." ;
     sh:select """
       SELECT ?this ?bindingCount ?distCount ?propCount
       {

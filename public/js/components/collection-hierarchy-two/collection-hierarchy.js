@@ -9,6 +9,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.$http = $http;
   ctrl.$scope = $scope;
   ctrl.facets = new DatabusFacetsCache($http);
+  ctrl.databusUriToAdd
 
   const DATAID_ARTIFACT_PROPERTY = 'dataid:artifact';
   const DATAID_GROUP_PROPERTY = 'dataid:group';
@@ -31,23 +32,71 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     ctrl.updateViewModel();
   }
 
+
   ctrl.onAddCustomQueryClicked = function (sourceNode) {
     var node = QueryNode.createFrom(sourceNode);
     node.addChild(new QueryNode(DatabusUtils.uuidv4(), null));
     ctrl.onChange();
   }
 
+
+  ctrl.addDatabusToCollection = async function (uri) {
+    
+    var req = {
+      method: 'GET',
+      url: uri,
+      headers: {
+        'Accept': 'application/rdf+turtle'
+      }
+    }
+
+    var res = await ctrl.$http(req);
+    var manifest = await DatabusUtils.parseDatabusManifest(res.data);
+
+    var expectedUri = new URL(uri);
+
+    if(manifest == undefined || manifest.uri != expectedUri.origin) {
+      return;
+    }
+
+    ctrl.root.childNodes.push(new QueryNode(manifest.uri, null));
+  }
+
+  ctrl.onAddResource = async function (uri) {
+
+    if(uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
+    }
+
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+
+    // Resource already in collection
+    if (node != undefined) {
+      return;
+    }
+
+    // Determine resource type
+    var resourceType = 'Databus';
+
+    if (resourceType == 'Databus') {
+      await ctrl.addDatabusToCollection(uri);
+    }
+
+    ctrl.onChange();
+    ctrl.updateViewModel();
+
+
+    ctrl.$scope.$apply();
+  }
+
   ctrl.addToCollection = function (source, view, result) {
 
     if (ctrl.isInCollection(result)) {
       QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
-
-      // ctrl.onComponentAdded();
-      // ctrl.collectionManager.saveLocally();
     }
     else {
       if (result.typeName[0].value == 'Group') {
-        let node = new QueryNode(result.resource[0].value, 'dataid:group');
+        let node = new QueryNode(result.resource[0].value, DATAID_GROUP_PROPERTY);
 
         source.childNodes.push(node);
       }
@@ -59,11 +108,11 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 
         if (groupNode == null) {
-          groupNode = new QueryNode(groupUri, 'dataid:group');
+          groupNode = new QueryNode(groupUri, DATAID_GROUP_PROPERTY);
           source.childNodes.push(groupNode);
         }
 
-        let node = new QueryNode(artifactUri, 'dataid:artifact');
+        let node = new QueryNode(artifactUri, DATAID_ARTIFACT_PROPERTY);
         groupNode.addChild(node);
       }
     }
@@ -116,7 +165,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
   ctrl.getAllFilters = function (groupNode, artifactNode) {
 
-    if(artifactNode == null) {
+    if (artifactNode == null) {
       var result = Object.keys(groupNode.facetSettings)
       return DatabusUtils.uniqueList(result);
     }
@@ -155,7 +204,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
   ctrl.updateSearchResults = function (view) {
 
-    if(view == null || view.searchResults == null) {
+    if (view == null || view.searchResults == null) {
       return;
     }
 
@@ -200,7 +249,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
   };
 
-  ctrl.toggleExpand = function(view) {
+  ctrl.toggleExpand = function (view) {
     view.expanded = !view.expanded;
   }
 
@@ -228,6 +277,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
       ctrl.view.sources[sourceNode.uri] = {};
       ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
+      ctrl.view.sources[sourceNode.uri].addMode = 'artifact';
 
       for (var g in sourceNode.childNodes) {
 
@@ -268,7 +318,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
               //ctrl.view.artifacts[artifactNode.uri].facets = result.data;
               //ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
             });
-  
+
 
 
             /*en(function(result) {
@@ -367,7 +417,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     return false;
   }
 
-  ctrl.isLocalDatabusNode = function(node) {
+  ctrl.isLocalDatabusNode = function (node) {
     return node.uri == DATABUS_RESOURCE_BASE_URL;
   }
   ctrl.addFilter = function (node, facet, values, checked) {

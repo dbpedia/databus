@@ -342,7 +342,7 @@
 	a sh:NodeShape;
 	sh:targetClass dataid:Dataset ;
 	sh:sparql [
-		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts." ;
+		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts exactly ONCE." ;
     sh:select """
       SELECT ?this ?bindingCount ?distCount ?propCount
       {
