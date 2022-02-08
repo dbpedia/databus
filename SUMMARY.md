@@ -25,5 +25,5 @@
 ## Usage
 
 * [Examples](examples/README.md)
-* [Databus API](usage/databus-api.md)
+* [Databus API](docs/api.md)
 * [Development Environment](devenv/README.md)
