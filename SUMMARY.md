@@ -7,6 +7,7 @@
 * [Use Cases](docs/usecases.md)
   * [Automated deployment of DBpedia Services](docs/dbpediadeployment.md)
   * [Building Meta Registries](docs/building-meta-registries.md)
+  * [Manage data dependencies like Software - Maven for Data](overview/usecases/manage-data-dependencies-like-software-maven-for-data.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
 
