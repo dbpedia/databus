@@ -7,6 +7,22 @@ description: >-
 
 # Databus
 
+##
+
+## Architecture
+
+diagram with clickable links
+
+## Acknowledgements
+
+## License
+
+The source code of this repo is published under the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
+
+Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.&#x20;
+
+The individual datasets are referenced via links (dcat:downloadURL) and can have any license. &#x20;
+
 ## Status
 
 This repo develops Databus version 2.0, which is a major upgrade of version 1.3-beta (currently running at http://dbpedia.databus.org) If you install it and find problems, please report in issue tracker to help us test this new version.
@@ -102,3 +118,7 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
+
+
+
+###
