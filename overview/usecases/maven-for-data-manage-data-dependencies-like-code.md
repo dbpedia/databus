@@ -1,2 +1,2 @@
-# Manage data dependencies like Software - Maven for Data
+# Maven for data - manage data dependencies like code
 
