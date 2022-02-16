@@ -415,7 +415,11 @@ class DatabusProtect {
     }, this.fetchUser()];
   }
 
-  protect() {
+  protect(noRedirect) {
+
+    if(noRedirect == undefined) {
+      noRedirect = false;
+    }
 
     var self = this;
     return [async function (request, response, next) {
@@ -443,7 +447,7 @@ class DatabusProtect {
 
 
       // Html requests need a redirect
-      if (isBrowserRequest(request)) {
+      if (!noRedirect && isBrowserRequest(request)) {
         console.log('Accessing from Browser. Redirecting to web login...');
         // Get the user agent
         forceLogin(request, response);

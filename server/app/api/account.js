@@ -1,24 +1,24 @@
-const ServerUtils = require('../../common/utils/server-utils');
-const DatabusCache = require('../../common/databus-cache');
-const JsonldUtils = require('../../common/utils/jsonld-utils');
-const Constants = require('../../common/constants');
+const ServerUtils = require('../common/utils/server-utils');
+const DatabusCache = require('../common/databus-cache');
+const JsonldUtils = require('../common/utils/jsonld-utils');
+const Constants = require('../common/constants');
 
-var databaseManager = require('../../common/remote-database-manager');
-var sparql = require('../../common/queries/sparql');
-var shaclTester = require('../../common/shacl/shacl-tester');
+var databaseManager = require('../common/remote-database-manager');
+var sparql = require('../common/queries/sparql');
+var shaclTester = require('../common/shacl/shacl-tester');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
-var defaultContext = require('../../common/context.json');
+var defaultContext = require('../common/context.json');
 const pem2jwk = require('pem-jwk').pem2jwk;
 
-var constructor = require('../../common/execute-construct.js');
-var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
+var constructor = require('../common/execute-construct.js');
+var constructAccountQuery = require('../common/queries/constructs/construct-account.sparql');
 
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(120);
-  var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
+  var pkeyPEM = fs.readFileSync(__dirname + '/../../keypair/public-key.pem', 'utf-8');
   var publicKeyInfo = pem2jwk(pkeyPEM);
 
   let buff = Buffer.from(publicKeyInfo.n, 'base64');
@@ -149,7 +149,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/accounts/artifacts', async function (req, res, next) {
+  router.get('/api/account/artifacts', async function (req, res, next) {
     try {
 
       var cacheKey = `ck_artifacts__${req.query.acount}`;
@@ -166,7 +166,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/accounts/collections', async function (req, res, next) {
+  router.get('/api/account/collections', async function (req, res, next) {
     try {
 
       var authInfo = serverUtils.getAuthInfoFromRequest(req);

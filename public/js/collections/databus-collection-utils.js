@@ -160,10 +160,13 @@ class DatabusCollectionUtils {
 
   static async getCollectionStatistics($http, collection) {
 
-    let queryBuilder = new QueryBuilder();
-    let query = queryBuilder.createQuery(collection.content.generatedQuery.root,
-      DATABUS_QUERIES.collectionStatistics, '%COLLECTION_QUERY%', 2);
+    var query = QueryBuilder.build({
+      node : collection.content.rootNode,
+      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      template: QueryTemplates.COLLECTION_STATISTICS_TEMPLATE
+    });
 
+   
     if (query == null) return null;
     
     var req = {
@@ -206,9 +209,11 @@ class DatabusCollectionUtils {
 
   static async getCollectionFiles($http, collection) {
 
-    let queryBuilder = new QueryBuilder();
-    let query = queryBuilder.createQuery(collection.content.generatedQuery.root,
-      DATABUS_QUERIES.collectionFiles, '%COLLECTION_QUERY%', 2);
+    let query = new QueryBuilder({
+      node : collection.content.rootNode,
+      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      template: QueryTemplates.COLLECTION_FILES_TEMPLATE
+    });
 
     var req = {
       method: 'POST',

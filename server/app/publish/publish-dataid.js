@@ -8,12 +8,13 @@ var shaclTester = require('../common/shacl/shacl-tester');
 var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var sparql = require('../common/queries/sparql');
-var defaultContext = require('../common/context.json');
+var defaultContext = require('../../../model/generated/context.json');
 var constructor = require('../common/execute-construct.js');
 var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
 var autocompleter = require('../common/dataid-autocomplete');
+var fileAnalyzer = require('../common/file-analyzer');
 
-module.exports = async function publishDataid(account, data, notify) {
+module.exports = async function publishDataid(account, data, verifyParts, notify) {
 
   try {
 
@@ -52,8 +53,39 @@ module.exports = async function publishDataid(account, data, notify) {
     if (before != after) {
       notify(`> Auto-completed the input.\n`);
     }
+    
+    if(verifyParts) {
+
+      var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+
+      for(var distribution of distributions) {
+
+        notify(`> Analyzing part ${distribution[DatabusUris.JSONLD_ID]}\n`);
+        var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
+
+        console.log(downloadURL);
+
+        var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL, function(msg) {
+          
+        });
+
+        if(analyzeResult.code != 200) {
+          notify(`> Error analyzing file:\n`);
+          notify(`> ${analyzeResult.data}\n`);
+          return { code: 400, message: null };
+        }
+
+        distribution[DatabusUris.DATAID_SHASUM] = [ {} ];
+        distribution[DatabusUris.DATAID_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
+        
+        distribution[DatabusUris.DCAT_BYTESIZE] = [ {} ];
+        distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.byteSize;
+        distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
+      }
+    }
 
     console.log(JSON.stringify(expandedGraph, null, 3));
+
 
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
@@ -79,14 +111,15 @@ module.exports = async function publishDataid(account, data, notify) {
     var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
 
-    notify(`> Publishing as ${datasetPublisherUri}.\n`);
+    notify(`> Publishing as "${datasetPublisherUri}".\n`);
 
     // Validate the publisher and account (<publisherUri> <foaf:account> <accountUri>)
     var isPublisherConnectedToAccount =
       await sparql.accounts.getPublisherHasAccount(datasetPublisherUri, accountUri);
 
     if (!isPublisherConnectedToAccount) {
-      return { code: 400, message: 'The specified publisher is not associated with the requested account' };
+      notify(`> Forbidden: The specified publisher is not linked to the account of the request issuer.\n`)
+      return { code: 403, message: null };
     }
 
     // Fetch the proof graph
@@ -109,7 +142,8 @@ module.exports = async function publishDataid(account, data, notify) {
       generatingSignature = true;
 
       proofGraph = signer.createProof(expandedGraph);
-      datasetGraph[DatabusUris.PROOF] = [proofGraph];
+      datasetGraph[DatabusUris.SEC_PROOF] = [proofGraph];
+      expandedGraph = await jsonld.flatten(expandedGraph);
     }
 
     // Get the type of the proof graph
@@ -117,7 +151,9 @@ module.exports = async function publishDataid(account, data, notify) {
 
     // Validate the used proof type
     if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
-      return { code: 400, message: `Unkown proof type "${proofType}"\n` };
+
+      notify(`> Error: Unkown proof type "${proofType}"\n`);
+      return { code: 400, message: null };
     }
 
     // Validate the proof 
@@ -138,13 +174,17 @@ module.exports = async function publishDataid(account, data, notify) {
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
-    
-    // TODO enable this: compactedGraph[DatabusUris.JSONLD_CONTEXT] = Constants.DATABUS_DEFAULT_CONTEXT_URL;
+
+    // TODO enable this: 
+    compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_DEFAULT_CONTEXT_URL;
+
 
     // Create the target path for the gstore
     var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
 
     notify(`> Saving to ${datasetUri}\n`);
+
+    console.log(JSON.stringify(compactedGraph, null, 3));
 
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);

@@ -21,6 +21,8 @@ class DatabusUris {
   static DATAID_FORMAT_EXTENSION = 'http://dataid.dbpedia.org/ns/core#formatExtension';
   static DATAID_CONTENT_VARIANT = 'http://dataid.dbpedia.org/ns/core#contentVariant';
   static DATAID_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
+  static DATAID_SHASUM = 'http://dataid.dbpedia.org/ns/core#sha256sum';
+  static DATAID_COLLECTION = 'http://dataid.dbpedia.org/ns/core#Collection';
 
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';
@@ -28,6 +30,11 @@ class DatabusUris {
   static DCT_ISSUED = 'http://purl.org/dc/terms/issued';
   static DCT_CREATED = 'http://purl.org/dc/terms/created';
   static DCT_MODIFIED = 'http://purl.org/dc/terms/modified';
+
+  // DCAT
+  static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';
+  static DCAT_BYTESIZE = 'http://www.w3.org/ns/dcat#byteSize';
+
 
   // SEC
   static SEC_PROOF = 'https://w3id.org/security#proof';
@@ -44,6 +51,7 @@ class DatabusUris {
 
   // XSD
   static XSD_DATE_TIME = 'http://www.w3.org/2001/XMLSchema#dateTime';
+  static XSD_DECIMAL = 'http://www.w3.org/2001/XMLSchema#decimal';
 }
 
 if(typeof module === "object" && module && module.exports)

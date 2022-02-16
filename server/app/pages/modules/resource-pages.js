@@ -3,6 +3,7 @@ var request = require('request');
 
 const DatabusCache = require('../../common/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
+const Constants = require('../../common/constants');
 
 module.exports = function (router, protector) {
 
@@ -97,6 +98,12 @@ module.exports = function (router, protector) {
   });
 
   router.get('/:account/:group/:artifact', protector.checkSso(), async function (req, res, next) {
+
+    if(req.params.group == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+      next('route');
+      return;
+    }
+
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
       let versionsData = await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group, req.params.artifact);

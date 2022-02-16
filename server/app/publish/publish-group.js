@@ -8,9 +8,9 @@ var databaseManager = require('../common/remote-database-manager');
 var jsonld = require('jsonld');
 var constructor = require('../common/execute-construct.js');
 var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('../common/context.json');
+var defaultContext = require('../../../model/generated/context.json');
 
-module.exports = async function publishGroup(account, data, notify) {
+module.exports = async function publishGroup(account, data, uri, notify) {
 
   try {
 
@@ -70,6 +70,11 @@ module.exports = async function publishGroup(account, data, notify) {
     var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
     var groupUri = groupGraph['@id'];
 
+    if(uri != undefined && uri != groupUri) {
+      notify(`> Forbidden: Invalid group identifier "${groupUri}". Expected "${uri}"\n`);
+      return { code: 403, message: null };
+    }
+
 
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
@@ -78,13 +83,20 @@ module.exports = async function publishGroup(account, data, notify) {
       return { code: 403, message: `Invalid group identifier ${groupUri}.\n` };
     }
 
+    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${Constants.DATABUS_FILE_GROUP}`);
+
+    var groupIdentifier = UriUtils.getPrunedPath(groupUri, 1);
+
+    if(groupIdentifier == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+      notify(`> Cannot create group with name ${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER} as it is reserved for Databus Collections\n`);
+    }
+
     notify(`> Saving to ${groupUri}\n`);
 
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
-    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${Constants.DATABUS_FILE_GROUP}`);
-
+    
     // Save the RDF with the current path using the database manager
     var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
 

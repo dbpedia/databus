@@ -26,6 +26,7 @@ class Constants {
   static DATABUS_FILE_GROUP = 'group.jsonld';
   static DATABUS_FILE_DATAID = 'dataid.jsonld';
   static DATABUS_FILE_WEBID = 'webid.jsonld';
+  static DATABUS_COLLECTIONS_GROUP_IDENTIFIER = `collections`;
 
   static MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
   static MESSGAGE_NOT_FOUND = 'Sorry, can\'t find that!\n';

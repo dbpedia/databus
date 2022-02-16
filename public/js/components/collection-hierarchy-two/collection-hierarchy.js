@@ -225,7 +225,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
       resultUriPrefix = node.uri;
     }
 
-    var url = `${baseUrl}/system/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=50&query=${nodeView.search}`;
+    var url = `${baseUrl}/api/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=50&query=${nodeView.search}`;
 
     try {
       $http({ method: 'GET', url: url }).then(function successCallback(response) {
@@ -261,7 +261,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.updateViewModel = function () {
     ctrl.collectionWrapper = new DatabusCollectionWrapper(ctrl.collection);
 
-    ctrl.root = ctrl.collection.content.generatedQuery.root;
+    ctrl.root = ctrl.collection.content.root;
 
     QueryNode.assignParents(ctrl.root);
 

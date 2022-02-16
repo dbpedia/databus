@@ -9,16 +9,17 @@ var defaultContext = require('../common/context.json');
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
-const MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
+const MESSAGE_WRONG_NAMESPACE = 'Forbidden. You cannot publish data in a foreign namespace.\n';
 const MESSAGE_NOT_FOUND = 'Sorry can\'t find that!';
 
 module.exports = function (router, protector) {
 
-  router.post('/system/publish', protector.protect(), async function (req, res, next) {
+  router.post('/api/publish', protector.protect(true), async function (req, res, next) {
 
     try {
 
       // Set return code to accepted
+      res.set('Content-Type', 'text/plain');
       res.status(202);
 
       // Get the account namespace
@@ -27,12 +28,13 @@ module.exports = function (router, protector) {
       // Find graph
       var graph = req.body;
 
+      
       // Replace context if graph uses default context
       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
         graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
-      var groupResult = await publishGroup(account, graph, function (message) {
+      var groupResult = await publishGroup(account, graph, null, function (message) {
         res.write(message);
       });
 
@@ -42,7 +44,9 @@ module.exports = function (router, protector) {
 
       res.write('================================================\n');
 
-      var dataIdResult = await publishDataId(account, graph, function (message) {
+      verifyParts = req.query['verify-parts'] == "false" ? false : true;
+
+      var dataIdResult = await publishDataId(account, graph, verifyParts, function (message) {
         res.write(message);
       });
 
@@ -74,21 +78,24 @@ module.exports = function (router, protector) {
 
       var graph = req.body;
 
-      // Resolve the context if it is the default context
-      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
+       // Resolve the context if it is the default context
+       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
       // Call the publishing routine and log to a string
-      var progress = '';
+      var report = '';
 
-      var dataIdResult = await publishDataId(req.databus.accountName, graph, function (message) {
-        progress += message;
+      var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
+        report += message;
       });
 
+      if (dataIdResult != undefined) {
+        report += `${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`;
+      }
+
       // Return the result with the logging string
-      dataIdResult.message = message + dataIdResult.message;
-      res.status(dataIdResult.code).send(dataIdResult.message);
+      res.status(dataIdResult.code).send(report);
 
     } catch (err) {
       console.log(err);
@@ -111,24 +118,29 @@ module.exports = function (router, protector) {
       }
 
       var account = req.databus.accountName;
+      var groupUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
 
       var graph = req.body;
 
       // Resolve the context if it is the default context
-      if (graph[DatabusUris.JSONLD_CONTEXT] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = DEFAULT_CONTEXT_STRING;
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
       // Call the publishing routine and log to a string
-      var progress = '';
+      var report = '';
 
-      var groupResult = await publishGroup(account, graph, function (message) {
-        progress += message;
+      var groupResult = await publishGroup(account, graph, groupUri, function (message) {
+        report += message;
       });
 
+      if (groupResult != undefined) {
+        report += `${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`;
+      }
+
       // Return the result with the logging string
-      groupResult.message = message + groupResult.message;
-      res.status(groupResult.code).send(groupResult.message);
+      res.set('Content-Type', 'text/plain');
+      res.status(groupResult.code).send(report);
 
     } catch (err) {
       console.log(err);

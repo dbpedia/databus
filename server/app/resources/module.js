@@ -1,14 +1,15 @@
 const Constants = require('../common/constants.js');
 const ServerUtils = require('../common/utils/server-utils.js');
 var cors = require('cors');
+var sparql = require('../common/queries/sparql');
 
 var request = require('request');var database = require('../common/remote-database-manager');
 
 
 module.exports = function (router, protector) {
 
-  require('./modules/collections')(router, protector);
-  require('./modules/accounts')(router, protector);
+  require('../api/collection')(router, protector);
+  require('../api/account')(router, protector);
 
 
   router.get('/', cors(), ServerUtils.NOT_HTML_ACCEPTED, async function(req, res, next) {
@@ -99,13 +100,21 @@ module.exports = function (router, protector) {
     var resource = await database.read(req.params.account, path);
 
     if (resource == null) {
-      res.status(404).send(Constants.MESSGAGE_NOT_FOUND);
+      res.status(404).send(`The DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
       return;
     }
 
     var result = await database.delete(req.params.account, path);
+    var message = '';
 
-    res.status(result.isSuccess ? 200 : 500).send();
+    if(result.isSuccess) {
+      message = `The DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
+    } else {
+      message = `Internal database error. Failed to delete the DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
+    }
+
+
+    res.status(result.isSuccess ? 200 : 500).send(message);
 
   });
 
@@ -121,12 +130,20 @@ module.exports = function (router, protector) {
     var resource = await database.read(req.params.account, path);
 
     if (resource == null) {
-      res.status(404).send(Constants.MESSGAGE_NOT_FOUND);
+      res.status(404).send(`The group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
       return;
     }
 
     var result = await database.delete(req.params.account, path);
-    res.status(result.isSuccess ? 200 : 500).send();
+    var message = '';
+
+    if(result.isSuccess) {
+      message = `The group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
+    } else {
+      message = `Internal database error. Failed to delete the group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
+    }
+
+    res.status(result.isSuccess ? 200 : 500).send(message);
   });
 
 

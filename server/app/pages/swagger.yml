@@ -1,0 +1,1363 @@
+openapi: "3.0.1"
+info:
+  description: "This is the Databus API documentation."
+  version: "2.0.0-rc.1"
+  title: "Databus API"
+basePath: "/"
+schemes:
+  - "http"
+components:
+  securitySchemes:
+    ApiKeyAuth:        
+      type: apiKey
+      in: header       
+      name: X-API-KEY  
+paths:
+  /api/publish:
+    post:
+      summary: "Publish Metdata"
+      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
+      operationId: "publish"
+      tags:
+        - general
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: query
+          name: verify-parts
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
+          required: false
+          example: "true"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                  {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "abstract": "Cleaned datasets from DBpedia",
+                    "description": "Cleaned datasets from DBpedia"
+                  },
+                  {
+                    "@type": "Dataset",
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                    "hasVersion": "2022-02-09",
+                    "title": "Cleaned Geonames",
+                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                    "description": "Cleaned version of the geonames dataset from DBpedia",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                        "@type": "Part",
+                        "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                        "format": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                      }
+                    ]
+                  }
+                ]
+              }'
+      responses:
+        "202":
+          description: "Accepted"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to http://localhost:3000/%USERNAME%/cleaned
+                  Publishing group finished with code 200.
+                  ================================================
+                  Publishing DataId.
+                  > 15 triples selected via construct query.
+                  > Auto-completed the input.
+                  > Analyzing part http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl
+                  > SHACL validation successful.
+                  > Publishing as http://localhost:3000/%USERNAME%#this.
+                  > No signature found in the input.
+                  > Generating signature.
+                  > Signature validation successful.
+                  > Saving to http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#Dataset
+                  Publishing DataId finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+  /{account}/{group}:
+    put:
+      summary: "Create / Update Group"
+      description: "Creates or updates a Databus Group."
+      operationId: "create-group"
+      tags:
+        - group
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/ld+json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+      requestBody:
+        description: "Group data as JSONLD."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Various cleaned datasets from DBpedia using AI.",
+                  "description": "Various cleaned datasets from DBpedia using AI."
+                }
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to http://localhost:3000/%USERNAME%/cleaned
+                  Publishing group finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+    get:
+      summary: "Get Group"
+      description: "Retrieve a Databus Group as JSONLD."
+      operationId: "get-group"
+      tags:
+        - group
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/ld+json:
+              schema:
+                type: json
+                example: '{
+                  "@id": "http://localhost:3000/%USERNAME%/cleaned",
+                  "@type": "dataid:Group",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia",
+                  "title": "Cleaned Data",
+                  "@context": {
+                    "title": {
+                      "@id": "http://purl.org/dc/terms/title"
+                    },
+                    "description": {
+                      "@id": "http://purl.org/dc/terms/description"
+                    },
+                    "abstract": {
+                      "@id": "http://purl.org/dc/terms/abstract"
+                    },
+                    "dbo": "http://dbpedia.org/ontology/",
+                    "sec": "https://w3id.org/security#",
+                    "dataid": "http://dataid.dbpedia.org/ns/core#",
+                    "dct": "http://purl.org/dc/terms/",
+                    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "cert": "http://www.w3.org/ns/auth/cert#",
+                    "dcat": "http://www.w3.org/ns/dcat#",
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                  }
+                }'
+        "404":
+          description: "Not Found."
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: "Delete Group"
+      description: "Deletes a Databus Group from the Databus. Associated Artifacts and Versions will stay intact but some features such as query generations will break for these entities. 
+        **If you intend to delete the whole group, query the associated entities and delete them first.**"
+      operationId: "delete-group"
+      tags:
+        - group
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+      responses:
+        "200":
+          description: "OK"
+        "404":
+          description: "Not Found."
+  /{account}/{group}/{artifact}/{version}:
+    put:
+      summary: "Create / Update DataId"
+      description: "Create or update a DataId on the Databus"
+      operationId: "create-dataid"
+      tags:
+        - dataid
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/ld+json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: target artifact identifier
+          type: string
+          required: true
+          example: "geonames"
+        - name: version
+          in: path
+          description: target version identifier
+          type: string
+          required: true
+          example: "2022-02-09"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": {
+                  "@type": "Dataset",
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                  "hasVersion": "2022-02-09",
+                  "title": "Cleaned Geonames",
+                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                  "description": "Cleaned version of the geonames dataset from DBpedia",
+                  "license": "http://creativecommons.org/licenses/by/4.0/",
+                  "distribution": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "compression": "none",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                      "byteSize": 2730,
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                    }
+                  ]
+                }
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing DataId.
+                  > 15 triples selected via construct query.
+                  > Auto-completed the input.
+                  > SHACL validation successful.
+                  > Publishing as http://localhost:3000/%USERNAME%#this.
+                  > No signature found in the input.
+                  > Generating signature.
+                  > Signature validation successful.
+                  > Saving to http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#Dataset
+                  Publishing DataId finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+    get:
+      summary: "Get DataId"
+      tags:
+        - dataid
+      description: "Retrieve a DataId as JSONLD"
+      operationId: "get-dataid"
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: target artifact identifier
+          type: string
+          required: true
+          example: "geonames"
+        - name: version
+          in: path
+          description: target version identifier
+          type: string
+          required: true
+          example: "2022-02-09"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/ld+json:
+              schema:
+                type: json
+                example: '{
+                  "@graph": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames",
+                      "@type": "dataid:Artifact"
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09",
+                      "@type": "dataid:Version"
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                      "@type": "dataid:Dataset",
+                      "artifact": "http://localhost:3000/%USERNAME%/cleaned/geonames",
+                      "group": "http://localhost:3000/%USERNAME%/cleaned",
+                      "version": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09",
+                      "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                      "description": "Cleaned version of the geonames dataset from DBpedia",
+                      "hasVersion": "2022-02-09",
+                      "issued": "2022-02-10T10:22:00.713Z",
+                      "license": "http://creativecommons.org/licenses/by/4.0/",
+                      "modified": "2022-02-10T10:22:00.713Z",
+                      "publisher": "http://localhost:3000/%USERNAME%#this",
+                      "title": "Cleaned Geonames",
+                      "distribution": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "dataid:Part",
+                      "compression": "none",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "formatExtension": "ttl",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
+                      "hasVersion": "2022-02-09",
+                      "issued": "2022-02-10T10:22:00.713Z",
+                      "byteSize": "2730",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                    }
+                  ],
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld"
+                }'
+        "404":
+          description: "Not Found."
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: "Delete DataId"
+      description: "Delete a DataId from the Databus."
+      operationId: "delete-dataid"
+      tags:
+        - dataid
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: target artifact identifier
+          type: string
+          required: true
+          example: "geonames"
+        - name: version
+          in: path
+          description: target version identifier
+          type: string
+          required: true
+          example: "2022-02-09"
+      responses:
+        "200":
+          description: "OK"
+        "404":
+          description: "Not Found."
+  /{account}/{group}/{artifact}/{version}/{file}:
+    get:
+      summary: "Get File"
+      description: "Get a file from the Databus. The request URI is the Databus file identifier."
+      operationId: "get-file"
+      tags:
+        - general
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: target artifact identifier
+          type: string
+          required: true
+          example: "geonames"
+        - name: version
+          in: path
+          description: target version identifier
+          type: string
+          required: true
+          example: "2022-02-09"
+        - name: file
+          in: path
+          description: target file identifier
+          type: string
+          required: true
+          example: "geonames.ttl"
+      responses:
+        "200":
+          description: "OK"
+        "404":
+          description: "Not Found."
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/tractate/v1/canonicalize:
+    post:
+      summary: "Canonicalize DataId"
+      description: "Generate the canonicalized form of a DataId for the Databus Tractate v1."
+      operationId: "tractate-canonicalize"
+      tags:
+        - tractate
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                  {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "abstract": "Cleaned datasets from DBpedia",
+                    "description": "Cleaned datasets from DBpedia"
+                  },
+                  {
+                    "@type": "Dataset",
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                    "hasVersion": "2022-02-09",
+                    "title": "Cleaned Geonames",
+                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                    "description": "Cleaned version of the geonames dataset from DBpedia",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                        "@type": "Part",
+                        "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                        "format": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                        "byteSize": 2730,
+                        "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                      }
+                    ]
+                  }
+                ]
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Databus Tractate Version 1.0
+                  http://localhost:3000/%USERNAME%#this
+                  http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09
+                  http://creativecommons.org/licenses/by/4.0/
+                  d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1'
+  /api/tractate/v1/verify:
+    post:
+      summary: "Verify Tractate"
+      description: "Verify a Databus Tractate v1."
+      operationId: "tractate-verify"
+      tags:
+        - tractate
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                    {
+                      "@id": "_:b0",
+                      "@type": "dataid:DatabusTractateV1",
+                      "signature": {
+                          "@type": "xsd:string",
+                          "@value": "ydUqnbsw4JZaiuJ7n9vsIIAIhU1to0Dlr85KVGAFEYGOiAvx22ruwWfgeGOeRC2Dwkwcnq1QdgnAZnAkxiAu1XqmRMlGtwUtkn7XyeSQBQfbuiaL/Vsq7iQWd7YyD9C5PMXcP6T7F21mqW8oZcFso/JDemhNu//dC+o/XWsGM6Vf7teBaXuWUFTrg39c0Rf9X/7MxQN6TQ6Na0+C/vjQO5nM55B7kJyfGaO8PUez8zShA3uYoCHbeJgd8MIvM04S3ia6itg+w+CaEhN9OZNKRm8I7Kxd67c+3hBaijqYROswC4+5O+fEWIqCUdKnPu11/DFSUP5I0gSBgx1gVdx+aA=="
+                      }
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames",
+                      "@type": "dataid:Artifact"
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09",
+                      "@type": "dataid:Version"
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                      "@type": "Dataset",
+                      "artifact": "http://localhost:3000/%USERNAME%/cleaned/geonames",
+                      "group": "http://localhost:3000/%USERNAME%/cleaned",
+                      "version": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09",
+                      "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                      "description": "Cleaned version of the geonames dataset from DBpedia",
+                      "hasVersion": "2022-02-09",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "license": "http://creativecommons.org/licenses/by/4.0/",
+                      "modified": "2022-02-11T13:28:58.132Z",
+                      "publisher": "http://localhost:3000/%USERNAME%#this",
+                      "title": "Cleaned Geonames",
+                      "distribution": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "proof": {
+                          "@id": "_:b0"
+                      }
+                    },
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "compression": "none",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "formatExtension": "ttl",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
+                      "hasVersion": "2022-02-09",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "byteSize": "2730",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                    }
+                ]
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: json
+                example: '{
+                    "success": true,
+                    "message": "Verification successful.\n"
+                  }'
+  /api/search:
+    get:
+      summary: "Search"
+      description: "Search the index of the Databus. For a full list of the search syntax please refer to the [Lookup Documentation](https://github.com/dbpedia/dbpedia-lookup)"
+      operationId: "search"
+      tags:
+        - general
+      consumes:
+        - "application/json"
+      parameters:
+        - name: query
+          in: query
+          description: search query
+          type: string
+          required: true
+          example: 'geonames'
+        - name: typeName
+          in: query
+          description: The type of entities to return. White space separated list of one or multiples of
+            * Group
+            * Artifact
+            * Collection
+            * PersonalProfileDocument
+          type: string
+          required: false
+          example: 'Artifact'
+        - name: part
+          in: query
+          description: A query for one or multiple parta of the entity uri (white space separated list).
+          type: string
+          required: false
+          example: '%USERNAME% cleaned'
+        - name: partRequired
+          in: query
+          description: If set to true, results without a match on the part field are omitted. 
+          type: boolean
+          required: false
+          example: 'true'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: json
+                example: '{
+                  "docs": [
+                    {
+                      "typeName": [
+                        "Artifact"
+                      ],
+                      "score": [
+                        "337.63354"
+                      ],
+                      "label": [
+                        "Cleaned Geonames"
+                      ],
+                      "resource": [
+                        "http://localhost:3000/%USERNAME%/cleaned/geonames"
+                      ],
+                      "part": [
+                        "%USERNAME%",
+                        "cleaned",
+                        "geonames"
+                      ]
+                    }
+                  ],
+                  "query": "geonames"
+                }'
+  /{account}/collections/{id}:
+    put:
+      summary: "Create / Update Collection"
+      description: "Creates or updates a Databus Collection."
+      operationId: "create-collection"
+      tags:
+        - collection
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/ld+json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: id
+          in: path
+          description: The collection identifier
+          type: string
+          required: true
+          example: "cleaned-geonames"
+      requestBody:
+        description: "Collection data as JSONLD."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": [
+                    {
+                        "@id": "http://localhost:3000/%USERNAME%/collections/cleaned-geonames",
+                        "@type": "dataid:Collection",
+                        "publisher": "http://localhost:3000/%USERNAME%#this",
+                        "title": "Cleaned Geonames",
+                        "abstract": "Cleaned geonames (version 2022-02-09) from DBpedia.",
+                        "description": "Cleaned geonames (version 2022-02-09) from DBpedia.",
+                        "dataid:content": "%7B%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2Fjanni%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2Fjanni%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%222022-02-09%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
+                    }
+                  ]
+                }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: json
+                example: '{
+                  "success": true,
+                  "message": "Collection saved successfully.",
+                  "data": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/collections/cleaned-geonames",
+                      "@type": [
+                        "http://dataid.dbpedia.org/ns/core#Collection"
+                      ],
+                      "http://dataid.dbpedia.org/ns/core#content": [
+                        {
+                          "@value": "%7B%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2Fjanni%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2Fjanni%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%222022-02-09%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
+                        }
+                      ],
+                      "http://purl.org/dc/terms/abstract": [
+                        {
+                          "@value": "Cleaned geonames (version 2022-02-09) from DBpedia."
+                        }
+                      ],
+                      "http://purl.org/dc/terms/description": [
+                        {
+                          "@value": "Cleaned geonames (version 2022-02-09) from DBpedia."
+                        }
+                      ],
+                      "http://purl.org/dc/terms/publisher": [
+                        {
+                          "@id": "http://localhost:3000/%USERNAME%#this"
+                        }
+                      ],
+                      "http://purl.org/dc/terms/title": [
+                        {
+                          "@value": "Cleaned Geonames"
+                        }
+                      ]
+                    }
+                  ]
+                }'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+    get:
+      summary: "Get Collection"
+      description: "Retrieve a Databus Collection."
+      operationId: "get-collection"
+      tags:
+        - collection
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: id
+          in: path
+          description: the collection identifier
+          type: string
+          required: true
+          example: "cleaned-geonames"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/sparql:
+              schema:
+                type: string
+                example: "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                  PREFIX dct:    <http://purl.org/dc/terms/>
+                  PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+                  PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                  PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+                  SELECT ?file WHERE
+                  {
+                    {
+                      GRAPH ?g
+                      {
+                        ?dataset dcat:distribution ?distribution .
+                        ?distribution dataid:file ?file .
+                        {
+                          ?dataset dataid:group <http://localhost:3000/janni/cleaned> .
+                          {
+                            ?dataset dataid:artifact <http://localhost:3000/janni/cleaned/geonames> .
+                            { ?distribution <http://purl.org/dc/terms/hasVersion> '2022-02-09' . }
+                          }
+                        }
+                      }
+                    }
+                  }"
+            application/ld+json:
+              schema:
+                type: json
+                example: '{
+                  "@id": "http://localhost:3000/%USERNAME%/cleaned",
+                  "@type": "dataid:Group",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia",
+                  "title": "Cleaned Data",
+                  "@context": {
+                    "title": {
+                      "@id": "http://purl.org/dc/terms/title"
+                    },
+                    "description": {
+                      "@id": "http://purl.org/dc/terms/description"
+                    },
+                    "abstract": {
+                      "@id": "http://purl.org/dc/terms/abstract"
+                    },
+                    "dbo": "http://dbpedia.org/ontology/",
+                    "sec": "https://w3id.org/security#",
+                    "dataid": "http://dataid.dbpedia.org/ns/core#",
+                    "dct": "http://purl.org/dc/terms/",
+                    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "cert": "http://www.w3.org/ns/auth/cert#",
+                    "dcat": "http://www.w3.org/ns/dcat#",
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                  }
+                }'
+        "404":
+          description: "Not Found."
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: "Delete Collection"
+      description: ""
+      operationId: "delete-collection"
+      tags:
+        - collection
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: id
+          in: path
+          description: the collection identifier
+          type: string
+          required: true
+          example: "cleaned"
+      responses:
+        "200":
+          description: "OK"
+        "404":
+          description: "Not Found."
+  /{account}/collections:
+    put:
+      summary: "Get Collections"
+      description: "Gets a list of all the collections of an account."
+      operationId: "create-collection"
+      tags:
+        - collection
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/ld+json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: id
+          in: path
+          description: the collection identifier
+          type: string
+          required: true
+          example: "cleaned-geonames"
+      requestBody:
+        description: "Group data as JSONLD."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Various cleaned datasets from DBpedia using AI.",
+                  "description": "Various cleaned datasets from DBpedia using AI."
+                }
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to http://localhost:3000/%USERNAME%/cleaned
+                  Publishing group finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+  /api/collection/md5hash:
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "collection-md5"
+      tags:
+        - collection
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: body
+          name: body
+          description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+          schema:
+            type: json
+            example: '{
+              "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+              "@graph": [
+                {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia"
+                },
+                {
+                  "@type": "Dataset",
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                  "hasVersion": "2022-02-09",
+                  "title": "Cleaned Geonames",
+                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                  "description": "Cleaned version of the geonames dataset from DBpedia",
+                  "license": "http://creativecommons.org/licenses/by/4.0/",
+                  "distribution": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "compression": "none",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                      "byteSize": "2730",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                    }
+                  ]
+                }
+              ]
+            }'
+      responses:
+        "202":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/collection/statistics:
+    get:
+      summary: "Get Collection Statistics"
+      description: "Search the index of the Databus."
+      operationId: "collection-statistics"
+      tags:
+        - collection
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: body
+          name: body
+          description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+          schema:
+            type: json
+            example: '{
+              "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+              "@graph": [
+                {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia"
+                },
+                {
+                  "@type": "Dataset",
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                  "hasVersion": "2022-02-09",
+                  "title": "Cleaned Geonames",
+                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                  "description": "Cleaned version of the geonames dataset from DBpedia",
+                  "license": "http://creativecommons.org/licenses/by/4.0/",
+                  "distribution": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "compression": "none",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                      "byteSize": "2730",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                    }
+                  ]
+                }
+              ]
+            }'
+      responses:
+        "202":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /{account}:
+    put:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "collection-md5"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "collection-md5"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/account/webid/link:
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "account-webid-link"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/account/webid/remove:
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "account-webid-remove"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/account/api-key/create:
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "account-apikey-create"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/account/api-key/delete:
+    get:
+      summary: "Get Collection md5-Hash"
+      description: "Search the index of the Databus."
+      operationId: "account-apikey-delete"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      responses:
+        "200":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+  /api/account/statistics:
+    get:
+      summary: "Get Collection Statistics"
+      description: "Search the index of the Databus."
+      operationId: "collection-statistics"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: body
+          name: body
+          description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+          schema:
+            type: json
+            example: '{
+              "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+              "@graph": [
+                {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia"
+                },
+                {
+                  "@type": "Dataset",
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                  "hasVersion": "2022-02-09",
+                  "title": "Cleaned Geonames",
+                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                  "description": "Cleaned version of the geonames dataset from DBpedia",
+                  "license": "http://creativecommons.org/licenses/by/4.0/",
+                  "distribution": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "compression": "none",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                      "byteSize": "2730",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                    }
+                  ]
+                }
+              ]
+            }'
+      responses:
+        "202":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: 
+  /api/account/activity:
+    get:
+      summary: "Get Collection Statistics"
+      description: "Search the index of the Databus."
+      operationId: "collection-statistics"
+      tags:
+        - account
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: body
+          name: body
+          description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+          schema:
+            type: json
+            example: '{
+              "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+              "@graph": [
+                {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "abstract": "Cleaned datasets from DBpedia",
+                  "description": "Cleaned datasets from DBpedia"
+                },
+                {
+                  "@type": "Dataset",
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                  "hasVersion": "2022-02-09",
+                  "title": "Cleaned Geonames",
+                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                  "description": "Cleaned version of the geonames dataset from DBpedia",
+                  "license": "http://creativecommons.org/licenses/by/4.0/",
+                  "distribution": [
+                    {
+                      "@id": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                      "@type": "Part",
+                      "file": "http://localhost:3000/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                      "format": "ttl",
+                      "compression": "none",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                      "byteSize": "2730",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                    }
+                  ]
+                }
+              ]
+            }'
+      responses:
+        "202":
+          description: "Request accepted"
+          schema:
+            type: string
+            format: binary
+            example: ''
+definitions:
+  ValidationResult:
+    properties:
+      success:
+        type: boolean
+      message:
+        type: "string"
+    required:
+      - success
+      - message
+  OperationSuccess:
+    properties:
+      graphid:
+        type: "string"
+      commit_hash:
+        type: "string"
+    required:
+      - graphid
+      - commit_hash
+  OperationFailure:
+    properties:
+      message:
+        type: "string"
+    required:
+      - message

@@ -16,7 +16,7 @@ function CollectionEditorWidgetController(collectionManager, $scope) {
 
   ctrl.addSelectionToCollection = function() {
     var selection = ctrl.selection;
-    QueryNode.mergeAddChild(ctrl.collection.content.generatedQuery.root, selection);
+    QueryNode.mergeAddChild(ctrl.collection.content.root, selection);
 
     ctrl.collectionManager.activeCollection.hasLocalChanges 
       = ctrl.collectionManager.hasLocalChanges(ctrl.collectionManager.activeCollection);

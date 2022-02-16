@@ -8,13 +8,15 @@ const DatabusUris = require('../../../public/js/utils/databus-uris');
 
 module.exports = function (router, protector) {
 
-  require('../pages/file-analyzer')(router, protector);
+  // require('../common/file-analyzer').route(router, protector);
 
-  router.post('/system/tractate/v1/canonicalize', protector.checkSso(), async function (req, res, next) {
+  router.post('/api/tractate/v1/canonicalize', async function (req, res, next) {
 
     try {
       // Find context:
       var graph = req.body;
+
+      console.log(graph);
 
       // Replace if default context
       if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
@@ -27,12 +29,11 @@ module.exports = function (router, protector) {
 
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      res.status(400).send(err);
     }
-
   });
 
-  router.post('system/tractate/v1/verify', protector.protect(), async function (req, res, next) {
+  router.post('/api/tractate/v1/verify', async function (req, res, next) {
 
     try {
 
@@ -55,12 +56,12 @@ module.exports = function (router, protector) {
       // Verify
       var validationSuccess = await suite.validate(canonicalizedForm, proofGraph);
 
-      if (!validationSuccess) {
-        res.status(400).send(`The signature is invalid\n`);
-        return;
-      }
+      var result = {
+        success : validationSuccess,
+        message: validationSuccess ? `Verification successful.` : `The signature is invalid`
+      };
 
-      res.status(200).send(`Verification successful.\n`);
+      res.status(200).send(result);
 
     } catch (err) {
       res.status(500).send(err);

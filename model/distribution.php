@@ -230,7 +230,7 @@ $shacl='<#has-bytesize>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dct:byteSize of type xsd:decimal"@en ;
+	sh:message "A dataid:Part MUST have exactly one dcat:byteSize of type xsd:decimal"@en ;
 	sh:path dcat:byteSize ;
 	sh:datatype xsd:decimal ;
 	sh:maxCount 1 ;
@@ -383,7 +383,7 @@ $shacl='<#properties-are-cvs>
             ?this a  <http://dataid.dbpedia.org/ns/core#Dataset> .
             ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
             {
-              SELECT ?dist (CONCAT(STR(?format), ",", STR(?compression), ",", (GROUP_CONCAT(DISTINCT ?cvTuple; SEPARATOR=","))) AS ?cvString) WHERE {
+              SELECT ?dist (CONCAT(STR(?format), ",", STR(?compression), ",", (COALESCE(GROUP_CONCAT(DISTINCT ?cvTuple; SEPARATOR=","), ""))) AS ?cvString) WHERE {
                 ?dist a <http://dataid.dbpedia.org/ns/core#Part> .
                 ?dist <http://dataid.dbpedia.org/ns/core#format> ?format .
                 ?dist <http://dataid.dbpedia.org/ns/core#compression> ?compression .

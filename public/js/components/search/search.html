@@ -7,16 +7,16 @@
     </div>
     <div class="field" style="display:flex; align-items: center; line-height: 1;">
       <div style="margin-left:4px;" ng-click="$ctrl.filters.filterArtifact=!filters.filterArtifact;$ctrl.search();" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterArtifact }" type="'Artifact'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'"></type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.filters.filterGroup=!filters.filterGroup;$ctrl.search();" class="is-clickable">
-        <type-tag width="36" height="36"  ng-class="{ 'grey-out' : !filters.filterGroup }" type="'Group'"></type-tag>
+        <type-tag width="36" height="36"  ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'"></type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.filters.filterPublisher=!filters.filterPublisher;$ctrl.search();" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterPublisher }" type="'PersonalProfileDocument'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }" type="'PersonalProfileDocument'"></type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.filters.filterCollection=!filters.filterCollection;$ctrl.search();" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !filters.filterCollection }" type="'Collection'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }" type="'Collection'"></type-tag>
       </div>
       
     </div>
