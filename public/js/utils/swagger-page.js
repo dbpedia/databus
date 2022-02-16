@@ -52,13 +52,13 @@ function init(username) {
   window.ui = ui
 
   // Custom UI
-  var container = document.getElementsByClassName('scheme-container')[0];
+  var container = document.getElementsByClassName('schemes wrapper')[0];
 
   var input = document.createElement("input");
   input.type = "text";
   input.id = "username";
   input.value = username;
-  container.appendChild(input);
+  container.prepend(input);
 
   input.onchange = function() {
     init(input.value);

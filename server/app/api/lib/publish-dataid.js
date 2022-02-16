@@ -1,18 +1,18 @@
-const JsonldUtils = require('../common/utils/jsonld-utils');
-const UriUtils = require('../common/utils/uri-utils');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
-const Constants = require('../common/constants');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const UriUtils = require('../../common/utils/uri-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const Constants = require('../../common/constants');
 
-var signer = require('../tractate/databus-tractate-suite');
-var shaclTester = require('../common/shacl/shacl-tester');
-var databaseManager = require('../common/remote-database-manager');
+var signer = require('./databus-tractate-suite');
+var shaclTester = require('../../common/shacl/shacl-tester');
+var databaseManager = require('../../common/remote-database-manager');
 var jsonld = require('jsonld');
-var sparql = require('../common/queries/sparql');
-var defaultContext = require('../../../model/generated/context.json');
-var constructor = require('../common/execute-construct.js');
-var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
-var autocompleter = require('../common/dataid-autocomplete');
-var fileAnalyzer = require('../common/file-analyzer');
+var sparql = require('../../common/queries/sparql');
+var defaultContext = require('../../../../model/generated/context.json');
+var constructor = require('../../common/execute-construct.js');
+var constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
+var autocompleter = require('../../common/dataid-autocomplete');
+var fileAnalyzer = require('../../common/file-analyzer');
 
 module.exports = async function publishDataid(account, data, verifyParts, notify) {
 

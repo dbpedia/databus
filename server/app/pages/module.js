@@ -192,12 +192,9 @@ module.exports = function (router, protector) {
 
 
 
-  require('./modules/api-documentation')(router, protector);
-  require('../api/search')(router, protector);
   require('./modules/account-page')(router, protector);
   require('./modules/collection-editor')(router, protector);
   require('./modules/publish-wizard')(router, protector);
   require('./modules/resource-pages')(router, protector);
-
 
 }

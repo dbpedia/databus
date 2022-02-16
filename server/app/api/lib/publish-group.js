@@ -1,14 +1,14 @@
-const JsonldUtils = require('../common/utils/jsonld-utils');
-const UriUtils = require('../common/utils/uri-utils');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
-const Constants = require('../common/constants');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const UriUtils = require('../../common/utils/uri-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const Constants = require('../../common/constants');
 
-var shaclTester = require('../common/shacl/shacl-tester');
-var databaseManager = require('../common/remote-database-manager');
+var shaclTester = require('../../common/shacl/shacl-tester');
+var databaseManager = require('../../common/remote-database-manager');
 var jsonld = require('jsonld');
-var constructor = require('../common/execute-construct.js');
-var constructGroupQuery = require('../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('../../../model/generated/context.json');
+var constructor = require('../../common/execute-construct.js');
+var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
+var defaultContext = require('../../../../model/generated/context.json');
 
 module.exports = async function publishGroup(account, data, uri, notify) {
 

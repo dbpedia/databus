@@ -2,6 +2,8 @@ var ASN1 = require('asn1js');
 
 class ServerUtils {
 
+  
+
   static getRSAModulusAndExponent(pubkey) {
     var unarmor = /-----BEGIN PUBLIC KEY-----([A-Za-z0-9+\/=\s]+)-----END PUBLIC KEY-----/;
     try {
@@ -24,6 +26,8 @@ class ServerUtils {
       return { success: false, msg: "Failed validating RSA public key." };
     }
   }
+
+
 
   /**
    * Retrieves user info from the https request and returns it in a

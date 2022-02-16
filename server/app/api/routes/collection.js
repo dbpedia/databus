@@ -1,17 +1,17 @@
-const JsonldUtils = require('../common/utils/jsonld-utils');
-const ServerUtils = require('../common/utils/server-utils');
-const Constants = require('../common/constants.js');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const ServerUtils = require('../../common/utils/server-utils');
+const Constants = require('../../common/constants.js');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 
 var request = require('request');
-var sparql = require('../common/queries/sparql');
-var databaseManager = require('../common/remote-database-manager');
-var sparql = require('../common/queries/sparql');
-var shaclTester = require('../common/shacl/shacl-tester');
+var sparql = require('../../common/queries/sparql');
+var databaseManager = require('../../common/remote-database-manager');
+var sparql = require('../../common/queries/sparql');
+var shaclTester = require('../../common/shacl/shacl-tester');
 var jsonld = require('jsonld');
-var constructor = require('../common/execute-construct.js');
-var constructCollection = require('../common/queries/constructs/construct-collection.sparql');
+var constructor = require('../../common/execute-construct.js');
+var constructCollection = require('../../common/queries/constructs/construct-collection.sparql');
 
 module.exports = function (router, protector) {
 

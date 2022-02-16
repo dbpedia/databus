@@ -2,12 +2,10 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const fs = require('fs');
 
-
 var options = {
   customCss: '.swagger-ui .topbar { display: none }',
   customJs: '/js/utils/swagger-page.js'
 };
-
 
 var header = `
 <nav id="navbar" style="
@@ -50,7 +48,7 @@ background-color: #343a40;">
 
 module.exports = function (router, protector) {
 
-  var swaggerYaml = fs.readFileSync(__dirname + '/../swagger.yml', ['utf8']).toString();
+  var swaggerYaml = fs.readFileSync(__dirname + '/swagger.yml', ['utf8']).toString();
 
   swaggerYaml = swaggerYaml
     .replace(/%DATABUS_RESOURCE_BASE_URL%/g, process.env.DATABUS_RESOURCE_BASE_URL);
