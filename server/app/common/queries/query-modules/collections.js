@@ -106,7 +106,7 @@ instance.getCollectionQuery = async function (account, id) {
     return null;
   }
 
-  var root = JSON.parse(unescape(entry[0].content.root));
+  var root = JSON.parse(unescape(entry[0].content)).root;
 
   return QueryBuilder.build({
     node: root,
@@ -120,7 +120,7 @@ instance.getCollectionShasum = async function (collectionUri) {
   queryOptions.COLLECTION_URI = collectionUri;
   queryOptions.PUBLISHER_COLLECTIONS_GRAPH_URI = DatabusUtils.navigateUp(collectionUri);
 
-  var selectQuery = require('./queries/get-collection.sparql');
+  var selectQuery = require('../sparql/get-collection.sparql');
   selectQuery = exec.formatQuery(selectQuery, queryOptions);
 
   var entry = await exec.executeSelect(selectQuery);
@@ -129,10 +129,10 @@ instance.getCollectionShasum = async function (collectionUri) {
     return null;
   }
 
-  entry[0].content = DatabusUtils.tryParseJson(unescape(entry[0].content));
+   var content = JSON.parse(unescape(entry[0].content));
 
   var query = QueryBuilder.build({
-    node : entry[0].content.root,
+    node : content.root,
     template: QueryTemplates.DEFAULT_FILE_TEMPLATE,
     resourceBaseUrl: process.env.DATABUS_RESOURCE_BASE_URL, 
   });

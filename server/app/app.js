@@ -9,6 +9,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var bodyParser = require("body-parser");
+const ServerUtils = require('./common/utils/server-utils');
 
 
 
@@ -42,9 +43,25 @@ initialize(app, memoryStore).then(function () {
   // Attach router
   app.use('/', router);
 
-  // catch 404 and forward to error handler
-  app.use(function (req, res, next) {
-    next(createError(404));
+  app.use(function(req, res, next) {
+    res.status(404);
+  
+    // respond with html page
+    if (req.accepts('html')) {
+      var data = {}
+      data.auth = ServerUtils.getAuthInfoFromRequest(req);
+      res.render('404', { title: 'Not found', data: data });
+      return;
+    }
+  
+    // respond with json
+    if (req.accepts('json')) {
+      res.json({ error: 'Not found' });
+      return;
+    }
+  
+    // default to plain-text. send()
+    res.type('txt').send('Not found');
   });
 
   // error handler

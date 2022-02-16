@@ -1,4 +1,3 @@
-// TODO fabian bug
 
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
@@ -18,7 +17,6 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.$onInit = function () {
 
     ctrl.viewMode = -1;
-    ctrl.queryBuilder = new QueryBuilder();
 
     if (ctrl.collection == null) {
       return;
@@ -455,12 +453,11 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
     var queryNode = QueryNode.createSubTree(node);
 
-    var fullQuery = ctrl.queryBuilder.createQuery(queryNode,
-      DatabusSparql.DEFAULT_PREFIXES,
-      DatabusSparql.NODE_FILE_SELECT,
-      DatabusSparql.NODE_FILE_TEMPLATE,
-      DatabusSparql.NODE_FILE_AGGREGATE,
-      '%QUERY%');
+    var fullQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.NODE_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
 
     this.querySparql(fullQuery).then(function (result) {
       node.files = result;
@@ -635,8 +632,18 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
   ctrl.updateQuery = function () {
     var queryNode = QueryNode.createSubTree(ctrl.activeNode);
-    ctrl.activeFileQuery = ctrl.queryBuilder.createFileQuery(queryNode);
-    ctrl.activeFullQuery = ctrl.queryBuilder.createFullQuery(queryNode);
+
+    ctrl.activeFileQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.DEFAULT_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
+
+    ctrl.activeFullQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.NODE_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
   }
 
   ctrl.onActiveNodeChanged = function () {

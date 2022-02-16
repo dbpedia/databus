@@ -18,6 +18,7 @@ class QueryBuilder {
     this.templateInsertionKey = template.placeholder != undefined ? template.placeholder : `%QUERY%`;
     this.prefixes = template.prefixes;
     this.aggregate = template.aggregate;
+    this.stringSuffix = '';
 
     this.appendPrefixes();
     this.appendLine(this.select, 0);
