@@ -4,7 +4,7 @@ indexConfig:
   cacheSize: 1000000
   cleanIndex: true
   indexMode: INDEX_SPARQL
-  sparqlEndpoint: http://127.0.0.1:3003/sparql
+  sparqlEndpoint: http://127.0.0.1:3000/sparql
   commitInterval: 1000
   indexFields:
     - fieldName: label
