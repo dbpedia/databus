@@ -99,11 +99,18 @@ $context='"file": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## format
+
+## formatExtension
+
+TODO Marvin: describe why formatExtension is practical
+TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
+
 
 <?php
 $owl='missing';
 
+/*
+from format
 $shacl='<#has-format>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Part ;
@@ -114,23 +121,7 @@ $shacl='<#has-format>
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
 	sh:minCount 1 .';
-
-$example='"format": "nt",';
-
-$context='"format":		{"@id": "dataid:format"}';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
-
-
-## formatExtension
-
-TODO Marvin: describe why formatExtension is practical
-TODO Jan: add sh:pattern, i.e. no point at beginning, also must match the end of file URI
-
-
-<?php
-$owl='missing';
+*/
 
 $shacl='<#has-formatExtension>
 	a sh:PropertyShape ;

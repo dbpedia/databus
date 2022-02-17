@@ -75,8 +75,6 @@
       "@type": "@id"
     },
 
-"format":		{"@id": "dataid:format"},
-
 "formatExtension": 	{"@id": "dataid:formatExtension"},
 
 "compression": 	{"@id": "dataid:compression"},
