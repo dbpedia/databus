@@ -18,6 +18,7 @@ class QueryBuilder {
     this.templateInsertionKey = template.placeholder != undefined ? template.placeholder : `%QUERY%`;
     this.prefixes = template.prefixes;
     this.aggregate = template.aggregate;
+    this.stringSuffix = '';
 
     this.appendPrefixes();
     this.appendLine(this.select, 0);
@@ -82,7 +83,7 @@ class QueryBuilder {
     if (!hasService && sourceUri != null) {
 
       if (sourceUri != this.resourceBaseUrl) {
-        this.appendLine(`SERVICE <${sourceUri}/system/sparql>`, indent);
+        this.appendLine(`SERVICE <${sourceUri}/sparql>`, indent);
         this.appendLine(`{`, indent);
         this.appendTemplateHeader(indent + 1);
         this.createNodeSubquery(node, indent + 2, true);

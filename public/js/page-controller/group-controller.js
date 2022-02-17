@@ -1,4 +1,3 @@
-
 function GroupPageController($scope, $http, $sce, $interval, collectionManager) {
 
   $scope.group = data.group;
@@ -27,18 +26,25 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '8%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '10%' });
 
-  var fileQueryBuilder = new QueryBuilder();
 
   $scope.groupNode = new QueryNode($scope.group.uri, 'dataid:group');
   $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
 
-  $scope.fileSelector.query = fileQueryBuilder.createFileQuery($scope.groupNode);
-  $scope.fileSelector.fullQuery = fileQueryBuilder.createFullQuery($scope.groupNode);
-
   $scope.onFacetSettingsChanged = function () {
-    $scope.fileSelector.query = fileQueryBuilder.createFileQuery($scope.groupNode);
-    $scope.fileSelector.fullQuery = fileQueryBuilder.createFullQuery($scope.groupNode);
+    $scope.fileSelector.query = QueryBuilder.build({
+      node: $scope.groupNode,
+      template: QueryTemplates.DEFAULT_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
+
+    $scope.fileSelector.fullQuery = QueryBuilder.build({
+      node: $scope.groupNode,
+      template: QueryTemplates.GROUP_PAGE_FILE_BROWSER_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
   }
+
+  $scope.onFacetSettingsChanged();
 
   $scope.collectionWidgetSelectionData = {};
   $scope.collectionWidgetSelectionData.groupNode = $scope.groupNode;

@@ -19,13 +19,10 @@ self.executeConstruct = async function (jsonld, query) {
   try {
     
     var store = await self.createStore();
-
     var tripleCount = await self.loadJsonld(store, jsonld);
-    // console.log(tripleCount);
-
+  
     var graph = await self.queryStore(store, query);
     var triples = self.convertToN3(graph);
-
 
     return triples;
   } catch(err) {
@@ -35,7 +32,7 @@ self.executeConstruct = async function (jsonld, query) {
 }
 
 self.convertToN3 = function (graph) {
-  var triples = '';
+  var triples = ``;
 
   for (var triple of graph.triples) {
 

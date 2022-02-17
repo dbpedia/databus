@@ -1,37 +1,34 @@
-const JsonldUtils = require('../common/utils/jsonld-utils');
-const UriUtils = require('../common/utils/uri-utils');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
-const Constants = require('../common/constants');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const UriUtils = require('../../common/utils/uri-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const Constants = require('../../common/constants');
 
-var signer = require('../tractate/databus-tractate-suite');
-var shaclTester = require('../common/shacl/shacl-tester');
-var databaseManager = require('../common/remote-database-manager');
+var signer = require('./databus-tractate-suite');
+var shaclTester = require('../../common/shacl/shacl-tester');
+var databaseManager = require('../../common/remote-database-manager');
 var jsonld = require('jsonld');
-var sparql = require('../common/queries/sparql');
-var defaultContext = require('../../../model/generated/context.json');
-var constructor = require('../common/execute-construct.js');
-var constructVersionQuery = require('../common/queries/constructs/construct-version.sparql');
-var autocompleter = require('../common/dataid-autocomplete');
-var fileAnalyzer = require('../common/file-analyzer');
+var sparql = require('../../common/queries/sparql');
+var defaultContext = require('../../../../model/generated/context.json');
+var constructor = require('../../common/execute-construct.js');
+var constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
+var autocompleter = require('../../common/dataid-autocomplete');
+var fileAnalyzer = require('../../common/file-analyzer');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
 module.exports = async function publishDataid(account, data, verifyParts, notify) {
 
   try {
 
-    notify(`Publishing DataId.\n`);
-
-    // console.log(data);
-
     // Fetch only relevant triples from the input via construct query
     var triples = await constructor.executeConstruct(data, constructVersionQuery);
-
-    if (triples.length == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.\n`)
+    var tripleCount = DatabusUtils.lineCount(triples);
+    
+    if (tripleCount == 0) {
+      notify(`Construct query did not yield any triples. Nothing to publish.`);
       return { code: 100, message: null };
     }
 
-    var tripleCount = triples.split(/\r\n|\r|\n/).length
-    notify(`> ${tripleCount} triples selected via construct query.\n`);
+    notify(`${tripleCount} triples selected via construct query.`);
 
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
@@ -51,7 +48,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     var after = JSON.stringify(expandedGraph);
 
     if (before != after) {
-      notify(`> Auto-completed the input.\n`);
+      notify(`Auto-completed the input.`);
     }
     
     if(verifyParts) {
@@ -60,7 +57,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
       for(var distribution of distributions) {
 
-        notify(`> Analyzing part ${distribution[DatabusUris.JSONLD_ID]}\n`);
+        notify(`Analyzing part "${distribution[DatabusUris.JSONLD_ID]}"`);
         var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
 
         console.log(downloadURL);
@@ -70,8 +67,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
         });
 
         if(analyzeResult.code != 200) {
-          notify(`> Error analyzing file:\n`);
-          notify(`> ${analyzeResult.data}\n`);
+          notify(`Error analyzing file:`);
+          notify(`${analyzeResult.data}`);
           return { code: 400, message: null };
         }
 
@@ -93,32 +90,30 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
 
-      notify(`> SHACL validation error:\n`);
+      notify(`SHACL validation error:`);
 
-      var messages = shaclResult.message.split(/\r\n|\r|\n/);
-      for (var message of messages) {
-
-        notify(`> * ${message}\n`);
+      for (var message of shaclResult.messages) {
+        notify(`   * ${message}`);
       }
 
       return { code: 400, message: null };
     }
 
-    notify(`> SHACL validation successful.\n`);
+    notify(`SHACL validation successful.`);
 
     // Fetch important uris
     var datasetUri = datasetGraph['@id'];
     var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
 
-    notify(`> Publishing as "${datasetPublisherUri}".\n`);
+    notify(`Publishing as "${datasetPublisherUri}".`);
 
-    // Validate the publisher and account (<publisherUri> <foaf:account> <accountUri>)
+    // Validate the publisher and account (<publisherUri<foaf:account<accountUri>)
     var isPublisherConnectedToAccount =
       await sparql.accounts.getPublisherHasAccount(datasetPublisherUri, accountUri);
 
     if (!isPublisherConnectedToAccount) {
-      notify(`> Forbidden: The specified publisher is not linked to the account of the request issuer.\n`)
+      notify(`Forbidden: The specified publisher is not linked to the account of the request issuer.`)
       return { code: 403, message: null };
     }
 
@@ -131,14 +126,14 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     if (proofGraph == undefined) {
 
       // No proof yet, try to create one
-      notify(`> No signature found in the input.\n`);
+      notify(`No signature found in the input.`);
 
       // Verify if this account is an internal one
       if (!datasetPublisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
         return { code: 400, message: 'Uploads using an external account need to provide a signature' };
       }
 
-      notify(`> Generating signature.\n`);
+      notify(`Generating signature.`);
       generatingSignature = true;
 
       proofGraph = signer.createProof(expandedGraph);
@@ -152,7 +147,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     // Validate the used proof type
     if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
 
-      notify(`> Error: Unkown proof type "${proofType}"\n`);
+      notify(`Error: Unkown proof type "${proofType}"`);
       return { code: 400, message: null };
     }
 
@@ -162,15 +157,15 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     if (!validationSuccess) {
 
       if(generatingSignature) {
-        notify('Failed to generate signature. Please contact an administrator.\n');
+        notify('Failed to generate signature. Please contact an administrator.');
         return { code: 500, message: null };
       } else {
-        notify('The provided signature was invalid.\n');
+        notify('The provided signature was invalid.');
         return { code: 400, message: null };
       }
     }
 
-    notify(`> Signature validation successful.\n`);
+    notify(`Signature validation successful.`);
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
@@ -182,7 +177,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     // Create the target path for the gstore
     var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
 
-    notify(`> Saving to ${datasetUri}\n`);
+    notify(`Saving to "${datasetUri}"`);
 
     console.log(JSON.stringify(compactedGraph, null, 3));
 
@@ -191,10 +186,10 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     // Return failure
     if (!publishResult.isSuccess) {
-      return { code: 500, message: 'Internal database error\n' };
+      return { code: 500, message: 'Internal database error' };
     }
 
-    return { code: 200, message: 'Success.\n' };
+    return { code: 200, message: 'Success.' };
 
   } catch (err) {
     console.log(err);

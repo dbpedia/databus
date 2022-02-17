@@ -487,7 +487,7 @@ class DatabusCollectionManager {
         'eventListeners',
         'hasLocalChanges',
         'published',
-        'uuid'
+        'uuid',
       ];
 
       var contentString = encodeURIComponent(DatabusCollectionUtils.serialize(this.activeCollection.content, ignoreKeys));
@@ -499,12 +499,12 @@ class DatabusCollectionManager {
         "@graph": [
           {
             "@id": DATABUS_RESOURCE_BASE_URL + targetUri,
-            "@type": "databus:Collection",
+            "@type": "dataid:Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.label,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "databus:content": contentString
+            "dataid:content": contentString
           }
         ]
       };

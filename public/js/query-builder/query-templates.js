@@ -53,11 +53,39 @@
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?dataset dataid:version ?versionUri .`,
+      `\t?dataset dct:hasVersion ?version .`,
       `\t?dataset dct:title ?label .`,
       `\t?dataset dct:abstract ?comment.`,
       `}`
     ],
     aggregate: `GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview`
+  };
+
+  /**
+   * Selects files with additional information for group pages
+   */
+   static GROUP_PAGE_FILE_BROWSER_TEMPLATE = {
+    prefixes: QueryTemplates.DEFAULT_PREFIXES,
+    indent: 1,
+    select: `SELECT DISTINCT ?file ?version ?artifact ?license ?size ?format ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
+    body: [
+
+      `GRAPH ?g`,
+      `{`,
+      `\t?dataset dcat:distribution ?distribution .`,
+      `%QUERY%`,
+      `\t?distribution dataid:file ?file .`,
+      `\t?distribution dataid:formatExtension ?format .`,
+      `\t?distribution dataid:compression ?compression .`,
+      `\t?dataset dct:license ?license .`,
+      `\t?dataset dct:hasVersion ?version .`,
+      `\t?dataset dataid:artifact ?artifact .`,
+      `\tOPTIONAL { ?distribution ?p ?var. ?p rdfs:subPropertyOf dataid:contentVariant . }`,
+      `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
+      `\tOPTIONAL { ?distribution dataid:preview ?preview . }`,
+      `}`
+    ],
+    aggregate: `GROUP BY ?file ?version ?artifact ?license ?size ?format ?compression ?preview`
   };
 
   /**

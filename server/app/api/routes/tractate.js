@@ -1,10 +1,10 @@
 
-var suite = require('./databus-tractate-suite');
+var suite = require('../lib/databus-tractate-suite');
 var jsonld = require('jsonld');
-var JsonldUtils = require('../common/utils/jsonld-utils');
-const Constants = require('../common/constants');
-var defaultContext = require('../common/context.json');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
+var JsonldUtils = require('../../common/utils/jsonld-utils');
+const Constants = require('../../common/constants');
+var defaultContext = require('../../../../model/generated/context.json');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 module.exports = function (router, protector) {
 

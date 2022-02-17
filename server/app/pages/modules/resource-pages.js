@@ -50,12 +50,13 @@ module.exports = function (router, protector) {
   });
   
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
+   
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
       let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
 
       if (groupData == null) {
-        res.status(404).send("Sorry can't find that group!");
+        next('route');
         return; 
       }
 
@@ -68,7 +69,7 @@ module.exports = function (router, protector) {
 
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      res.status(500).send(err);
     }
   });
 
@@ -78,7 +79,7 @@ module.exports = function (router, protector) {
       let collectionData = await sparql.collections.getCollection(req.params.account, req.params.collection);
 
       if (collectionData == null) {
-        res.status(404).send('Unable to find the collection.');
+        next('route');
         return;
       }
 
@@ -93,7 +94,7 @@ module.exports = function (router, protector) {
         data: { collection: collectionData, auth: auth }
       });
     } catch (err) {
-      res.status(404).send('Unable to find the collection.');
+      res.status(500).send(err);
     }
   });
 
@@ -109,7 +110,7 @@ module.exports = function (router, protector) {
       let versionsData = await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group, req.params.artifact);
 
       if (versionsData == null) {
-        res.status(404).send("Sorry can't find that Artifact!");
+        next('route');
         return;
       }
 
@@ -117,10 +118,10 @@ module.exports = function (router, protector) {
         title: versionsData[0].label,
         data: { auth: auth, versions: versionsData }
       });
-    } catch (err) {
 
+    } catch (err) {
       console.log(err);
-      res.status(404).send("Sorry can't find that!");
+      res.status(500).send(err);
     }
   });
 
@@ -137,7 +138,6 @@ module.exports = function (router, protector) {
         };
       });
 
-      console.log(data);
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
 
       res.render('version', { title: data.version.label, data: data });

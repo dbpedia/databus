@@ -1,30 +1,18 @@
 /*
- * Copyright 2016 Red Hat Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- * 
  * Mod of the protect module for databus resource protection
  */
-var oidc = require('express-openid-connect');
-var oidcConfig = require('./oidc.json');
-const COOKIES = require('../../node_modules/express-openid-connect/lib/cookies');
-const weakRef = require('../../node_modules/express-openid-connect/lib/weakCache');
-var getRandomValues = require('get-random-values');
+
+const COOKIES = require('express-openid-connect/lib/cookies');
 const COOKIE_NAME = 'skipSilentLogin';
 
-var path = require('path');
+var oidc = require('express-openid-connect');
+var oidcConfig = require('./oidc.json');
+
+const weakRef = require('express-openid-connect/lib/weakCache');
+var getRandomValues = require('get-random-values');
+
 var fs = require('fs');
-const Constants = require('../common/constants');
+const Constants = require('../constants');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -46,8 +34,6 @@ function forceLogin(request, response) {
     });
   }
 }
-
-
 
 function getRequestUri(request) {
 
@@ -120,28 +106,17 @@ class DatabusProtect {
 
     this.oidc = oidc;
     this.oidc.debug = (str) => console.log(str);
-
-    /*
-    this.userTablePath = __dirname + '/../../users/namespaces.csv';
-
-    if (!fs.existsSync(this.userTablePath)) {
-
-      if (!fs.existsSync(__dirname + '/../../users')) {
-        fs.mkdirSync(__dirname + '/../../users');
-      }
-
-      console.log(`Creating user file at ${this.userTablePath}.`);
-      fs.writeFileSync(this.userTablePath, "", "utf8");
-    }
-
-    console.log(`Parsing user table from ${this.userTablePath}`);
-    this.createUserHashtable(fs.readFileSync(this.userTablePath, "utf8"));*/
   }
 
   hasUser(user) {
     return this.users.byUsername[user] != undefined;
   }
 
+  /**
+   * Gets a user by sub identifier
+   * @param {*} sub 
+   * @returns 
+   */
   getUser(sub) {
     return this.users.bySub[sub];
   }
@@ -161,29 +136,16 @@ class DatabusProtect {
     this.saveUser(user);
   }
 
+  /**
+   * Sends a message to the master process to save and propagate user changes 
+   * in the cluster
+   * @param {} user 
+   */
   saveUser(user) {
-
     process.send({
       id: Constants.DATABUS_USER_ENTRY_UPDATE,
       body: JSON.stringify(user)
     });
-
-
-    /*
-    var csvString = "";
-    for (var u in this.users.bySub) {
-      var user = this.users.bySub[u];
-
-
-      let buff = new Buffer.from(JSON.stringify(user.keys));
-      let keyString = buff.toString('base64');
-
-      if (user.username != undefined) {
-        csvString += `${user.name},${user.sub},${user.username},${keyString}\n`;
-      }
-    }
-
-    fs.writeFileSync(this.userTablePath, csvString, "utf8");*/
   }
 
   addApiKey(sub, name) {
@@ -207,7 +169,13 @@ class DatabusProtect {
     return { name: name, key: key };
   }
 
-  removeApiKey(sub, key) {
+  /**
+   * Removes one or more API keys by name
+   * @param {} sub 
+   * @param {*} name 
+   * @returns 
+   */
+  removeApiKey(sub, name) {
 
     try {
       var user = this.getUser(sub);
@@ -221,7 +189,7 @@ class DatabusProtect {
       }
 
       var keys = user.keys.filter(function (k) {
-        return k.key != key;
+        return k.name != name;
       });
 
       if (keys.length != user.keys.length) {
@@ -377,6 +345,7 @@ class DatabusProtect {
       var user = this.getUser(req.oidc.user.sub);
 
       if (user != undefined) {
+        req.databus.sub = user.sub;
         req.databus.accountName = user.username;
         req.databus.apiKeys = user.keys;
         // console.log(`Set databus.username of user [${req.oidc.user.sub}] to ${req.databus.accountName}`);
@@ -424,7 +393,7 @@ class DatabusProtect {
     var self = this;
     return [async function (request, response, next) {
 
-      console.log(`Protecting request to ${request.originalUrl}...`);
+      // console.log(`Protecting request to ${request.originalUrl}...`);
       // Consider doing webid tls here 
 
       var apiTokenUser = self.validateApiKey(request);
@@ -432,6 +401,7 @@ class DatabusProtect {
       if (apiTokenUser != null) {
         // Api token has been found
         request.databus = {};
+        request.databus.sub = apiTokenUser.sub;
         request.databus.authenticated = true;
         request.databus.accountName = apiTokenUser.username;
         request.databus.apiKeys = apiTokenUser.keys;
@@ -441,14 +411,14 @@ class DatabusProtect {
 
       // Check the token for permission when a kauth object is present
       if (request.oidc && request.oidc.isAuthenticated()) {
-        console.log(`OIDC token is present - Granting access...`);
+        // console.log(`OIDC token is present - Granting access...`);
         return next();
       }
 
 
       // Html requests need a redirect
       if (!noRedirect && isBrowserRequest(request)) {
-        console.log('Accessing from Browser. Redirecting to web login...');
+        // console.log('Accessing from Browser. Redirecting to web login...');
         // Get the user agent
         forceLogin(request, response);
         return;
