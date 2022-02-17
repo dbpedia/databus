@@ -188,7 +188,6 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?file ?format ?byteSize WHERE {
-  GRAPH ?g {
     ?dataset dataid:artifact <https://databus.dbpedia.org/john/animals/cats> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dct:hasVersion ?version .
@@ -200,7 +199,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
         ?dataset dataid:artifact <https://databus.dbpedia.org/ontologies/w3id.org/nfdi4ing--metadata4ing> . 
         ?dataset dct:hasVersion ?v . 
       } ORDER BY DESC (?version) LIMIT 1 
-    } 
+    }
 }
 ```
 
