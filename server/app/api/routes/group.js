@@ -1,15 +1,20 @@
 const ServerUtils = require("../../common/utils/server-utils");
+const DatabusUris = require("../../../../public/js/utils/databus-uris");
+const Constants = require("../../common/constants");
 const publishGroup = require('../lib/publish-group');
 
+var database = require('../../common/remote-database-manager');
+var defaultContext = require('../../../../model/generated/context.json');
 var request = require('request');
 
-module.exports = function (router, protector) {
+const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 
+module.exports = function (router, protector) {
 
   /**
   * Publishing of groups via PUT request
   */
-  router.put('/:account/:group', protector.protect(), async function (req, res, next) {
+  router.put('/:account/:group', protector.protect(true), async function (req, res, next) {
 
     try {
 
@@ -30,19 +35,22 @@ module.exports = function (router, protector) {
       }
 
       // Call the publishing routine and log to a string
-      var report = '';
+      var report = `Publishing Group.\n`;
 
       var groupResult = await publishGroup(account, graph, groupUri, function (message) {
-        report += message;
+        report += `> ${message}\n`;
       });
-
-      if (groupResult != undefined) {
-        report += `${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`;
-      }
 
       // Return the result with the logging string
       res.set('Content-Type', 'text/plain');
-      res.status(groupResult.code).send(report);
+      var returnCode = groupResult.code;
+
+      if (returnCode < 200) {
+        returnCode = 400;
+      }
+
+      report += `${MESSAGE_GROUP_PUBLISH_FINISHED}${returnCode}.\n`;
+      res.status(returnCode).send(report);
 
     } catch (err) {
       console.log(err);
@@ -67,7 +75,7 @@ module.exports = function (router, protector) {
     return;
   });
 
-  router.delete('/:account/:group', protector.protect(), async function (req, res, next) {
+  router.delete('/:account/:group', protector.protect(true), async function (req, res, next) {
 
     // Requesting a DELETE on an uri outside of one's namespace is rejected
     if (req.params.account != req.databus.accountName) {

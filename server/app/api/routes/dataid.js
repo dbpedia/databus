@@ -1,9 +1,15 @@
 const Constants = require('../../common/constants.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
+const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
+
+const publishDataId = require('../lib/publish-dataid');
+
 var sparql = require('../../common/queries/sparql');
 var request = require('request');
 var database = require('../../common/remote-database-manager');
+var defaultContext = require('../../../../model/generated/context.json');
 
+const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
 
 module.exports = function (router, protector) {
 
@@ -30,18 +36,26 @@ module.exports = function (router, protector) {
       }
 
       // Call the publishing routine and log to a string
-      var report = '';
+      var report = `Publishing DataId.\n`;
 
       var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
-        report += message;
+        report += `> ${message}\n`;
       });
 
+      
+
+      var returnCode = dataIdResult.code;
+
+      if (returnCode < 200) {
+        returnCode = 400;
+      }
+
       if (dataIdResult != undefined) {
-        report += `${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`;
+        report += `${MESSAGE_DATAID_PUBLISH_FINISHED}${returnCode}.\n`;
       }
 
       // Return the result with the logging string
-      res.status(dataIdResult.code).send(report);
+      res.status(returnCode).send(report);
 
     } catch (err) {
       console.log(err);

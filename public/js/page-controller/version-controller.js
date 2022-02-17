@@ -64,8 +64,6 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '25%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '25%' });
 
-  var fileQueryBuilder = new QueryBuilder();
-
   $scope.artifactNode = new QueryNode($scope.versionData.artifactUri, 'dataid:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.versionData.version, true);
 
@@ -75,13 +73,21 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.collectionWidgetSelectionData = {};
   $scope.collectionWidgetSelectionData.groupNode = $scope.groupNode;
 
-  $scope.fileSelector.query = fileQueryBuilder.createFileQuery($scope.artifactNode);
-  $scope.fileSelector.fullQuery = fileQueryBuilder.createFullQuery($scope.artifactNode);
+  $scope.onFacetSettingsChanged = function() {
+    $scope.fileSelector.query = QueryBuilder.build({
+      node: $scope.artifactNode,
+      template: QueryTemplates.DEFAULT_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
 
-  $scope.onFacetSettingsChanged = function () {
-    $scope.fileSelector.query = fileQueryBuilder.createFileQuery($scope.artifactNode);
-    $scope.fileSelector.fullQuery = fileQueryBuilder.createFullQuery($scope.artifactNode);
+    $scope.fileSelector.fullQuery = QueryBuilder.build({
+      node: $scope.artifactNode,
+      template: QueryTemplates.GROUP_PAGE_FILE_BROWSER_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
   }
+
+  $scope.onFacetSettingsChanged();
 
   $scope.hideAutofill = function () {
     $scope.fileSelector.clearAutofill(function () {

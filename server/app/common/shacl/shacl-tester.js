@@ -8,6 +8,9 @@ const Readable = require('stream').Readable;
 const fs = require('fs');
 var rp = require('request-promise');
 const path = require("path");
+var jsonld = require('jsonld');
+const JsonldUtils = require('../utils/jsonld-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;
 
@@ -64,12 +67,28 @@ async function validateJsonld(rdf, shaclFile) {
       uri: `${databaseUri}/shacl/validate`,
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Accept': 'application/ld+json'
       }
     };
 
     var res = await rp(options);
 
-    return { isSuccess: true, message: 'SHACL validation successful.' };
+    var expandedRes = await jsonld.flatten(JSON.parse(res));
+    var validationReport = JsonldUtils.getTypedGraph(expandedRes, DatabusUris.SHACL_VALIDATION_REPORT);
+    var conforms = validationReport[DatabusUris.SHACL_CONFORMS][0][DatabusUris.JSONLD_VALUE];
+    var messages = [];
+
+    if(!conforms) {
+
+      var validationResults = JsonldUtils.getTypedGraphs(expandedRes, DatabusUris.SHACL_VALIDATION_RESULT);
+    
+      for(var result of validationResults) {
+        var message = result[DatabusUris.SHACL_RESULT_MESSAGE][0][DatabusUris.JSONLD_VALUE];
+        messages.push(message);
+      }
+    }
+
+    return { isSuccess: conforms, messages: messages };
 
     /*
     if (instance.validators == null) {
@@ -108,12 +127,9 @@ async function validateJsonld(rdf, shaclFile) {
   } catch (err) {
 
     if (err.response == undefined) {
-      console.log(err);
       return { isSuccess: false, message: err };
     }
 
-    console.log(err.response.body);
-    //console.log('Error during dataid shacl test ' + err);
     return { isSuccess: false, message: err.response.body };
   }
 }

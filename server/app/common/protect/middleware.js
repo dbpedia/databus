@@ -393,7 +393,7 @@ class DatabusProtect {
     var self = this;
     return [async function (request, response, next) {
 
-      console.log(`Protecting request to ${request.originalUrl}...`);
+      // console.log(`Protecting request to ${request.originalUrl}...`);
       // Consider doing webid tls here 
 
       var apiTokenUser = self.validateApiKey(request);
@@ -411,14 +411,14 @@ class DatabusProtect {
 
       // Check the token for permission when a kauth object is present
       if (request.oidc && request.oidc.isAuthenticated()) {
-        console.log(`OIDC token is present - Granting access...`);
+        // console.log(`OIDC token is present - Granting access...`);
         return next();
       }
 
 
       // Html requests need a redirect
       if (!noRedirect && isBrowserRequest(request)) {
-        console.log('Accessing from Browser. Redirecting to web login...');
+        // console.log('Accessing from Browser. Redirecting to web login...');
         // Get the user agent
         forceLogin(request, response);
         return;

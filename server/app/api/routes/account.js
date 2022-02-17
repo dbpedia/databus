@@ -134,6 +134,10 @@ module.exports = function (router, protector) {
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
     
+      if(req.params.account == `sparql`) {
+        res.status(403).send(`Forbidden.\n`);
+      }
+
       if(accountExists) {
         // deny, this account name is taken
         res.status(401).send(`This account name is taken.\n`);

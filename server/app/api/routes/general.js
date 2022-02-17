@@ -1,4 +1,6 @@
 var http = require('http');
+var request = require('request');
+
 var cors = require('cors');
 var defaultContext = require('../../../../model/generated/context.json');
 
@@ -10,6 +12,29 @@ const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
 
 module.exports = function (router, protector) {
+
+  router.get('/sparql', cors(), function (req, res) {
+    var url = `${process.env.DATABUS_DATABASE_URL}${req.originalUrl.replace('/system', '')}`;
+    request(url).pipe(res);
+  });
+
+  router.post('/sparql', cors(), async function (req, res) {
+
+    var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
+    var query = req.body.query;
+
+    var options = {
+      method: 'POST',
+      uri: sparqlEndpoint + '?timeout=10000',
+      body: "query=" + encodeURIComponent(query),
+      json: true,
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded"
+      },
+    };
+
+    request.post(options).pipe(res);
+  });
 
   router.post('/api/publish', protector.protect(true), async function (req, res, next) {
 
@@ -31,8 +56,10 @@ module.exports = function (router, protector) {
         graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
+      res.write(`Publishing Group.\n`);
+
       var groupResult = await publishGroup(account, graph, null, function (message) {
-        res.write(message);
+        res.write(`> ${message}\n`);
       });
 
       if (groupResult != undefined) {
@@ -43,8 +70,11 @@ module.exports = function (router, protector) {
 
       verifyParts = req.query['verify-parts'] == "false" ? false : true;
 
+      res.write(`Publishing DataId.\n`);
+
+
       var dataIdResult = await publishDataId(account, graph, verifyParts, function (message) {
-        res.write(message);
+        res.write(`> ${message}\n`);
       });
 
       if (dataIdResult != undefined) {

@@ -13,6 +13,181 @@ components:
       in: header       
       name: X-API-KEY  
 paths:
+  /sparql:
+    get:
+      summary: "Send SPARQL Query"
+      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
+      operationId: "sparql-get"
+      tags:
+        - general
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: query
+          name: verify-parts
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
+          required: false
+          example: "true"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                  {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "abstract": "Cleaned datasets from DBpedia",
+                    "description": "Cleaned datasets from DBpedia"
+                  },
+                  {
+                    "@type": "Dataset",
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                    "hasVersion": "2022-02-09",
+                    "title": "Cleaned Geonames",
+                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                    "description": "Cleaned version of the geonames dataset from DBpedia",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                        "@type": "Part",
+                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                        "format": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                      }
+                    ]
+                  }
+                ]
+              }'
+      responses:
+        "202":
+          description: "Accepted"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
+                  Publishing group finished with code 200.
+                  ================================================
+                  Publishing DataId.
+                  > 13 triples selected via construct query.
+                  > Auto-completed the input.
+                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
+                  > SHACL validation successful.
+                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
+                  > No signature found in the input.
+                  > Generating signature.
+                  > Signature validation successful.
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
+                  Publishing DataId finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+    post:
+      summary: "Send SPARQL Query"
+      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
+      operationId: "sparql-post"
+      tags:
+        - general
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/json"
+      produces:
+        - "text/html"
+      parameters:
+        - in: query
+          name: verify-parts
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
+          required: false
+          example: "true"
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                  {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "abstract": "Cleaned datasets from DBpedia",
+                    "description": "Cleaned datasets from DBpedia"
+                  },
+                  {
+                    "@type": "Dataset",
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+                    "hasVersion": "2022-02-09",
+                    "title": "Cleaned Geonames",
+                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
+                    "description": "Cleaned version of the geonames dataset from DBpedia",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
+                        "@type": "Part",
+                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
+                        "format": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                      }
+                    ]
+                  }
+                ]
+              }'
+      responses:
+        "202":
+          description: "Accepted"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
+                  Publishing group finished with code 200.
+                  ================================================
+                  Publishing DataId.
+                  > 13 triples selected via construct query.
+                  > Auto-completed the input.
+                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
+                  > SHACL validation successful.
+                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
+                  > No signature found in the input.
+                  > Generating signature.
+                  > Signature validation successful.
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
+                  Publishing DataId finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
   /api/publish:
     post:
       summary: "Publish Metdata"
@@ -80,19 +255,19 @@ paths:
                 example: 'Publishing Group.
                   > 5 triples selected via construct query.
                   > SHACL validation successful.
-                  > Saving to %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
                   Publishing group finished with code 200.
                   ================================================
                   Publishing DataId.
-                  > 15 triples selected via construct query.
+                  > 13 triples selected via construct query.
                   > Auto-completed the input.
-                  > Analyzing part %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl
+                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
                   > SHACL validation successful.
-                  > Publishing as %DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this.
+                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
                   > No signature found in the input.
                   > Generating signature.
                   > Signature validation successful.
-                  > Saving to %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
                   Publishing DataId finished with code 200.'
         "403":
           description: "Forbidden. The account failed to authenticate."
@@ -154,7 +329,7 @@ paths:
                 example: 'Publishing Group.
                   > 5 triples selected via construct query.
                   > SHACL validation successful.
-                  > Saving to %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
                   Publishing group finished with code 200.'
         "403":
           description: "Forbidden. The account failed to authenticate."
@@ -773,7 +948,7 @@ paths:
                     "title": "Cleaned Geonames",
                     "abstract": "Cleaned Geonames Data (latest version) from DBpedia.",
                     "description": "Cleaned Geonames Data (latest version) from DBpedia.",
-                    "dataid:content": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
+                    "dataid:content": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%222022-02-09%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
                   }
                 ]
               }'
@@ -993,20 +1168,20 @@ paths:
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
                   {
-                      "@id": "http://localhost:3000/%USERNAME%",
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%",
                       "@type": "foaf:PersonalProfileDocument",
-                      "maker": "http://localhost:3000/%USERNAME%#this",
-                      "primaryTopic": "http://localhost:3000/%USERNAME%#this"
+                      "maker": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
+                      "primaryTopic": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this"
                   },
                   {
-                      "@id": "http://localhost:3000/%USERNAME%#this",
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
                       "@type": [
                           "dbo:DBpedian",
                           "foaf:Person"
                       ],
                       "name": "%USERNAME%",
                       "rdfs:comment": "Hello Databus!",
-                      "account": "http://localhost:3000/%USERNAME%"
+                      "account": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%"
                   }
                 ]
               }'

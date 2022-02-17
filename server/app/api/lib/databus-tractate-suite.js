@@ -30,7 +30,7 @@ signer.init = function () {
     return;
   }
 
-  var privateKeyFile = __dirname + '/../../keypair/private-key.pem';
+  var privateKeyFile = __dirname + '/../../../keypair/private-key.pem';
   var encodedPrivateKeyString = fs.readFileSync(privateKeyFile, "utf8");
 
   signer.privateKey = new NodeRSA(encodedPrivateKeyString, 'pkcs8');

@@ -15,7 +15,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.createAccount = function () {
-    window.location = '/system/account';
+    window.location = '/app/account';
   }
 
   // controller does not work without authentication
@@ -321,7 +321,7 @@ function PublishWizardController($scope, $http, focus, $q) {
    */
   $scope.fetchGroupsAndArtifacts = function () {
     var session = $scope.session;
-    var uri = `/system/pages/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
+    var uri = `/app/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
 
     $http.get(uri).then(function (response) {
       session.isAccountDataLoading = false;

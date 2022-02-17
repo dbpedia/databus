@@ -51,7 +51,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   }
 
   $scope.createAccount = function () {
-    window.location = '/system/account';
+    window.location = '/app/account';
   }
 
 
@@ -442,7 +442,7 @@ SELECT DISTINCT ?file WHERE {\n\
     $scope.isDoingCommitWork = true;
 
     // reload remote
-    $http.get(`/system/pages/account/collections?account=${$scope.accountName}`).then(function (res) {
+    $http.get(`/app/account/collections?account=${$scope.accountName}`).then(function (res) {
 
       $scope.collectionManager.discardLocalChanges(res.data);
       $scope.statusCode = DatabusResponse.COLLECTION_LOCAL_CHANGES_DISCARDED;
