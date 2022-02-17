@@ -12,6 +12,6 @@ With the help of the Databus Mods subsystem, several custom metadata layers can 
 
 ### Meta registry of existing files
 
-
+A current problem of plenty of data repositories, which are typically focused on a specific research domain, is that their specific metadata schemas as well as technical heterogeneity easily lead to metadata silos and hinder findability and publishing of research data. Consumers have to deal with questions like which repositories exist and which should be used to search and register data and how can they be used. Especially, for workflows from intersectional domains, that employ data registered across different repositories, data access is burdensome due to this technical heterogeneity. However, the number and variety of platforms and repositories is steadily increasing, mainly driven by the paradigm “If a metadata schema or feature set of platform X is not sufficient for a use case or (intersectional) domain, typically a new, extended Platform Y which optionally integrates (parts of) platform X is developed”. As a consequence redundant but also complementary (different types of community-specific) metadata about the same data assets is spread apart in different repositories. The DBpedia Databus - that is based on minimal mandatory core metadata and allows metadata to be extended easily with Databus Mods - can be leveraged to discover, access and associate (meta)data for/of data assets in a unified way.
 
 ### Enhancement with Mods
