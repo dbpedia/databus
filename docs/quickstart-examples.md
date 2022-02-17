@@ -5,6 +5,7 @@ Some examples to copy and adapt. Example SPARQL queries.
 ## Dataset Version Example
 
 ### Example in JSON-LD
+
 ```json
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
@@ -20,7 +21,7 @@ Some examples to copy and adapt. Example SPARQL queries.
       "@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
       "@type": "dataid:Part",
       "file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
-      "format": "nt",
+      "formatExtension": "nt",
       "compression": "none",
       "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
       "byteSize": "4439722",
@@ -44,7 +45,6 @@ Some examples to copy and adapt. Example SPARQL queries.
 ### SUGGESTION Example
 
 ### Example in JSON-LD
-
 
 ```json
 {
@@ -82,7 +82,6 @@ Some examples to copy and adapt. Example SPARQL queries.
   ]
 }
 ```
-
 
 Example input after auto-completion
 
@@ -150,10 +149,6 @@ Example input after auto-completion
 ]
 ```
 
-
-
-
-
 ### SPARQL Queries
 
 Example Query for retrieving all files, the format and their size from a certain dataset (by knowing group, artifact and version)
@@ -204,6 +199,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
 ```
 
 ## Group Example
+
 ```json
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
