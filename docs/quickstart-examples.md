@@ -156,6 +156,53 @@ Example input after auto-completion
 
 ### SPARQL Queries
 
+Example Query for retrieving all files, the format and their size from a certain dataset (by knowing group, artifact and version)
+
+```sparql
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?file ?format ?byteSize WHERE {
+  GRAPH ?g {
+    ?dataset dataid:version <https://databus.dbpedia.org/john/animals/cats/2022-02-02> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dataid:file ?file .
+    ?distribution dataid:format ?format .
+    ?distribution dataid:byteSize ?byteSize .
+  }
+}
+```
+
+Example Query for retrieving the same information for the latest version of an artifact:
+
+```
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?file ?format ?byteSize WHERE {
+  GRAPH ?g {
+    ?dataset dataid:version <https://databus.dbpedia.org/john/animals/cats/2022-02-02> .
+    ?dataset dcat:distribution ?distribution .
+    ?distribution dct:hasVersion ?version .
+    ?distribution dataid:file ?file .
+    ?distribution dataid:format ?format .
+    ?distribution dataid:byteSize ?byteSize .
+    {
+      SELECT (?v as ?version) { 
+        ?dataset dataid:artifact <https://databus.dbpedia.org/ontologies/w3id.org/nfdi4ing--metadata4ing> . 
+        ?dataset dct:hasVersion ?v . 
+      } ORDER BY DESC (?version) LIMIT 1 
+    } 
+}
+```
 
 ## Group Example
 ```json
