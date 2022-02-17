@@ -58,10 +58,10 @@ db.delete = async function (repo, path) {
 
   try {
 
-    var uri = `${databaseUri}/file/delete?repo=${repo}&path=${path}`;
+    var uri = `${databaseUri}/graph/delete?repo=${repo}&path=${path}`;
     console.log(uri);
 
-    var res = await rp.post(uri);
+    var res = await rp.delete(uri);
 
     for (var c in db.saveListeners) {
       var callback = db.saveListeners[c];

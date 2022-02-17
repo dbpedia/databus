@@ -57,29 +57,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/sparql', cors(), function (req, res) {
-    var url = `${process.env.DATABUS_DATABASE_URL}${req.originalUrl.replace('/system', '')}`;
-    request(url).pipe(res);
-  });
-
-  router.post('/system/sparql', cors(), async function (req, res) {
-
-    var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
-    var query = req.body.query;
-
-    var options = {
-      method: 'POST',
-      uri: sparqlEndpoint + '?timeout=10000',
-      body: "query=" + encodeURIComponent(query),
-      json: true,
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded"
-      },
-    };
-
-
-    request.post(options).pipe(res);
-  });
+  
 
   router.get('/system/documentation/', protector.checkSso(), function (req, res, next) {
 
@@ -192,11 +170,9 @@ module.exports = function (router, protector) {
 
 
 
-  require('./modules/search')(router, protector);
   require('./modules/account-page')(router, protector);
   require('./modules/collection-editor')(router, protector);
   require('./modules/publish-wizard')(router, protector);
   require('./modules/resource-pages')(router, protector);
-
 
 }

@@ -51,7 +51,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   }
 
   $scope.createAccount = function () {
-    window.location = '/system/account';
+    window.location = '/app/account';
   }
 
 
@@ -82,27 +82,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     $scope.session = {};
     $scope.session.activeTab = 0;
     $scope.session.showDescription = true;
-
-    if (collectionManager.activeCollection.content.generatedQuery != undefined) {
-      $scope.session.showGroups = collectionManager.activeCollection.content.generatedQuery.root.childNodes.length > 0;
-    }
-
-    if (collectionManager.activeCollection.content.customQueries != undefined) {
-      $scope.session.showQueries = collectionManager.activeCollection.content.customQueries.length > 0;
-    }
-  }
-
-
-  if (collectionManager.activeCollection.content.generatedQuery != undefined) {
-    if (collectionManager.activeCollection.content.generatedQuery.root.childNodes.length == 0) {
-      $scope.session.showGroups = false;
-    }
-  }
-
-  if (collectionManager.activeCollection.content.customQueries != undefined) {
-    if (collectionManager.activeCollection.content.customQueries.length == 0) {
-      $scope.session.showQueries = false;
-    }
+    $scope.session.showGroups = true;
   }
 
   $scope.$watch('statusCode', function (newVal, oldVal) {
@@ -218,7 +198,6 @@ SELECT DISTINCT ?file WHERE {\n\
 
     // check for valid Databus
 
-    //var rootNode = QueryNode.createFrom($scope.collectionManager.activeCollection.content.generatedQuery.root);
     //rootNode.addChild(new QueryNode($scope.session.databusUriToAdd, null));
   }
 
@@ -463,7 +442,7 @@ SELECT DISTINCT ?file WHERE {\n\
     $scope.isDoingCommitWork = true;
 
     // reload remote
-    $http.get(`/system/pages/account/collections?account=${$scope.accountName}`).then(function (res) {
+    $http.get(`/app/account/collections?account=${$scope.accountName}`).then(function (res) {
 
       $scope.collectionManager.discardLocalChanges(res.data);
       $scope.statusCode = DatabusResponse.COLLECTION_LOCAL_CHANGES_DISCARDED;

@@ -149,7 +149,7 @@ class ShasumClient {
       process.isSuccess = true;
 
       file.byteSize = success.result.byteSize;
-      file.sha256sum = success.result.sha256sum;
+      file.sha256sum = success.result.shasum;
       self.onShasumFinished();
 
     }, function (error) {
@@ -175,6 +175,7 @@ class ShasumClient {
 
       var contentSize = 0;
       var shasum = null;
+      var result = null;
       var decoder = new TextDecoder("utf-8");
 
       var reader = fetchResult.body.getReader();
@@ -193,12 +194,13 @@ class ShasumClient {
               deferred.notify({ uri: file.uri, progress: Math.floor(100 * p[0] / p[1]) });
               contentSize = p[1];
             } else if (updates != undefined && update.length > 0) {
-              shasum = update;
+              result = JSON.parse(update);
             }
           }
 
           if (done) {
-            deferred.resolve({ uri: file.uri, result: { sha256sum: shasum, byteSize: contentSize } });
+
+            deferred.resolve({ uri: file.uri, result: result });
             return true;
           }
 

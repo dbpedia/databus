@@ -45,7 +45,7 @@ function SearchController($http, $interval, $sce) {
 
       $http({
         method: 'GET',
-        url: '/system/search?query=' + ctrl.searchInput + typeFilters
+        url: '/api/search?query=' + ctrl.searchInput + typeFilters
       }).then(function successCallback(response) {
         ctrl.results = response.data;
       }, function errorCallback(response) {

@@ -118,7 +118,7 @@ class DatabusCollectionManager {
       this.selectFirstOrCreate();
     }
 
-    QueryNode.assignParents(this.activeCollection.content.generatedQuery.root);
+    QueryNode.assignParents(this.activeCollection.content.root);
 
     // Save locally in case we created any local working copies
     this.saveLocally();
@@ -188,7 +188,7 @@ class DatabusCollectionManager {
     this.convertCollectionContentToTree(uuid);
 
     let collection = this.local[uuid];
-    QueryNode.assignParents(collection.content.generatedQuery.root);
+    QueryNode.assignParents(collection.content.root);
 
     this.activeCollectionIdentifier = uuid;
     window.localStorage.setItem(this.storageKey + '_active', this.activeCollectionIdentifier);
@@ -205,13 +205,11 @@ class DatabusCollectionManager {
   convertCollectionContentToTree(uuid) {
     let collection = this.local[uuid];
 
-    if (collection.content.generatedQuery !== undefined) {
+    if (collection.content.root !== undefined) {
       return;
     }
 
-    collection.content.generatedQuery = {};
-    collection.content.generatedQuery.root = new QueryNode(null, null);
-
+    collection.content.root = new QueryNode(null, null);
 
     for (var g in collection.content.groups) {
       var group = collection.content.groups[g];
@@ -228,7 +226,7 @@ class DatabusCollectionManager {
         groupNode.setFacet(setting.facet, setting.value, setting.checked);
       }
 
-      collection.content.generatedQuery.root.addChild(groupNode);
+      collection.content.root.addChild(groupNode);
 
 
       for (var a in group.artifacts) {
@@ -250,7 +248,7 @@ class DatabusCollectionManager {
     let collection = DatabusCollectionWrapper.createNew();
     collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
 
-    let root = collection.content.generatedQuery.root;
+    let root = collection.content.root;
     for (var g in root.childNodes) {
       var graph = root.childNodes[g];
 
@@ -489,7 +487,7 @@ class DatabusCollectionManager {
         'eventListeners',
         'hasLocalChanges',
         'published',
-        'uuid'
+        'uuid',
       ];
 
       var contentString = encodeURIComponent(DatabusCollectionUtils.serialize(this.activeCollection.content, ignoreKeys));
@@ -501,12 +499,12 @@ class DatabusCollectionManager {
         "@graph": [
           {
             "@id": DATABUS_RESOURCE_BASE_URL + targetUri,
-            "@type": "databus:Collection",
+            "@type": "dataid:Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.label,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "databus:content": contentString
+            "dataid:content": contentString
           }
         ]
       };

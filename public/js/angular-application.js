@@ -1,4 +1,5 @@
 
+
 var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
   .factory('collectionManager', ["$http", function ($http) { return new DatabusCollectionManager($http, 'databus_collections'); }])
   .factory('focus', ["$timeout", "$window", function ($timeout, $window) {

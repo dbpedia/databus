@@ -1,6 +1,6 @@
 var http = require('http');
 var { spawn } = require('child_process');
-var remoteDatabaseManager = require('../../common/remote-database-manager');
+var remoteDatabaseManager = require('../common/remote-database-manager');
 var indexingArgs = ['-jar', '../search/lookup-indexer.jar', '-conf', '../search/app-config-index.yml'];
 var cors = require('cors');
 
@@ -60,49 +60,18 @@ module.exports = function (router, protector) {
 
   rebuildAndRedeploy();
 
-  /*
-  router.get('/system/search-force-rebuild', async function (req, res, next) {
 
-    await rebuildAndRedeploy();
-    res.status(200).send('Done');
-  });
-*/
+  router.get('/api/search', cors(), function (req, res, next) {
 
-  router.get('/system/search', cors(), function (req, res, next) {
+    var queryString = '';
+    var first = true;
 
-    var query = req.query.query;
-    var typeName = req.query.typeName;
-    var minRelevance = req.query.minRelevance;
-    var format = req.query.format;
-    var groupUri = req.query.groupUri;
-    var groupUriWeight = req.query.groupUriWeight;
-    var publisherUri = req.query.publisherUri;
-
-    var search = 'http://localhost:8080/lookup-application/api/search?query=' + query;
-
-    if (typeName != undefined) {
-      search += "&typeName=" + typeName;
+    for(var param in req.query) {
+      queryString += `${first ? '?' : '&'}${param}=${req.query[param]}`;
+      first = false;
     }
 
-    if (minRelevance != undefined) {
-      search += "&minRelevance=" + minRelevance;
-    }
-
-    if (format != undefined) {
-      search += "&format=" + format;
-    }
-
-    if (groupUri != undefined) {
-      search += "&groupUri=" + groupUri;
-    }
-
-    if (groupUriWeight != undefined) {
-      search += "&groupUriWeight=" + groupUriWeight;
-    }
-
-    if (publisherUri != undefined) {
-      search += "&publisherUri=" + publisherUri;
-    }
+    var search = `http://localhost:8080/lookup-application/api/search${queryString}`;
 
     http.get(search, function (response) {
       response.setEncoding('utf8');

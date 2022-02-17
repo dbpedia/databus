@@ -1,3 +1,4 @@
+
 class DatabusCollectionWrapper {
 
   /**
@@ -57,9 +58,9 @@ class DatabusCollectionWrapper {
     data.label = label;
     data.description = description;
     data.content = {};
-    data.content.generatedQuery = {};
-    data.content.generatedQuery.root = new QueryNode(null, null);
-    data.content.generatedQuery.root.addChild(new QueryNode(source, null));
+    data.content = {};
+    data.content.root = new QueryNode(null, null);
+    data.content.root.addChild(new QueryNode(source, null));
 
     return data;
   }
@@ -70,25 +71,12 @@ class DatabusCollectionWrapper {
    */
   createQuery() {
 
-    var artifactFileQueryTemplate =
-      "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n" +
-      "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n" +
-      "PREFIX dct: <http://purl.org/dc/terms/>\n" +
-      "PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\n" +
-      "# Get all files\n" +
-      "SELECT DISTINCT ?file WHERE {\n " +
-      "\t?dataset dataid:artifact <%ARTIFACT_URI%> .\n" +
-      "\t?dataset dcat:distribution ?distribution ." +
-      "%OPTIONS%\n\t?distribution dcat:downloadURL ?file .\n}";
-
-    var queryBuilder = new QueryBuilder(artifactFileQueryTemplate, '%ARTIFACT_URI%', '%OPTIONS%');
-
-    return queryBuilder.createCollectionQuery(this.content);
+    return QueryBuilder.build({
+      template : QueryTemplates.DEFAULT_FILE_TEMPLATE,
+      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      node: this.content.root
+    });
   }
-
-
-
-
 
   /**
    * Downloads the entire collection object as json
@@ -111,7 +99,7 @@ class DatabusCollectionWrapper {
   }
 
   removeNodeByUri(uri) {
-    QueryNode.removeChildByUri(this.content.generatedQuery.root, uri);
+    QueryNode.removeChildByUri(this.content.root, uri);
   }
 
   removeGroupNode(groupNode) {

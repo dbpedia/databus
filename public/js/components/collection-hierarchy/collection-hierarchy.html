@@ -18,7 +18,7 @@
               </databus-icon>
             </div>
             <div class="node-children" ng-if="$ctrl.generatedNode.expanded">
-              <div ng-repeat="groupNode in $ctrl.collection.content.generatedQuery.root.childNodes track by groupNode.uri">
+              <div ng-repeat="groupNode in $ctrl.collection.content.root.childNodes track by groupNode.uri">
                 <div class="node" ng-class="{ 'has-label-padding' : groupNode.childNodes.length == 0 }">
                   <expandable-arrow ng-if="groupNode.childNodes.length > 0" expanded="groupNode.expanded"></expandable-arrow>
                   <div class="node-label is-clickable" ng-click="$ctrl.showGroupNode(groupNode)" style="display: flex;">

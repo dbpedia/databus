@@ -26,7 +26,7 @@ function AccountPageController($scope, $http, $location) {
   $scope.artifactData = {};
   $scope.artifactData.isLoading = true;
 
-  $http.get(`/system/pages/account/artifacts?account=${encodeURIComponent($scope.profileData.accountName)}`)
+  $http.get(`/app/account/artifacts?account=${encodeURIComponent($scope.profileData.accountName)}`)
     .then(function (response) {
       $scope.artifactData.groups = response.data;
       $scope.artifactData.isLoading = false;
@@ -58,7 +58,7 @@ function AccountPageController($scope, $http, $location) {
   $scope.statsData = {};
   $scope.statsData.isLoading = true;
 
-  $http.get(`/system/pages/account/stats?account=${encodeURIComponent($scope.profileData.accountName)}`).then(function (response) {
+  $http.get(`/app/account/stats?account=${encodeURIComponent($scope.profileData.accountName)}`).then(function (response) {
     $scope.statsData.stats = response.data;
     $scope.statsData.isLoading = false;
   }, function (err) {
@@ -69,7 +69,7 @@ function AccountPageController($scope, $http, $location) {
   $scope.activityData = {};
   $scope.activityData.isLoading = true;
 
-  $http.get(`/system/pages/account/activity?account=${encodeURIComponent($scope.profileData.accountName)}`).then(function (response) {
+  $http.get(`/app/account/activity?account=${encodeURIComponent($scope.profileData.accountName)}`).then(function (response) {
     $scope.activityData.entries = response.data;
     $scope.activityData.isLoading = false;
   }, function (err) {
@@ -79,7 +79,7 @@ function AccountPageController($scope, $http, $location) {
   $scope.collectionsData = {};
   $scope.collectionsData.isLoading = true;
 
-  $http.get(`/system/pages/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
+  $http.get(`/app/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
     .then(function (response) {
 
       $scope.collectionsData.collections = response.data;

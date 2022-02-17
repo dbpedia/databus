@@ -100,17 +100,6 @@ function childProcess() {
   });
 }
 
-
-
-
-/**
- * Create HTTP server.
- */
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
 /**
  * Normalize a port into a number, string, or false.
  */

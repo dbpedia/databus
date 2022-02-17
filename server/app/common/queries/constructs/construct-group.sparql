@@ -6,18 +6,14 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
 
-# Creates a collection
+# Creates a group
 CONSTRUCT
 {
   ?group a dataid:Group .
-  ?group dct:title ?title .
-  ?group dct:abstract ?abstract .
-  ?group dct:description ?description .
+  ?group ?p ?o .
 }
 WHERE
 {
   ?group a dataid:Group .
-  ?group dct:title ?title .
-  ?group dct:abstract ?abstract .
-  ?group dct:description ?description .
+  ?group ?p ?o .
 }

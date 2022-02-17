@@ -68,8 +68,8 @@ function CollectionHierarchyController($http, $location, $sce) {
       expanded : ctrl.collection.content.customQueries.length > 0
     };
 
-    for(var g in ctrl.collection.content.generatedQuery.root.childNodes) {
-      ctrl.collection.content.generatedQuery.root.childNodes[g].expanded = true;
+    for(var g in ctrl.collection.content.root.childNodes) {
+      ctrl.collection.content.root.childNodes[g].expanded = true;
     }
   }
 

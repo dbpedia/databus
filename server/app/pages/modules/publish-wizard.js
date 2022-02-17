@@ -9,7 +9,7 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {
 
-  require('../file-analyzer')(router, protector);
+  require('../../common/file-analyzer').route(router, protector);
 
   router.get('/system/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
