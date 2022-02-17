@@ -79,13 +79,14 @@ autocompleter.autocomplete = function (expandedGraph) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
     }
 
+    /*
     if (fileGraph[DatabusUris.DATAID_FORMAT] == undefined) {
       fileGraph[DatabusUris.DATAID_FORMAT] = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION];
     }
 
     if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
       fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] = fileGraph[DatabusUris.DATAID_FORMAT];
-    }
+    }*/
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
       fileGraph[DatabusUris.DCT_ISSUED] = [{}];

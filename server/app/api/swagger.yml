@@ -62,7 +62,7 @@ paths:
                         "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                         "@type": "Part",
                         "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "format": "ttl",
+                        "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl"
                       }
@@ -149,7 +149,7 @@ paths:
                         "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                         "@type": "Part",
                         "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "format": "ttl",
+                        "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl"
                       }
@@ -237,7 +237,7 @@ paths:
                         "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                         "@type": "Part",
                         "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "format": "ttl",
+                        "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl"
                       }
@@ -487,7 +487,7 @@ paths:
                       "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                       "@type": "Part",
                       "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                      "format": "ttl",
+                      "formatExtension": "ttl",
                       "compression": "none",
                       "downloadURL": "https://holycrab13.github.io/webid.ttl",
                       "byteSize": 2730,
@@ -591,7 +591,7 @@ paths:
                       "@type": "dataid:Part",
                       "compression": "none",
                       "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                      "format": "ttl",
+                      "formatExtension": "ttl",
                       "formatExtension": "ttl",
                       "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
                       "hasVersion": "2022-02-09",
@@ -736,7 +736,7 @@ paths:
                         "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                         "@type": "Part",
                         "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "format": "ttl",
+                        "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl",
                         "byteSize": 2730,
@@ -819,7 +819,7 @@ paths:
                       "@type": "Part",
                       "compression": "none",
                       "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                      "format": "ttl",
+                      "formatExtension": "ttl",
                       "formatExtension": "ttl",
                       "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
                       "hasVersion": "2022-02-09",
