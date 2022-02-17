@@ -189,7 +189,7 @@ PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?file ?format ?byteSize WHERE {
   GRAPH ?g {
-    ?dataset dataid:version <https://databus.dbpedia.org/john/animals/cats/2022-02-02> .
+    ?dataset dataid:artifact <https://databus.dbpedia.org/john/animals/cats> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dct:hasVersion ?version .
     ?distribution dataid:file ?file .
