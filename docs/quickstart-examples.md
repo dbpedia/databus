@@ -179,7 +179,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
 
 Example Query for retrieving the same information for the latest version of an artifact:
 
-```
+```sparql
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
