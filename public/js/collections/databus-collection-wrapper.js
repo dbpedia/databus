@@ -71,6 +71,10 @@ class DatabusCollectionWrapper {
    */
   createQuery() {
 
+    if(this.content.root == undefined) {
+      return null;
+    }
+
     return QueryBuilder.build({
       template : QueryTemplates.DEFAULT_FILE_TEMPLATE,
       resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
