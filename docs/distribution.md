@@ -107,36 +107,6 @@ missing
     }
 ```
 
-## format
-
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-	"format": "nt",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-missing
-```
-```turtle
-<#has-format>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
-	sh:severity sh:Violation ;
-	sh:path dataid:format ;
-	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a '.' in front"@en ; 
-	sh:pattern "^[a-z0-9]{1,8}$" ;
-	sh:datatype xsd:string ;
-	sh:maxCount 1 ;
-	sh:minCount 1 .
-```
-```javascript
-"format":		{"@id": "dataid:format"}
-```
-
 
 ## formatExtension
 
