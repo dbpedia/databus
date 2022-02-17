@@ -15,7 +15,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.createAccount = function () {
-    window.location = '/system/account';
+    window.location = '/app/account';
   }
 
   // controller does not work without authentication
@@ -108,7 +108,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     session.isAccountDataLoading = true;
     session.data.signature = $scope.createSignatureData();
     session.dataIdCreator = new DataIdCreator(session.accountName);
-    session.shasumClient = new ShasumClient($q, "/system/publish/file?url=", 3);
+    session.shasumClient = new ShasumClient($q, "/api/analyze-file?url=", 3);
     $scope.session = session;
     $scope.saveSession();
     window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -140,7 +140,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     $scope.session.dataIdCreator = new DataIdCreator($scope.session.accountName);
-    $scope.session.shasumClient = new ShasumClient($q, "/system/publish/file?url=", 3);
+    $scope.session.shasumClient = new ShasumClient($q, "/api/analyze-file?url=", 3);
     $scope.session.isPublishing = false;
   }
 
@@ -321,7 +321,7 @@ function PublishWizardController($scope, $http, focus, $q) {
    */
   $scope.fetchGroupsAndArtifacts = function () {
     var session = $scope.session;
-    var uri = `/system/pages/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
+    var uri = `/app/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
 
     $http.get(uri).then(function (response) {
       session.isAccountDataLoading = false;
@@ -441,7 +441,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       'Content-Type': 'application/json',
     }
 
-    fetch('/system/publish', {
+    fetch('/api/publish', {
       headers: headers,
       credentials: 'include',
       method: 'POST',

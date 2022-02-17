@@ -45,7 +45,7 @@ class DatabusFacetsCache {
 
     var req = {
       method: 'POST',
-      url: `${origin}/system/sparql?query=`,
+      url: `${origin}/sparql?query=`,
       data: `format=json&query=${encodeURIComponent(query)}`,
       headers: {
         "Content-type": "application/x-www-form-urlencoded"

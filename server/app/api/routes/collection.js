@@ -1,7 +1,10 @@
 const JsonldUtils = require('../../common/utils/jsonld-utils');
 const ServerUtils = require('../../common/utils/server-utils');
 const Constants = require('../../common/constants.js');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
+
+var request = require('request');
 var sparql = require('../../common/queries/sparql');
 var databaseManager = require('../../common/remote-database-manager');
 var sparql = require('../../common/queries/sparql');
@@ -15,9 +18,9 @@ module.exports = function (router, protector) {
   var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 
   // Calculate the hash of a collection to check for changes
-  router.get('system/collections/collection-hash', async function (req, res, next) {
+  router.get('/api/collection/md5hash', async function (req, res, next) {
     try {
-      var shasum = sparql.collections.getCollectionShasum(req.query.uri);
+      var shasum = await sparql.collections.getCollectionShasum(req.query.uri);
       res.status(200).send(shasum);
     } catch (err) {
       console.log(err);
@@ -25,9 +28,9 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/collections/collection-statistics', async function(req, res, next) {
+  /**
+  router.get('/api/collection/statistics', async function(req, res, next) {
     try{
-
       let collectionStatistics = await sparql.collections.getCollectionStatistics(req.query.uri);
 
       if(collectionStatistics.length !== 0) {
@@ -39,17 +42,20 @@ module.exports = function (router, protector) {
       console.log(err);
       res.status(404).send('Unable to find statistics for this collection.');
     }
-  });
+  }); */
 
-
-  async function putOrPatchCollection(req, res, next) {
+  router.put('/:account/collections/:collection', protector.protect(true), async function(req, res, next) {
 
     try {
-
       if (req.params.account != req.databus.accountName) {
-        res.status(403).send('You cannot edit collections in a foreign namespace.\n');
+        res.status(403).send({
+          success : false,
+          message: 'You cannot edit collections in a foreign namespace.'
+        });
         return;
       }
+
+      console.log(req.body);
 
       // Validate the group RDF with the shacl validation tool
       var shaclResult = await shaclTester.validateCollectionRDF(req.body);
@@ -59,10 +65,13 @@ module.exports = function (router, protector) {
         // todo
         var response = 'SHACL validation error:\n';
         for (var m in shaclResult.messages) {
-          response += `>>> ${shaclResult.messages[m]}\n`
+          response += `> * ${shaclResult.messages[m]}\n`
         }
 
-        res.status(400).send(response);
+        res.status(400).send({
+          success : false,
+          message: response
+        });
         return;
       }
 
@@ -70,9 +79,11 @@ module.exports = function (router, protector) {
       var triples = await constructor.executeConstruct(req.body, constructCollection);
       var expandedGraphs = await jsonld.expand(await jsonld.fromRDF(triples));
 
-      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, 
-        'https://databus.dbpedia.org/system/ontology#Collection');
-      
+
+      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
+    
+    
+
       // Possible TODO: validate instead of replace
       collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
       collectionGraph['http://purl.org/dc/terms/publisher'] = [ 
@@ -81,30 +92,32 @@ module.exports = function (router, protector) {
         }
       ];
 
-
-      var targetPath = req.originalUrl.substring(1) + '/data.jsonld';
-      console.log(`SAVING TO ${targetPath}`);
+      var targetPath = `collections/${req.params.collection}/collection.jsonld`;
       var publishResult = await databaseManager.save(req.params.account, targetPath, expandedGraphs);
 
       // Return failure
       if (!publishResult.isSuccess) {
-        res.status(500).send(publishResult);
+        res.status(500).send({
+          success : false,
+          message: `Internal database error.`
+        });
       }
 
       // Return success
       res.status(200).send({
-        message: 'Collection saved successfully.\n',
+        success: true,
+        message: 'Collection saved successfully.',
         data: expandedGraphs
       });
 
     } catch (err) {
       console.log(err);
-      res.status(403).send(err);
+      res.status(403).send({
+        success: true,
+        message: err,
+      });
     }
-  }
-
-  router.put('/:account/collections/:collection', protector.protect(), putOrPatchCollection);
-  router.patch('/:account/collections/:collection', protector.protect(), putOrPatchCollection);
+  });
 
   router.delete('/:account/collections/:collection', protector.protect(), async function (req, res, next) {
     try {
@@ -114,8 +127,17 @@ module.exports = function (router, protector) {
         return;
       }
 
-      var targetPath = req.originalUrl.substring(1) + '/data.jsonld';
-      var deleteResult = await databaseManager.delete(req.databus.accountName, targetPath);
+      var targetPath = `collections/${req.params.collection}/collection.jsonld`;
+
+      var resource = await databaseManager.read(req.params.account, targetPath);
+  
+      if (resource == null) {
+        res.status(404).send(`The collection "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
+        return;
+      }
+
+
+      var deleteResult = await databaseManager.delete(req.params.account, targetPath);
 
       // Return failure
       if (!deleteResult.isSuccess) {
@@ -131,7 +153,8 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/collections/:collection', ServerUtils.SPARQL_ACCEPTED, function (req, res, next) {
+  router.get('/:account/collections/:collection', ServerUtils.SPARQL_ACCEPTED, async function (req, res, next) {
+
     sparql.collections.getCollectionQuery(req.params.account, req.params.collection).then(function (result) {
       if (result != null) {
         res.status(200).send(result);
@@ -141,13 +164,28 @@ module.exports = function (router, protector) {
     });
   });
 
-  router.get('/:publisher/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
+  router.get('/:account/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
+
+    var repo = req.params.account;
+    var path = `collections/${req.params.collection}/collection.jsonld`;
+
+    let options = {
+      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
+      headers: {
+        'Accept': 'application/ld+json'
+      },
+      json: true
+    };
+
+    request(options).pipe(res);
+
+    /*
     sparql.collections.getCollection(req.params.publisher, req.params.collection).then(function (result) {
       if (result != null) {
         res.status(200).send(result);
       } else {
         res.status(404).send('Unable to find the collection.');
       }
-    });
+    });*/
   });
 }

@@ -23,7 +23,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     }
 
     ctrl.databusUrls = [];
-    var root = ctrl.collection.content.generatedQuery.root;
+    var root = ctrl.collection.content.root;
 
     for (var sourceNode of root.childNodes) {
       ctrl.databusUrls.push(sourceNode.uri);
@@ -40,7 +40,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     ctrl.filters.filterGroup = false;
     ctrl.searchCooldown = 1000;
 
-    ctrl.root = QueryNode.createFrom(ctrl.collection.content.generatedQuery.root);
+    ctrl.root = QueryNode.createFrom(ctrl.collection.content.root);
 
     ctrl.collectionWrapper = new DatabusCollectionWrapper(ctrl.collection);
     ctrl.autoFocus = true;
@@ -134,7 +134,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
         $http({
           method: 'GET',
-          url: ctrl.targetDatabusUrl + '/system/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
+          url: ctrl.targetDatabusUrl + '/api/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
             + ctrl.searchInput,
         }).then(function successCallback(response) {
 

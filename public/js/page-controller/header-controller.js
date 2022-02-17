@@ -14,7 +14,7 @@ function HeaderController($scope, $http, collectionManager) {
 
   //TODO authenticated doesnt work, so it never initialize CollectionManager and remote collection stay empty
   if($scope.authenticated  && !$scope.collectionManager.isInitialized) {
-    $http.get(`/system/pages/account/collections?account=${$scope.auth.info.accountName}`).then(function (res) {
+    $http.get(`/app/account/collections?account=${$scope.auth.info.accountName}`).then(function (res) {
       $scope.collectionManager.initialize(res.data);
     });
   }

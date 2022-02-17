@@ -179,6 +179,10 @@ class DatabusUtils {
     return data;
   }
 
+  static lineCount(text) {
+    return (text.match(/^\s*\S/gm) || "").length
+  }
+
 
   static getResourcePathLength(uri) {
     var parts = DatabusUtils.splitResourceUri(uri);

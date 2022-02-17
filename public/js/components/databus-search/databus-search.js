@@ -48,7 +48,7 @@ function DatabusSearchController($http, $interval, $sce) {
 
     $http({
       method: 'GET',
-      url: '/system/search?query=' + ctrl.input + filters
+      url: '/api/search?query=' + ctrl.input + filters
     }).then(function successCallback(response) {
 
       ctrl.results = [];

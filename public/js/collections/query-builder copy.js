@@ -1,20 +1,18 @@
-const QUERY_DEFAULT_SELECTION = "SELECT DISTINCT ?file WHERE\n{ %COLLECTION_QUERY% \n }";
 
-const QUERY_DEFAULT_SELECTION_PLACEHOLDER = "%COLLECTION_QUERY%";
 
+ /*
 class QueryBuilder {
 
 
 
-  constructor(artifactBaseQuery, artifactUriPlaceholder, optionsPlaceholder) {
+  constructor(artifactBaseQuery, artifactUriPlaceholder, optionsPlaceholder, resourceBaseUrl) {
 
     //this.stringSuffix =  '^^<http://www.w3.org/2001/XMLSchema#string>'; 
     this.stringSuffix = '';
     this.artifactBaseQuery = artifactBaseQuery;
     this.artifactUriPlaceholder = artifactUriPlaceholder;
     this.optionsPlaceholder = optionsPlaceholder;
-
-   
+    this.resourceBaseUrl = resourceBaseUrl;
 
     this.queryPlaceholderFacet = "%FACET%";
     this.queryPlaceholderValue = "%VALUE%";
@@ -81,7 +79,7 @@ class QueryBuilder {
 
     //return this.createNodeSubquery(node, 2, false);
 
-    return this.createQuery(content.generatedQuery.root, 
+    return this.createQuery(content.generatedQuery.root,
       DatabusSparql.DEFAULT_PREFIXES,
       DatabusSparql.DEFAULT_FILE_SELECT,
       DatabusSparql.DEFAULT_FILE_TEMPLATE,
@@ -135,7 +133,7 @@ class QueryBuilder {
     }
 
     // and done
-    return query;*/
+    return query;
   }
 
   groupHasOverride(group) {
@@ -178,9 +176,17 @@ class QueryBuilder {
     return mergedSettings;
   }
 
+
   // =================================
   // NEW TREE=BASED QUERY GENERATOR
   // =================================
+
+  static build(node, template, baseUrl) {
+
+
+
+
+  }
 
 
   createQuery(node, prefixes, select, template, aggregate, templateInsertionKey) {
@@ -200,13 +206,13 @@ class QueryBuilder {
     this.createNodeSubquery(node, 1, false);
     this.appendLine(`}`, 0);
 
-    if(this.aggregate != undefined) {
+    if (this.aggregate != undefined) {
       this.appendLine(this.aggregate, 0);
     }
     return this.result;
 
   }
-  
+
 
   appendPrefixes() {
     for (var line of this.prefixes) {
@@ -241,6 +247,7 @@ class QueryBuilder {
     }
   }
 
+  /*
   createFileQuery(node) {
 
     this.cvCounter = 0;
@@ -289,13 +296,13 @@ class QueryBuilder {
     this.appendLine('} GROUP BY ?artifact ?file ?version ?format ?size ?compression ?preview', 0);
 
     return this.result;
-  }
+  } 
 
   /**
    * Create a subquery for any query node. The subquery consist of the node facets and
    * a UNION of child node queries (this function is called revursively on the child nodes)
    * @param {*} node 
-   */
+   
   createNodeSubquery(node, indent, hasService) {
     // Initialize empty result
 
@@ -306,16 +313,16 @@ class QueryBuilder {
     // Get source...
     var sourceUri = this.findSourceUri(node);
 
-    if(!hasService && sourceUri != null) {
+    if (!hasService && sourceUri != null) {
 
-      if (sourceUri != DATABUS_RESOURCE_BASE_URL) {
+      if (sourceUri != this.resourceBaseUrl) {
         this.appendLine(`SERVICE <${sourceUri}/system/sparql>`, indent);
         this.appendLine(`{`, indent);
         this.appendTemplateHeader(indent + 1);
         this.createNodeSubquery(node, indent + 2, true);
         this.appendTemplateFooter(indent + 1);
         this.appendLine(`}`, indent);
-  
+
       } else {
         this.appendTemplateHeader(indent);
         this.createNodeSubquery(node, indent + 1, true);
@@ -324,7 +331,7 @@ class QueryBuilder {
 
       return;
     }
-   
+
 
     // If a node property was set, add it as a restriction
     if (node.property != undefined) {
@@ -361,7 +368,7 @@ class QueryBuilder {
    * Create restrictions that only occur on this node and none of its children
    * Added restriction have to be enriched with their parent node settings
    * @param {*} groupNode 
-   */
+   
   createNodeFacetsSubquery(node, indent) {
 
     var facetUris = this.findAllNodeFacets(node);
@@ -422,7 +429,7 @@ class QueryBuilder {
    * Generates the sub query for a specific node and facet
    * @param {*} node 
    * @param {*} facetUri 
-   */
+   
   createFacetSubquery(node, facetUri, indent) {
     var first = true;
 
@@ -433,7 +440,7 @@ class QueryBuilder {
       return s.checked;
     });
 
-   if (settings.length == 1) {
+    if (settings.length == 1) {
       var facetSettingEntry = settings[0];
       if (!facetSettingEntry.checked) return;
 
@@ -508,7 +515,7 @@ class QueryBuilder {
    * Create a list of all the node facets and all overriden ancestor facets that might not be explicitly
    * included in the node facet list
    * @param {*} node 
-   */
+   
   findAllNodeFacets(node) {
     var facetUris = [];
 
@@ -543,7 +550,7 @@ class QueryBuilder {
    * query tree. Node settings override ancestor node settings.
    * @param {*} node 
    * @param {*} facetUri 
-   */
+   
   createEnrichedSettings(node, facetUri) {
     var result = [];
     for (var i in node.facetSettings[facetUri]) {
@@ -580,18 +587,20 @@ class QueryBuilder {
    * Appens a line to the global result prepending a specified number of tab characters
    * @param {*} line 
    * @param {*} indent 
-   */
+   
   appendLine(line, indent) {
     for (var i = 0; i < indent; i++) this.result += '\t';
     this.result += line;
     this.result += '\n';
   }
+}
 
   // =================================
   // THE END
   // =================================
 
 
+  /*
 
   what() {
 
@@ -665,3 +674,5 @@ class QueryBuilder {
 
 if (typeof module === "object" && module && module.exports)
   module.exports = QueryBuilder;
+
+  */

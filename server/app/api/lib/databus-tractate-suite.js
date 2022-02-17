@@ -3,11 +3,11 @@ const fs = require('fs');
 var rp = require('request-promise');
 var streamify = require('streamify-string');
 const NodeRSA = require('node-rsa');
-var JsonldUtils = require('../common/utils/jsonld-utils');
+var JsonldUtils = require('../../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
-const autocompleter = require('../common/dataid-autocomplete');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
-
+const autocompleter = require('../../common/dataid-autocomplete');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const Constants = require('../../common/constants');
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 
@@ -30,7 +30,7 @@ signer.init = function () {
     return;
   }
 
-  var privateKeyFile = __dirname + '/../../keypair/private-key.pem';
+  var privateKeyFile = __dirname + '/../../../keypair/private-key.pem';
   var encodedPrivateKeyString = fs.readFileSync(privateKeyFile, "utf8");
 
   signer.privateKey = new NodeRSA(encodedPrivateKeyString, 'pkcs8');
