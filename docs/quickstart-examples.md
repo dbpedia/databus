@@ -196,7 +196,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
     ?distribution dataid:byteSize ?byteSize .
     {
       SELECT (?v as ?version) { 
-        ?dataset dataid:artifact <https://databus.dbpedia.org/ontologies/w3id.org/nfdi4ing--metadata4ing> . 
+        ?dataset dataid:artifact <https://databus.dbpedia.org/john/animals/cats> . 
         ?dataset dct:hasVersion ?v . 
       } ORDER BY DESC (?version) LIMIT 1 
     }
