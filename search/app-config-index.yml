@@ -118,5 +118,5 @@ indexConfig:
       query: >
         SELECT DISTINCT ?resource (REPLACE(STR(?type), "(.*)(/|#)", "") AS ?typeName) WHERE {
           ?resource a ?type.
-          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <https://databus.dbpedia.org/system/ontology#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
         }
