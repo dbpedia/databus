@@ -14,18 +14,20 @@ function writeClientVariables() {
 
   // Write environment variables to client constants
   var constantsFile = './../public/js/utils/databus-constants.js';
+  var content = fs.readFileSync(constantsFile, ['utf8']).toString();
 
-  var regex = new RegExp(/DATABUS_RESOURCE_BASE_URL\s=\s"(.*)";/gm);
-  var clientConstants = fs.readFileSync(constantsFile, ['utf8']).toString();
+  content = writeConstant(content, `DATABUS_RESOURCE_BASE_URL`, process.env.DATABUS_RESOURCE_BASE_URL);
+  content = writeConstant(content, `DATABUS_DEFAULT_CONTEXT_URL`, Constants.DATABUS_DEFAULT_CONTEXT_URL);
+  content = writeConstant(content, `DATABUS_NAME`, process.env.DATABUS_NAME);
+ 
+  fs.writeFileSync(constantsFile, content, ['utf8']);
+}
 
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_RESOURCE_BASE_URL = "${process.env.DATABUS_RESOURCE_BASE_URL}";`);
-
-  regex = new RegExp(/DATABUS_DEFAULT_CONTEXT_URL\s=\s"(.*)";/gm);
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_DEFAULT_CONTEXT_URL = "${Constants.DATABUS_DEFAULT_CONTEXT_URL}";`);
-
-  fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
+function writeConstant(string, key, value) {
+  var regex = new RegExp(`${key}\\s=\\s"(.*)";`, `gm`);
+  
+  return string.replace(regex,
+    `${key} = "${value}";`);
 }
 
 function writeManifest() {

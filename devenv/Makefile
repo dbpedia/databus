@@ -1,6 +1,6 @@
 DATABUS_RESOURCE_BASE_URL=http://localhost:3000
 DATABUS_DATABASE_URL=http://localhost:3002
-DATABUS_NAME="My Local Databus"
+DATABUS_NAME="Just Another Databus"
 
 env-clean:
 	sudo rm -r data/; \
