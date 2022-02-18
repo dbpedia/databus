@@ -11,7 +11,7 @@ indexConfig:
       resourceName: resource
       query: >
         SELECT DISTINCT ?resource ?label WHERE {
-          ?resource a <https://databus.dbpedia.org/system/ontology#Collection> .
+          ?resource a <http://dataid.dbpedia.org/ns/core#Collection> .
           ?resource <http://purl.org/dc/terms/title> ?label.
         }
     - fieldName: label
@@ -100,7 +100,7 @@ indexConfig:
           VALUES ?n { 1 3 } 
           {
             SELECT DISTINCT ?collection WHERE {
-              ?collection a <https://databus.dbpedia.org/system/ontology#Collection> .
+              ?collection a <http://dataid.dbpedia.org/ns/core#Collection> .
             }
           }
           BIND (replace(str(?collection), "^((.*?)\\/){3}", "pre/") as ?suffix) 

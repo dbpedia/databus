@@ -11,7 +11,13 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+dataid:Group a owl:Class ;
+	rdfs:label "Databus Group"@en ;
+	rdfs:comment "A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit"@en ; 
+	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . #TODO ontology ID
+
+
 ```
 ```turtle
 <#group-exists>

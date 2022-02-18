@@ -6,7 +6,7 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {
 
-  router.get('/system/collection-editor', protector.checkSso(), async function (req, res, next) {
+  router.get('/app/collection-editor', protector.checkSso(), async function (req, res, next) {
 
     var data = {};
     data.auth = ServerUtils.getAuthInfoFromRequest(req);

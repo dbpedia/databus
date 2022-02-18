@@ -12,6 +12,7 @@ const numCPUs = require('os').cpus().length;
 var initialize = require('./app/init');
 const Constants = require('./app/common/constants');
 const DatabusUserDatabase = require('./userdb');
+const LookupSearchIndexer = require('./search-indexer');
 var userTablePath = __dirname + '/users/namespaces.csv';
 /**
  * Get port from environment and store in Express.
@@ -45,16 +46,18 @@ function masterProcess() {
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
   console.log(`================================================`);
- 
 
-  var userDatabase = new DatabusUserDatabase(userTablePath, function(table) {
-    broadcast({ id : Constants.DATABUS_USER_CACHE_REFRESH, body: table });
-  })
+
+  var userDatabase = new DatabusUserDatabase(userTablePath, function (table) {
+    broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
+  });
+
+  var searchIndexer = new LookupSearchIndexer(5000);
 
   initialize().then(function () {
 
-    var numCPUs = 1;
-    
+    // var numCPUs = 1;
+
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
 
@@ -65,8 +68,12 @@ function masterProcess() {
       var fork = cluster.fork();
 
       fork.on('message', function (message) {
-        if(message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
+        if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
           userDatabase.updateUser(JSON.parse(message.body));
+        }
+
+        if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
+          searchIndexer.requestRebuild();
         }
       });
     }
@@ -151,16 +158,16 @@ function onError(error) {
 function initializeExtensions() {
   // add a sparql file loading extension (simply read the file as a string)
   require.extensions['.sparql'] = function (module, filename) {
-   module.exports = fs.readFileSync(filename, 'utf8');
- };
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
 
- require.extensions['.md'] = function (module, filename) {
-   module.exports = fs.readFileSync(filename, 'utf8');
- };
- require.extensions['.ttl'] = function (module, filename) {
-   module.exports = fs.readFileSync(filename, 'utf8');
- };
- require.extensions['.html'] = function (module, filename) {
-   module.exports = fs.readFileSync(filename, 'utf8');
- };
+  require.extensions['.md'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+  require.extensions['.ttl'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+  require.extensions['.html'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
 }

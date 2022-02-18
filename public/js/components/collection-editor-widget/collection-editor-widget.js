@@ -11,7 +11,7 @@ function CollectionEditorWidgetController(collectionManager, $scope) {
   }
 
   ctrl.goToEditor = function() {
-    window.location.href = '/system/collection-editor';
+    window.location.href = '/app/collection-editor';
   }
 
   ctrl.addSelectionToCollection = function() {

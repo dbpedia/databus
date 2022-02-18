@@ -5,13 +5,13 @@ const Constants = require('../../common/constants');
 
 var signer = require('./databus-tractate-suite');
 var shaclTester = require('../../common/shacl/shacl-tester');
-var databaseManager = require('../../common/remote-database-manager');
+var GstoreHelper = require('../../common/gstore-helper');
 var jsonld = require('jsonld');
 var sparql = require('../../common/queries/sparql');
 var defaultContext = require('../../../../model/generated/context.json');
 var constructor = require('../../common/execute-construct.js');
 var constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
-var autocompleter = require('../../common/dataid-autocomplete');
+var autocompleter = require('./dataid-autocomplete');
 var fileAnalyzer = require('../../common/file-analyzer');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
@@ -182,7 +182,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     console.log(JSON.stringify(compactedGraph, null, 3));
 
     // Save the RDF with the current path using the database manager
-    var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
+    var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {

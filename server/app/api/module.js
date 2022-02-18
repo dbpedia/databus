@@ -4,7 +4,6 @@ var cors = require('cors');
 var sparql = require('../common/queries/sparql');
 
 var request = require('request');
-var database = require('../common/remote-database-manager');
 
 
 module.exports = function (router, protector) {

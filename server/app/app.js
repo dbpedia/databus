@@ -26,9 +26,6 @@ initialize(app, memoryStore).then(function () {
   var DatabusProtect = require('./common/protect/middleware');
   var protector = new DatabusProtect(memoryStore);
 
-  var lookup = require('./common/lookup-search');
-  lookup.init();
-
   var router = new express.Router();
 
   // Attach modules to router

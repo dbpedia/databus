@@ -11,7 +11,7 @@ module.exports = function (router, protector) {
 
   require('../../common/file-analyzer').route(router, protector);
 
-  router.get('/system/publish-wizard', protector.checkSso(), async function (req, res, next) {
+  router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);

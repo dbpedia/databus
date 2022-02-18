@@ -3,7 +3,7 @@ const DatabusUris = require("../../../../public/js/utils/databus-uris");
 const Constants = require("../../common/constants");
 const publishGroup = require('../lib/publish-group');
 
-var database = require('../../common/remote-database-manager');
+var GstoreHelper = require('../../common/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 var request = require('request');
 
@@ -84,14 +84,14 @@ module.exports = function (router, protector) {
     }
 
     var path = `${req.params.group}/${Constants.DATABUS_FILE_GROUP}`;
-    var resource = await database.read(req.params.account, path);
+    var resource = await GstoreHelper.read(req.params.account, path);
 
     if (resource == null) {
       res.status(204).send(`The group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
       return;
     }
 
-    var result = await database.delete(req.params.account, path);
+    var result = await GstoreHelper.delete(req.params.account, path);
     var message = '';
 
     if (result.isSuccess) {

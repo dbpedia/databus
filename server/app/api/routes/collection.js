@@ -6,7 +6,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 var request = require('request');
 var sparql = require('../../common/queries/sparql');
-var databaseManager = require('../../common/remote-database-manager');
+var GstoreHelper = require('../../common/gstore-helper');
 var sparql = require('../../common/queries/sparql');
 var shaclTester = require('../../common/shacl/shacl-tester');
 var jsonld = require('jsonld');
@@ -93,7 +93,7 @@ module.exports = function (router, protector) {
       ];
 
       var targetPath = `collections/${req.params.collection}/collection.jsonld`;
-      var publishResult = await databaseManager.save(req.params.account, targetPath, expandedGraphs);
+      var publishResult = await GstoreHelper.save(req.params.account, targetPath, expandedGraphs);
 
       // Return failure
       if (!publishResult.isSuccess) {
@@ -129,7 +129,7 @@ module.exports = function (router, protector) {
 
       var targetPath = `collections/${req.params.collection}/collection.jsonld`;
 
-      var resource = await databaseManager.read(req.params.account, targetPath);
+      var resource = await GstoreHelper.read(req.params.account, targetPath);
   
       if (resource == null) {
         res.status(404).send(`The collection "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
@@ -137,7 +137,7 @@ module.exports = function (router, protector) {
       }
 
 
-      var deleteResult = await databaseManager.delete(req.params.account, targetPath);
+      var deleteResult = await GstoreHelper.delete(req.params.account, targetPath);
 
       // Return failure
       if (!deleteResult.isSuccess) {

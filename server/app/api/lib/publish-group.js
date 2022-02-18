@@ -4,7 +4,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 
 var shaclTester = require('../../common/shacl/shacl-tester');
-var databaseManager = require('../../common/remote-database-manager');
+var GstoreHelper = require('../../common/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
@@ -18,7 +18,7 @@ module.exports = async function publishGroup(account, data, uri, notify) {
     // Get the desired triples from the data via construct query
     var triples = await constructor.executeConstruct(data, constructGroupQuery);
     var tripleCount = DatabusUtils.lineCount(triples);
-    
+
     if (tripleCount == 0) {
       notify(`Construct query did not yield any triples. Nothing to publish.`);
       return { code: 100, message: null };
@@ -95,7 +95,7 @@ module.exports = async function publishGroup(account, data, uri, notify) {
 
     
     // Save the RDF with the current path using the database manager
-    var publishResult = await databaseManager.save(account, targetPath, compactedGraph);
+    var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {

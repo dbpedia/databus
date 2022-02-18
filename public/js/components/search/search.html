@@ -6,16 +6,16 @@
       <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()" placeholder="Search the Databus...">
     </div>
     <div class="field" style="display:flex; align-items: center; line-height: 1;">
-      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterArtifact=!filters.filterArtifact;$ctrl.search();" class="is-clickable">
+      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterArtifact');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'"></type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterGroup=!filters.filterGroup;$ctrl.search();" class="is-clickable">
+      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterGroup')" class="is-clickable">
         <type-tag width="36" height="36"  ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'"></type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterPublisher=!filters.filterPublisher;$ctrl.search();" class="is-clickable">
+      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterPublisher');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }" type="'PersonalProfileDocument'"></type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.filters.filterCollection=!filters.filterCollection;$ctrl.search();" class="is-clickable">
+      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterCollection');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }" type="'Collection'"></type-tag>
       </div>
       

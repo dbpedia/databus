@@ -16,8 +16,6 @@ class Constants {
   static KEY_ACTIONS = 'actions';
   static KEY_MODS = 'mods';
 
-  static DATABUS_USER_CACHE_REFRESH = 0x01;
-  static DATABUS_USER_ENTRY_UPDATE = 0x02;
 
   static DATAID_DEFAULT_IMAGE_URL = 'https://picsum.photos/id/223/320/320';
   static DEFAULT_DATABASE_URL = 'http://localhost:3002';
@@ -31,6 +29,10 @@ class Constants {
   static MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
   static MESSGAGE_NOT_FOUND = 'Sorry, can\'t find that!\n';
 
+  // Internal message keys for communication from child to master process
+  static DATABUS_USER_CACHE_REFRESH = 0x01;
+  static DATABUS_USER_ENTRY_UPDATE = 0x02;
+  static DATABUS_SEARCH_INDEX_REBUILD = 0x03;
 }
 
 module.exports = Constants;

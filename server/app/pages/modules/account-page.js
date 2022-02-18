@@ -1,12 +1,8 @@
 var sparql = require('../../common/queries/sparql');
 var jsonld = require('jsonld');
 
-const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
 var DatabusCache = require('../../common/databus-cache');
-const requestRDF = require('../../common/request-rdf');
-var gstore = require('../../common/remote-database-manager');
-var defaultContext = require('../../common/context.json');
 
 var cache = new DatabusCache(15);
 

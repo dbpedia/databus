@@ -1,8 +1,8 @@
 // MODULE COMPLETES INPUT DATAIDS
-const JsonldUtils = require('./utils/jsonld-utils');
-const UriUtils = require('./utils/uri-utils');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
-const ArrayUtils = require('./utils/array-utils');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+const UriUtils = require('../../common/utils/uri-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const ArrayUtils = require('../../common/utils/array-utils');
 
 var autocompleter = {};
 

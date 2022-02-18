@@ -1,25 +1,24 @@
 const ServerUtils = require('../../common/utils/server-utils');
 const DatabusCache = require('../../common/databus-cache');
 const JsonldUtils = require('../../common/utils/jsonld-utils');
-const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+const Constants = require('../../common/constants');
 
 var GstoreHelper = require('../../common/gstore-helper');
+var sparql = require('../../common/queries/sparql');
 var shaclTester = require('../../common/shacl/shacl-tester');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
-var defaultContext = require('../../../../model/generated/context.json');
-const pem2jwk = require('pem-jwk').pem2jwk;
-const requestRDF = require('../../common/request-rdf');
 var defaultContext = require('../../common/context.json');
+const pem2jwk = require('pem-jwk').pem2jwk;
 
 var constructor = require('../../common/execute-construct.js');
-var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
+var constructAccountQuery = require('../common/queries/constructs/construct-account.sparql');
 
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(120);
-  var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
+  var pkeyPEM = fs.readFileSync(__dirname + '/../../keypair/public-key.pem', 'utf-8');
   var publicKeyInfo = pem2jwk(pkeyPEM);
 
   let buff = Buffer.from(publicKeyInfo.n, 'base64');
@@ -133,10 +132,6 @@ module.exports = function (router, protector) {
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
     
-      if(req.params.account == `sparql`) {
-        res.status(403).send(`Forbidden.\n`);
-      }
-
       if(accountExists) {
         // deny, this account name is taken
         res.status(401).send(`This account name is taken.\n`);
@@ -154,14 +149,15 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.post('/api/account/webid/remove', protector.protect(), async function(req, res, next) {
+
+  router.post('/system/account/webid/remove', protector.protect(), async function(req, res, next) {
     try {
 
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var webIdUri = decodeURIComponent(req.query.uri);
     
       var path = `/${auth.info.accountName}/webid.jsonld`;
-      var accountJson = await GstoreHelper.read(auth.info.accountName, path);
+      var accountJson = await gstore.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
       expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
@@ -169,14 +165,14 @@ module.exports = function (router, protector) {
       });
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-      var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
+      var result = await gstore.save(auth.info.accountName, path, compactedGraph);
 
       res.status(200).send('WebId removed from account.\n');
       return;
 
 
     } catch(err) {
-      res.status(500).send(err.message);
+      res.status(400).send(err.message);
     }
   });
 
@@ -244,7 +240,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.post('/api/account/api-key/create', protector.protect(true), async function (req, res, next) {
+  router.post('/api/account/api-key/create', protector.protect(), async function (req, res, next) {
 
     // Create api key for user
     var auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -266,11 +262,12 @@ module.exports = function (router, protector) {
       return;
     }
 
-    var apiKey = protector.addApiKey(req.databus.sub, keyName); 
+    var apiKey = protector.addApiKey(req.oidc.user.sub, keyName); 
+    
     res.status(200).send(apiKey);
   });
 
-  router.post('/api/account/api-key/delete', protector.protect(true), async function (req, res, next) {
+  router.post('/api/account/api-key/delete', protector.protect(), async function (req, res, next) {
 
     // Create api key for user
     var auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -280,16 +277,53 @@ module.exports = function (router, protector) {
       return;
     }
 
-
-    var keyName = decodeURIComponent(req.query.name);
-    var found = protector.removeApiKey(req.oidc.user.sub, keyName);
+    var found = protector.removeApiKey(req.oidc.user.sub, req.query.key);
 
     if(found) {
       res.status(200).send();
     } else {
-      res.status(204).send('API key with that name does not exist.');
+      res.status(403).send('API key not found.');
     }
   });
+
+  /*
+
+  router.get('/api/account/artifacts', async function (req, res, next) {
+    try {
+
+      var cacheKey = `ck_artifacts__${req.query.acount}`;
+
+      console.log(`Getting artifacts for ${req.query.acount} with CK ${cacheKey}`);
+
+      var artifacts = await cache.getDataCached(cacheKey,
+        () => sparql.data.getArtifactsByAccount(req.query.account));
+
+      res.status(200).send(artifacts);
+
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
+  router.get('/api/account/collections', async function (req, res, next) {
+    try {
+
+      var authInfo = serverUtils.getAuthInfoFromRequest(req);
+      var isOwnProfile = authInfo.authenticated && authInfo.info.accountName == req.query.account;
+
+      var cacheKey = `ck_collections_${isOwnProfile}__${req.query.account}`;
+
+      console.log(`Getting stats for ${req.query.account} with CK ${cacheKey}`);
+
+      var collections = await dataLoader.getDataCached(cacheKey,
+        async () => await collectionsDatabase.getCollectionsByPublisher(req.query.account, !isOwnProfile));
+
+      res.status(200).send(collections);
+
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });*/
 
   /* GET an account. */
   router.get('/:account', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {

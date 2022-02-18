@@ -5,7 +5,7 @@ var streamify = require('streamify-string');
 const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
-const autocompleter = require('../../common/dataid-autocomplete');
+const autocompleter = require('./dataid-autocomplete');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 

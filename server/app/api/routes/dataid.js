@@ -6,7 +6,7 @@ const publishDataId = require('../lib/publish-dataid');
 
 var sparql = require('../../common/queries/sparql');
 var request = require('request');
-var database = require('../../common/remote-database-manager');
+var GstoreHelper = require('../../common/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
@@ -125,14 +125,14 @@ module.exports = function (router, protector) {
       return;
     }
     var path = `${req.params.group}/${req.params.artifact}/${req.params.version}/${Constants.DATABUS_FILE_DATAID}`;
-    var resource = await database.read(req.params.account, path);
+    var resource = await GstoreHelper.read(req.params.account, path);
 
     if (resource == null) {
       res.status(204).send(`The DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
       return;
     }
 
-    var result = await database.delete(req.params.account, path);
+    var result = await GstoreHelper.delete(req.params.account, path);
     var message = '';
 
     if(result.isSuccess) {

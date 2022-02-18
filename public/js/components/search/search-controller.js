@@ -11,6 +11,11 @@ function SearchController($http, $interval, $sce) {
     return $sce.trustAsHtml(result);
   }
 
+  ctrl.toggleFilter = function(key) {
+    ctrl.filters[key] = !ctrl.filters[key];
+    ctrl.search();
+  }
+
   ctrl.searchInput = '';
   ctrl.filters = {};
   ctrl.filters.filterArtifact = false;

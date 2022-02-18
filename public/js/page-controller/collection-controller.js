@@ -54,7 +54,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
     let localCopy = $scope.collectionManager.createCopy($scope.collection);
 
     $scope.collectionManager.setActive(localCopy.uuid);
-    window.location.href = '/system/collection-editor'
+    window.location.href = '/app/collection-editor'
   }
 
   $scope.createSnapshot = function() {
@@ -67,7 +67,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
 
     console.log(collectionSnapshot);
     $scope.collectionManager.setActive(collectionSnapshot.uuid);
-    window.location.href = '/system/collection-editor'
+    window.location.href = '/app/collection-editor'
   }
 
   $scope.editCollection = function() {
@@ -86,7 +86,7 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
     }
 
     $scope.collectionManager.setActive(localCopy.uuid);
-    window.location.href = '/system/collection-editor'
+    window.location.href = '/app/collection-editor'
   }
 
   $scope.downloadAsJson = function() {

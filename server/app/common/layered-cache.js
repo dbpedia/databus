@@ -1,5 +1,16 @@
 var NodeCache = require('node-cache');
 
+/**
+ * The layered cache wraps to node caches.
+ * One cache is the short term memory - it is short lived and hits are returned directly
+ * The other cache is the long term memory. A miss in the short term memory and a hit in the 
+ * long term memory indicates that the cache still holds something, but that something might
+ * be outdated. Should a long term hit occur (since the short term missed), the cache data is 
+ * updated asynchronously while returning the long term cache hit. The next user (or a browser refresh)
+ * will then receive the latest data.
+ * 
+ * Only a miss in both caches creates a blocking procedure.
+ */
 class LayeredCache {
 
   constructor(timeShort, timeLong) {
@@ -29,7 +40,7 @@ class LayeredCache {
 
         // Long term memory needs an async refresh
         promiseFactory().then(function (result) {
-          console.log(`Async refresh for cache key ${cacheKey} complete.`);
+          // console.log(`Async refresh for cache key ${cacheKey} complete.`);
           self.longTerm.set(cacheKey, result);
           self.shortTerm.set(cacheKey, result);
         });

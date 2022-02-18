@@ -8,8 +8,6 @@ var rp = require('request-promise');
 const crypto = require("crypto");
 const Constants = require('./common/constants.js');
 
-
-
 function writeClientVariables() {
 
   console.log(`Writing client environment variables...`);
