@@ -17,7 +17,7 @@ function writeClientVariables() {
   var content = fs.readFileSync(constantsFile, ['utf8']).toString();
 
   content = writeConstant(content, `DATABUS_RESOURCE_BASE_URL`, process.env.DATABUS_RESOURCE_BASE_URL);
-  content = writeConstant(content, `DATABUS_DEFAULT_CONTEXT_URL`, Constants.DATABUS_DEFAULT_CONTEXT_URL);
+  content = writeConstant(content, `DATABUS_DEFAULT_CONTEXT_URL`, process.env.DATABUS_DEFAULT_CONTEXT_URL);
   content = writeConstant(content, `DATABUS_NAME`, process.env.DATABUS_NAME);
  
   fs.writeFileSync(constantsFile, content, ['utf8']);

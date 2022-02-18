@@ -135,12 +135,10 @@ instance.getArtifactsByGroup = async function (account, group) {
  */
 instance.getVersion = async function (account, group, artifact, version) {
 
-  console.log("HEASDJASKDJASKDJ");
   let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
   let query = exec.formatQuery(require('../sparql/get-version-data.sparql'), queryOptions);
 
-  console.log("YO");
-  console.log(query);
+  // console.log(query);
   let bindings = await exec.executeSelect(query);
 
   if (bindings.length === 0) {
