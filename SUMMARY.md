@@ -5,9 +5,9 @@
 * [Databus](README.md)
 * [🚀 Unique Features (Draft)](docs/uniquesellingpoints.md)
 * [Use Cases](docs/usecases.md)
-  * [Automated deployment of DBpedia Services](docs/dbpediadeployment.md)
+  * [Automated Deployment of DBpedia Services](docs/dbpediadeployment.md)
   * [Building Meta Registries](docs/building-meta-registries.md)
-  * [Maven for data - manage data dependencies like code](overview/usecases/maven-for-data-manage-data-dependencies-like-code.md)
+  * [Maven for Data](overview/usecases/maven-for-data-manage-data-dependencies-like-code.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
 
