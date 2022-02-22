@@ -23,3 +23,13 @@ The basic idea is simple yet powerful. Bots or harvesting tools realize agents o
 A prominent example of such a bot is [DBpedia Archivo](https://archivo.dbpedia.org). Archivo automatically crawls for ontologies in the Web of Data, but also harvests information about them from dedicated ontology repositories (e.g. Linked Open Vocabularies) and schema summaries of datasets in other repositories (e.g. VoID reports).&#x20;
 
 ### Enhancement with Mods
+
+Databus metadata is limited to very basic technical information and free-text documentation. We argue that this metadata should remain very lightweight to scale over a huge amount of assets. To be able to associate and find more and richer metadata in a unified way, the Databus Mods (from modifications) architecture was developed.&#x20;
+
+Mods are activities, analyzing and assessing the files or the DataID metadata from the Databus, that can provide useful statistics, enrichment or annotations (e.g. online availability/uptime of the file download location, VoID summaries of datasets, semantic concept annotations, etc.) Mods allow to customize and extend the Databus in a virtual way with metadata and add consistent metadata layers over all or a selection of Databus files.&#x20;
+
+The mod results are associated via the PROV ontology using the persistent identifiers of the Databus. Instead of registering files with metadata in one shot, it is possible to register metadata for Databus files independent of the registrar. To obtain information about (1a) the existence of metadata extensions for Databus IDs or (1b) a selection of files based on Databus core metadata or (2) a selection combining both (or even multiple) metadata vocabularies, (federated) SPARQL queries can be used. Complex overlay systems can be built on top of the Mod architecture (e.g. a topic-oriented dataset/file search UI based on a combination of classes and properties from VoID schema summaries).&#x20;
+
+Due to the unified way to associate additional metadata, several types of Mods from different communities can be integrated into one very specialized application with a fine-grained selection of files and metadata that are needed as input.&#x20;
+
+In the above mentioned use case of meta registries, Mods can be used to link or mirror metadata of Repository X and Y but also to associate additional metadata (for improved interoperability) in the future.
