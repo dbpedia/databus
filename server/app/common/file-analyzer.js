@@ -49,8 +49,6 @@ analyzer.analyzeFile = async function(url, notify) {
  */
 analyzer.route = function (router, protector) {
 
-  console.log(`==========================adding analyze-file route`);
-
   router.get('/api/analyze-file', protector.protect(), async function (req, res) {
 
     var result = await analyzer.analyzeFile(req.query.url, function(msg) {

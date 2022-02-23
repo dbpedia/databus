@@ -22,19 +22,25 @@ module.exports = function (router, protector) {
 
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var query = req.body.query;
+    var accept = req.headers['accept']
+
+    if(accept == undefined) {
+       accept = 'application/json';
+    }
 
     var options = {
       method: 'POST',
       uri: sparqlEndpoint + '?timeout=10000',
       body: "query=" + encodeURIComponent(query),
-      json: true,
       headers: {
+        "Accept": accept,
         "Content-type": "application/x-www-form-urlencoded"
       },
     };
 
     request.post(options).pipe(res);
   });
+
 
   router.post('/api/publish', protector.protect(true), async function (req, res, next) {
 
