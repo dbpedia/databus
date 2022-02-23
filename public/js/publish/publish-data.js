@@ -143,8 +143,8 @@ class PublishData {
     var nameComponents = name.split('.');
     name = nameComponents[0];
 
-    if (name.length > 32) {
-      name = name.substr(0, 32) + '...';
+    if (name.length > 50) {
+      name = name.substr(0, 50) + '...';
     }
     // Files with uri as key!!
 
