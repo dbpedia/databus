@@ -8,6 +8,7 @@ RUN npm -v
 COPY ./server /databus/server
 COPY ./public /databus/public
 COPY ./search /databus/search
+COPY ./model/generated /databus/model/generated
 
 COPY ./setup.sh /databus/setup.sh
 
