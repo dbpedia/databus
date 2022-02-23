@@ -10,7 +10,13 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+dataid:Dataset
+	a owl:Class ;
+	rdfs:label "Databus Dataset"@en ;
+	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
+	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; #copied from dataid ontology
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+
 ```
 ```turtle
 <#dataset-exists>
@@ -201,7 +207,14 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+dataid:group a owl:ObjectProperty; 
+	rdfs:label "has parent Group"@en ;
+	rdfs:comment "Defines the Databus Group a Databus Artifact belongs to"@en ;
+	rdfs:domain dataid:Artifact ;
+	rdfs:range dataid:Group ;
+	rdfs:subPropertyOf dct:isPartOf ; 
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+
 ```
 ```turtle
 <#has-group>
@@ -245,7 +258,13 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+dataid:artifact a owl:ObjectProperty; 
+	rdfs:label "has parent Artifact"@en ;
+	rdfs:comment "Defines the Databus Artifact a Databus Dataset belongs to"@en ;
+	rdfs:domain dataid:Dataset ;
+	rdfs:range dataid:Artifact ;
+	rdfs:subPropertyOf dct:isPartOf ; 
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
 ```
 ```turtle
 <#has-artifact>
@@ -294,7 +313,7 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+missing maybe obsolete
 ```
 ```turtle
 <#has-version>
@@ -557,7 +576,13 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-missing
+sec:proof a owl:ObjectProperty; 
+	rdfs:label "has cryptographic proof"@en ;
+	rdfs:comment "The proof property is used to associate a proof with a graph of information. The proof property is typically not included in the canonicalized graph that is then digested, and digitally signed."@en ;
+	#rdfs:domain  ;
+	#rdfs:range  ;
+	rdfs:isDefinedBy <https://w3id.org/security#> . 
+
 ```
 ```turtle
 
