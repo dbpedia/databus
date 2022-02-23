@@ -29,7 +29,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/api/fetch-resource-page', async function (req, res, next) {
+  router.get('/app/publish-wizard/fetch-resource-page', async function (req, res, next) {
 
     try {
       var result = await fetchLinksRecursive(req.query.url, '', 0);
@@ -41,7 +41,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/publish/fetch-file', async function (req, res, next) {
+  router.get('/app/publish-wizard/fetch-file', async function (req, res, next) {
 
     try {
 
@@ -129,13 +129,13 @@ module.exports = function (router, protector) {
 
     if (nameComponents.length > 2) {
       result.compression = nameComponents[nameComponents.length - 1];
-      result.format = nameComponents[nameComponents.length - 2];
+      result.formatExtension = nameComponents[nameComponents.length - 2];
     } else if (nameComponents.length > 1) {
       result.compression = 'none';
-      result.format = nameComponents[nameComponents.length - 1];
+      result.formatExtension = nameComponents[nameComponents.length - 1];
     } else {
       result.compression = 'none';
-      result.format = 'none';
+      result.formatExtension = 'none';
     }
 
 

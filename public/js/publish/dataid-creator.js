@@ -100,9 +100,9 @@ class DataIdCreator {
 
       distributionUri += variantSuffix;
 
-      if (file.format != 'none') {
-        distributionUri += '.' + file.format;
-        fileUri += '.' + file.format;
+      if (file.formatExtension != 'none') {
+        distributionUri += '.' + file.formatExtension;
+        fileUri += '.' + file.formatExtension;
       }
 
       if (file.compression != 'none') {
@@ -114,7 +114,7 @@ class DataIdCreator {
         "@id": distributionUri,
         "@type": "Part",
         "file": fileUri,
-        "format": file.format,
+        "formatExtension": file.formatExtension,
         "compression": file.compression,
         "downloadURL": file.uri,
         "byteSize": file.byteSize,

@@ -60,6 +60,11 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
+    if(req.params.account.length < 4) {
+      next('route');
+      return;
+    }
+    
     var repo = req.params.account;
     var path = req.params.group;
 

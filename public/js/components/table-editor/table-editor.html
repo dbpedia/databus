@@ -118,7 +118,7 @@
             ng-class="{ 'selected' : $index == $ctrl.selection.x && $parent.$index == $ctrl.selection.y }">
             <a ng-href="{{ file.uri }}">{{ file.name }}</a>
           </td>
-          <td class="readonly" style="padding: .5em;">{{ file.format }}</td>
+          <td class="readonly" style="padding: .5em;">{{ file.formatExtension }}</td>
           <td class="readonly" style="padding: .5em;">{{ file.compression }}</td>
           <td ng-if="file.rowspan > 0" style="vertical-align:middle;" ng-repeat="cv in $ctrl.model.contentVariants"
             rowspan="{{ file.rowspan }}"

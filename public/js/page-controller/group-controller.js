@@ -202,7 +202,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
     $http({
       method: 'GET',
-      url: '/system/api/search?query=' + $scope.searchInput + typeFilters
+      url: '/api/search?query=' + $scope.searchInput + typeFilters
     }).then(function successCallback(response) {
       $scope.artifacts = [];
 

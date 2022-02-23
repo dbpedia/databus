@@ -139,7 +139,6 @@ module.exports = function (router, protector) {
       });
 
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
-
       res.render('version', { title: data.version.label, data: data });
     } catch (err) {
       console.log(err);

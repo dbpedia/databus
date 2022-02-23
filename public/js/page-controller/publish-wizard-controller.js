@@ -387,7 +387,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       return;
     }
 
-    $http.get('/system/publish/fetch-file?url=' + encodeURIComponent(input)).then(function (response) {
+    $http.get('/app/publish-wizard/fetch-file?url=' + encodeURIComponent(input)).then(function (response) {
 
       if (response.data == null || response.data == "" || response.status != 200) {
         return;
@@ -414,7 +414,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   // Fetch links using the fetch-links API of the Databus
   $scope.fetchFiles = function (parentUri) {
 
-    $http.get('/system/api/fetch-resource-page?url=' + encodeURIComponent(parentUri)).then(function (response) {
+    $http.get('/app/publish-wizard/fetch-resource-page?url=' + encodeURIComponent(parentUri)).then(function (response) {
       for (var i in response.data) {
         var uri = response.data[i];
         $scope.addFile(uri);
@@ -441,7 +441,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       'Content-Type': 'application/json',
     }
 
-    fetch('/api/publish', {
+    fetch('/api/publish?verify-parts=false', {
       headers: headers,
       credentials: 'include',
       method: 'POST',
@@ -504,7 +504,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.createTractate = function (graph) {
-    $http.post('/system/tractate/v1/canonicalize', graph).then(function (response) {
+    $http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
       $scope.session.data.signature.tractate = response.data;
     }, function (err) {
       console.log(err);

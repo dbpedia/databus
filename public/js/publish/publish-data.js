@@ -154,7 +154,7 @@ class PublishData {
       name: name,
       contentVariants: {},
       sha256: {},
-      format: file.format,
+      formatExtension: file.formatExtension,
       compression: file.compression,
       artifactId: undefined,
       groupId: undefined,
@@ -312,7 +312,7 @@ class PublishData {
       var key = null;
 
       if (cvIndex == 0) {
-        key = file.format;
+        key = file.formatExtension;
       } else if (cvIndex == 1) {
         key = file.compression;
       } else {
