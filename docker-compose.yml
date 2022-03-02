@@ -3,7 +3,7 @@ services:
   databus:
     image: "dbpedia/databus"
     ports:
-      - 127.0.0.1:3000:3000
+      - 3000:3000
       - 127.0.0.1:3001:8080
     environment:
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
