@@ -1,3 +1,4 @@
+
 <% include header %>
 <div ng-controller="GroupPageController">
   <section class="hero is-medium-small databus-banner is-group" >
@@ -7,7 +8,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
             <path class="is-white" fill="#fff"
               d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z" />
-            </svg>
+          </svg>
           <div style="margin-left: 24px;">
             <h1 class="title is-2 has-text-left is-marginless">{{ groupData.publisher }} {{ group.label }}</h1>
             <uri-breadcrumbs class="header-breadcrumbs" uri="group.uri"></uri-breadcrumbs>
@@ -52,9 +53,9 @@
         <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
           <div class="section-label">Artifacts</div>
         </div>
-        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab=1;">
-          <div class="section-label">Services</div>
-        </div> 
+<!--        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab=1;">-->
+<!--          <div class="section-label">Services</div>-->
+<!--        </div> -->
         <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 2 }" ng-click="activeTab=2;">
           <div class="section-label">Files</div>
         </div>

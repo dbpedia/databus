@@ -1,12 +1,5 @@
-var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL;
-
 var exec = require('../../execute-query');
-var fs = require('fs');
-var path = require('path')
-
-var ServerUtils = require('../../utils/server-utils');
 var UriUtils = require('../../utils/uri-utils')
-var DatabusUtils = require('../../../../../public/js/utils/databus-utils');
 
 var instance = {};
 
@@ -144,29 +137,5 @@ instance.getCollectionsByAccount = async function (publisherUri) {
     console.log(err);
   }
 }
-
-instance.constructWebId = async function (username) {
-
-  var profileData = await users.getProfileData(username);
-
-  if (profileData == null) {
-    return null;
-  }
-
-  console.log(profileData);
-
-  var templateValues = {};
-  templateValues.USER_URI = profileData.uri;
-  templateValues.USER_NAME = profileData.label;
-  templateValues.USER_IMG_URL = profileData.imageUrl;
-  templateValues.USER_PUB_KEY_EXP = 3452345;
-  templateValues.USER_PUB_KEY_MOD = "C65A227E835DE41C59644545C437646F1F3CBD0EE9695144209089ABB0EA228BE1D7CCBB905F409BD8A9B0F946A5AEB6B1D3E565A6F471A10BB8A1014C4E934CB6C2F9D2D4FB9C7FB4757FA9F831F75F72F1E74E09A64C4BFD49E4C402B25E8255C5BCDB3341F9FD0F5E0260EAF3AA3E7EA8A9663E9CCCCAADA363E8E5072DBDBA432CA273E5C933D";
-
-  var template = fs.readFileSync(path.resolve('./app/query-modules/users/webid-template.ttl'), 'utf8');
-  var webid = exec.formatQuery(template, templateValues);
-
-  return webid;
-}
-
 
 module.exports = instance;

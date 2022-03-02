@@ -1,4 +1,3 @@
-// TODO fabian bug
 
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
@@ -8,49 +7,152 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.viewMode = -1;
   ctrl.$http = $http;
   ctrl.$scope = $scope;
+  ctrl.facets = new DatabusFacetsCache($http);
+  ctrl.databusUriToAdd
+
+  const DATAID_ARTIFACT_PROPERTY = 'dataid:artifact';
+  const DATAID_GROUP_PROPERTY = 'dataid:group';
 
 
   ctrl.$onInit = function () {
 
     ctrl.viewMode = -1;
-    ctrl.queryBuilder = new QueryBuilder();
 
     if (ctrl.collection == null) {
       return;
     }
   }
-  
 
-  ctrl.isLastChild = function(group, artifact) {
+  ctrl.onAddContentClicked = function (sourceNode) {
+    ctrl.onAddContent({ source: sourceNode.uri });
 
-    if(group.childNodes == undefined || group.childNodes.length == 0) {
+    ctrl.onChange();
+    ctrl.updateViewModel();
+  }
+
+
+  ctrl.onAddCustomQueryClicked = function (sourceNode) {
+    var node = QueryNode.createFrom(sourceNode);
+    node.addChild(new QueryNode(DatabusUtils.uuidv4(), null));
+    ctrl.onChange();
+  }
+
+
+  ctrl.addDatabusToCollection = async function (uri) {
+    
+    var req = {
+      method: 'GET',
+      url: uri,
+      headers: {
+        'Accept': 'application/rdf+turtle'
+      }
+    }
+
+    var res = await ctrl.$http(req);
+    var manifest = await DatabusUtils.parseDatabusManifest(res.data);
+
+    var expectedUri = new URL(uri);
+
+    if(manifest == undefined || manifest.uri != expectedUri.origin) {
+      return;
+    }
+
+    ctrl.root.childNodes.push(new QueryNode(manifest.uri, null));
+  }
+
+  ctrl.onAddResource = async function (uri) {
+
+    if(uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
+    }
+
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+
+    // Resource already in collection
+    if (node != undefined) {
+      return;
+    }
+
+    // Determine resource type
+    var resourceType = 'Databus';
+
+    if (resourceType == 'Databus') {
+      await ctrl.addDatabusToCollection(uri);
+    }
+
+    ctrl.onChange();
+    ctrl.updateViewModel();
+
+
+    ctrl.$scope.$apply();
+  }
+
+  ctrl.addToCollection = function (source, view, result) {
+
+    if (ctrl.isInCollection(result)) {
+      QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
+    }
+    else {
+      if (result.typeName[0].value == 'Group') {
+        let node = new QueryNode(result.resource[0].value, DATAID_GROUP_PROPERTY);
+
+        source.childNodes.push(node);
+      }
+
+      if (result.typeName[0].value == 'Artifact') {
+
+        var artifactUri = result.resource[0].value;
+        let groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+        let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
+
+        if (groupNode == null) {
+          groupNode = new QueryNode(groupUri, DATAID_GROUP_PROPERTY);
+          source.childNodes.push(groupNode);
+        }
+
+        let node = new QueryNode(artifactUri, DATAID_ARTIFACT_PROPERTY);
+        groupNode.addChild(node);
+      }
+    }
+
+    for (var res of view.searchResults) {
+      res.inCollection = ctrl.isInCollection(res);
+    }
+
+    ctrl.onChange();
+    ctrl.updateViewModel();
+  }
+
+  ctrl.isLastChild = function (group, artifact) {
+
+    if (group.childNodes == undefined || group.childNodes.length == 0) {
       return false;
     }
 
     return group.childNodes[group.childNodes.length - 1].uri == artifact.uri;
   }
 
-  ctrl.toggleExpand = function(node) {
+  ctrl.toggleExpand = function (node) {
     node.expanded = !node.expanded;
     ctrl.onChange();
   }
 
   ctrl.mergeFacets = function (node, facets) {
 
-    if(node.facets == undefined) {
+    if (node.facets == undefined) {
       node.facets = JSON.parse(JSON.stringify(facets));
       return;
     }
 
-    for(var f in facets) {
+    for (var f in facets) {
 
-      if(node.facets[f] == undefined) {
+      if (node.facets[f] == undefined) {
         node.facets[f] = JSON.parse(JSON.stringify(facets[f]));
         continue;
       }
 
-      for(var value of facets[f].values) {
-        if(!node.facets[f].values.includes(value)) {
+      for (var value of facets[f].values) {
+        if (!node.facets[f].values.includes(value)) {
           node.facets[f].values.push(value);
         }
       }
@@ -59,7 +161,13 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     node.facetLabels = null;
   }
 
-  ctrl.getAllFilters = function(groupNode, artifactNode) {
+  ctrl.getAllFilters = function (groupNode, artifactNode) {
+
+    if (artifactNode == null) {
+      var result = Object.keys(groupNode.facetSettings)
+      return DatabusUtils.uniqueList(result);
+    }
+
     var result = Object.keys(groupNode.facetSettings).concat(Object.keys(artifactNode.facetSettings));
     return DatabusUtils.uniqueList(result);
   }
@@ -71,7 +179,6 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
       return;
     }
 
-
     if (ctrl.previousCollectionId != ctrl.collection.uuid) {
       ctrl.previousCollectionId = ctrl.collection.uuid;
 
@@ -81,58 +188,169 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     }
   }
 
+  ctrl.handleKey = function (e, nodeView) {
+    if (e.which === 9) {
+      nodeView.showSearchResults = false;
+    }
+  }
+
+  ctrl.isInCollection = function (result) {
+    let uri = result.resource[0].value;
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+    return node != null;
+  }
+
+  ctrl.updateSearchResults = function (view) {
+
+    if (view == null || view.searchResults == null) {
+      return;
+    }
+
+    for (var res of view.searchResults) {
+      res.inCollection = ctrl.isInCollection(res);
+    }
+  }
+
+  ctrl.searchNode = function (node, nodeView) {
+
+    var baseUrl = new URL(node.uri).origin;
+
+    var typeFilters = `typeName=Artifact Group`;
+    var resultUriPrefix = undefined;
+
+    if (node.property == DATAID_GROUP_PROPERTY) {
+      typeFilters = `typeName=Artifact`;
+      resultUriPrefix = node.uri;
+    }
+
+    var url = `${baseUrl}/api/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=50&query=${nodeView.search}`;
+
+    try {
+      $http({ method: 'GET', url: url }).then(function successCallback(response) {
+
+        nodeView.searchResults = [];
+
+        for (var doc of response.data.docs) {
+          if (resultUriPrefix == undefined || doc.resource[0]['value'].startsWith(resultUriPrefix)) {
+
+            doc.inCollection = ctrl.isInCollection(doc);
+            nodeView.searchResults.push(doc);
+          }
+        }
+
+      }, function errorCallback(response) {
+        console.err(response);
+      });
+    } catch (err) {
+
+    }
+
+  };
+
+  ctrl.toggleExpand = function (view) {
+    view.expanded = !view.expanded;
+  }
+
+  ctrl.isValidHttpUrl = function (url) {
+    return DatabusUtils.isValidHttpUrl(url);
+  }
 
 
   ctrl.updateViewModel = function () {
     ctrl.collectionWrapper = new DatabusCollectionWrapper(ctrl.collection);
 
-    ctrl.root = ctrl.collection.content.generatedQuery.root;
+    ctrl.root = ctrl.collection.content.root;
+
+    QueryNode.assignParents(ctrl.root);
 
     ctrl.view = {};
     ctrl.view.groups = {};
     ctrl.view.artifacts = {};
+    ctrl.view.sources = {};
 
-    for (var g in ctrl.root.childNodes) {
+    for (var s in ctrl.root.childNodes) {
+
+      var sourceNode = ctrl.root.childNodes[s];
+      sourceNode.expanded = true;
+
+      ctrl.view.sources[sourceNode.uri] = {};
+      ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
+      ctrl.view.sources[sourceNode.uri].addMode = 'artifact';
+
+      for (var g in sourceNode.childNodes) {
+
+        var groupNode = sourceNode.childNodes[g];
+        groupNode.expanded = true;
 
 
-      var groupNode = ctrl.root.childNodes[g];
-      groupNode.expanded = true;
+        ctrl.view.groups[groupNode.uri] = {};
+
+        if (DatabusUtils.isValidHttpUrl(groupNode.uri)) {
+
+          /*
+          ctrl.$http.get('/system/pages/artifacts-by-group',
+            { params: { uri: groupNode.uri } })
+            .then(function (result) {
+              ctrl.view.groups[groupNode.uri].artifacts = result.data;
+            });
+            */
+
+          ctrl.facets.get(groupNode.uri).then(function (res) {
+            ctrl.view.groups[res.uri].facets = res.facets;
+          });
+
+          ctrl.query(groupNode);
+
+          for (var a in groupNode.childNodes) {
+
+            var artifactNode = groupNode.childNodes[a];
+
+            ctrl.view.artifacts[artifactNode.uri] = {};
+            ctrl.view.artifacts[artifactNode.uri].expanded = false;
+
+            ctrl.facets.get(artifactNode.uri).then(function (res) {
+              ctrl.view.artifacts[res.uri].facets = res.facets;
+              ctrl.view.artifacts[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+
+              //var groupUri = DatabusUtils.navigateUp(artifactNode.uri);
+              //ctrl.view.artifacts[artifactNode.uri].facets = result.data;
+              //ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
+            });
 
 
-      ctrl.view.groups[groupNode.uri] = {};
+
+            /*en(function(result) {
+
+               = result['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
 
 
-      ctrl.$http.get('/system/pages/artifacts-by-group',
-        { params: { uri: groupNode.uri } })
-        .then(function (result) {
-          ctrl.view.groups[groupNode.uri].artifacts = result.data;
-        });
+              var groupUri = DatabusUtils.navigateUp(artifactNode.uri);
+              ctrl.view.artifacts[artifactNode.uri].facets = result.data;
+              ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
 
-      ctrl.query(groupNode);
+            });
 
-      for (var a in groupNode.childNodes) {
 
-        var artifactNode = groupNode.childNodes[a];
+            ctrl.$http.get('/system/pages/facets', {
+              params: { uri: artifactNode.uri, type: 'artifact' }
+            }).then(function (result) {
 
-        ctrl.view.artifacts[artifactNode.uri] = {};
-
-        ctrl.$http.get('/system/pages/facets', {
-          params: { uri: artifactNode.uri, type: 'artifact' }
-        }).then(function (result) {
-
-          result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-          var artifactUri = result.config.params.uri;
-          var groupUri = DatabusUtils.navigateUp(artifactUri);
-          ctrl.view.artifacts[artifactUri].facets = result.data;
-          ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
-        });
+              result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+              var artifactUri = result.config.params.uri;
+              var groupUri = DatabusUtils.navigateUp(artifactUri);
+              ctrl.view.artifacts[artifactUri].facets = result.data;
+              ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
+            });
+            */
+          }
+        }
       }
     }
   }
 
 
 
-  ctrl.onArtifactDropdownChanged = function(groupNode) {
+  ctrl.onArtifactDropdownChanged = function (groupNode) {
     ctrl.onChange();
     ctrl.query(groupNode);
   }
@@ -183,13 +401,13 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     viewNode.addFilterValue = [];
   }
 
-  ctrl.includesValue = function(objs, value) {
-    if(objs == undefined) {
+  ctrl.includesValue = function (objs, value) {
+    if (objs == undefined) {
       return false;
     }
 
-    for(var obj of objs) {
-      if(obj.value == value) {
+    for (var obj of objs) {
+      if (obj.value == value) {
         return true;
       }
     }
@@ -197,9 +415,12 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     return false;
   }
 
+  ctrl.isLocalDatabusNode = function (node) {
+    return node.uri == DATABUS_RESOURCE_BASE_URL;
+  }
   ctrl.addFilter = function (node, facet, values, checked) {
 
-    if(values == null || values.length == 0) {
+    if (values == null) {
       return;
     }
 
@@ -207,9 +428,9 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
       node.facetSettings[facet] = [];
     }
 
-    for(var value of values) {
+    for (var value of values) {
 
-      if(!ctrl.includesValue(node.facetSettings[facet], value.value)) {
+      if (!ctrl.includesValue(node.facetSettings[facet], value.value)) {
         node.facetSettings[facet].push(value);
       }
     }
@@ -218,25 +439,29 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     ctrl.query(node);
   }
 
-  ctrl.query = function(node) {
+  ctrl.query = function (node) {
 
-    if(node.childNodes != undefined && node.childNodes.length > 0) {
-      
+    if (node.childNodes != undefined && node.childNodes.length > 0) {
+
       node.files = null;
-      for(var child of node.childNodes) {
+      for (var child of node.childNodes) {
         ctrl.query(child);
       }
 
-      return;    
+      return;
     }
 
     var queryNode = QueryNode.createSubTree(node);
-    var fullQuery = ctrl.queryBuilder.createQuery(queryNode, DATABUS_QUERIES.nodeFileList, 
-      '%COLLECTION_QUERY%', 2 );
-    
-    this.querySparql(fullQuery).then(function(result) {
+
+    var fullQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.NODE_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
+
+    this.querySparql(fullQuery).then(function (result) {
       node.files = result;
-      ctrl.$scope.$apply(); 
+      ctrl.$scope.$apply();
 
     });
   }
@@ -253,19 +478,19 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     ctrl.query(node);
   }
 
-  ctrl.onActiveFilterChanged = function(node) {
+  ctrl.onActiveFilterChanged = function (node) {
     ctrl.onChange();
     ctrl.query(node);
   }
-  
-  ctrl.getFacetLabels = function(viewNode) {
 
-    if(viewNode.facetLabels != undefined) {
+  ctrl.getFacetLabels = function (viewNode) {
+
+    if (viewNode.facetLabels != undefined) {
       return viewNode.facetLabels;
     }
     var result = [];
 
-    for(var f in viewNode.facets) {
+    for (var f in viewNode.facets) {
       result.push(viewNode.facets[f].label);
     }
 
@@ -291,7 +516,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   };
 
   ctrl.onComponentAdded = function () {
-    
+
   }
 
   ctrl.customExpanded = function () {
@@ -330,7 +555,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     return DatabusCollectionUtils.uriToName(uri);
   }
 
-  ctrl.objSize = function(obj) {
+  ctrl.objSize = function (obj) {
     return DatabusUtils.objSize(obj);
   }
 
@@ -364,7 +589,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     this.updateQuery();
   }
 
-  ctrl.querySparql = async function(query) {
+  ctrl.querySparql = async function (query) {
 
 
     try {
@@ -374,41 +599,51 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
         url: DATABUS_SPARQL_ENDPOINT_URL,
         data: "format=json&query=" + encodeURIComponent(query),
         headers: {
-          "Content-type" : "application/x-www-form-urlencoded"
+          "Content-type": "application/x-www-form-urlencoded"
         },
       }
 
-      var updateResponse = await ctrl.$http(req); 
+      var updateResponse = await ctrl.$http(req);
 
       var data = updateResponse.data;
       var bindings = data.results.bindings;
 
-      for(var b in bindings) {
+      for (var b in bindings) {
         ctrl.reduceBinding(bindings[b]);
       }
 
       return bindings;
-      
 
-    } catch(e) {
+
+    } catch (e) {
       console.log(e);
     }
   }
 
-  ctrl.reduceBinding =function(binding) {
+  ctrl.reduceBinding = function (binding) {
     for (var key in binding) {
-       binding[key] = binding[key].value;
+      binding[key] = binding[key].value;
     }
- 
+
     return binding;
- }
- 
+  }
+
 
 
   ctrl.updateQuery = function () {
     var queryNode = QueryNode.createSubTree(ctrl.activeNode);
-    ctrl.activeFileQuery = ctrl.queryBuilder.createFileQuery(queryNode);
-    ctrl.activeFullQuery = ctrl.queryBuilder.createFullQuery(queryNode);
+
+    ctrl.activeFileQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.DEFAULT_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
+
+    ctrl.activeFullQuery = QueryBuilder.build({
+      node: queryNode,
+      template: QueryTemplates.NODE_FILE_TEMPLATE,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+    });
   }
 
   ctrl.onActiveNodeChanged = function () {
@@ -436,7 +671,7 @@ SELECT DISTINCT ?file WHERE {\n\
 
   ctrl.removeNode = function (node) {
     var parent = node.parent;
-    
+
     ctrl.collectionWrapper.removeNodeByUri(node.uri);
 
     ctrl.query(parent);
@@ -449,8 +684,8 @@ SELECT DISTINCT ?file WHERE {\n\
     ctrl.activeNode = customQueryNode;
   }
 
-  ctrl.list = function(setting) {
-    return setting.map(function(v) { return v.value }).join(', ');
+  ctrl.list = function (setting) {
+    return setting.map(function (v) { return v.value }).join(', ');
   }
 }
 

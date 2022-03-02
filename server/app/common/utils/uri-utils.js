@@ -1,5 +1,7 @@
-var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
-var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || 'localhost';
+if(require != undefined) {
+  var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
+  var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || 'localhost';
+}
 
 class UriUtils {
 
@@ -20,6 +22,10 @@ class UriUtils {
     return sanitizeUrl(result);
   }
 
+  static startsWith(base, uri) {
+    return base.startsWith(baseUrl) && uri.startsWith(base);
+  }
+
   static isResourceUri(uri, path) {
 
     if (!uri.startsWith(baseUrl)) {
@@ -33,10 +39,21 @@ class UriUtils {
     return true;
   }
 
+  static getResourcePathLength(uri) {
+    var parts = UriUtils.splitResourceUri(uri);
+    return parts.length;
+  }
+
   static splitResourceUri(uri) {
-    uri = uri.replace(baseUrl, '');
+
+    var url = new URL(uri);
+    uri = url.pathname;
+
     if(uri.startsWith('/')) {
       uri = uri.substr(1);
+    }
+    if(uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
     }
 
     return uri.split('/');
@@ -74,7 +91,30 @@ class UriUtils {
       uri = uri.substr(0, uri.lastIndexOf('/'));
     }
 
+    if(uri.includes('#')) {
+      uri = uri.substr(0, uri.lastIndexOf('#'));
+    }
+    
     return uri;
+  }
+
+  
+  static getPrunedPath(uri, steps) {
+
+    var url = new URL(uri);
+    var path = url.pathname;
+
+    if(steps == undefined) {
+      steps = 1;
+    }
+
+    path = path.substr(path.indexOf('/') + 1, path.length);
+
+    for(var i = 0; i < steps; i++) {
+      path = path.substr(path.indexOf('/') + 1, path.length);
+    }
+
+    return path;
   }
 
   static sanitizeUri(uri) {
@@ -86,4 +126,5 @@ class UriUtils {
   }
 }
 
-module.exports = UriUtils;
+if(typeof module === "object" && module && module.exports)
+  module.exports = UriUtils;

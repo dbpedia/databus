@@ -1,7 +1,15 @@
 <div>
 
   <div class="field" style="display: flex;">
-    <div class="control" style="flex:1;">
+    <div class="control" style="display: flex; flex:1;">
+      
+      <autofill-dropdown style="width: 400px; margin-right: 0.5em;" placeholder="Select Databus..."
+      input="$ctrl.targetDatabusUrl" on-change=""
+      values="$ctrl.getDatabusUrls()">
+    </autofill-dropdown>
+
+
+
       <input class="input" focus-me="$ctrl.autoFocus" type="text" ng-model="$ctrl.searchInput"
         ng-change="$ctrl.search()" placeholder="Search the Databus...">
     </div>

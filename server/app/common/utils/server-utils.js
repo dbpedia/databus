@@ -2,6 +2,8 @@ var ASN1 = require('asn1js');
 
 class ServerUtils {
 
+  
+
   static getRSAModulusAndExponent(pubkey) {
     var unarmor = /-----BEGIN PUBLIC KEY-----([A-Za-z0-9+\/=\s]+)-----END PUBLIC KEY-----/;
     try {
@@ -24,6 +26,8 @@ class ServerUtils {
       return { success: false, msg: "Failed validating RSA public key." };
     }
   }
+
+
 
   /**
    * Retrieves user info from the https request and returns it in a
@@ -93,12 +97,18 @@ class ServerUtils {
   }
 
   static HTML_ACCEPTED(req, res, next) {
-    return req.accepts("html") ? next() : next("route");
+    var acceptHeader = req.get('Accept');
+
+    if(acceptHeader == undefined) {
+      return next("route");
+    }
+
+    return acceptHeader.includes("html") ? next() : next("route");
   }
 
   static RDF_ACCEPTED(req, res, next) {
     var acceptHeader = req.get('Accept');
-    return acceptHeader.includes('turtle') ? next() : next("route");
+    return acceptHeader.includes('rdf+turtle') ? next() : next("route");
   }
 
   static SPARQL_ACCEPTED(req, res, next) {

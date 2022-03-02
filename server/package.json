@@ -45,7 +45,9 @@
     "serve-favicon": "^2.5.0",
     "ssh-key-decrypt": "^0.1.2",
     "streamify-string": "^1.0.1",
-    "terser": "^5.7.0"
+    "swagger-ui-express": "^4.3.0",
+    "terser": "^5.7.0",
+    "yamljs": "^0.3.0"
   },
   "main": "app.js",
   "author": "",

@@ -14,25 +14,29 @@ function MultiselectDropdownController($timeout, $sce) {
     }
   }
 
-  ctrl.getLabel = function(value) {
+  ctrl.getLabel = function (value) {
 
-    if(value == '$latest') {
+    if (value == '$latest') {
       return 'Latest Version';
+    }
+
+    if (value == '') {
+      return 'None';
     }
 
     return value;
   }
 
-  ctrl.hasContent = function() {
+  ctrl.hasContent = function () {
     return !((ctrl.input == undefined || ctrl.input.length == 0) && (ctrl.parentInput == undefined ||
       ctrl.parentInput.length == 0));
   }
 
-  ctrl.mergeSettings = function(parentSettings, childSettings) {
+  ctrl.mergeSettings = function (parentSettings, childSettings) {
     var mergedSettings = {};
 
     // Set parent settings state
-    if(parentSettings != undefined) {
+    if (parentSettings != undefined) {
       for (var setting of parentSettings) {
         mergedSettings[setting.value] = setting.checked;
       }
@@ -51,15 +55,24 @@ function MultiselectDropdownController($timeout, $sce) {
 
     var mergedSettings = ctrl.mergeSettings(ctrl.parentInput, ctrl.input);
 
-    return ctrl.$sce.trustAsHtml(Object.keys(mergedSettings).map(function(key, index) { 
-      if(mergedSettings[key]) {
-        return ctrl.getLabel(key);
+    return ctrl.$sce.trustAsHtml(Object.keys(mergedSettings).map(function (key, index) {
+
+      var label = undefined;
+
+      if (key == '') {
+        label = '<i style="color: #a3a3a3;">None</i>';
       } else {
-        return `<s>${ctrl.getLabel(key)}</s>`;
+        label = ctrl.getLabel(key);
+      }
+
+      if (mergedSettings[key]) {
+        return label;
+      } else {
+        return `<s>${label}</s>`;
       }
     }).join(', '));
 
-  
+
   }
 
 
@@ -83,7 +96,7 @@ function MultiselectDropdownController($timeout, $sce) {
     return false;
   }
 
-  ctrl.isChecked = function(objs, value) {
+  ctrl.isChecked = function (objs, value) {
     if (objs == undefined) {
       return false;
     }

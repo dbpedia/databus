@@ -15,22 +15,22 @@ services:
     environment: 
       VIRT_USER: "dba"
       VIRT_PASS: "everyoneknows"
-      VIRT_URI: "http://172.17.0.01:3003"
+      VIRT_URI: "http://virtuoso:8890"
       GIT_ROOT: "/root/git"
     ports:
-      - "3002:80"
+      - "127.0.0.1:3002:8080"
     volumes:
       - ./data/repo:/root/git
   virtuoso:
     logging:
       driver: none
-    image: "openlink/virtuoso-opensource-7"
+    image: "tenforce/virtuoso"
     container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"
       SPARQL_UPDATE: "true"
       DEFAULT_GRAPH: "http://localhost:3000"
     ports:
-      - "3003:8890"
+      - "127.0.0.1:3003:8890"
     volumes: 
       - ./data/virtuoso:/data

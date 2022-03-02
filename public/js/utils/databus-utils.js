@@ -96,12 +96,42 @@ class DatabusUtils {
 
     var result = uri.substr(uri.lastIndexOf('/') + 1);
     result = result.substr(result.lastIndexOf('#') + 1);
-    result = result.substr(0, result.lastIndexOf('.'));
+
+    if (result.includes('.')) {
+      result = result.substr(0, result.lastIndexOf('.'));
+    }
+
     return result;
   }
 
-  static navigateUp(uri) {
-    return uri.substr(0, uri.lastIndexOf('/'));
+  static isValidHttpUrl(string) {
+    let url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
+
+  static navigateUp(uri, steps) {
+
+    if (steps == undefined) {
+      steps = 1;
+    }
+
+    for (var i = 0; i < steps; i++) {
+      uri = uri.substr(0, uri.lastIndexOf('/'));
+    }
+
+    if (uri.includes('#')) {
+      uri = uri.substr(0, uri.lastIndexOf('#'));
+    }
+
+    return uri;
   }
 
   static copyStringToClipboard(str) {
@@ -149,6 +179,31 @@ class DatabusUtils {
     return data;
   }
 
+  static lineCount(text) {
+    return (text.match(/^\s*\S/gm) || "").length
+  }
+
+
+  static getResourcePathLength(uri) {
+    var parts = DatabusUtils.splitResourceUri(uri);
+    return parts.length;
+  }
+
+  static splitResourceUri(uri) {
+
+    var url = new URL(uri);
+    uri = url.pathname;
+
+    if (uri.startsWith('/')) {
+      uri = uri.substr(1);
+    }
+    if (uri.endsWith('/')) {
+      uri = uri.substr(0, uri.length - 1);
+    }
+
+    return uri.split('/');
+  }
+
   static exportToJsonFile(jsonData) {
 
     var ignoreKeys = [
@@ -171,6 +226,49 @@ class DatabusUtils {
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
+  }
+
+  static async parseN3(data, maxQuads) {
+    return new Promise((resolve, reject) => {
+
+      const quads = [];
+      const prefixes = [];
+
+      const parser = new N3.Parser();
+
+      parser.parse(data, (e, q, p) => {
+        if (e) {
+          reject(e);
+          return;
+        }
+
+        if (quads.length > maxQuads || q == null) {
+          resolve({ quads: quads, prefixes: prefixes });
+        }
+
+        if (q) {
+          quads.push(q);
+        }
+      });
+    });
+  }
+
+  static async parseDatabusManifest(data) {
+
+    var parsedData = await DatabusUtils.parseN3(data, 100);
+
+    for (var quad of parsedData.quads) {
+
+      if (quad.predicate.id == `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
+        && quad.object.id == `http://dataid.dbpedia.org/ns/core#Databus`) {
+
+        return {
+          uri : quad.subject.id
+        }
+      }
+    }
+
+    return undefined;
   }
 
 }

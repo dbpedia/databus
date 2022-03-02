@@ -4,14 +4,14 @@ indexConfig:
   cacheSize: 1000000
   cleanIndex: true
   indexMode: INDEX_SPARQL
-  sparqlEndpoint: http://172.17.0.1:3003/sparql
+  sparqlEndpoint: http://127.0.0.1:3000/sparql
   commitInterval: 1000
   indexFields:
     - fieldName: label
       resourceName: resource
       query: >
         SELECT DISTINCT ?resource ?label WHERE {
-          ?resource a <https://databus.dbpedia.org/system/ontology#Collection> .
+          ?resource a <http://dataid.dbpedia.org/ns/core#Collection> .
           ?resource <http://purl.org/dc/terms/title> ?label.
         }
     - fieldName: label
@@ -100,7 +100,7 @@ indexConfig:
           VALUES ?n { 1 3 } 
           {
             SELECT DISTINCT ?collection WHERE {
-              ?collection a <https://databus.dbpedia.org/system/ontology#Collection> .
+              ?collection a <http://dataid.dbpedia.org/ns/core#Collection> .
             }
           }
           BIND (replace(str(?collection), "^((.*?)\\/){3}", "pre/") as ?suffix) 
@@ -118,5 +118,5 @@ indexConfig:
       query: >
         SELECT DISTINCT ?resource (REPLACE(STR(?type), "(.*)(/|#)", "") AS ?typeName) WHERE {
           ?resource a ?type.
-          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <https://databus.dbpedia.org/system/ontology#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
         }

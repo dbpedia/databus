@@ -22,7 +22,7 @@ function TableEditorController() {
   ctrl.setupColumns = function() {
 
     ctrl.columns = [];
-    ctrl.columns.push({ title:'File', width: 280, isReadonly : true });
+    ctrl.columns.push({ title:'File', width: 400, isReadonly : true });
     ctrl.columns.push({ title:'Format', width: 75, isReadonly : true });
     ctrl.columns.push({ title:'Compression', width: 115, isReadonly : true });
 

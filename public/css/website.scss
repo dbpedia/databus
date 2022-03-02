@@ -108,53 +108,6 @@ body.has-navbar-fixed-top {
 
 
 
-.is-secondary {
-  background-color: $secondary;
-  color: $white;
-}
-
-.tag.is-secondary {
-  background-color: $secondary;
-  color: $white;
-}
-
-.button.is-secondary {
-  background-color: $secondary;
-  color: $white;
-  border-color: transparent;
-}
-
-.is-tertiary {
-  background-color: $tertiary;
-  color: $white;
-}
-
-.tag.is-tertiary {
-  background-color: $tertiary;
-  color: $white;
-}
-
-.button.is-tertiary {
-  background-color: $tertiary;
-  color: $white;
-  border-color: transparent;
-}
-
-.is-quarternary {
-  background-color: $color5;
-  color: $white;
-}
-
-.tag.is-quarternary {
-  background-color: $color5;
-  color: $white;
-}
-
-.button.is-quarternary {
-  background-color: $color5;
-  color: $white;
-  border-color: transparent;
-}
 
 .uploads-label {
   margin-bottom: 2em;
@@ -797,11 +750,7 @@ a.navbar-item.is-active, a.navbar-item {
   right:0;
 }
 
-.tag.is-turquoise, .button.is-turquoise {
-  background-color: $turquoise;
-  border-color: $turquoise;
-  color: $white;
-}
+
 
 
 .tag.is-grey, .button.is-grey {

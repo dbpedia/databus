@@ -1,0 +1,23 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: run php commands from bash script
+      run:  .githooks/pre-commit
+      
+    - name: autocommit 
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+          commit_message: Action to generate files for Model docu with PHP magic

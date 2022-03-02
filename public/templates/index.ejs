@@ -4,8 +4,8 @@
     text-align: left; color: white; padding: 100px; position: relative; background-repeat: repeat;
     background-position: center; background-size: 150px;">
       <div class="container">
-        <h1 style="font-size: 2em; font-weight: bolder; margin-bottom: .5em;">WELCOME TO THE</h1>
-        <div style="display: flex; align-items: center; margin-bottom: 3em;">
+        <!--h1 style="font-size: 2em; font-weight: bolder; margin-bottom: .5em;">WELCOME TO THE</h1 -->
+        <div style="display: flex; align-items: center;">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
             viewBox="0 0 40.326191 46.198502" version="1.1" id="svg5" style="margin-right: 1.5em; margin-top: 7px">
             <defs id="defs2" />
@@ -15,19 +15,66 @@
                 d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
             </g>
           </svg>
-          <h1 style="font-size: 6em; font-weight: bolder; margin: 0;">DATABUS</h1>
-        </div>
-        <div style="display: flex;">
-          <a href="/system/account">
-            <div class="button call-to-action colored">My Account</div>
-          </a>
-          <a href="/system/documentation">
-            <div class="button call-to-action">Documentation</div>
-          </a>
+          <h1 style="font-size: 6em; font-weight: bolder; margin: 0;">{{ databusName }}</h1>
         </div>
       </div>
       <div class="open-beta">Open Beta</div>
     </section>
+
+    <!--
+    <section class="section">
+      <div class="container">
+
+        <div style="display: flex; margin-bottom: 1em;">
+          <div class="databus-banner is-consumer"><h1 style="color: white; padding: 1em;">Publisher</h1></div>
+          <div style="padding: 1em;">
+            <type-tag width="48" height="48" type="'PersonalProfileDocument'"></type-tag>
+            <div>Some text goes here</div>            
+            <div class="button is-consumer">Press me!</div>
+          </div>
+        </div>
+       
+        <div style="display: flex; margin-bottom: 1em;">
+          <div class="databus-banner is-group"><h1 style="color: white; padding: 1em;">Group</h1></div>
+          <div style="padding: 1em;">
+            <type-tag width="48" height="48" type="'Group'"></type-tag>
+            <div>Some text goes here</div>            
+            <div class="button is-group">Press me!</div>
+          </div>
+        </div>
+
+        <div style="display: flex; margin-bottom: 1em;">
+          <div class="databus-banner is-artifact"><h1 style="color: white; padding: 1em;">Artifact</h1></div>
+          <div style="padding: 1em;">
+            <type-tag width="48" height="48" type="'Artifact'"></type-tag>
+            <div>Some text goes here</div>            
+            <div class="button is-artifact">Press me!</div>
+          </div>
+        </div>
+
+        <div style="display: flex; margin-bottom: 1em;">
+          <div class="databus-banner is-version"><h1 style="color: white; padding: 1em;">Version</h1></div>
+          <div style="padding: 1em;">
+            <type-tag width="48" height="48" type="'Version'"></type-tag>
+            <div>Some text goes here</div>            
+            <div class="button is-version">Press me!</div>
+          </div>
+        </div>
+
+        <div style="display: flex; margin-bottom: 1em;">
+          <div class="databus-banner is-collection"><h1 style="color: white; padding: 1em;">Collection</h1></div>
+          <div style="padding: 1em;">
+            <type-tag width="48" height="48" type="'Collection'"></type-tag>
+            <div>Some text goes here</div>            
+            <div class="button is-collection">Press me!</div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </section>-->
+
     <section class="section">
       <div class="container">
         <div class="columns">
@@ -43,9 +90,6 @@
           <div class="column main">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <p class="section-label">Search</p>
-              <a href="/system/documentation#toc-1" style="line-height: 1;">
-                <databus-icon shape="'help'" size="'24'"></databus-icon>
-              </a>
             </div>
             <search></search>
             <br />

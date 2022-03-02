@@ -80,8 +80,8 @@
     <div class="section" ng-if="profileData == undefined" ng-controller="ProfileController"
       style="min-height: 600px; display: flex;">
       <div class="container">
-        <p class="collection-editor-info-text">You do not have a user acount yet. Create a user account by entering a username (your publishing namespace) and clicking the
-          button below. Choose your username carefully as you will not be able to change it later.</p>
+        <p class="collection-editor-info-text">Unlock your account by entering a username (your publishing namespace) and clicking the
+          button below.<br/> Choose your username carefully as you will not be able to change it later.</p>
         <br /> <br />
         <div class="collection-editor-info-text" style="justify-content: center; display: flex;">
           <div class="field has-addons">
@@ -91,7 +91,7 @@
             </div>
             <div class="control">
               <a class="button is-info" ng-click="createProfile()">
-                Create Account
+                Unlock Account
               </a>
             </div>
           </div>
@@ -168,13 +168,8 @@
               <div class="dashboard-card-title">Popular Content</div>
 
               <div>
-                <div ng-if="artifactData.isLoading" style="text-align:center">
-                  <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
+                <div  ng-if="artifactData.isLoading" style="text-align:center" >
+                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
 
                 <div ng-if="!artifactData.isLoading" ng-repeat="content in featuredContent" style="padding: 1em 0.5em;">
@@ -188,41 +183,31 @@
 
             <div class="dashboard-card">
               <div class="dashboard-card-title">Publisher Activity</div>
-              <div ng-if="activityData.isLoading" style="text-align:center">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
+                <div  ng-if="activityData.isLoading" style="text-align:center" >
+                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
-              </div>
               <div ng-if="!activityData.isLoading" style="display: flex;">
                 <activity-chart data="activityData.entries" height="400"></activity-chart>
 
                 <div style="min-width: 40%;">
-                  <div ng-if="artifactData.isLoading" style="text-align:center">
-                    <div class="lds-ellipsis">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
+                    <div  ng-if="artifactData.isLoading" style="text-align:center" >
+                      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     </div>
-                  </div>
                   <div ng-if="recentUploads.length > 0" class="timeline" style="padding: 1em 0.5em;">
                     <div ng-repeat="dataset in recentUploads">
 
                       <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
-                        <span class="tag is-medium is-primary">Now</span>
+                        <span class="tag is-medium is-consumer">Now</span>
                       </header>
 
                       <header class="timeline-header"
                         ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
-                        <span class="tag is-primary">{{ recentUploads[$index - 1].year }}</span>
+                        <span class="tag is-consumer">{{ recentUploads[$index - 1].year }}</span>
                       </header>
 
                       <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
                   && recentUploads[$index - 1].month != dataset.month">
-                        <span class="tag is-primary">{{ recentUploads[$index - 1].month }}</span>
+                        <span class="tag is-consumer">{{ recentUploads[$index - 1].month }}</span>
                       </header>
 
                       <div class="timeline-item">
@@ -241,8 +226,8 @@
                     </div>
 
                     <div class="timeline-header is-clickable" ng-click="toggleTimelineShowMore()">
-                      <span ng-if="!timeLineShowMore" class="tag is-medium is-primary">More..</span>
-                      <span ng-if="timeLineShowMore" class="tag is-medium is-primary">Less..</span>
+                      <span ng-if="!timeLineShowMore" class="tag is-medium is-consumer">More..</span>
+                      <span ng-if="timeLineShowMore" class="tag is-medium is-consumer">Less..</span>
                     </div>
                   </div>
                 </div>
@@ -264,7 +249,7 @@
             <input class="input" placeholder="Find data..." input="searchInput" filters="searchFilters">
           </p>
           <p class="control">
-            <a href="/system/publish-wizard" class="button is-primary">
+            <a href="/app/publish-wizard" class="button is-primary">
               Publish Data
             </a>
           </p>
@@ -276,8 +261,8 @@
               <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'" desc="artifact.abstract">
               </entity-card>
             </div>
-            <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
           </div>
+          <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
         </div>
 
         <!--
@@ -310,7 +295,7 @@
             <input class="input" placeholder="Find collections..." input="searchInput" filters="searchFilters">
           </p>
           <p class="control">
-            <a href="/system/collection-editor" class="button is-primary">
+            <a href="/app/collection-editor" class="button is-primary">
               Manage Collections
             </a>
           </p>

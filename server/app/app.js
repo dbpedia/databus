@@ -1,20 +1,14 @@
 // This is the main application
 
 // External includes
-var createError = require('http-errors');
+var bodyParser = require("body-parser");
+var path = require('path');
 var express = require('express');
 var favicon = require('serve-favicon')
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
-var fs = require('fs');
-var cors = require('cors');
-var bodyParser = require("body-parser");
-var minifier = require("./minifier.js");
-var rp = require('request-promise');
-const crypto = require("crypto");
-const Constants = require('./common/constants.js');
+const ServerUtils = require('./common/utils/server-utils');
 
 // Creation of the mighty server app
 var app = express();
@@ -25,51 +19,47 @@ var memoryStore = new session.MemoryStore();
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
 
-
-
-
-  // Create and attach the databus protector
-  var DatabusProtect = require('./protect/middleware');
-
-  var protector = new DatabusProtect(memoryStore);
-  var router = new express.Router();
-
+  // Fav Icon
   app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
 
-  // Create modules
-  require('./collections/module')(router, protector);
-  require('./publish/module')(router, protector);
-  require('./accounts/module')(router, protector);
-  require('./pages/module')(router, protector);
-  require('./tractate/module')(router, protector);
+  // Create and attach the databus protector
+  var DatabusProtect = require('./common/protect/middleware');
+  var protector = new DatabusProtect(memoryStore);
 
+  var router = new express.Router();
 
+  // Attach modules to router
+  require('./api/module')(router, protector); // API handlers
+  require('./pages/module')(router, protector);// Web App handlers
+
+  // Use protection
   app.use(protector.auth());
+
   // Attach router
   app.use('/', router);
 
-  // catch 404 and forward to error handler
-  app.use(function (req, res, next) {
-    next(createError(404));
+  // Handle 404
+  app.use(protector.protect(true), function(req, res, next) {
+    res.status(404);
+  
+    // respond with html page
+    if (req.accepts('html')) {
+      var data = {}
+      data.auth = ServerUtils.getAuthInfoFromRequest(req);
+      res.render('404', { title: 'Not found', data: data });
+      return;
+    }
+  
+    // respond with json
+    if (req.accepts('json')) {
+      res.json({ error: 'Not found' });
+      return;
+    }
+  
+    // default to plain-text. send()
+    res.type('txt').send('Not found');
   });
 
-  // error handler
-  app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-  });
-
-  // TODO remove later
-  require('./tests')().then(function () {
-    console.log('Tests run successfully.');
-  }, function (error) {
-    console.log(error);
-  })
 });
 
 /**
@@ -78,38 +68,9 @@ initialize(app, memoryStore).then(function () {
  */
 async function initialize(app, memoryStore) {
 
-  // CORS setup
-  var originsWhitelist = [
-    'databus.dbpedia.org',
-    'localhost:3000'
-  ];
-
-  var corsOptions = {
-    origin: function (origin, callback) {
-      var isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
-      callback(null, isWhitelisted);
-    }
-  }
-
   app.set('trust proxy', 'loopback');
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(cors(corsOptions));
-
-  // add a sparql file loading extension (simply read the file as a string)
-  require.extensions['.sparql'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-
-  require.extensions['.md'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-  require.extensions['.ttl'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
-  require.extensions['.html'] = function (module, filename) {
-    module.exports = fs.readFileSync(filename, 'utf8');
-  };
 
   // view engine setup
   app.set('views', path.join(__dirname, '../../public/templates'));
@@ -127,76 +88,6 @@ async function initialize(app, memoryStore) {
     saveUninitialized: true,
     store: memoryStore
   }));
-
-  // Write environment variables to client constants
-  var constantsFile = './../public/js/utils/databus-constants.js';
-
-  var regex = new RegExp(/DATABUS_RESOURCE_BASE_URL\s=\s"(.*)";/gm);
-  var clientConstants = fs.readFileSync(constantsFile, ['utf8']).toString();
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_RESOURCE_BASE_URL = "${process.env.DATABUS_RESOURCE_BASE_URL}";`);
-
-  regex = new RegExp(/DATABUS_DEFAULT_CONTEXT_URL\s=\s"(.*)";/gm);
-  clientConstants = clientConstants.replace(regex,
-    `DATABUS_DEFAULT_CONTEXT_URL = "${process.env.DATABUS_DEFAULT_CONTEXT_URL}";`);
-
-  fs.writeFileSync(constantsFile, clientConstants, ['utf8']);
-
-  try {
-    // Download context
-    if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
-      Constants.DATABUS_DEFAULT_CONTEXT_URL = process.env.DATABUS_DEFAULT_CONTEXT_URL;
-    }
-    var contextFile = __dirname + '/../../context.json';
-
-    var contextOptions = {
-      method: 'GET',
-      uri: Constants.DATABUS_DEFAULT_CONTEXT_URL,
-      headers: {
-        'User-Agent': 'Request-Promise'
-      },
-      json: true
-    };
-
-    var response = await rp(contextOptions);
-
-    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
-    console.log(`Fetched default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-
-  } catch (err) {
-    console.log(err);
-    console.log(`Failed to fetch default context from ${Constants.DATABUS_DEFAULT_CONTEXT_URL}`);
-  }
-
-  // Create RSA keys
-  var privateKeyFile = __dirname + '/../keypair/private-key.pem';
-  var publicKeyFile = __dirname + '/../keypair/public-key.pem';
-
-  // try to load from file
-  if (!fs.existsSync(privateKeyFile)) {
-
-    var { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-      'modulusLength': 2048,
-      publicKeyEncoding: {
-        type: 'spki',
-        format: 'pem'
-      },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'pem'
-      }
-    });
-
-    if (!fs.existsSync(__dirname + '/../keypair')) {
-      fs.mkdirSync(__dirname + '/../keypair');
-    }
-
-    fs.writeFileSync(privateKeyFile, privateKey.toString('base64'), "utf8");
-    fs.writeFileSync(publicKeyFile, publicKey.toString('base64'), "utf8");
-  }
-
-  // TODO: enable minifier
-  minifier.minify('../../public/js', 'js', '../min/databus.min.js', '../min/databus.min.js.map');
 }
 
 module.exports = app;

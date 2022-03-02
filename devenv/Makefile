@@ -1,5 +1,6 @@
 DATABUS_RESOURCE_BASE_URL=http://localhost:3000
 DATABUS_DATABASE_URL=http://localhost:3002
+DATABUS_NAME="Just Another Databus"
 
 env-clean:
 	sudo rm -r data/; \
@@ -26,10 +27,10 @@ srv-install:
 
 srv-start-auth0:
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
+	DATABUS_NAME=${DATABUS_NAME} \
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com \
 	DATABUS_OIDC_CLIENT_ID=e9eOLS9IkGvuyBl7cBorWUQTNgbqejhc \
-	DATABUS_DEFAULT_CONTEXT_URL=https://downloads.dbpedia.org/databus/context.jsonld \
 	DATABUS_OIDC_SECRET=0RVo9jMnbhPnkR6Ttz0aXQRTcRuSz5DpqyUEjbbcbgRuGA4rbwCjnHM2cOlTrv9q \
 	npm start --prefix ../server
 

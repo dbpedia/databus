@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+# select PHP
+PHP=`which php`
+
+# move to correct dir
+cd ./model/
+
+# execute model php
+$PHP init.php 
+$PHP group.php > ../docs/group.md
+$PHP dataid.php > ../docs/dataid.md
+$PHP distribution.php > ../docs/distribution.md
+$PHP finalize.php 
+
+# add created model.md to commit
+git add ../docs/group.md
+git add ../docs/dataid.md
+git add ../docs/distribution.md
+git add generated/

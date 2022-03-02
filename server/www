@@ -5,30 +5,107 @@
  */
 
 var fs = require('fs');
-var app = require('./app/app');
 var debug = require('debug')('databus-server:server');
-var http = require('http');
-
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+var initialize = require('./app/init');
+const Constants = require('./app/common/constants');
+const DatabusUserDatabase = require('./userdb');
+const LookupSearchIndexer = require('./search-indexer');
+var userTablePath = __dirname + '/users/namespaces.csv';
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
 
-/**
- * Create HTTP server.
- */
 
-var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+initializeExtensions();
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+if (cluster.isMaster) {
+  masterProcess();
+} else {
+  childProcess();
+}
+
+function broadcast(msg) {
+  Object.keys(cluster.workers).forEach(function (id) {
+    cluster.workers[id].send(msg);
+  });
+}
+
+function masterProcess() {
+
+  console.log(`######`);
+  console.log(`#     #   ##   #####   ##   #####  #    #  ####`);
+  console.log(`#     #  #  #    #    #  #  #    # #    # #`);
+  console.log(`#     # #    #   #   #    # #####  #    #  ####`);
+  console.log(`#     # ######   #   ###### #    # #    #      #`);
+  console.log(`#     # #    #   #   #    # #    # #    # #    #`);
+  console.log(`######  #    #   #   #    # #####   ####   ####`);
+  console.log(``)
+  console.log(`================================================`);
+
+
+  var userDatabase = new DatabusUserDatabase(userTablePath, function (table) {
+    broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
+  });
+
+  var searchIndexer = new LookupSearchIndexer(5000);
+
+  initialize().then(function () {
+
+    // var numCPUs = 1;
+
+    console.log(`Number of CPUs is ${numCPUs}`);
+    console.log(`Master ${process.pid} is running`);
+
+    console.log(`================================================`);
+
+    for (let i = 0; i < numCPUs; i++) {
+      console.log(`Forking process number ${i}...`);
+      var fork = cluster.fork();
+
+      fork.on('message', function (message) {
+        if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
+          userDatabase.updateUser(JSON.parse(message.body));
+        }
+
+        if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
+          searchIndexer.requestRebuild();
+        }
+      });
+    }
+
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+      console.log("Forking another worker!");
+      cluster.fork();
+    });
+
+
+
+  }, function (err) {
+    console.log(`Initialization error: \n${err}`);
+  });
+
+}
+
+function childProcess() {
+  console.log(`Worker ${process.pid} started...`);
+
+  var app = require('./app/app');
+  var port = normalizePort(process.env.PORT || '3000');
+  app.set('port', port);
+
+  var server = http.createServer(app);
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', function () {
+    console.log(`Worker listening on port ${port}`);
+  });
+}
 
 /**
  * Normalize a port into a number, string, or false.
@@ -78,14 +155,19 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+function initializeExtensions() {
+  // add a sparql file loading extension (simply read the file as a string)
+  require.extensions['.sparql'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  require.extensions['.md'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+  require.extensions['.ttl'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+  require.extensions['.html'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
 }

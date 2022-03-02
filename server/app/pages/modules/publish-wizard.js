@@ -9,15 +9,15 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {
 
-  require('../file-analyzer')(router, protector);
+  require('../../common/file-analyzer').route(router, protector);
 
-  router.get('/system/publish-wizard', protector.checkSso(), async function (req, res, next) {
+  router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
 
       var publishers = await sparql.accounts.getPublishersByAccount(auth.info.accountName);
-     
+
 
       res.render('publish-wizard', {
         title: 'Publish Data',
@@ -29,7 +29,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/api/fetch-resource-page', async function (req, res, next) {
+  router.get('/app/publish-wizard/fetch-resource-page', async function (req, res, next) {
 
     try {
       var result = await fetchLinksRecursive(req.query.url, '', 0);
@@ -41,7 +41,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/system/publish/fetch-file', async function (req, res, next) {
+  router.get('/app/publish-wizard/fetch-file', async function (req, res, next) {
 
     try {
 
@@ -93,7 +93,7 @@ module.exports = function (router, protector) {
     if (header['content-disposition'] != undefined) {
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
-      console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
+      // console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
       parseFormatAndCompression(result, filename);
 
       return result;
@@ -122,10 +122,24 @@ module.exports = function (router, protector) {
     var nameComponents = value.split('/');
 
     nameComponents = nameComponents[nameComponents.length - 1].split('.');
-    result.format = nameComponents
 
-    result.format = nameComponents.length > 1 ? nameComponents[1] : 'none';
-    result.compression = nameComponents.length > 2 ? nameComponents[2] : 'none';
+    if (nameComponents[nameComponents.length - 1].includes('#')) {
+      nameComponents[nameComponents.length - 1] = nameComponents[nameComponents.length - 1].split('#')[0]
+    }
+
+    if (nameComponents.length > 2) {
+      result.compression = nameComponents[nameComponents.length - 1];
+      result.formatExtension = nameComponents[nameComponents.length - 2];
+    } else if (nameComponents.length > 1) {
+      result.compression = 'none';
+      result.formatExtension = nameComponents[nameComponents.length - 1];
+    } else {
+      result.compression = 'none';
+      result.formatExtension = 'none';
+    }
+
+
+
   }
 
   async function fetchLinksRecursive(baseUrl, path, depth) {
@@ -179,110 +193,3 @@ module.exports = function (router, protector) {
     return result;
   }
 }
-
-/*
-   function isSafeUrlz(url) {
-
-      if (url.includes('://localhost')) {
-         return false;
-      }
-
-      if (url.startsWith('https://databus.dbpedia.org')) {
-         return false;
-      }
-
-      return true;
-   }
-
-   async function fetchFile(url) {
-      // Sanitize the url
-
-      if (!isSafeUrlz(url)) {
-         return null;
-      }
-
-      // Check if definitely no file
-      if (url.startsWith('http')
-         && url.lastIndexOf('/') < url.lastIndexOf('.')
-         && url.lastIndexOf('/') < url.indexOf('.')) {
-         return null;
-      }
-
-      if (url.startsWith("https://github.com/")) {
-         url = transformGithubUrl(url);
-      }
-
-
-      // File should be reachable, do a head request!
-      var options = {};
-      options.uri = url;
-      options.method = 'HEAD';
-
-      var header = await rp(options);
-
-      var result = {
-         url: url
-      };
-
-      // Prefer content disposition
-      if (header['content-disposition'] != undefined) {
-         var filename = getFileNameFromDisposition(header['content-disposition']);
-
-         console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
-         parseFormatAndCompression(result, filename);
-
-         return result;
-      }
-
-      // Try to parse from url
-      if (url.lastIndexOf('/') < url.lastIndexOf('.')) {
-         parseFormatAndCompression(result, url);
-
-         return result;
-      }
-
-      return null;
-   }
-
-   function getFileNameFromDisposition(disp) {
-      var dispEntries = disp.split(' ');
-      for (var e in dispEntries) {
-         if (dispEntries[e].startsWith('filename')) {
-            var tmp = dispEntries[e].split('=');
-            return tmp[1].replace(/"/g, '');
-         }
-      }
-   }
-
-   function transformGithubUrl(url) {
-
-      url = url.replace("/blob/", "/");
-      url = url.replace("https://github.com/", "https://raw.githubusercontent.com/")
-
-      return url;
-   }
-
-   function parseFormatAndCompression(result, value) {
-
-      console.log("PARSING FORMAT AND COMPRESSION OF " + value);
-
-      var nameComponents = value.split('/');
-
-      nameComponents = nameComponents[nameComponents.length - 1].split('.');
-      result.format = nameComponents
-
-      result.format = nameComponents.length > 1 ? nameComponents[1] : 'none';
-      result.compression = nameComponents.length > 2 ? nameComponents[2] : 'none';
-
-      console.log("FOUND " + result.format + " AND " + result.compression);
-   }
-
-
-
-
-
-
-
-   return router;
-}
-*/

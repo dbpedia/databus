@@ -4,26 +4,25 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
 
 # Creates a collection
 CONSTRUCT
 {
-  ?collection a databus:Collection .
+  ?collection a dataid:Collection .
   ?collection dct:title ?title .
   ?collection dct:abstract ?abstract .
   ?collection dct:description ?description .
   ?collection dct:publisher ?publisher .
-  ?collection databus:content ?content .
+  ?collection dataid:content ?content .
   ?collection dct:issued ?issued .
 }
 WHERE
 {
-  ?collection a databus:Collection .
+  ?collection a dataid:Collection .
   ?collection dct:title ?title .
   ?collection dct:abstract ?abstract .
   ?collection dct:description ?description .
   ?collection dct:publisher ?publisher .
-  ?collection databus:content ?content .
+  ?collection dataid:content ?content .
   OPTIONAL { ?collection dct:issued ?issued . }
 }

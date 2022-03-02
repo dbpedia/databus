@@ -11,6 +11,11 @@ function SearchController($http, $interval, $sce) {
     return $sce.trustAsHtml(result);
   }
 
+  ctrl.toggleFilter = function(key) {
+    ctrl.filters[key] = !ctrl.filters[key];
+    ctrl.search();
+  }
+
   ctrl.searchInput = '';
   ctrl.filters = {};
   ctrl.filters.filterArtifact = false;
@@ -45,7 +50,7 @@ function SearchController($http, $interval, $sce) {
 
       $http({
         method: 'GET',
-        url: '/system/search?query=' + ctrl.searchInput + typeFilters
+        url: '/api/search?query=' + ctrl.searchInput + typeFilters
       }).then(function successCallback(response) {
         ctrl.results = response.data;
       }, function errorCallback(response) {

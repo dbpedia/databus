@@ -1,0 +1,83 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+<#group-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Group ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	] ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	    sh:nodekind sh:IRI ;
+      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
+      sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
+	] .
+
+<#title-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+
+<#abstract-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 200 ;
+	] . 
+
+<#description-group>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Group ;
+	sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMinCount 1 ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+

@@ -143,8 +143,8 @@ class PublishData {
     var nameComponents = name.split('.');
     name = nameComponents[0];
 
-    if (name.length > 32) {
-      name = name.substr(0, 32) + '...';
+    if (name.length > 50) {
+      name = name.substr(0, 50) + '...';
     }
     // Files with uri as key!!
 
@@ -154,7 +154,7 @@ class PublishData {
       name: name,
       contentVariants: {},
       sha256: {},
-      format: file.format,
+      formatExtension: file.formatExtension,
       compression: file.compression,
       artifactId: undefined,
       groupId: undefined,
@@ -211,7 +211,7 @@ class PublishData {
   }
 
 
-  removeContentVarant(variant) {
+  removeContentVariant(variant) {
 
     this.version.contentVariants = this.version.contentVariants.filter(function (d) {
       return d.id != variant.id;
@@ -295,6 +295,7 @@ class PublishData {
             + index + ' (' +
             cvHints.join(', ') + ').';
 
+          // TODO UNCOMMENT
           files[f].errors.push({ key: 'err_duplicate_file', message: errorMessage });
         }
       }
@@ -311,7 +312,7 @@ class PublishData {
       var key = null;
 
       if (cvIndex == 0) {
-        key = file.format;
+        key = file.formatExtension;
       } else if (cvIndex == 1) {
         key = file.compression;
       } else {

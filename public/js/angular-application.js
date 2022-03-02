@@ -1,4 +1,5 @@
 
+
 var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
   .factory('collectionManager', ["$http", function ($http) { return new DatabusCollectionManager($http, 'databus_collections'); }])
   .factory('focus', ["$timeout", "$window", function ($timeout, $window) {
@@ -16,7 +17,6 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   .controller("ArtifactPageController", ["$scope", "$sce","collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
-  .controller("DocumentationController", ["$scope", "$sce", DocumentationController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
   .controller("ProfileController", ["$scope", "$http", ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
@@ -155,7 +155,8 @@ databusApplication.component('collectionHierarchyTwo', {
   controller: ['$http', '$location', '$sce', '$scope', CollectionHierarchyControllerTwo],
   bindings: {
     collection: '=',
-    onChange: '&'
+    onChange: '&',
+    onAddContent: '&'
   }
 });
 
@@ -177,6 +178,7 @@ databusApplication.component('collectionSearch', {
   controller: ['collectionManager', '$http', '$interval', '$sce', CollectionSearchController],
   bindings: {
     collection: '=',
+    targetDatabusUrl: '<',
     onComponentAdded: '&'
   }
 });

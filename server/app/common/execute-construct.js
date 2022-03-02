@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 
 
 function escapeQuotes(value) {
-  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n');
+  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r');
 }
 /**
  * 
@@ -16,17 +16,23 @@ function escapeQuotes(value) {
  */
 self.executeConstruct = async function (jsonld, query) {
 
-  var store = await self.createStore();
-  var tripleCount = await self.loadJsonld(store, jsonld);
+  try {
+    
+    var store = await self.createStore();
+    var tripleCount = await self.loadJsonld(store, jsonld);
+  
+    var graph = await self.queryStore(store, query);
+    var triples = self.convertToN3(graph);
 
-  var graph = await self.queryStore(store, query);
-
-  var triples = self.convertToN3(graph);
-  return triples;
+    return triples;
+  } catch(err) {
+    console.log(err);
+    return '';
+  }
 }
 
 self.convertToN3 = function (graph) {
-  var triples = '';
+  var triples = ``;
 
   for (var triple of graph.triples) {
 
@@ -46,6 +52,7 @@ self.convertToN3 = function (graph) {
       if (triple.object.language != undefined) {
         objectValue += `@${triple.object.language}`;
       }
+      
     }
 
     triples += `${subjectValue} ${predicateValue} ${objectValue} .\n`;

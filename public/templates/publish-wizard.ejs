@@ -25,7 +25,7 @@
       <div ng-if="fileGroup.expanded" class="token-extension content" >
 
         <ul ng-repeat="file in fileGroup.files" style="margin-top: 0.1em;">
-          <li><b>Format</b> {{ file.format }} / <b>Compression</b> {{ file.compression }}</li>
+          <li><b>Format</b> {{ file.formatExtension }} / <b>Compression</b> {{ file.compression }}</li>
         </ul>
       </div>
     </div>
@@ -773,7 +773,7 @@
                   <div class="content-variant" ng-repeat="variant in version.contentVariants">
                     <div style="flex: 1;">{{ variant.label }}</div>
                     <databus-icon shape="'delete'" class='artifact-icon'
-                      on-click="session.data.removeContentVarant(variant)" size="24"></databus-icon>
+                      on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
 
                   </div>
 
@@ -880,13 +880,28 @@
             </div>
 
             <div class="box-content">
+          
               <div class="row">
 
-                <div style="min-width: 240px">Context</div>
-                <pre ng-if="result.isReadyForUpload && session.showContext" style="width: 100%; position: relative;">
-                  <div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>
-                  {{ result.groupUpdate["@context"] | json }}
-                </pre> 
+                <div style="min-width: 240px">Group Metadata</div>
+                <pre ng-if="result.isReadyForUpload" style="width: 100%;">{{ result.groupUpdate["@graph"] | json }}</pre> 
+                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                  Fix all errors to preview the DataId
+                </pre>
+              </div>
+              <div class="row">
+                <div style="min-width: 240px">Artifact / Version Metadata</div>
+
+                <pre ng-if="result.isReadyForUpload"  style="width: 100%;">{{ result.versionUpdate["@graph"] | json }}</pre>
+                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                  Fix all errors to preview the DataId
+                </pre>
+              </div>
+
+              <div class="row">
+
+                <div style="min-width: 240px">Full Body</div>
+                <pre ng-if="result.isReadyForUpload && session.showContext" style="width: 100%; position: relative;"><div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ result.updateData | json }}</pre> 
                 <pre ng-if="result.isReadyForUpload && !session.showContext" style="width: 100%; position: relative;"><div ng-click="session.showContext = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre> 
                  
                   
@@ -895,26 +910,7 @@
                   Fix all errors to preview the DataId
                 </pre>
               </div>
-              <div class="row">
-
-                <div style="min-width: 240px">Group Metadata</div>
-                <pre ng-if="result.isReadyForUpload" style="width: 100%;">
-                  {{ result.groupUpdate["@graph"] | json }}
-                </pre> 
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
-                  Fix all errors to preview the DataId
-                </pre>
-              </div>
-              <div class="row">
-                <div style="min-width: 240px">Artifact / Version Metadata</div>
-
-                <pre ng-if="result.isReadyForUpload"  style="width: 100%;">
-                  {{ result.versionUpdate["@graph"] | json }}
-                </pre>
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
-                  Fix all errors to preview the DataId
-                </pre>
-              </div>
+                
               <div class="row">
 
                 <p class="control" style="width: 100%; margin-top: 1em;">
@@ -924,6 +920,8 @@
                   </button>
                 </p>
               </div>
+
+            
             </div>
 
 
@@ -952,7 +950,7 @@
               <div class="row">
 
                 <p class="control" style="width: 100%; margin-top: 1em;">
-                  <button style="width: 100%; height: 3em;" class="button" ng-click="startNewUpload()">
+                  <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
                     <span>Reset Form</span>
                   </button>
                 </p>

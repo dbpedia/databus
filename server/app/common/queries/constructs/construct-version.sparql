@@ -13,7 +13,7 @@ CONSTRUCT
   ?dataset ?datasetProperty ?datasetObject .
   ?version a dataid:Version .
   ?artifact a dataid:Artifact .
-  ?distribution a dataid:SingleFile .
+  ?distribution a dataid:Part .
   ?distribution ?distributionProperty ?distributionObject .
   ?contentVariant ?contentVariantProperty ?contentVariantObject .
   ?proof ?proofProperty ?proofObject .
@@ -28,7 +28,7 @@ WHERE
   }
   UNION
   {
-    ?distribution a dataid:SingleFile .
+    ?distribution a dataid:Part .
     ?distribution ?distributionProperty ?distributionObject .
   }
   UNION

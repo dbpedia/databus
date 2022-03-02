@@ -28,12 +28,12 @@
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="/node_modules/angular-content-editable/dist/angular-content-editable.min.js"></script>
   <script src="/node_modules/@iamadamjowett/angular-click-outside/clickoutside.directive.js"></script>
-  
+
   <!-- App 
   <script src="/min/databus.min.js"></script>-->
 
-
   <!-- Dev (Unminified)-->
+  <script src="/js/utils/databus-uris.js"></script>
   <script src="/js/page-controller/header-controller.js"></script>
   <script src="/js/page-controller/account-controller.js"></script>
   <script src="/js/page-controller/profile-controller.js"></script>
@@ -44,7 +44,6 @@
   <script src="/js/page-controller/artifact-controller.js"></script>
   <script src="/js/page-controller/version-controller.js"></script>
   <script src="/js/page-controller/group-controller.js"></script>
-  <script src="/js/page-controller/documentation-controller.js"></script>
   <script src="/js/page-controller/publish-wizard-controller.js"></script>
   <script src="/js/publish/dataid-creator.js"></script>
   <script src="/js/publish/publish-data.js"></script>
@@ -78,13 +77,15 @@
   <script src="/js/utils/databus-constants.js"></script>
   <script src="/js/utils/jsonld-context.js"></script>
   <script src="/js/utils/databus-utils.js"></script>
-  <script src="/js/utils/databus-queries.js"></script>
+  <script src="/js/utils/databus-facets-cache.js"></script>
   <script src="/js/collections/databus-collection-manager.js"></script>
   <script src="/js/collections/databus-collection-utils.js"></script>
   <script src="/js/collections/databus-collection-wrapper.js"></script>
-  <script src="/js/collections/query-builder.js"></script>
-  <script src="/js/collections/query-node.js"></script>
+  <script src="/js/query-builder/query-builder.js"></script>
+  <script src="/js/query-builder/query-node.js"></script>
+  <script src="/js/query-builder/query-templates.js"></script>
   <script src="/js/angular-application.js"></script>
+
 </head>
 
 <body ng-app="databusApplication" ng-cloak>
@@ -116,8 +117,7 @@
       </div>
       <div class="navbar-menu">
         <div class="navbar-start">
-          <a target="_blank" class="navbar-item" style="opacity: .7;"
-            href="https://github.com/dbpedia/databus-maven-plugin/issues?q=is%3Aissue+is%3Aopen+label%3Awebsite">
+          <a target="_blank" class="navbar-item" style="opacity: .7;" href="https://github.com/dbpedia/databus/issues">
             <span class="icon has-text-info">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path style="fill: white;"
@@ -128,7 +128,7 @@
               Report Issue
             </span>
           </a>
-          <a class="navbar-item" style="opacity: .7;" target="_blank" href="/system/sparql">
+          <a class="navbar-item" style="opacity: .7;" target="_blank" href="/sparql">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="44 0 372 420">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -140,10 +140,22 @@
               Sparql Endpoint
             </span>
           </a>
+          <a class="navbar-item" style="opacity: .7;" href="/api">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path xmlns="http://www.w3.org/2000/svg"
+                  d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm0-18.8c-4.853 0-8.8 3.947-8.8 8.8s3.947 8.8 8.8 8.8 8.8-3.947 8.8-8.8-3.947-8.8-8.8-8.8zm0 15.05c-.689 0-1.25-.56-1.25-1.25s.561-1.25 1.25-1.25c.691 0 1.25.56 1.25 1.25s-.559 1.25-1.25 1.25zm1.961-5.928c-.904.975-.947 1.514-.935 2.178h-2.005c-.007-1.475.02-2.125 1.432-3.468.572-.544 1.024-.975.962-1.821-.058-.805-.73-1.226-1.364-1.226-.709 0-1.538.527-1.538 2.013h-2.011c0-2.4 1.41-3.95 3.59-3.95 1.036 0 1.942.339 2.551.955.57.578.865 1.372.854 2.298-.018 1.383-.859 2.291-1.536 3.021z"
+                  fill="#fff" />
+              </svg>
+            </span>
+            <span>
+              API Documentation
+            </span>
+          </a>
         </div>
         <div class="navbar-end">
           <div ng-if="!auth.authenticated" class="navbar-item">
-            <button class="button is-primary is-active" ng-click="login()">
+            <button class="button is-consumer is-active" ng-click="login()">
               <span class="icon has-text-primary" style="margin-right: 8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                   <path class="is-white"
@@ -156,25 +168,31 @@
             </button>
           </div>
           <div ng-if="auth.authenticated" class="navbar-item">
-            <a style="color:#eee" href='/system/account'><span>{{ getAccountName() }}</span></a>
+            <a style="color:#eee" href='/app/account'><span>{{ getAccountName() }}</span></a>
           </div>
           <div ng-if="auth.authenticated" class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item" href="/system/account">
+            <a class="navbar-item" href="/app/account">
               <div style="height:48px; width:48px; background-color: white; border-radius: 24px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 -2 24 24" style="border-radius: 22px; margin: 2px">
-                  <path class="is-white" fill="#333" d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 -2 24 24"
+                  style="border-radius: 22px; margin: 2px">
+                  <path class="is-white" fill="#333"
+                    d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z">
+                  </path>
                 </svg>
               </div>
-              <svg style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="white" d="M12 21l-12-18h24z"/></svg>
+              <svg style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                viewBox="0 0 24 24">
+                <path fill="white" d="M12 21l-12-18h24z" />
+              </svg>
             </a>
             <div class="navbar-dropdown is-right">
-              <a class="navbar-item" href="/system/account">
+              <a class="navbar-item" href="/app/account">
                 Profile
               </a>
-              <a class="navbar-item" href="/system/collection-editor">
+              <a class="navbar-item" href="/app/collection-editor">
                 Collections
               </a>
-              <a class="navbar-item" href="/system/publish-wizard">
+              <a class="navbar-item" href="/app/publish-wizard">
                 Publish Data
               </a>
               <hr class="navbar-divider">

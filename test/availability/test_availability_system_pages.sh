@@ -5,9 +5,9 @@ get_return_code() {
 }
 
 # Check website availability
-code=$(get_return_code https://databus.dbpedia.org/system/collection-editor/)
+code=$(get_return_code https://databus.dbpedia.org/app/collection-editor/)
 assert_eq "$code" "200" "Collection editor not reachable"
 
 # Check imprint availability
-code=$(get_return_code https://databus.dbpedia.org/system/search/)
+code=$(get_return_code https://databus.dbpedia.org/api/search/)
 assert_eq "$code" "200" "Search page not reachable"

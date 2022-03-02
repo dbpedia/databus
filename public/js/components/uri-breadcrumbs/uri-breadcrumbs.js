@@ -9,17 +9,24 @@ function UriBreadcrumbsController() {
     ctrl.entries = [];
 
     var uri = ctrl.uri;
-    var base = `${DATABUS_RESOURCE_BASE_URL}/`;
-    var extensions = uri.replace(base, '').split('/');
+
+    var url = new URL(uri);
+
+    var extensions = url.pathname.split('/');
     var pathSoFar = '';
 
     for(var e in extensions) {
       var extension = extensions[e];
+
+      if(extension == '') {
+        continue;
+      }
+
       pathSoFar += extension + "/";
 
       ctrl.entries.push({
         label: extension,
-        uri: '/' + pathSoFar
+        uri: url.origin + '/' + pathSoFar
       });
     }
   }
