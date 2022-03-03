@@ -1,0 +1,9 @@
+version: "3.0"
+#"override"/drop-in compose for development settings call with `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up` 
+services:
+  databus: #TODO add built context 
+    image: databus # use local image
+  gstore:
+    image: "dbpedia/gstore"
+  virtuoso:
+    image: "openlink/virtuoso-opensource-7"
