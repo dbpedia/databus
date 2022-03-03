@@ -3,11 +3,11 @@ services:
   databus:
     image: "dbpedia/databus"
     ports:
-      - 127.0.0.1:3000:3000 # HTTP:  Databus web UI
+      - 3000:3000 # HTTP:  Databus web UI
       - 127.0.0.1:3001:8080 # HTTP:  Databus search API
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
 #      - 443:4000    # ** uncomment if proxy enabled only** HTTPS: Databus web UI via caddy proxy     
-    environment: 
+    environment:
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
       DATABUS_DATABASE_URL: "http://gstore:8080"
       DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
