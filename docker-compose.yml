@@ -5,8 +5,8 @@ services:
     ports:
       - 127.0.0.1:3000:3000 # HTTP:  Databus web UI
       - 127.0.0.1:3001:8080 # HTTP:  Databus search API
-      - 4000:4000 # HTTPS: Databus web UI (when proxy server is enabled)
-      - 4001:4001 # HTTPS: Databus search API (when proxy server is enabled)
+#      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
+#      - 443:4000    # ** uncomment if proxy enabled only** HTTPS: Databus web UI via caddy proxy     
     environment: 
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
       DATABUS_DATABASE_URL: "http://gstore:8080"
@@ -23,7 +23,8 @@ services:
     volumes:
       - ./data/keypair/:/databus/server/keypair
       - ./data/users/:/databus/server/users
-      - ./data/tls/:/tls:ro
+      - ./data/tls/:/tls:ro # path for TLS (HTTPS) certs when using integrated caddy proxy                                                                                                                 
+      - ./data/tls/caddy:/root/.local/share/caddy/ # path for caddy settings esp. automatic TLS certificates
   gstore:
     image: "dbpedia/gstore"
     environment:
