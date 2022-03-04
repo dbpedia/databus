@@ -27,4 +27,5 @@
 
 * [Examples](examples/README.md)
 * [Databus API](docs/api.md)
+* [HTTPS & Proxy Setup](usage/https-and-proxy-setup.md)
 * [Development Environment](devenv/README.md)

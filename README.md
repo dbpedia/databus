@@ -19,9 +19,9 @@ diagram with clickable links
 
 The source code of this repo is published under the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
 
-Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.&#x20;
+Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.
 
-The individual datasets are referenced via links (dcat:downloadURL) and can have any license. &#x20;
+The individual datasets are referenced via links (dcat:downloadURL) and can have any license.
 
 ## Status
 
@@ -33,14 +33,18 @@ This repo develops Databus version 2.0, which is a major upgrade of version 1.3-
 
 ## Requirements
 
-In order to run the On-Premise Databus Application you will need `docker` and `docker-compose` installed on your machine.
+In order to run the Databus on-premise you will need `docker` and `docker-compose` installed on your machine.&#x20;
 
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
+Additionally you need an OIDC provider.
+
 ## Starting the Databus Server
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository). It is possible to run the Databus on localhost in one shot with the default configuration to have a quick look. However, for proper setups it is required to start from a fresh/wiped state and perform [mandatory configuration settings](./#mandatory-configuration) first.&#x20;
+
+&#x20;run:
 
 ```
 docker-compose up
@@ -52,62 +56,9 @@ Or, to start the containers in the background i.e. detached, run:
 docker-compose up -d
 ```
 
-The Databus should be available at `http://localhost:3000`.
+The Databus should be available at `http://localhost:3000`.&#x20;
 
-However, to actually use the Databus, a TLS-encrypted connection is required. This is a requirement of the OpenID provider. There are two options to fulfill this requirement.
-
-### First option (default)
-The first option is to use an existing web server as a reverse proxy in front of the Databus container. In case Apache gets used, the configuration might looks like this:
-
-```
-<IfModule mod_ssl.c>
-<VirtualHost *:443>
-
-        ServerName dev.databus.dbpedia.org
-        ServerAlias www.dev.databus.dbpedia.org
-
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html
-
-        #LogLevel info ssl:warn
-
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-        ProxyPreserveHost On
-        SSLProxyEngine On
-        SSLProxyCheckPeerCN on
-        SSLProxyCheckPeerExpire on
-        RequestHeader set X-Forwarded-Proto "https"
-        RequestHeader set X-Forwarded-Port "443"
-
-        #ProxyPassMatch ^/gstore/(.*) http://localhost:3002/$1
-        #ProxyPassReverse ^/gstore/(.*) http://localhost:3002/$1
-
-        #ProxyPass /file http://localhost:3002/file/
-        #ProxyPassReverse /file http://localhost:3002/file/
-
-        #ProxyPass /repo http://localhost:3002/repo/
-        #ProxyPassReverse /repo http://localhost:3002/repo/
-
-        ProxyPass / http://localhost:3000/
-        ProxyPassReverse / http://localhost:3000/
-
-SSLCertificateFile /etc/letsencrypt/live/dev.databus.dbpedia.org/fullchain.pem
-SSLCertificateKeyFile /etc/letsencrypt/live/dev.databus.dbpedia.org/privkey.pem
-Include /etc/letsencrypt/options-ssl-apache.conf
-</VirtualHost>
-</IfModule>
-```
-
-### Second option (optional)
-If no existing web server is available, an integrated [Caddy server](https://caddyserver.com) can be activated. For this purpose the variable `DATABUS_PROXY_SERVER_ENABLE` is set to `true`. If an own certificate is to be used, the variable `DATABUS_PROXY_SERVER_USE_ACME` is set to `false`. The file name of the own certificate is then set by `DATABUS_PROXY_SERVER_OWN_CERT`, as well as its key file name by `DATABUS_PROXY_SERVER_OWN_CERT_KEY`. Please note that in the `docker-compose.yml` file, the path to the certificate on the Docker host may need to be customized. By default, `./data/tls/` is used, which is relative to the folder of the `docker-compose.yml` file. Note that the left part before the colon corresponds to the Docker host specification; the right part must not be edited. Regarding IT security, it should be mentioned that the certificate folder is mounted as read-only, so the Databus container cannot modify or delete your own certificates.
-
-Finally, the variable `DATABUS_PROXY_SERVER_HOSTNAME` must be set to the host's name. As long as `DATABUS_PROXY_SERVER_USE_ACME` is set to `true`, which is the default, an ACME provider is used to request a free certificate. However, the Databus container must be accessible from the Internet for this.
-
-Next, after starting the container by `docker-compose up -d`, the Databus is available on port `4000`. Assuming the hostname is e.g. `my-databus.org`, the full address is `https://my-databus.org:4000`. By editing the `docker-compose.yml` file, you could change the port to be `443`, in order to be accessible as `https://my-databus.org`. The search API gets accessible by port `4001` e.g. `https://my-databus.org:4001`.
-
-## Basic Configuration
+## Mandatory Configuration
 
 Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
 
@@ -115,8 +66,9 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
 * **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
-* **VIRTUOSO\_USER**: A virtuoso database user with write access (SPARQL\_UPDATE)
 * **VIRTUOSO\_PASSWORD**: The password of the VIRTUOSO\_USER account
+
+If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](usage/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](usage/https-and-proxy-setup.md#external-proxy-example)).
 
 ## Advanced Configuration
 
@@ -177,7 +129,5 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
-
-
 
 ###
