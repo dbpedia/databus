@@ -23,22 +23,22 @@ services:
       - "127.0.0.1:3002:8080"
     volumes:
       - ./data/repo:/root/git
-  virtuoso:
-    image: "openlink/virtuoso-opensource-7"
-    container_name: devenv_virtuoso
-    environment:
-      DBA_PASSWORD: "everyoneknows"
-      SPARQL_UPDATE: "true"
-      DEFAULT_GRAPH: "http://localhost:3000"
-    ports:
-      - "127.0.0.1:3003:8890"
-    volumes: 
-      - ./data/virtuoso:/data
-    entrypoint: /bin/bash -c "
-        echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
-        echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
-        /virtuoso-entrypoint.sh
-      "
+  #virtuoso:
+  #  image: "openlink/virtuoso-opensource-7"
+  #  container_name: devenv_virtuoso
+  #  environment:
+  #    DBA_PASSWORD: "everyoneknows"
+  #    SPARQL_UPDATE: "true"
+  #    DEFAULT_GRAPH: "http://localhost:3000"
+  #  ports:
+  #    - "127.0.0.1:3003:8890"
+  #  volumes: 
+  #    - ./data/virtuoso:/data
+  #  entrypoint: /bin/bash -c "
+  #      echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
+  #      echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
+  #      /virtuoso-entrypoint.sh
+  #    "
   fuseki:
     image: "stain/jena-fuseki"
     container_name: devenv_fuseki
