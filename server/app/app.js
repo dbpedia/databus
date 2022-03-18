@@ -81,6 +81,8 @@ async function initialize(app, memoryStore) {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, '../../public')));
 
+
+  app.use(logger('dev'));
   // Setup the session memory store
   app.use(session({
     secret: 'asdifjasdf8asewj2aef23jdlkjs',

@@ -199,31 +199,33 @@
 
         <div style="display: flex; width: 100%;">
           <div class="ce-sidebar">
-            <div class="ce-sidebar-header">
+            <div class="ce-sidebar-header" ng-if="session.activeTab == 0">
               Collection Editor
             </div>
 
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 0 }" ng-click="goToTab('')">
+            <div class="ce-sidebar-button"  ng-if="session.activeTab == 0" ng-class="{ 'is-active' : session.activeTab == 0 }" ng-click="goToTab('')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'collections'" size="24">
               </databus-icon>
               My Collections<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-caption">
-              Active Collection
+            <div class="ce-sidebar-header" ng-if="session.activeTab > 0" ng-click="goToTab('')"
+              style="cursor: pointer; display: flex; align-items: center;">
+              <databus-icon shape="'left-thick'" color="'#fff'" size="16" style="margin-right: .5em;"></databus-icon>
+              {{ collectionManager.activeCollection.label }}
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 1 }"
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 1 }"
               ng-click="goToTab('edit')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'edit'" size="24">
               </databus-icon>
               Edit Content<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 2 }"
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 2 }"
               ng-click="goToTab('preview')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'eye'" size="24">
               </databus-icon>
               Preview<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 3 }"
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 3 }"
               ng-click="goToTab('query')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'help'" size="24">
               </databus-icon>
@@ -235,7 +237,7 @@
               <databus-icon style="margin-right:12px;" color="'white'" shape="'add'" size="24"></databus-icon>
               Add Groups & Artifacts<div class="ce-sidebar-button-pointer"></div>
             </div>-->
-            <div class="ce-sidebar-button" ng-class="{ 'is-active' : session.activeTab == 5 }"
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 5 }"
               ng-click="goToTab('import')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'download'" size="24"></databus-icon>
               Import & Export<div class="ce-sidebar-button-pointer"></div>
@@ -384,7 +386,7 @@
 
 
                 <div class="ce-content-hint">Edit the form below and click commit collection to save any changes to the
-                  remote server. All local changes will be saved to your browser storage.</div>
+                  server. All local changes will be automatically saved to your browser storage.</div>
 
                 <br />
                 <div class="ce-content-section">

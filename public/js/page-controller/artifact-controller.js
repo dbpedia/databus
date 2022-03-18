@@ -65,9 +65,9 @@ function ArtifactPageController($scope, $sce, collectionManager) {
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
   $scope.fileSelector.config.columns = [];
-  $scope.fileSelector.config.columns.push({ field : 'version', label : 'Version', width: '25%' });
-  $scope.fileSelector.config.columns.push({ field : 'variant', label : 'Variant', width: '17%' });
-  $scope.fileSelector.config.columns.push({ field : 'format', label : 'Format', width: '10%' });
+  $scope.fileSelector.config.columns.push({ field : 'version', label : 'Version', width: '30%' });
+  $scope.fileSelector.config.columns.push({ field : 'variant', label : 'Variant', width: '25%' });
+  $scope.fileSelector.config.columns.push({ field : 'format', label : 'Format', width: '15%' });
   $scope.fileSelector.config.columns.push({ field : 'compression', label : 'Compression', width: '15%' });
 
   $scope.artifactNode = new QueryNode($scope.artifactURI, 'dataid:artifact');

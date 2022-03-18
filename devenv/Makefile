@@ -7,7 +7,8 @@ env-clean:
 	sudo rm -r ../server/users; \
 	docker rm -f devenv_lookup; \
 	docker rm -f devenv_virtuoso; \
-	docker rm -f devenv_gstore;
+	docker rm -f devenv_gstore; \
+        docker rm -f devenv_fuseki;
 
 env-build:
 	docker build -t lookup-servlet ../search; \
@@ -17,6 +18,11 @@ env-start:
 
 env-restart:
 	docker-compose restart
+
+env-start-fuseki: 
+	sudo rm -f data/fuseki/databases/ds/tdb.lock
+	sudo rm -f data/fuseki/system/tdb.lock
+	docker-compose up
 
 env-clean-start: env-clean
 	docker-compose up

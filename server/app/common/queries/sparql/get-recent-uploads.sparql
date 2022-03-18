@@ -6,23 +6,27 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # latest version of all artifacts -> order by date -> and show infos for the 10 last
-SELECT DISTINCT ?artifactUri ?dataset ?license ?label ?desc ?publisherUri ?groupUri ?date ?maxVersion AS ?version  WHERE {
-  ?dataset dataid:artifact ?artifactUri.
-  ?dataset dct:hasVersion ?maxVersion.
-  ?dataset dct:title ?label.
-  ?dataset dct:abstract ?desc.
-  ?dataset dct:issued ?date.
-  ?dataset dct:publisher ?publisher.
-  ?publisher foaf:account ?publisherUri.
-  ?dataset dataid:group ?groupUri.
-  ?dataset dct:license ?license.
-  {
-    SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
-              ?dataset dataid:artifact ?artifactUri.
-              ?dataset dct:hasVersion ?version .
+SELECT DISTINCT ?artifactUri ?dataset ?license ?label ?desc ?publisherUri ?groupUri ?date (?maxVersion AS ?version)  WHERE {
+  GRAPH ?g1 {
+    ?dataset dataid:artifact ?artifactUri.
+    ?dataset dct:hasVersion ?maxVersion.
+    ?dataset dct:title ?label.
+    ?dataset dct:abstract ?desc.
+    ?dataset dct:issued ?date.
+    ?dataset dct:publisher ?publisher.
+    ?dataset dataid:group ?groupUri.
+    ?dataset dct:license ?license.
+    {
+      SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
+        GRAPH ?g2 {
+          ?dataset dataid:artifact ?artifactUri.
+          ?dataset dct:hasVersion ?version .
+        }
+      }
+      GROUP BY ?artifactUri
     }
-    GROUP BY ?artifactUri
   }
+  GRAPH ?g3 { ?publisher foaf:account ?publisherUri. }
 }
 ORDER BY desc(?date)
 LIMIT 10

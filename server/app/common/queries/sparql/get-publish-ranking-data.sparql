@@ -8,19 +8,23 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 # publisher with number and size of versions
 SELECT DISTINCT ?accountUri ?numUploads ?uploadSize WHERE {
 
-  ?publisher foaf:account ?accountUri.
+  GRAPH ?g1 { ?publisher foaf:account ?accountUri. }
   {
     SELECT ?publisher (count(?version) as ?numUploads) WHERE {
-      ?dataset dct:publisher ?publisher.
-      ?dataset dataid:version ?version .
+      GRAPH ?g2 {
+        ?dataset dct:publisher ?publisher.
+        ?dataset dataid:version ?version .
+      }
     }
     GROUP BY ?publisher
   }
   {
     SELECT ?publisher (sum(?size) as ?uploadSize) WHERE {
-      ?dataset dct:publisher ?publisher.
-      ?dataset dcat:distribution ?distribution .
-      ?distribution dcat:byteSize ?size .
+      GRAPH ?g3 {
+        ?dataset dct:publisher ?publisher.
+        ?dataset dcat:distribution ?distribution .
+        ?distribution dcat:byteSize ?size .
+      }
     }
     GROUP BY ?publisher
   }

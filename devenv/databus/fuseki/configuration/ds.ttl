@@ -1,0 +1,52 @@
+@prefix :      <http://base/#> .
+@prefix tdb:   <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:    <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix fuseki: <http://jena.apache.org/fuseki#> .
+
+<http://jena.apache.org/2016/tdb#DatasetTDB>
+        rdfs:subClassOf  ja:RDFDataset .
+
+ja:DatasetTxnMem  rdfs:subClassOf  ja:RDFDataset .
+
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+
+tdb:GraphTDB  rdfs:subClassOf  ja:Model .
+
+<http://jena.apache.org/2016/tdb#GraphTDB2>
+        rdfs:subClassOf  ja:Model .
+
+ja:MemoryDataset  rdfs:subClassOf  ja:RDFDataset .
+
+ja:RDFDatasetZero  rdfs:subClassOf  ja:RDFDataset .
+
+<http://jena.apache.org/text#TextDataset>
+        rdfs:subClassOf  ja:RDFDataset .
+
+:service_tdb_all  a                   fuseki:Service ;
+        rdfs:label                    "TDB ds" ;
+        fuseki:dataset                :tdb_dataset_readwrite ;
+        fuseki:name                   "ds" ;
+        fuseki:serviceQuery           "query" , "" , "sparql" ;
+        fuseki:serviceReadGraphStore  "get" ;
+        fuseki:serviceReadQuads       "" ;
+        fuseki:serviceReadWriteGraphStore
+                "data" ;
+        fuseki:serviceReadWriteQuads  "" ;
+        fuseki:serviceUpdate          "" , "update" ;
+        fuseki:serviceUpload          "upload" .
+
+:tdb_dataset_readwrite
+        a             tdb:DatasetTDB ;
+        tdb:location  "/fuseki/databases/ds" .
+
+<http://jena.apache.org/2016/tdb#GraphTDB>
+        rdfs:subClassOf  ja:Model .
+
+ja:RDFDatasetOne  rdfs:subClassOf  ja:RDFDataset .
+
+ja:RDFDatasetSink  rdfs:subClassOf  ja:RDFDataset .
+
+<http://jena.apache.org/2016/tdb#DatasetTDB2>
+        rdfs:subClassOf  ja:RDFDataset .

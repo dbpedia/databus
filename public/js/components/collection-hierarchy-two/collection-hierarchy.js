@@ -8,8 +8,17 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.$http = $http;
   ctrl.$scope = $scope;
   ctrl.facets = new DatabusFacetsCache($http);
-  ctrl.databusUriToAdd
 
+  ctrl.defaultQuery = `PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?file WHERE {
+  # Replace this with your custom query:
+  ?file <matches> <condition> .
+} LIMIT 0`;
   const DATAID_ARTIFACT_PROPERTY = 'dataid:artifact';
   const DATAID_GROUP_PROPERTY = 'dataid:group';
 
@@ -276,6 +285,8 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
       ctrl.view.sources[sourceNode.uri] = {};
       ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
       ctrl.view.sources[sourceNode.uri].addMode = 'artifact';
+      ctrl.view.sources[sourceNode.uri].customQueryLabel = `New Custom Query`;
+      ctrl.view.sources[sourceNode.uri].customQueryInput = ctrl.defaultQuery;
 
       for (var g in sourceNode.childNodes) {
 
@@ -296,6 +307,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
             */
 
           ctrl.facets.get(groupNode.uri).then(function (res) {
+            delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
             ctrl.view.groups[res.uri].facets = res.facets;
           });
 
@@ -652,19 +664,10 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
     ctrl.onChange();
   }
 
-  ctrl.addCustomNode = function () {
-    ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n\
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n\
-PREFIX dct: <http://purl.org/dc/terms/>\n\
-PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\
-\n\
-# Get all files\n\
-SELECT DISTINCT ?file WHERE {\n\
-  ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
-  ?dataset dcat:distribution ?distribution .\n\
-  ?distribution dcat:downloadURL ?file .\n\
-}');
-    ctrl.customNode.expanded = true;
+  ctrl.addCustomNode = function (sourceNode, label, desc, query) {
+
+    var node = new QueryNode(label, query);
+    sourceNode.childNodes.push(node);
 
     ctrl.onChange();
   }

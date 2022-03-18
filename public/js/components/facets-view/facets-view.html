@@ -1,4 +1,4 @@
-<div class="file-browser">
+<div class="file-browser" style="background-color: #fbfbfb; border: 1px solid #e3e3e3; padding: 1em;">
 
   <div  ng-if="$ctrl.isLoading" style="text-align:center" >
     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -8,8 +8,8 @@
   <pre>{{ $ctrl.settings }}</pre>
 
   <pre>{{ $ctrl.facets }}</pre-->
-  <div ng-repeat="facet in $ctrl.viewModel" ng-if="!$ctrl.isLoading && facet.visibleFacetSettings.length > 0">
-    <h1 class="title is-6">{{ facet.label }}</h1>
+  <div ng-repeat="facet in $ctrl.viewModel" ng-if="!$ctrl.isLoading && facet.visibleFacetSettings.length > 0" class="file-browser-facet">
+    <h1 class="title is-6" style="margin-top: 0;">{{ facet.label }}</h1>
     <div ng-repeat="facetValue in facet.visibleFacetSettings">
       <override-checkbox label="$ctrl.getFacetLabel(facetValue.value)"
         id="facet.label + '_' + facetValue.value"
@@ -20,10 +20,11 @@
     </div>
     <div style="position: fixed; top: 0; right: 0; left: 0; bottom: 0;" ng-click="$ctrl.clearAutofill()"
       ng-if="facet.autofill.selectedValues.length > 0"></div>
-    <div ng-if="!$ctrl.readonly" class="add-filter">
+    <div ng-if="!$ctrl.readonly" class="add-filter" style="margin-top: 8px;">
       <div class="control has-icons-left">
         <input id="version-filter" type="text" placeholder="More {{ facet.label }}s..." class="input is-transparent"
         ng-model="facet.autofill.input"
+        autocomplete="off"
         ng-keyup="$ctrl.complete(facet)"
         ng-focus="$ctrl.complete(facet)">
         <span class="icon is-left">

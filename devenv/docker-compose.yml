@@ -13,18 +13,18 @@ services:
     image: dbpedia/gstore
     container_name: devenv_gstore
     environment: 
-      VIRT_USER: "dba"
-      VIRT_PASS: "everyoneknows"
-      VIRT_URI: "http://virtuoso:8890"
+      STORAGE_USER: "admin"
+      STORAGE_PASS: "everyoneknows"
+      STORAGE_SPARQL_ENDPOINT_URI: http://fuseki:3030/ds/sparql
+      STORAGE_CLIENT_CLASS: org.dbpedia.databus.FusekiJDBCClient
+      STORAGE_JDBC_PORT: 3030
       GIT_ROOT: "/root/git"
     ports:
       - "127.0.0.1:3002:8080"
     volumes:
       - ./data/repo:/root/git
   virtuoso:
-    logging:
-      driver: none
-    image: "tenforce/virtuoso"
+    image: "openlink/virtuoso-opensource-7"
     container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"
@@ -34,3 +34,18 @@ services:
       - "127.0.0.1:3003:8890"
     volumes: 
       - ./data/virtuoso:/data
+    entrypoint: /bin/bash -c "
+        echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
+        echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
+        /virtuoso-entrypoint.sh
+      "
+  fuseki:
+    image: "stain/jena-fuseki"
+    container_name: devenv_fuseki
+    ports:
+      - "3004:3030"
+    environment:
+      ADMIN_PASSWORD: everyoneknows
+      FUSEKI_DATASET_1: ds
+    volumes:
+      - ./data/fuseki:/fuseki

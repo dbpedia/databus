@@ -6,7 +6,7 @@ class DatabusUtils {
   }
 
   static isValidVersionIdentifier(identifier) {
-    var labelRegex = /^[A-Za-z0-9_\-]*$/;
+    var labelRegex = /^[A-Za-z0-9_\.\-]*$/;
     return this.checkField(identifier, labelRegex, 3, 50);
   }
 

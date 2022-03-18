@@ -4,6 +4,8 @@
 
       <div style="position: relative;" style="width: 100%;">
 
+        
+
         <button style="width: 100%; border: 1px solid #dbdbdb; border-radius: 0;" class="button"
           ng-focus="$ctrl.showDrop = true" ng-disabled="$ctrl.isDisabled" ng-keydown="$ctrl.handleKey($event)"
           ng-click="$ctrl.showDrop = true">
@@ -20,7 +22,14 @@
           ng-if="$ctrl.showDrop"></div>
 
         <div class="dropdown-content">
-          <div ng-repeat="value in $ctrl.values" class="dropdown-item" ng-click="$ctrl.toggle(value)">
+
+
+          <input class="input" style="width: 96%;
+          margin: 2%;
+          margin-top: 0;" placeholder="Filter values..." ng-model="$ctrl.searchInput"/>
+          <div ng-repeat="value in $ctrl.values" 
+            ng-if="$ctrl.matchesSearch(value)"
+            class="dropdown-item" ng-click="$ctrl.toggle(value)">
 
             <div style="display: flex; align-items: center;">
               <div ng-if="value != ''" style="flex: 1">{{ $ctrl.getLabel(value) }}</div>

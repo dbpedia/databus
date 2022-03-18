@@ -624,12 +624,12 @@ a.navbar-item.is-active, a.navbar-item {
 .file-browser h1 {
   border-bottom: 1px solid #dbdbdb;
   width: 100%;
-  padding: .5em 0;
-  margin: 1em 0 !important;
+  padding: 0 0 .5em 0;
+  margin: 0 0 .75em 0 !important;
 }
 
-.file-browser-filter .add-filter input .add-filter-results {
-
+.file-browser-facet {
+  margin-bottom: 1em;
 }
 
 .add-filter input {
@@ -651,18 +651,22 @@ a.navbar-item.is-active, a.navbar-item {
   border: 2px solid #dbdbdb !important;
   border-radius: 0;
   border-color: $primary !important;
+  background-color: white;
 }
 
 .file-browser-filter .is-checkradio[type=checkbox]:hover:not([disabled])+label::before, .is-checkradio[type=checkbox]:hover:not([disabled])+label:before, .is-checkradio[type=radio]:hover:not([disabled])+label::before, .is-checkradio[type=radio]:hover:not([disabled])+label:before {
-  border-color: $primary !important;
+  border-color: $primary !important; 
+  background-color: white;
 }
 
 .file-browser-filter .is-checkradio[type=checkbox]+label::before, .is-checkradio[type=checkbox]+label:before {
-  border-radius: 0;
+  border-radius: 0;  
+  background-color: white;
 }
 
 .file-browser-filter .is-checkradio[type=checkbox]+label::after, .is-checkradio[type=checkbox]+label:after {
   border-width: 2px !important;
+  background-color: white;
 }
 
 .file-browser-filter .add-filter {
@@ -671,6 +675,16 @@ a.navbar-item.is-active, a.navbar-item {
   width: 100%;
   color: #aaa;
   position: relative;
+}
+
+.file-browser-settings {
+  border: 1px solid #e3e3e3;
+  padding: .8em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fbfbfb;
 }
 
 .icon.has-margin-right {

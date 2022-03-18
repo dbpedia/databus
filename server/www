@@ -103,7 +103,7 @@ function childProcess() {
   server.listen(port);
   server.on('error', onError);
   server.on('listening', function () {
-    console.log(`Worker listening on port ${port}`);
+    console.log(`Worker ${process.pid} listening on port ${port}`);
   });
 }
 

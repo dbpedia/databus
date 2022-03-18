@@ -64,7 +64,6 @@
             <tr ng-repeat="version in versionsData">
               <td>
                 <a href="{{ version.versionUri }}">{{ version.version }}</a>
-                <a href="{{ version.versionUri }}">(Documentation)</a>
               </td>
               <td>{{ formatDate(version.date) }}</td>
               <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
@@ -106,20 +105,15 @@
       </div>
       <div class="topic file-browser" ng-if="activeTab==0">
         
-        <div  style="margin-bottom: 3em;" ng-if="authenticated">
-          <collection-editor-widget selection='collectionWidgetSelectionData.groupNode' collection="collectionManager.activeCollection"></collection-editor-widget>
-        </div>
-
+       
         <div class="columns">
-          <div class="column side is-3">
-        
+          <div class="column is-3">
 
             <facets-view node="artifactNode" resource-type="artifact" on-change="onFacetSettingsChanged()">
             </facets-view>
         
           </div>
-          <div class="column main">
-
+          <div class="column">
     
               <file-browser full-query="fileSelector.fullQuery" query="fileSelector.query" 
                 config="fileSelector.config"></file-browser>

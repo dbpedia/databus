@@ -1,57 +1,57 @@
-<div style='border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: .75em'>
+<div style='display: flex; align-items: center;'>
 
+  <div class="field has-addons" style="margin: 0">
 
+    <div class="control" style="    display: flex;
+    align-items: center;
+    border: 1px solid #e3e3e3;
+    color: #aaa;
+    border-radius: 4px 0px 0px 4px;
+    padding: 0 .5em;">
 
-  <div style="margin-right: 0.5em;">Target Collection:</div>
+      <databus-icon shape="'collections'" size="20"></databus-icon></div>
 
-  <div class="dropdown is-hoverable">
-    <div class="dropdown-trigger">
-      <button style="min-width: 300px; display: flex; justify-content: space-between;" ng-click="" class="button">
-        <span>
-          <span style="color: #8a8cb3; margin-right: .4em" ng-if="$ctrl.collectionManager.activeCollection.isDraft">DRAFT:</span>
-          <span style="color: #b5b5b5; margin-right: .2em;" ng-if="!$ctrl.collectionManager.activeCollection.isDraft && $ctrl.collectionManager.activeCollection.hasLocalChanges">*</span>
-          {{ $ctrl.collectionManager.activeCollection.label }}
-          <span ng-if="$ctrl.collectionManager.activeCollection.label == ''" style="color:#b5b5b5">Untitled Collection</span>
-        </span>
-        <span class="icon is-small">
-          <i class="fas fa-angle-down" aria-hidden="true"></i>
-        </span>
-      </button>
-    </div>
-    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-      <div class="dropdown-content">
-        <a
-          ng-click="$ctrl.collectionManager.setActive(collection.uuid)"
-          ng-class="{ 'is-active' : collection.uuid == $ctrl.collectionManager.activeCollection.uuid }"
-          ng-repeat="collection in $ctrl.collectionManager.local" class="dropdown-item">
-          <span style="color: #8a8cb3; margin-right: .4em" ng-if="collection.isDraft">DRAFT:</span>
-          <span style="color: #b5b5b5; margin-right: .2em;" ng-if="!collection.isDraft
+    <div class="dropdown is-hoverable">
+      <div class="dropdown-trigger">
+        <button style="display: flex; justify-content: space-between; border-radius: 0 4px 4px 0;" ng-click="" class="button">
+         
+          <span class="icon is-small">
+            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a ng-click="$ctrl.collectionManager.setActive(collection.uuid)"
+            ng-class="{ 'is-active' : collection.uuid == $ctrl.collectionManager.activeCollection.uuid }"
+            ng-repeat="collection in $ctrl.collectionManager.local" class="dropdown-item">
+            <span style="color: #8a8cb3; margin-right: .4em" ng-if="collection.isDraft">DRAFT:</span>
+            <span style="color: #b5b5b5; margin-right: .2em;" ng-if="!collection.isDraft
           && collection.hasLocalChanges">*</span>
-          {{ collection.label == '' ? "Untitled Collection" : collection.label }} 
-        </a>
+            {{ collection.label == '' ? "Untitled Collection" : collection.label }}
+          </a>
+        </div>
       </div>
     </div>
+
+    <!--div class="control">
+      <button ng-click="$ctrl.addSelectionToCollection()"  style="width: 38px">
+        
+      <databus-icon size="20" color="'#fff'" shape="'add'"></databus-icon>
+      </button>
+    </div-->
+
+
   </div>
 
-  
   <div style="flex-grow: 1;"></div>
 
-  <p class="control">
-    <button ng-click="$ctrl.goToEditor()" class="button">
-      Go to Collection Editor
+  <!--p class="control" style="margin-left: 0.5em;">
+    <button ng-click="$ctrl.goToEditor()" class="button" style="width: 38px">
+      <databus-icon size="22" shape="'edit'"></databus-icon>
     </button>
-  </p>
+  </p-->
 
-  <p class="control" style="margin-left:0.5em">
-    <button ng-click="$ctrl.addSelectionToCollection()" class="button is-collection">
-      <span class="icon has-text-primary has-margin-right">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-          <path class="is-white"
-            d="M11.499 12.03v11.971l-10.5-5.603v-11.835l10.5 5.467zm11.501 6.368l-10.501 5.602v-11.968l10.501-5.404v11.77zm-16.889-15.186l10.609 5.524-4.719 2.428-10.473-5.453 4.583-2.499zm16.362 2.563l-4.664 2.4-10.641-5.54 4.831-2.635 10.474 5.775z" />
-          </svg>
-      </span>
-      Add Selection to Collection
-    </button>
-  </p>
+
 
 </div>

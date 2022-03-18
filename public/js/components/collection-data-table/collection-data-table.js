@@ -13,6 +13,9 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
     ctrl.isLoading = true;
     DatabusCollectionUtils.getCollectionFiles(ctrl.$http, ctrl.collection).then(function(result) {
       ctrl.files = result;
+      ctrl.files = ctrl.files.filter(function(f) {
+        return f.files != undefined;
+      });
       ctrl.isLoading = false;
       $scope.$apply();
     }, function(err) {

@@ -2,6 +2,7 @@ const JsonldUtils = require('../../common/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
+const fs = require('fs');
 
 var signer = require('./databus-tractate-suite');
 var shaclTester = require('../../common/shacl/shacl-tester');
@@ -81,8 +82,9 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       }
     }
 
-    console.log(JSON.stringify(expandedGraph, null, 3));
+    // console.log(JSON.stringify(expandedGraph, null, 3));
 
+    console.log(JSON.stringify(expandedGraph, null, 3));
 
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
@@ -179,7 +181,14 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     notify(`Saving to "${datasetUri}"`);
 
-    console.log(JSON.stringify(compactedGraph, null, 3));
+
+    // if (!fs.existsSync(__dirname + '/debug-out')) {
+    //  fs.mkdirSync(__dirname + '/debug-out');
+    //}
+
+    // fs.writeFileSync(`${__dirname}/debug-out/${targetPath.replaceAll('/', '-')}`, JSON.stringify(compactedGraph, null, 3), "utf8");
+
+    // console.log(JSON.stringify(compactedGraph, null, 3));
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);

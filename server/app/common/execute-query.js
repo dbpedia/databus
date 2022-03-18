@@ -22,8 +22,9 @@ sparql.executeSelect = async function (query) {
          body: "query=" + encodeURIComponent(query),
          json: true,
          headers: {
-            "Content-type": "application/x-www-form-urlencoded"
-         },
+            "Content-type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+          },
       };
 
       // Await the response

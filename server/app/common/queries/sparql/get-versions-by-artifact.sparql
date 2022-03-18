@@ -7,15 +7,16 @@ PREFIX databus: <https://databus.dbpedia.org/>
 
 # Get the information of the latest dataset for a specific artifact
 SELECT DISTINCT ?dataset ?label ?groupLabel ?comment ?license ?date ?version ?versionUri WHERE {
-
-  ?dataset dataid:artifact <%ARTIFACT_URI%> .
-  ?dataset dataid:group ?group.
-  Optional {  ?group rdfs:label ?groupLabel. }
-  ?dataset dct:hasVersion ?version.
-  ?dataset dataid:version ?versionUri.
-  ?dataset dct:title ?label.
-  ?dataset dct:description ?comment.
-  ?dataset dct:issued ?date.
-  ?dataset dct:license ?license.
+  GRAPH ?g {
+    ?dataset dataid:artifact <%ARTIFACT_URI%> .
+    ?dataset dataid:group ?group.
+    Optional {  ?group rdfs:label ?groupLabel. }
+    ?dataset dct:hasVersion ?version.
+    ?dataset dataid:version ?versionUri.
+    ?dataset dct:title ?label.
+    ?dataset dct:description ?comment.
+    ?dataset dct:issued ?date.
+    ?dataset dct:license ?license.
+  }
 }
 ORDER BY desc(?version)

@@ -5,6 +5,7 @@
       <div style="position: relative;">
         <input class="input" ng-focus='$ctrl.showAll()' ng-change="$ctrl.change()"
           ng-disabled="$ctrl.isDisabled"
+          autocomplete="off"
           ng-model="$ctrl.input" type="text" 
           placeholder="{{ $ctrl.placeholder }}" ng-keydown="$ctrl.handleKey($event)">
 

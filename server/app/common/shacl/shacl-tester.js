@@ -74,6 +74,7 @@ async function validateJsonld(rdf, shaclFile) {
     var res = await rp(options);
 
     var expandedRes = await jsonld.flatten(JSON.parse(res));
+
     var validationReport = JsonldUtils.getTypedGraph(expandedRes, DatabusUris.SHACL_VALIDATION_REPORT);
     var conforms = validationReport[DatabusUris.SHACL_CONFORMS][0][DatabusUris.JSONLD_VALUE];
     var messages = [];

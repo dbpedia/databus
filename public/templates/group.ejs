@@ -46,8 +46,6 @@
 
       </div>
 
-      
-
       <!--Tabs-->
       <div class="collection-editor-tabs">
         <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
@@ -130,11 +128,8 @@
 
       <div ng-if="activeTab==2">
         
-        <div  style="margin-bottom: 3em;" ng-if="authenticated">
-          <collection-editor-widget selection='collectionWidgetSelectionData.groupNode' collection="collectionManager.activeCollection"></collection-editor-widget>
-        </div>
         <div class="columns">
-          <div class="column side is-3">
+          <div class="column is-3">
             <facets-view node="groupNode" resource-type="group" on-change="onFacetSettingsChanged()">
             </facets-view>
 
@@ -151,7 +146,7 @@
               </span>
             </a>-->
           </div>
-          <div class="column main">
+          <div class="column">
             <file-browser full-query="fileSelector.fullQuery" query="fileSelector.query" 
               config="fileSelector.config" on-file-query-result="onFileQueryResult"></file-browser>
           </div>

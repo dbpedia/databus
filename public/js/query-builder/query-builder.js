@@ -1,6 +1,3 @@
-
-
-
 class QueryBuilder {
 
   static build(config) {
@@ -65,6 +62,18 @@ class QueryBuilder {
     }
   }
 
+  appendTemplate(node, indent) {
+
+    this.appendTemplateHeader(indent);
+    this.createNodeSubquery(node, indent + 1, true);
+
+    if(node.property == null && node.childNodes.length == 0) {
+      this.appendLine(`?distribution a dataid:Nonsense .`, indent + 1)
+    }
+
+    this.appendTemplateFooter(indent);
+  }
+
   /**
    * Create a subquery for any query node. The subquery consist of the node facets and
    * a UNION of child node queries (this function is called revursively on the child nodes)
@@ -85,16 +94,15 @@ class QueryBuilder {
       if (sourceUri != this.resourceBaseUrl) {
         this.appendLine(`SERVICE <${sourceUri}/sparql>`, indent);
         this.appendLine(`{`, indent);
-        this.appendTemplateHeader(indent + 1);
-        this.createNodeSubquery(node, indent + 2, true);
-        this.appendTemplateFooter(indent + 1);
+
+        this.appendTemplate(node, indent + 1);
         this.appendLine(`}`, indent);
 
       } else {
-        this.appendTemplateHeader(indent);
-        this.createNodeSubquery(node, indent + 1, true);
-        this.appendTemplateFooter(indent);
+        this.appendTemplate(node, indent);
       }
+
+
 
       return;
     }
@@ -111,11 +119,20 @@ class QueryBuilder {
     this.createNodeFacetsSubquery(node, indent);
 
     // Call recursively on the children and UNION the results
+
+    var k = 0;
+
     for (var i in node.childNodes) {
-      if (i > 0) this.appendLine('UNION', indent);
+      if (k > 0) this.appendLine('UNION', indent);
+
+      if(node.childNodes[i].property == undefined && node.childNodes[i].childNodes.length == 0) {
+        continue;
+      }
+
       this.appendLine('{', indent);
       this.createNodeSubquery(node.childNodes[i], indent + 1, hasService);
-      this.appendLine('}', indent);;
+      this.appendLine('}', indent);
+      k++
     }
 
     return this.result;
@@ -123,6 +140,10 @@ class QueryBuilder {
 
   findSourceUri(node) {
     if (node.uri == null) {
+      return null;
+    }
+
+    if(!DatabusUtils.isValidHttpUrl(node.uri)) {
       return null;
     }
 
@@ -215,8 +236,10 @@ class QueryBuilder {
         this.appendLine('{', indent);
         this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
         this.appendLine('SELECT (?v as ?version) { ', indent + 2);
-        this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 3);
-        this.appendLine('?dataset dct:hasVersion ?v . ', indent + 3);
+        this.appendLine('GRAPH ?g2 { ', indent + 3);
+        this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
+        this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
+        this.appendLine('}', indent + 3);
         this.appendLine('} ORDER BY DESC (?version) LIMIT 1 ', indent + 2);
         this.appendLine('}', indent + 1);
         this.appendLine('}', indent);
@@ -245,8 +268,10 @@ class QueryBuilder {
             this.appendLine('{', indent);
             this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
             this.appendLine('SELECT (?v as ?version) { ', indent + 2);
-            this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 3);
-            this.appendLine('?dataset dct:hasVersion ?v . ', indent + 3);
+            this.appendLine('GRAPH ?g2 { ', indent + 3);
+            this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
+            this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
+            this.appendLine('}', indent + 3);
             this.appendLine('} ORDER BY DESC (?version) LIMIT 1 ', indent + 2);
             this.appendLine('}', indent + 1);
             this.appendLine('}', indent);

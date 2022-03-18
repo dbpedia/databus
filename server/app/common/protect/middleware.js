@@ -243,7 +243,7 @@ class DatabusProtect {
       }
     }
 
-    console.log(`User table updated on worker ${process.pid}`);
+    // console.log(`User table updated on worker ${process.pid}`);
   }
 
   createUserHashtable(csv) {

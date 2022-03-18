@@ -193,7 +193,6 @@ instance.getArtifactFacets = async function (resourceUri) {
   let queryOptions = { ARTIFACT_URI: UriUtils.sanitizeResourceUri(resourceUri) };
   query = exec.formatQuery(query, queryOptions);
 
-  console.log(query);
   let bindings = await exec.executeSelect(query);
 
   if (bindings.length === 0) {

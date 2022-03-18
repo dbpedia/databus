@@ -105,11 +105,16 @@ autocompleter.autocomplete = function (expandedGraph) {
   // Auto-complete content variants
   contentVariantProperties = ArrayUtils.uniqueList(contentVariantProperties)
 
+
+
+
   for (var contentVariantProperty of contentVariantProperties) {
 
     var propertyGraph = JsonldUtils.getGraphById(expandedGraph, contentVariantProperty);
 
     if (propertyGraph != undefined) {
+
+      console.log(JSON.stringify(propertyGraph, null, 2));
       continue;
     }
 
@@ -125,13 +130,21 @@ autocompleter.autocomplete = function (expandedGraph) {
   }
 
   for (var fileGraph of fileGraphs) {
+
+
+    // console.log(JSON.stringify(fileGraph['@id'], null, 3));
+    
     for (var contentVariantProperty of contentVariantProperties) {
 
       if (fileGraph[contentVariantProperty] == undefined) {
         fileGraph[contentVariantProperty] = [{}];
         fileGraph[contentVariantProperty][0][DatabusUris.JSONLD_VALUE] = "";
       }
+
+      // console.log(`${contentVariantProperty}: ${fileGraph[contentVariantProperty][0][DatabusUris.JSONLD_VALUE]}`);
     }
+
+
   }
 
 

@@ -26,6 +26,11 @@ function FileBrowserController($http, $scope) {
   }
 
   ctrl.getCellValues = function(binding, column) {
+
+    if(binding[column.field] == undefined) {
+      return "";
+    }
+    
     var value = binding[column.field].value;
 
     if(column.uriToName) {

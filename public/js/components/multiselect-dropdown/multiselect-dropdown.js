@@ -3,6 +3,8 @@ function MultiselectDropdownController($timeout, $sce) {
 
   var ctrl = this;
   ctrl.$sce = $sce;
+  ctrl.searchInput = "";
+
 
   ctrl.$onInit = function () {
 
@@ -57,6 +59,7 @@ function MultiselectDropdownController($timeout, $sce) {
 
     return ctrl.$sce.trustAsHtml(Object.keys(mergedSettings).map(function (key, index) {
 
+
       var label = undefined;
 
       if (key == '') {
@@ -94,6 +97,10 @@ function MultiselectDropdownController($timeout, $sce) {
     }
 
     return false;
+  }
+
+  ctrl.matchesSearch = function(value) {
+    return value.includes(ctrl.searchInput);
   }
 
   ctrl.isChecked = function (objs, value) {

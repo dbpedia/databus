@@ -180,9 +180,14 @@ class DatabusCollectionUtils {
     var response = await $http(req);
     var entries = response.data.results.bindings;
 
+    entries = entries.filter(function(e) {
+      return e.file != undefined;
+    });
+
     if (entries.length === 0) {
       return null;
     }
+
 
     let result = {
       fileCount: entries.length,

@@ -4,7 +4,7 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph['@type'].includes(graphType)) {
+      if (graph['@type'] != undefined && graph['@type'].includes(graphType)) {
         return graph;
       }
     }
@@ -16,7 +16,7 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph['@id'] == id) {
+      if (graph['@id'] != undefined && graph['@id'] == id) {
         return graph;
       }
     }
@@ -32,7 +32,7 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph['@type'].includes(graphType)) {
+      if (graph['@type'] != undefined && graph['@type'].includes(graphType)) {
         result.push(graph);
       }
     }

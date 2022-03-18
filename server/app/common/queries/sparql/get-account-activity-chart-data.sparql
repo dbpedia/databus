@@ -3,16 +3,21 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX databus: <https://databus.dbpedia.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?ym SUM(?size) as ?filesize WHERE {
-?file a dataid:SingleFile .
-?file dcat:byteSize ?size .
-?file dct:issued ?date .
-?dataset dcat:distribution ?file .
-?dataset dct:publisher ?publisher .
-?publisher foaf:account <%ACCOUNT_URI%> .
+SELECT ?ym (SUM(?size) as ?filesize) WHERE {
+  GRAPH ?g1 {
+    ?file a dataid:Part .
+    ?file dcat:byteSize ?size .
+    ?file dct:issued ?date .
+    ?dataset dcat:distribution ?file .
+    ?dataset dct:publisher ?publisher .
+  }
+  GRAPH ?g2 {
+    ?publisher foaf:account <%ACCOUNT_URI%> .
+  }
 
-BIND (substr(xsd:String(?date), 1, 7) AS ?ym)
+BIND (SUBSTR(STR(?date), 1, 7) AS ?ym)
 }
 GROUP BY ?ym
 ORDER BY ?ym
