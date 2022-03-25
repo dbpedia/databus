@@ -9,32 +9,50 @@
     border-radius: 4px 0px 0px 4px;
     padding: 0 .5em;">
 
-      <databus-icon shape="'collections'" size="20"></databus-icon></div>
+      <databus-icon shape="'collections'" size="20"></databus-icon>
+    </div>
 
-    <div class="dropdown is-hoverable">
+    <div class="dropdown simple">
       <div class="dropdown-trigger">
-        <button style="display: flex; justify-content: space-between; border-radius: 0 4px 4px 0;" ng-click="" class="button">
-         
+        <button style="display: flex; justify-content: space-between; border-radius: 0 4px 4px 0;" ng-click=""
+          class="button">
+
           <span class="icon is-small">
             <i class="fas fa-angle-down" aria-hidden="true"></i>
           </span>
         </button>
       </div>
-      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+      <div class="dropdown-menu" id="dropdown-menu" style="right: 0; left: initial;" role="menu">
         <div class="dropdown-content">
-          <a ng-click="$ctrl.collectionManager.setActive(collection.uuid)"
-            ng-class="{ 'is-active' : collection.uuid == $ctrl.collectionManager.activeCollection.uuid }"
-            ng-repeat="collection in $ctrl.collectionManager.local" class="dropdown-item">
-            <span style="color: #8a8cb3; margin-right: .4em" ng-if="collection.isDraft">DRAFT:</span>
-            <span style="color: #b5b5b5; margin-right: .2em;" ng-if="!collection.isDraft
-          && collection.hasLocalChanges">*</span>
-            {{ collection.label == '' ? "Untitled Collection" : collection.label }}
-          </a>
+
+          <div class="nested-dropdown">
+            <div class="dropdown-item nested-dropdown-trigger">
+              <span class="icon is-small" style="margin: 0;">
+                <i class="fas fa-angle-left" aria-hidden="true"></i>
+              </span>
+              Add to Collection
+            </div>
+
+            <div class="nested-dropdown-content">
+
+              <div ng-click="$ctrl.addSelectionToCollection(collection.uuid)" class="dropdown-item"
+                ng-repeat="collection in $ctrl.collectionManager.local" class="dropdown-item">
+                {{ collection.label == '' ? "Untitled Collection" : collection.label }}
+              </div>
+
+            </div>
+
+          </div>
+
+
+
         </div>
+       
       </div>
     </div>
+  </div>
 
-    <!--div class="control">
+  <!--div class="control">
       <button ng-click="$ctrl.addSelectionToCollection()"  style="width: 38px">
         
       <databus-icon size="20" color="'#fff'" shape="'add'"></databus-icon>
@@ -42,11 +60,11 @@
     </div-->
 
 
-  </div>
+</div>
 
-  <div style="flex-grow: 1;"></div>
+<div style="flex-grow: 1;"></div>
 
-  <!--p class="control" style="margin-left: 0.5em;">
+<!--p class="control" style="margin-left: 0.5em;">
     <button ng-click="$ctrl.goToEditor()" class="button" style="width: 38px">
       <databus-icon size="22" shape="'edit'"></databus-icon>
     </button>

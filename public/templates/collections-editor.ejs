@@ -248,34 +248,30 @@
             </div>
           </div>
           <div style="width: 100%;  background-color: #f9fafb;">
+
+            <div class="collection-editor-action-bar" ng-if="session.activeTab == 0">
+
+              <div class="button" ng-click="createNewCollection()" style="margin-right: .5em;">
+                <databus-icon style="margin-right:8px;" color="'black'" shape="'add'" size="24"></databus-icon>
+                Create New Collection
+              </div>
+              <div class="button" ng-click="editCopy()">
+                <databus-icon style="margin-right:8px;" color="'black'" shape="'copy'" size="24"></databus-icon>
+                Duplicate Active Collection
+              </div>
+              <div style="flex: 1"> </div>
+              <div class="button is-danger is-outlined" ng-click="deleteCollection()">
+                Delete Active Collection
+              </div>
+
+            </div>
             <div style="flex: 1; padding: 2em;">
 
               <!--div ng-if="session.activeTab > 0" class="ce-content-active-hint"><b>Active Collection:</b> {{ collectionManager.activeCollection.label }} </div>
       -->
               <div ng-if="session.activeTab == 0">
 
-                <div class="ce-content-header" style="display: flex; margin-bottom: 1em;">
-                  <div style="flex: 1">My Collections</div>
 
-
-                </div>
-                <div class="ce-content-hint">Click a collection to set it as the active collection. Click the active
-                  collection to start editing.</div>
-
-                <div style="margin-bottom: 1em; margin-top: 1em; display: flex;">
-                  <div class="button" ng-click="createNewCollection()" style="margin-right: .5em;">
-                    <databus-icon style="margin-right:8px;" color="'black'" shape="'add'" size="24"></databus-icon>
-                    Create New Collection
-                  </div>
-                  <div class="button" ng-click="editCopy()">
-                    <databus-icon style="margin-right:8px;" color="'black'" shape="'copy'" size="24"></databus-icon>
-                    Duplicate Active Collection
-                  </div>
-                  <div style="flex: 1"> </div>
-                  <div class="button is-danger is-outlined" ng-click="deleteCollection()">
-                    Delete Active Collection
-                  </div>
-                </div>
 
                 <div style="margin-bottom: 1em; border-top: 1px solid #dbdbdb">
                   <div ng-repeat="collection in collectionManager.local" class="ce-content-collection-entry"

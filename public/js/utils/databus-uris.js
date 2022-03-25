@@ -30,10 +30,12 @@ class DatabusUris {
   static DCT_ISSUED = 'http://purl.org/dc/terms/issued';
   static DCT_CREATED = 'http://purl.org/dc/terms/created';
   static DCT_MODIFIED = 'http://purl.org/dc/terms/modified';
+  static DCT_DISTRIBUTION = 'http://purl.org/dc/terms/distribution';
 
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';
   static DCAT_BYTESIZE = 'http://www.w3.org/ns/dcat#byteSize';
+  static DCAT_DISTRIBUTION = 'http://www.w3.org/ns/dcat#distribution';
 
 
   // SEC

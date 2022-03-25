@@ -3,7 +3,7 @@
     
     <div style="display: flex">
 
-      <div class="field has-addons" style="margin: 0">
+      <div class="field has-addons vis-picker" style="margin: 0">
 
         <div class="control">
           <div class="button" ng-click="$ctrl.activeTab = 0" ng-class="{ 'is-active' : $ctrl.activeTab == 0 }">
@@ -31,8 +31,7 @@
         $ctrl.totalSize }}</div>
 
         
-      <collection-editor-widget selection='collectionWidgetSelectionData.groupNode'
-        collection="collectionManager.activeCollection"></collection-editor-widget>
+      <collection-editor-widget selection='$ctrl.node'></collection-editor-widget>
     </div>
 
   </div>

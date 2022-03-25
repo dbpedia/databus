@@ -20,21 +20,80 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
   try {
 
+    var expandedGraph = await jsonld.flatten(data);
+    var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+
+    var distributionlessGraphs = JSON.parse(JSON.stringify(expandedGraph.filter(function (g) {
+      return g[DatabusUris.JSONLD_TYPE] == undefined || g[DatabusUris.JSONLD_TYPE] != DatabusUris.DATAID_PART;
+    })));
+
+
+    var datasetGraph = JsonldUtils.getTypedGraph(distributionlessGraphs, DatabusUris.DATAID_DATASET);
+    datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+
+
+    //console.log(`Non-Part Graphs:\n`);
+    //console.log(distributionlessGraphs);
+
+    var tripleCount = 0;
+    var step = 100;
+
+    var fullGraph = JSON.parse(JSON.stringify(distributionlessGraphs));
+    var fullDatasetGraph = JsonldUtils.getTypedGraph(fullGraph, DatabusUris.DATAID_DATASET);
+    fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+
+    for (var i = 0; i < distributionGraphs.length; i += step) {
+
+      var distributionSubset = distributionGraphs.slice(i, Math.min(distributionGraphs.length, i + step))
+
+      datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+
+      for (var j = 0; j < distributionSubset.length; j++) {
+        datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+          '@id': distributionSubset[j][DatabusUris.JSONLD_ID]
+        });
+      }
+
+      // console.log(`Distributions grabbed: ${datasetGraph[DatabusUris.DCAT_DISTRIBUTION]}`); 
+
+      var slice = distributionlessGraphs.concat(distributionSubset);
+
+      // console.log(JSON.stringify(slice, null, 3));
+      var triples = await constructor.executeConstruct(slice, constructVersionQuery);
+      tripleCount += DatabusUtils.lineCount(triples);
+      
+      var subGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
+      subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATAID_PART);
+
+      for (var subGraph of subGraphs) {
+        fullGraph.push(subGraph);
+
+        fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+          '@id': subGraph[DatabusUris.JSONLD_ID]
+        });
+
+      }
+    }
+
+    // console.log(fullGraph);
+
+
+    // Create multiple datasets by removing distributions
     // Fetch only relevant triples from the input via construct query
-    var triples = await constructor.executeConstruct(data, constructVersionQuery);
-    var tripleCount = DatabusUtils.lineCount(triples);
-    
+    // var triples = await constructor.executeConstruct(data, constructVersionQuery);
+
     if (tripleCount == 0) {
       notify(`Construct query did not yield any triples. Nothing to publish.`);
       return { code: 100, message: null };
     }
 
     notify(`${tripleCount} triples selected via construct query.`);
-
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     // Convert the n-triples back to flattened jsonld
-    var expandedGraph = await jsonld.flatten(await jsonld.fromRDF(triples));
+    var expandedGraph = fullGraph;
+
+    // console.log(`parsed back to jsonld`);
     // Re-fetch the dataset graph
     var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
 
@@ -51,32 +110,32 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     if (before != after) {
       notify(`Auto-completed the input.`);
     }
-    
-    if(verifyParts) {
+
+    if (verifyParts) {
 
       var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
-      for(var distribution of distributions) {
+      for (var distribution of distributions) {
 
         notify(`Analyzing part "${distribution[DatabusUris.JSONLD_ID]}"`);
         var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
 
         console.log(downloadURL);
 
-        var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL, function(msg) {
-          
+        var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL, function (msg) {
+
         });
 
-        if(analyzeResult.code != 200) {
+        if (analyzeResult.code != 200) {
           notify(`Error analyzing file:`);
           notify(`${analyzeResult.data}`);
           return { code: 400, message: null };
         }
 
-        distribution[DatabusUris.DATAID_SHASUM] = [ {} ];
+        distribution[DatabusUris.DATAID_SHASUM] = [{}];
         distribution[DatabusUris.DATAID_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
-        
-        distribution[DatabusUris.DCAT_BYTESIZE] = [ {} ];
+
+        distribution[DatabusUris.DCAT_BYTESIZE] = [{}];
         distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.byteSize;
         distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
       }
@@ -84,7 +143,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     // console.log(JSON.stringify(expandedGraph, null, 3));
 
-    console.log(JSON.stringify(expandedGraph, null, 3));
+    // console.log(JSON.stringify(expandedGraph, null, 3));
 
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
@@ -158,7 +217,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     if (!validationSuccess) {
 
-      if(generatingSignature) {
+      if (generatingSignature) {
         notify('Failed to generate signature. Please contact an administrator.');
         return { code: 500, message: null };
       } else {

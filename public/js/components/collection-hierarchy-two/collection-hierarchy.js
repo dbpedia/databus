@@ -669,6 +669,8 @@ SELECT ?file WHERE {
     var node = new QueryNode(label, query);
     sourceNode.childNodes.push(node);
 
+
+    ctrl.updateViewModel();
     ctrl.onChange();
   }
 

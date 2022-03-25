@@ -261,6 +261,7 @@ databusApplication.component('fileBrowser', {
   bindings: {
     resourceUri: '<',
     resourceType: '@',
+    node: '<',
     facetSettings: '<',
     parentFacetSettings: '<',
     query: '<',

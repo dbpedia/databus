@@ -24,7 +24,7 @@ module.exports = function (router, protector) {
 
       // Requesting a PUT on an uri outside of one's namespace is rejected
       if (req.params.account != req.databus.accountName) {
-        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
+        res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
         return;
       }
 
@@ -39,6 +39,7 @@ module.exports = function (router, protector) {
       var report = `Publishing DataId.\n`;
 
       var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
+        console.log(message);
         report += `> ${message}\n`;
       });
 

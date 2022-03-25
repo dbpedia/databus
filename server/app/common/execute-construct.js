@@ -17,10 +17,13 @@ function escapeQuotes(value) {
 self.executeConstruct = async function (jsonld, query) {
 
   try {
-    
+
+    //console.log(`Loading store!`);
     var store = await self.createStore();
     var tripleCount = await self.loadJsonld(store, jsonld);
-  
+
+    //console.log(`store loaded with ${tripleCount} triples.`);
+    
     var graph = await self.queryStore(store, query);
     var triples = self.convertToN3(graph);
 

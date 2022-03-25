@@ -125,6 +125,10 @@ class QueryBuilder {
     for (var i in node.childNodes) {
       if (k > 0) this.appendLine('UNION', indent);
 
+      if(node.childNodes[i].childNodes == null) {
+        return;
+      }
+
       if(node.childNodes[i].property == undefined && node.childNodes[i].childNodes.length == 0) {
         continue;
       }

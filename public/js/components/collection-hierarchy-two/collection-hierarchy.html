@@ -222,6 +222,11 @@
       </databus-icon>
       <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="sourceView.expanded" shape="'min'" size="24">
       </databus-icon>
+
+      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!sourceView.collapsed" shape="'down'" size="22">
+      </databus-icon>
+      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="sourceView.collapsed" shape="'left'" size="22">
+      </databus-icon>
     </div>
 
     <div class="ce-content-source-body" ng-if="sourceView.expanded">
@@ -292,9 +297,9 @@
 
         <div ng-if="sourceView.addMode == 'custom'">
 
-          <input class="input" ng-model="sourceView.customQueryLabel"/>
+          <input style="margin-bottom: 0.5em" class="input" ng-model="sourceView.customQueryLabel"/>
           <yasqe-text query="sourceView.customQueryInput"></yasqe-text>
-          <button class="button" ng-click="$ctrl.addCustomNode(sourceNode, sourceView.customQueryLabel,
+          <button  style="margin-top: 0.5em" class="button" ng-click="$ctrl.addCustomNode(sourceNode, sourceView.customQueryLabel,
             sourceView.customQueryDescription, sourceView.customQueryInput)">Add</button>
         </div>
 
@@ -336,7 +341,7 @@
 
         <div>{{ groupNode.uri }}</div>
 
-        <div ng-if="$ctrl.objSize(groupNode.facetSettings) > 0 && !groupView.expanded"
+        <div ng-if="$ctrl.isValidHttpUrl(groupNode.uri) && $ctrl.objSize(groupNode.facetSettings) > 0 && !groupView.expanded"
           style="display: flex; align-items: center; margin-left: 0.5em;">
 
           <div ng-repeat="(uri, setting) in groupNode.facetSettings">
@@ -360,9 +365,20 @@
         <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24">
         </databus-icon>
 
+        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.collapsed" shape="'down'" size="22">
+        </databus-icon>
+        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.collapsed" shape="'left'" size="22">
+        </databus-icon>
+
+
       </div>
 
-      <div class="ce-content-group-body" ng-if="groupView.expanded">
+      <div class="ce-content-group-body" ng-if="groupView.expanded && !$ctrl.isValidHttpUrl(groupNode.uri)">
+        <input style="margin-bottom: 0.5em" class="input" ng-model="groupNode.uri"/>
+        <yasqe-text query="groupNode.property"></yasqe-text>
+      </div>
+
+      <div class="ce-content-group-body" ng-if="groupView.expanded && $ctrl.isValidHttpUrl(groupNode.uri)">
 
         <div ng-if="$ctrl.objSize(groupNode.facetSettings) > 0">
           <p style="margin-bottom: 0.5em;"><b>Active Filters:</b></p>
@@ -412,15 +428,16 @@
             <databus-icon style="margin-right:8px;" color="'white'" shape="'add-button'" size="12"></databus-icon>Add
           </div>
         </div>
-
-
       </div>
 
       <div class="ce-content-source-footer" ng-if="groupView.expanded">
         <div style="display: flex;" ng-if="!$ctrl.readonly">
           <div style="flex: 1"></div>
-          <button class="button is-danger is-outlined" ng-click="$ctrl.removeNode(groupNode)">
+          <button ng-if="$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined" ng-click="$ctrl.removeNode(groupNode)">
             Remove Group
+          </button>
+          <button ng-if="!$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined" ng-click="$ctrl.removeNode(groupNode)">
+            Remove Custom Query
           </button>
         </div>
       </div>
@@ -494,6 +511,12 @@
           <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24">
           </databus-icon>
           <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"></databus-icon>
+       
+          <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!artifactView.collapsed" shape="'down'" size="22">
+          </databus-icon>
+          <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="artifactView.collapsed" shape="'left'" size="22">
+          </databus-icon>
+
         </div>
 
         <div class="ce-content-group-body " ng-if="artifactView.expanded">
@@ -515,7 +538,7 @@
                       height="18" viewBox="0 0 24 24">
                       <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
                     </svg>
-                    <span>{{ groupView.facets[uri].label}}</span><span
+                    <span>{{ artifactView.facets[uri].label}}</span><span
                       ng-if='groupNode.facetSettings[uri] != undefined'>
                       (from parent)</span>
                   </div>
@@ -572,7 +595,7 @@
             </autofill-dropdown>
 
             <multiselect-dropdown style="margin-right: 0.5em; min-width: 350px" placeholder="Select values..."
-              input="artifactView.addFilterValue" values="groupView.facets[artifactView.addFilterFacet].values">
+              input="artifactView.addFilterValue" values="artifactView.facets[artifactView.addFilterFacet].values">
             </multiselect-dropdown>
 
 
@@ -599,7 +622,7 @@
           <div class="ce-file-tree-line"></div>
           <div ng-if="!$ctrl.isLastChild(groupNode, artifactNode)" class="ce-file-to-artifact-tree-line"></div>
           <div class="ce-content-files-header">
-            <div style="flex:1; margin-left: 16px;">{{ file.file }}</div>
+            <div style="flex:1; margin-left: 16px;">{{ $ctrl.uriToName(file.file) }}</div>
             <div style="margin-right: 16px;">{{ $ctrl.formatFileSize(file.size) }}</div>
           </div>
         </div>

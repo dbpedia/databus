@@ -22,7 +22,6 @@ WHERE
 {
   ?dataset a dataid:Dataset .
   ?dataset dcat:distribution ?distribution .
-
   {
     ?dataset ?datasetProperty ?datasetObject .
   }

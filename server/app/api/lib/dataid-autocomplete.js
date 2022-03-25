@@ -68,6 +68,7 @@ autocompleter.autocomplete = function (expandedGraph) {
   // Auto-generate resource entries
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_VERSION, 0);
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_ARTIFACT, 1);
+  autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_GROUP, 2);
 
   var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
@@ -78,15 +79,6 @@ autocompleter.autocomplete = function (expandedGraph) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
     }
-
-    /*
-    if (fileGraph[DatabusUris.DATAID_FORMAT] == undefined) {
-      fileGraph[DatabusUris.DATAID_FORMAT] = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION];
-    }
-
-    if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
-      fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] = fileGraph[DatabusUris.DATAID_FORMAT];
-    }*/
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
       fileGraph[DatabusUris.DCT_ISSUED] = [{}];
@@ -101,12 +93,8 @@ autocompleter.autocomplete = function (expandedGraph) {
     }
   }
 
-
   // Auto-complete content variants
   contentVariantProperties = ArrayUtils.uniqueList(contentVariantProperties)
-
-
-
 
   for (var contentVariantProperty of contentVariantProperties) {
 
@@ -125,32 +113,19 @@ autocompleter.autocomplete = function (expandedGraph) {
     propertyGraph[DatabusUris.RDFS_SUB_PROPERTY_OF][0][DatabusUris.JSONLD_ID]
       = DatabusUris.DATAID_CONTENT_VARIANT;
 
-
     expandedGraph.push(propertyGraph);
   }
 
   for (var fileGraph of fileGraphs) {
 
-
-    // console.log(JSON.stringify(fileGraph['@id'], null, 3));
-    
     for (var contentVariantProperty of contentVariantProperties) {
 
       if (fileGraph[contentVariantProperty] == undefined) {
         fileGraph[contentVariantProperty] = [{}];
         fileGraph[contentVariantProperty][0][DatabusUris.JSONLD_VALUE] = "";
       }
-
-      // console.log(`${contentVariantProperty}: ${fileGraph[contentVariantProperty][0][DatabusUris.JSONLD_VALUE]}`);
     }
-
-
   }
-
-
-  //console.log(`Autocompletion DONE ================`);
-  //console.log(JSON.stringify(expandedGraph, null, 3));
-  //console.log(`===============================`);
 }
 
 module.exports = autocompleter;

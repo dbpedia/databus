@@ -253,3 +253,12 @@
   color: $icon;
   font-size: 1.1em;
 }
+
+.collection-editor-action-bar {
+  display: flex;
+  background-color: white;
+  border-bottom: 1px solid #dbdbdb;
+  padding: .5em 1em;
+  height: 56px;
+
+}

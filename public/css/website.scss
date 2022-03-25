@@ -687,6 +687,18 @@ a.navbar-item.is-active, a.navbar-item {
   background-color: #fbfbfb;
 }
 
+.file-browser-settings .vis-picker .button {
+  border: 1px solid #e3e3e3;
+  color: #aaa;
+  background-color: #fbfbfb;
+}
+
+.file-browser-settings .vis-picker .button.is-active {
+  border: 1px solid #e3e3e3;
+  background-color: #fff;
+  color: #333;
+}
+
 .icon.has-margin-right {
   margin-right: 0.5em !important;
 }
@@ -756,6 +768,51 @@ a.navbar-item.is-active, a.navbar-item {
 
 .search-result b {
   background-color: $highlight;
+}
+
+.dropdown.simple .dropdown-content {
+  padding: 0;
+  font-size: 1em;
+}
+
+.dropdown.simple .dropdown-item {
+  padding: .35em .85em;
+}
+
+.nested-dropdown-content {
+  display: none;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  min-width: 200px;
+  background-color: white;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+}
+
+.nested-dropdown:hover .nested-dropdown-trigger {
+  background-color: #fafafa;
+}
+
+.dropdown-item {
+  font-size: 1em;
+  padding: .25em .75em;
+  border-bottom: 1px solid #dbdbdb;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #fafafa;
+}
+
+.nested-dropdown {
+  position: relative;
+}
+
+.nested-dropdown:hover .nested-dropdown-content {
+  display: block;
+  position: absolute;
 }
 
 .is-type-tag {
