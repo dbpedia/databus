@@ -19,9 +19,9 @@ diagram with clickable links
 
 The source code of this repo is published under the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
 
-Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.&#x20;
+Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.
 
-The individual datasets are referenced via links (dcat:downloadURL) and can have any license. &#x20;
+The individual datasets are referenced via links (dcat:downloadURL) and can have any license.
 
 ## Status
 
@@ -33,22 +33,32 @@ This repo develops Databus version 2.0, which is a major upgrade of version 1.3-
 
 ## Requirements
 
-In order to run the On-Premise Databus Application you will need `docker` and `docker-compose` installed on your machine.
+In order to run the Databus on-premise you will need `docker` and `docker-compose` installed on your machine.&#x20;
 
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
+Additionally you need an OIDC provider.
+
 ## Starting the Databus Server
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository) and run:
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository). It is possible to run the Databus on localhost in one shot with the default configuration to have a quick look. However, for proper setups it is required to start from a fresh/wiped state and perform [mandatory configuration settings](./#mandatory-configuration) first.&#x20;
+
+&#x20;run:
 
 ```
 docker-compose up
 ```
 
-The Databus should be available at `http://localhost:3000`.
+Or, to start the containers in the background i.e. detached, run:
 
-## Basic Configuration
+```
+docker-compose up -d
+```
+
+The Databus should be available at `http://localhost:3000`.&#x20;
+
+## Mandatory Configuration
 
 Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
 
@@ -56,8 +66,9 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
 * **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
-* **VIRTUOSO\_USER**: A virtuoso database user with write access (SPARQL\_UPDATE)
 * **VIRTUOSO\_PASSWORD**: The password of the VIRTUOSO\_USER account
+
+If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](usage/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](usage/https-and-proxy-setup.md#external-proxy-example)).
 
 ## Advanced Configuration
 
@@ -118,7 +129,5 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
-
-
 
 ###
