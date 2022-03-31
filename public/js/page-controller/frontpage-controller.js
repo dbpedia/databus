@@ -8,14 +8,42 @@
  * @param  {factory} sparql      [description]
  * @return {[type]}             [description]
  */
-function FrontPageController($scope, $sce) {
+function FrontPageController($scope, $sce, $http) {
 
-  $scope.activityChartData = data.activityData;
-  $scope.recentUploadsData = data.recentUploadsData;
-  $scope.uploadRankingData = data.rankingData;
   $scope.databusName = DATABUS_NAME;
 
   $scope.auth = data.auth;
+
+  $scope.activityChartData = {};
+  $scope.activityChartData.isLoading = true;
+
+  $http.get(`/app/index/activity`).then(function (response) {
+    $scope.activityChartData.entries = response.data;
+    $scope.activityChartData.isLoading = false;
+  }, function (err) {
+    console.log(err);
+  });
+
+  $scope.uploadRankingData = {};
+  $scope.uploadRankingData.isLoading = true;
+
+  $http.get(`/app/index/ranking`).then(function (response) {
+    $scope.uploadRankingData.data = response.data;
+    $scope.uploadRankingData.isLoading = false;
+  }, function (err) {
+    console.log(err);
+  });
+
+  $scope.recentUploadsData = {};
+  $scope.recentUploadsData.isLoading = true;
+
+  $http.get(`/app/index/recent`).then(function (response) {
+    $scope.recentUploadsData.data = response.data;
+    $scope.recentUploadsData.isLoading = false;
+  }, function (err) {
+    console.log(err);
+  });
+
 
   $scope.formatUploadSize = function(size) {
     return Math.round(size * 100) / 100;

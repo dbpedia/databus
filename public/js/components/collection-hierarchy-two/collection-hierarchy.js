@@ -46,6 +46,9 @@ SELECT ?file WHERE {
     ctrl.onChange();
   }
 
+  ctrl.toggleCollapsed = function(view) {
+    view.collapsed = !view.collapsed;
+  }
 
   ctrl.addDatabusToCollection = async function (uri) {
     

@@ -74,7 +74,7 @@
           </td>
         </tr>
         <tr ng-repeat-end ng-if="binding.epxanded && binding.preview.value != null">
-          <td colspan="5" style="padding:0;">
+          <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0;">
             <div>
               <pre>{{ binding.preview.value }}</pre>
             </div>

@@ -13,7 +13,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   }])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .controller("AccountPageController", ["$scope", "$http", "$location", AccountPageController])
-  .controller("FrontPageController", ["$scope", "$sce", FrontPageController])
+  .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])
   .controller("ArtifactPageController", ["$scope", "$sce","collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])

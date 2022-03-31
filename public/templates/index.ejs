@@ -1,10 +1,12 @@
 <% include header %>
+
+  <script src="/min/d3.min.js"></script>
+
   <div ng-controller="FrontPageController">
     <section style="background: #81b8b2; background-image: url(../img/banner-background.png);
     text-align: left; color: white; padding: 100px; position: relative; background-repeat: repeat;
     background-position: center; background-size: 150px;">
       <div class="container">
-        <!--h1 style="font-size: 2em; font-weight: bolder; margin-bottom: .5em;">WELCOME TO THE</h1 -->
         <div style="display: flex; align-items: center;">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
             viewBox="0 0 40.326191 46.198502" version="1.1" id="svg5" style="margin-right: 1.5em; margin-top: 7px">
@@ -21,71 +23,37 @@
       <div class="open-beta">Open Beta</div>
     </section>
 
-    <!--
-    <section class="section">
-      <div class="container">
-
-        <div style="display: flex; margin-bottom: 1em;">
-          <div class="databus-banner is-consumer"><h1 style="color: white; padding: 1em;">Publisher</h1></div>
-          <div style="padding: 1em;">
-            <type-tag width="48" height="48" type="'PersonalProfileDocument'"></type-tag>
-            <div>Some text goes here</div>            
-            <div class="button is-consumer">Press me!</div>
-          </div>
-        </div>
-       
-        <div style="display: flex; margin-bottom: 1em;">
-          <div class="databus-banner is-group"><h1 style="color: white; padding: 1em;">Group</h1></div>
-          <div style="padding: 1em;">
-            <type-tag width="48" height="48" type="'Group'"></type-tag>
-            <div>Some text goes here</div>            
-            <div class="button is-group">Press me!</div>
-          </div>
-        </div>
-
-        <div style="display: flex; margin-bottom: 1em;">
-          <div class="databus-banner is-artifact"><h1 style="color: white; padding: 1em;">Artifact</h1></div>
-          <div style="padding: 1em;">
-            <type-tag width="48" height="48" type="'Artifact'"></type-tag>
-            <div>Some text goes here</div>            
-            <div class="button is-artifact">Press me!</div>
-          </div>
-        </div>
-
-        <div style="display: flex; margin-bottom: 1em;">
-          <div class="databus-banner is-version"><h1 style="color: white; padding: 1em;">Version</h1></div>
-          <div style="padding: 1em;">
-            <type-tag width="48" height="48" type="'Version'"></type-tag>
-            <div>Some text goes here</div>            
-            <div class="button is-version">Press me!</div>
-          </div>
-        </div>
-
-        <div style="display: flex; margin-bottom: 1em;">
-          <div class="databus-banner is-collection"><h1 style="color: white; padding: 1em;">Collection</h1></div>
-          <div style="padding: 1em;">
-            <type-tag width="48" height="48" type="'Collection'"></type-tag>
-            <div>Some text goes here</div>            
-            <div class="button is-collection">Press me!</div>
-          </div>
-        </div>
-
-
-
-      </div>
-    </section>-->
-
     <section class="section">
       <div class="container">
         <div class="columns">
           <div class="column is-4 stats">
             <p class="section-label">Recent Activity</p>
-            <activity-chart data="activityChartData" height="400"></activity-chart>
+            <div ng-if="activityChartData.isLoading" style="text-align:center">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <activity-chart ng-if="!activityChartData.isLoading" data="activityChartData.entries" height="400">
+            </activity-chart>
             <br />
             <br />
-            <p ng-if="uploadRankingData.length > 0" class="section-label">Most Active Users</p>
-            <uploader-ranking ng-if="uploadRankingData.length > 0" data="uploadRankingData"></uploader-ranking>
-            <br />
+
+            <div ng-if="uploadRankingData.isLoading" style="text-align:center">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
+              <p class="section-label">Most Active Users</p>
+              <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
+              <br />
+            </div>
           </div>
           <div class="column main">
             <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -93,9 +61,18 @@
             </div>
             <search></search>
             <br />
-            <p ng-if="recentUploadsData.length > 0" class="section-label">New Artifacts</p>
+
+            <div ng-if="recentUploadsData.isLoading" style="text-align:center">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">New Artifacts</p>
             <br />
-            <div ng-repeat="dataset in recentUploadsData">
+            <div ng-repeat="dataset in recentUploadsData.data">
               <entity-card style="flex: 1;" label="dataset.label" type="'Artifact'" uri="dataset.artifactUri"
                 desc="dataset.desc" date="dataset.date">
               </entity-card>

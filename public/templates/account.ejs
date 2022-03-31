@@ -1,4 +1,8 @@
 <% include header %>
+
+
+  <script src="/min/d3.min.js"></script>
+
   <div ng-controller="AccountPageController">
     <style>
       .profile-picture {
@@ -80,8 +84,9 @@
     <div class="section" ng-if="profileData == undefined" ng-controller="ProfileController"
       style="min-height: 600px; display: flex;">
       <div class="container">
-        <p class="collection-editor-info-text">Unlock your account by entering a username (your publishing namespace) and clicking the
-          button below.<br/> Choose your username carefully as you will not be able to change it later.</p>
+        <p class="collection-editor-info-text">Unlock your account by entering a username (your publishing namespace)
+          and clicking the
+          button below.<br /> Choose your username carefully as you will not be able to change it later.</p>
         <br /> <br />
         <div class="collection-editor-info-text" style="justify-content: center; display: flex;">
           <div class="field has-addons">
@@ -183,16 +188,26 @@
 
             <div class="dashboard-card">
               <div class="dashboard-card-title">Publisher Activity</div>
-                <div  ng-if="activityData.isLoading" style="text-align:center" >
-                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              <div ng-if="activityData.isLoading" style="text-align:center">
+                <div class="lds-ellipsis">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
                 </div>
+              </div>
               <div ng-if="!activityData.isLoading" style="display: flex;">
                 <activity-chart data="activityData.entries" height="400"></activity-chart>
 
                 <div style="min-width: 40%;">
-                    <div  ng-if="artifactData.isLoading" style="text-align:center" >
-                      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                  <div ng-if="artifactData.isLoading" style="text-align:center">
+                    <div class="lds-ellipsis">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
+                  </div>
                   <div ng-if="recentUploads.length > 0" class="timeline" style="padding: 1em 0.5em;">
                     <div ng-repeat="dataset in recentUploads">
 

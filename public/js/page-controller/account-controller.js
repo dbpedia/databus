@@ -18,7 +18,7 @@ function AccountPageController($scope, $http, $location) {
   // Initialize the user-internal search
   $scope.searchInput = '';
   $scope.searchFilters = [
-    'publisherUri=' + encodeURIComponent(`https://databus.dbpedia.org/${$scope.profileData.accountName}`),
+    'publisherUri=' + encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`),
     'minRelevance=0.1'
   ];
 

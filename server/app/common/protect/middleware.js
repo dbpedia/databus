@@ -13,6 +13,7 @@ var getRandomValues = require('get-random-values');
 
 var fs = require('fs');
 const Constants = require('../constants');
+const { nextTick } = require('rdfstore/src/utils');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -376,7 +377,11 @@ class DatabusProtect {
       ) {
         cancelSilentLogin(req, res);
         console.log('attempting silent login');
-        return res.oidc.silentLogin();
+        try {
+          return res.oidc.silentLogin();
+        } catch(e) {
+          return next();
+        }
       }
 
       return next();

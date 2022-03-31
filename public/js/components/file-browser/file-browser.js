@@ -51,6 +51,18 @@ function FileBrowserController($http, $scope) {
     return u.pathname;
   }
 
+  ctrl.formatVariant = function(value) {
+    var variants = value.split(', ');
+    value = "";
+    for(variant of variants) {
+      if(variant != undefined && variant != "") {
+        value += variant + ", ";
+      }
+    }
+
+    return value.substr(0, value.length - 2);
+  }
+
   ctrl.querySparql = async function(query) {
 
     ctrl.isLoading = true;
@@ -83,6 +95,13 @@ function FileBrowserController($http, $scope) {
         var binding = ctrl.queryResult.bindings[b];
         binding.size.numericalValue = parseInt(binding.size.value);
         ctrl.queryResult.uriList += binding.file.value + "\n";
+
+        if(binding.variant != undefined) {
+          binding.variant.value = ctrl.formatVariant(binding.variant.value);          
+        }
+        
+     
+
 
         ctrl.totalSize += binding.size.numericalValue;
         ctrl.numFiles++;

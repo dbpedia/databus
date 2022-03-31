@@ -60,9 +60,9 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
   $scope.fileSelector.config.columns = [];
-  $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '25%' });
-  $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '25%' });
-  $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '25%' });
+  $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '45%' });
+  $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
+  $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '15%' });
 
   $scope.artifactNode = new QueryNode($scope.versionData.artifactUri, 'dataid:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.versionData.version, true);

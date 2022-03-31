@@ -7,5 +7,8 @@
     type="checkbox"
     ng-change="$ctrl.change()"
     ng-model="$ctrl.checkValue">
-  <label for="check--{{ $ctrl.id }}">{{ $ctrl.label }}</label>
+  <label for="check--{{ $ctrl.id }}">
+    <span ng-if="$ctrl.label != ''">{{ $ctrl.label }}</span>
+    <span ng-if="$ctrl.label == ''"><i style="color:#aaa">None</i></span>
+  </label>
 </div>

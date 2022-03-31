@@ -14,19 +14,41 @@ module.exports = function (router, protector) {
   /* GET home page. */
   router.get('/', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
-    var indexCacheKey = 'index';
-
-    var data = await cache.get(indexCacheKey, async function () {
-      return {
-        activityData: await sparql.pages.getGlobalActivityChartData(),
-        rankingData: await sparql.pages.getPublishRankingData(),
-        recentUploadsData: await sparql.pages.getRecentUploadsData()
-      };
-    });
-
+    var data = {};
     data.auth = ServerUtils.getAuthInfoFromRequest(req);
     res.render('index', { title: 'Databus', data: data });
   });
+
+  router.get('/app/index/activity', async function (req, res, next) {
+    try {
+      var cacheKey = `ck_global_activity`;
+      var activity = await cache.get(cacheKey, () => sparql.pages.getGlobalActivityChartData());
+      res.status(200).send(activity);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
+  router.get('/app/index/ranking', async function (req, res, next) {
+    try {
+      var cacheKey = `ck_global_ranking`;
+      var activity = await cache.get(cacheKey, () => sparql.pages.getPublishRankingData());
+      res.status(200).send(activity);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
+  router.get('/app/index/recent', async function (req, res, next) {
+    try {
+      var cacheKey = `ck_global_recent`;
+      var activity = await cache.get(cacheKey, () => sparql.pages.getRecentUploadsData());
+      res.status(200).send(activity);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
 
 
   // Pages login and logout

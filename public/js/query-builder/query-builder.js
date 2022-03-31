@@ -17,7 +17,6 @@ class QueryBuilder {
     this.aggregate = template.aggregate;
     this.stringSuffix = '';
 
-    this.appendPrefixes();
     this.appendLine(this.select, 0);
     this.appendLine(`{`, 0);
     this.createNodeSubquery(node, template.indent, false);
@@ -27,12 +26,31 @@ class QueryBuilder {
       this.appendLine(this.aggregate, 0);
     }
 
+    this.prependPrefixes();
     return this.result;
   }
 
-  appendPrefixes() {
+  removeAndCollectPrefixes(query) {
+    var lines = query.split('\n');
+    var result = "";
+
+    for(var line of lines) {
+      if(line.toLowerCase().startsWith('prefix')) {
+        this.prefixes.push(line);
+      } else {
+        result += line + '\n';
+      }
+    }
+
+    return result.substring(0, result.length -1);
+  }
+
+  prependPrefixes() {
+
+    this.prefixes = DatabusUtils.uniqueList(this.prefixes);
+
     for (var line of this.prefixes) {
-      this.appendLine(line, 0);
+      this.prependLine(line, 0);
     }
   }
 
@@ -102,7 +120,16 @@ class QueryBuilder {
         this.appendTemplate(node, indent);
       }
 
+      return;
+    }
 
+    // Custom query node
+    if(node.uri != null && !DatabusUtils.isValidHttpUrl(node.uri)) {
+      var query = this.removeAndCollectPrefixes(node.property);
+      var lines = query.split('\n');
+      for(var line of lines) {
+        this.appendLine(line, indent);
+      }
 
       return;
     }
@@ -387,6 +414,18 @@ class QueryBuilder {
     for (var i = 0; i < indent; i++) this.result += '\t';
     this.result += line;
     this.result += '\n';
+  }
+
+  /**
+   * Appens a line to the global result prepending a specified number of tab characters
+   * @param {*} line 
+   * @param {*} indent 
+   */
+   prependLine(line, indent) {
+    var text = '';
+    for (var i = 0; i < indent; i++) text += '\t';
+    text += line;
+    this.result = text + '\n' + this.result;
   }
 }
 

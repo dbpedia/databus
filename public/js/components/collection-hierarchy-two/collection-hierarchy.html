@@ -34,11 +34,11 @@
     border-top: 1px solid #dbdbdb;
   }
 
-.ce-content-source-footer {
+  .ce-content-source-footer {
 
-  padding: .75em;
+    padding: .75em;
     border-top: 1px solid #dbdbdb;
-}
+  }
 
   .ce-content-collection-header {
     padding: .5em;
@@ -182,6 +182,22 @@
     padding: .1em .35em;
     height: 30px;
   }
+
+  .ce-line-button {
+    z-index: 100000;
+    position: absolute;
+    border: 1px solid #dbdbdb;
+    left: 22px;
+    top: 20px;
+    width: 21px;
+    height: 21px;
+    padding-left: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb;
+    cursor: pointer;
+  }
 </style>
 
 <div class="ce-content-collection">
@@ -192,8 +208,8 @@
 
     <div class="field has-addons" style="margin-right: .5em">
       <p class="control">
-        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 300px;"
-          input="searchInput" ng-model="$ctrl.databusUriToAdd" filters="searchFilters">
+        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 300px;" input="searchInput"
+          ng-model="$ctrl.databusUriToAdd" filters="searchFilters">
       </p>
       <p class="control">
         <a ng-click="$ctrl.onAddResource($ctrl.databusUriToAdd)" class="button is-version">
@@ -201,7 +217,7 @@
         </a>
       </p>
 
-  </div>
+    </div>
 
   </div>
 </div>
@@ -211,7 +227,18 @@
 
   <div class="ce-content-source">
 
-    <div class="ce-artifact-tree-line"></div>
+    <div class="ce-artifact-tree-line">
+    </div>
+
+    <div ng-if="sourceNode.childNodes.length > 0">
+      <div class="ce-line-button" ng-if="sourceView.collapsed" ng-click="$ctrl.toggleCollapsed(sourceView)">
+        <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
+      </div>
+      <div class="ce-line-button" ng-if="!sourceView.collapsed" ng-click="$ctrl.toggleCollapsed(sourceView)">
+        <databus-icon style="display: flex;" shape="'remove'" size="16"></databus-icon>
+      </div>
+    </div>
+
     <div ng-if="!$ctrl.isLastChild($ctrl.root, sourceNode)" class="ce-artifact-to-artifact-tree-line"></div>
 
     <div class=" ce-content-source-header" ng-click="$ctrl.toggleExpand(sourceView)">
@@ -223,10 +250,6 @@
       <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="sourceView.expanded" shape="'min'" size="24">
       </databus-icon>
 
-      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!sourceView.collapsed" shape="'down'" size="22">
-      </databus-icon>
-      <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="sourceView.collapsed" shape="'left'" size="22">
-      </databus-icon>
     </div>
 
     <div class="ce-content-source-body" ng-if="sourceView.expanded">
@@ -249,7 +272,7 @@
             </label>
           </div>
 
-    
+
         </div>
 
         <div ng-if="sourceView.addMode == 'artifact'">
@@ -266,7 +289,7 @@
             </div>
           </div>
 
-          
+
 
 
           <div style="margin-top: 1.1em" ng-if="sourceView.search != '' && sourceView.searchResults.length > 0">
@@ -297,16 +320,16 @@
 
         <div ng-if="sourceView.addMode == 'custom'">
 
-          <input style="margin-bottom: 0.5em" class="input" ng-model="sourceView.customQueryLabel"/>
+          <input style="margin-bottom: 0.5em" class="input" ng-model="sourceView.customQueryLabel" />
           <yasqe-text query="sourceView.customQueryInput"></yasqe-text>
-          <button  style="margin-top: 0.5em" class="button" ng-click="$ctrl.addCustomNode(sourceNode, sourceView.customQueryLabel,
+          <button style="margin-top: 0.5em" class="button" ng-click="$ctrl.addCustomNode(sourceNode, sourceView.customQueryLabel,
             sourceView.customQueryDescription, sourceView.customQueryInput)">Add</button>
         </div>
 
 
 
       </div>
-     
+
 
     </div>
     <div class="ce-content-source-footer" ng-if="sourceView.expanded">
@@ -320,7 +343,7 @@
 
   </div>
 
-  <div style="position: relative;" ng-repeat-start="groupNode in sourceNode.childNodes track by groupNode.uri"
+  <div ng-if="!sourceView.collapsed" style="position: relative;" ng-repeat-start="groupNode in sourceNode.childNodes track by groupNode.uri"
     ng-init="groupView = $ctrl.view.groups[groupNode.uri]">
 
     <div class="ce-content-group">
@@ -329,6 +352,16 @@
 
       <div class="ce-artifact-tree-line">
       </div>
+
+      <div ng-if="groupNode.childNodes.length > 0">
+        <div class="ce-line-button" style="left:86px" ng-if="groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupView)">
+          <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
+        </div>
+        <div class="ce-line-button" style="left:86px" ng-if="!groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupView)">
+          <databus-icon style="display: flex;" shape="'remove'" size="16"></databus-icon>
+        </div>
+      </div>
+
 
       <div ng-if="!$ctrl.isLastChild(sourceNode, groupNode)" class="ce-artifact-to-artifact-tree-line"></div>
 
@@ -341,7 +374,8 @@
 
         <div>{{ groupNode.uri }}</div>
 
-        <div ng-if="$ctrl.isValidHttpUrl(groupNode.uri) && $ctrl.objSize(groupNode.facetSettings) > 0 && !groupView.expanded"
+        <div
+          ng-if="$ctrl.isValidHttpUrl(groupNode.uri) && $ctrl.objSize(groupNode.facetSettings) > 0 && !groupView.expanded"
           style="display: flex; align-items: center; margin-left: 0.5em;">
 
           <div ng-repeat="(uri, setting) in groupNode.facetSettings">
@@ -365,16 +399,11 @@
         <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24">
         </databus-icon>
 
-        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.collapsed" shape="'down'" size="22">
-        </databus-icon>
-        <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.collapsed" shape="'left'" size="22">
-        </databus-icon>
-
 
       </div>
 
       <div class="ce-content-group-body" ng-if="groupView.expanded && !$ctrl.isValidHttpUrl(groupNode.uri)">
-        <input style="margin-bottom: 0.5em" class="input" ng-model="groupNode.uri"/>
+        <input style="margin-bottom: 0.5em" class="input" ng-model="groupNode.uri" />
         <yasqe-text query="groupNode.property"></yasqe-text>
       </div>
 
@@ -433,10 +462,12 @@
       <div class="ce-content-source-footer" ng-if="groupView.expanded">
         <div style="display: flex;" ng-if="!$ctrl.readonly">
           <div style="flex: 1"></div>
-          <button ng-if="$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined" ng-click="$ctrl.removeNode(groupNode)">
+          <button ng-if="$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined"
+            ng-click="$ctrl.removeNode(groupNode)">
             Remove Group
           </button>
-          <button ng-if="!$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined" ng-click="$ctrl.removeNode(groupNode)">
+          <button ng-if="!$ctrl.isValidHttpUrl(groupNode.uri)" class="button is-danger is-outlined"
+            ng-click="$ctrl.removeNode(groupNode)">
             Remove Custom Query
           </button>
         </div>
@@ -444,12 +475,22 @@
 
     </div>
 
-    <div>
+    <div ng-if="!groupView.collapsed">
       <div class="ce-content-artifact" ng-repeat-start="artifactNode in groupNode.childNodes track by artifactNode.uri"
         ng-init="artifactView = $ctrl.view.artifacts[artifactNode.uri]">
 
-        <div class="ce-artifact-tree-line">
+        <div class="ce-artifact-tree-line"></div>
+
+        <div ng-if="artifactNode.files.length > 0">
+          <div class="ce-line-button" style="left: -43px;" ng-if="artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactView)">
+            <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
+          </div>
+          <div class="ce-line-button" style="left: -43px;" ng-if="!artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactView)">
+            <databus-icon style="display: flex;" shape="'remove'" size="16"></databus-icon>
+          </div>
         </div>
+  
+
         <div ng-if="!$ctrl.isLastChild(groupNode, artifactNode)" class="ce-artifact-to-artifact-tree-line"></div>
         <div class=" ce-content-group-header" ng-click="$ctrl.toggleExpand(artifactView)">
           <type-tag width="48" height="48" style="margin-right:18px" type="'Artifact'"></type-tag>
@@ -511,11 +552,7 @@
           <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24">
           </databus-icon>
           <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"></databus-icon>
-       
-          <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!artifactView.collapsed" shape="'down'" size="22">
-          </databus-icon>
-          <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="artifactView.collapsed" shape="'left'" size="22">
-          </databus-icon>
+
 
         </div>
 
@@ -617,7 +654,7 @@
 
       </div>
 
-      <div class="ce-content-file" ng-if="artifactNode.files && artifactNode.files.length > 0">
+      <div class="ce-content-file" ng-if="artifactNode.files && artifactNode.files.length > 0 && !artifactView.collapsed">
         <div ng-repeat="file in artifactNode.files" class="file-row">
           <div class="ce-file-tree-line"></div>
           <div ng-if="!$ctrl.isLastChild(groupNode, artifactNode)" class="ce-file-to-artifact-tree-line"></div>

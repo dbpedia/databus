@@ -66,9 +66,9 @@ function ArtifactPageController($scope, $sce, collectionManager) {
   $scope.fileSelector.config = {};
   $scope.fileSelector.config.columns = [];
   $scope.fileSelector.config.columns.push({ field : 'version', label : 'Version', width: '30%' });
-  $scope.fileSelector.config.columns.push({ field : 'variant', label : 'Variant', width: '25%' });
-  $scope.fileSelector.config.columns.push({ field : 'format', label : 'Format', width: '15%' });
-  $scope.fileSelector.config.columns.push({ field : 'compression', label : 'Compression', width: '15%' });
+  $scope.fileSelector.config.columns.push({ field : 'variant', label : 'Variant', width: '30%' });
+  $scope.fileSelector.config.columns.push({ field : 'format', label : 'Format', width: '12%' });
+  $scope.fileSelector.config.columns.push({ field : 'compression', label : 'Compression', width: '12%' });
 
   $scope.artifactNode = new QueryNode($scope.artifactURI, 'dataid:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
