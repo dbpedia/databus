@@ -660,7 +660,7 @@
                     <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
                       <input class="control input" type="text" ng-model="version.license">
                       <div class="control">
-                        <div class="dropdown is-hoverable">
+                        <div class="dropdown is-hoverable" style="position: relative;">
                           <div class="dropdown-trigger">
                             <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
                               <span>Select License</span>
@@ -669,20 +669,13 @@
                               </span>
                             </a>
                           </div>
-                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                            <div class="dropdown-content">
-                              <a class="dropdown-item"
-                                ng-click="version.license='http://creativecommons.org/licenses/by/4.0/'">
-                                CCBY 4.0
-                              </a>
-                              <a class="dropdown-item"
-                                ng-click="version.license='https://www.gnu.org/licenses/lgpl-3.0.html'">
-                                LGPL v3
-                              </a>
-                              <a class="dropdown-item"
-                                ng-click="version.license='http://creativecommons.org/licenses/by-nc/4.0/'">
-                                CCBY-NC 4.0
-                              </a>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
+                            <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
+                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery" ng-change="filterLicenses(licenseQuery)" />
+                              <div ng-repeat="license in filteredLicenseList"
+                                ng-click="version.license=license.id.value">
+                                {{ license.title.value }}
+                              </div>
                             </div>
                           </div>
                         </div>

@@ -3,6 +3,12 @@
 function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.authenticated = data.auth.authenticated;
+  $scope.licenseQuery = "";
+
+
+  // TODO
+  // console.log(data.licenseData);
+
 
   // Test cases:
   // https://www.pik-potsdam.de/members/giannou/sample-output-remind/at_download/file
@@ -42,6 +48,19 @@ function PublishWizardController($scope, $http, focus, $q) {
   ];
 
   $scope.result = {};
+
+  $scope.filterLicenses = function(licenseQuery) {
+    var tokens = licenseQuery.split(' ');
+    $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function(l) {
+      for(var token of tokens) {
+        if(!l.title.value.includes(token)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }
 
   $scope.watchSession = function () {
     return $scope.$watch('session', function (newVal, oldVal) {

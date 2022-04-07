@@ -27,6 +27,9 @@ class LookupSearchIndexer {
         '-conf', '../search/app-config-index.yml'
       ]);
 
+      //indexingProcess.stdout.on('data', (data) => {
+      //  console.log('Index creation out: ' + data);
+      //});
       indexingProcess.stderr.on('data', (data) => {
         console.log('Index creation stderr: ' + data);
       });

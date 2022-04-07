@@ -6,7 +6,7 @@
     "start": "node ./www"
   },
   "dependencies": {
-    "@braintree/sanitize-url": "^4.0.0",
+    "@braintree/sanitize-url": "^6.0.0",
     "@rdfjs/parser-jsonld": "^1.2.1",
     "@rdfjs/parser-n3": "^1.1.4",
     "asn1js": "^2.1.1",

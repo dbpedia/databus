@@ -385,7 +385,7 @@ databusApplication.directive('uploaderRanking', function () {
   return {
     restrict: 'E',
     replace: true,
-    template: '<div><table class="table is-size-6 is-fullwidth"><thead><tr><th>User</th><th>Uploads</th><th>Derived Data (GByte)</th></tr></thead><tbody><tr ng-repeat="row in data"><td><a href="{{ row.accountUri }}">{{ row.account }}</a></td><td>{{ row.numUploads }}</td><td>{{ row.uploadSize }}</td></tr></tbody></table></div>',
+    template: '<div><table class="table is-size-6 is-fullwidth"><thead><tr><th>User</th><th>Uploads</th><th>Derived Data</th></tr></thead><tbody><tr ng-repeat="row in data"><td><a href="{{ row.accountUri }}">{{ row.account }}</a></td><td>{{ row.numUploads }}</td><td>{{ row.uploadSize }}</td></tr></tbody></table></div>',
     scope: {
       data: '=data',
     }
@@ -426,7 +426,7 @@ databusApplication.directive('activityChart', function () {
 
       var svg = d3.select(element[0])
         .attr("id", "graph")
-        .attr("width", "100%")
+        .attr("width", "107%")
         .attr("height", svgHeight);
 
       var bounds = svg.node().getBoundingClientRect();

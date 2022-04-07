@@ -49,35 +49,35 @@ Some examples to copy and adapt. Example SPARQL queries.
 ```json
 {
   "@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-	"@id": "https://databus.example.org/john/animals/cats/2022-02-02#Dataset",
+	"@id": "https://databus.example.org/john/energy/turbines/2022-02-02#Dataset",
 	"@type": "dataid:Dataset",
-	"title": "Cat Facts",
-	"abstract": "A collection of facts about cats.",
-	"description": "A collection of facts about cats. Contains data about cat species and specific famous cats.",
+	"title": "Turbine Data",
+	"abstract": "A collection of facts about turbines.",
+	"description": "A collection of facts about turbines. Contains data about both wind and water turbines.",
 	"hasVersion": "2022-02-02",
 	"license": "http://creativecommons.org/licenses/by/4.0/",
 	"distribution": [
     {
-      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=species.nt",
+      "@id": "https://databus.example.org/john/energy/turbines/2022-02-02#turbines_source=wind.nt",
       "@type": "dataid:Part",
-      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=species.nt",
+      "file": "https://databus.example.org/john/energy/turbines/2022-02-02/turbines_source=wind.nt",
       "format": "nt",
       "compression": "none",
-      "downloadURL": "https://storage.example.org/files/john/animals/cat_species.nt",
+      "downloadURL": "https://storage.example.org/files/john/energy/cat_wind.nt",
       "byteSize": "4439722",
       "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-      "dcv:topic": "species"
+      "dcv:source": "wind"
     },
     {
-      "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=famous.nt",
+      "@id": "https://databus.example.org/john/energy/turbines/2022-02-02#turbines_source=water.nt",
       "@type": "dataid:Part",
-      "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=famous.nt",
+      "file": "https://databus.example.org/john/energy/turbines/2022-02-02/turbines_source=water.nt",
       "format": "nt",
       "compression": "none",
-      "downloadURL": "https://storage.example.org/files/john/animals/famous_cats.nt",
+      "downloadURL": "https://storage.example.org/files/john/energy/water_turbines.nt",
       "byteSize": "4439722",
       "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-      "dcv:topic": "famous"
+      "dcv:source": "water"
     }
   ]
 }
@@ -89,59 +89,59 @@ Example input after auto-completion
 [
   {
     "@context": "http://downloads.dbpedia.org/databus/context.jsonld",
-    "@id": "https://databus.example.org/john/animals/cats/2022-02-02#Dataset",
+    "@id": "https://databus.example.org/john/energy/turbines/2022-02-02#Dataset",
     "@type": "dataid:Dataset",
     "title": "Cat Facts",
-    "abstract": "A collection of facts about cats.",
-    "description": "A collection of facts about cats. Contains data about cat species and specific famous cats.",
+    "abstract": "A collection of facts about turbines.",
+    "description": "A collection of facts about turbines. Contains data about cat wind and specific water turbines.",
     "hasVersion": "2022-02-02",
     "license": "http://creativecommons.org/licenses/by/4.0/",
-    "group": "https://databus.example.org/john/animals",
-    "artifact": "https://databus.example.org/john/animals/cats",
-    "version": "https://databus.example.org/john/animals/cats/2022-02-02",
+    "group": "https://databus.example.org/john/energy",
+    "artifact": "https://databus.example.org/john/energy/turbines",
+    "version": "https://databus.example.org/john/energy/turbines/2022-02-02",
     "publisher": "https://databus.example.org/john#this",
     "issued": "2022-02-02T11:34:17Z",
     "modified": "2022-02-02T11:34:17Z",
     "distribution": [
       {
-        "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=species.nt",
+        "@id": "https://databus.example.org/john/energy/turbines/2022-02-02#turbines_source=wind.nt",
         "@type": "dataid:Part",
-        "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=species.nt",
+        "file": "https://databus.example.org/john/energy/turbines/2022-02-02/turbines_source=wind.nt",
         "format": "nt",
         "compression": "none",
-        "downloadURL": "https://storage.example.org/files/john/animals/cat_species.nt",
+        "downloadURL": "https://storage.example.org/files/john/energy/cat_wind.nt",
         "byteSize": "4439722",
         "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-        "dcv:topic": "species",
+        "dcv:source": "wind",
         "hasVersion": "2022-02-02",
         "issued": "2022-02-02T11:34:17Z",
       },
       {
-        "@id": "https://databus.example.org/john/animals/cats/2022-02-02#cats_topic=famous.nt",
+        "@id": "https://databus.example.org/john/energy/turbines/2022-02-02#turbines_source=water.nt",
         "@type": "dataid:Part",
-        "file": "https://databus.example.org/john/animals/cats/2022-02-02/cats_topic=famous.nt",
+        "file": "https://databus.example.org/john/energy/turbines/2022-02-02/turbines_source=water.nt",
         "format": "nt",
         "compression": "none",
-        "downloadURL": "https://storage.example.org/files/john/animals/famous_cats.nt",
+        "downloadURL": "https://storage.example.org/files/john/energy/water_turbines.nt",
         "byteSize": "4439722",
         "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-        "dcv:topic": "famous",
+        "dcv:source": "water",
         "hasVersion": "2022-02-02",
         "issued": "2022-02-02T11:34:17Z",
       }
     ]
   },
   {
-    "@id": "https://databus.example.org/john/animals/cats",
+    "@id": "https://databus.example.org/john/energy/turbines",
     "@type:": "dataid:Artifact"
   },
   {
-    "@id": "https://databus.example.org/john/animals/cats/2022-02-02",
+    "@id": "https://databus.example.org/john/energy/turbines/2022-02-02",
     "@type:": "dataid:Version"
   },
   {
     "@type": "rdf:Property",
-    "@id": "http://dataid.dbpedia.org/ns/cv#topic",
+    "@id": "http://dataid.dbpedia.org/ns/cv#source",
     "rdfs:subPropertyOf": {
       "@id": "dataid:contentVariant"
     }
@@ -163,7 +163,7 @@ PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?file ?format ?byteSize WHERE {
   GRAPH ?g {
-    ?dataset dataid:version <https://databus.dbpedia.org/john/animals/cats/2022-02-02> .
+    ?dataset dataid:version <https://databus.dbpedia.org/john/energy/turbines/2022-02-02> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dataid:file ?file .
     ?distribution dataid:format ?format .
@@ -183,7 +183,7 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?file ?format ?byteSize WHERE {
-    ?dataset dataid:artifact <https://databus.dbpedia.org/john/animals/cats> .
+    ?dataset dataid:artifact <https://databus.dbpedia.org/john/energy/turbines> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dct:hasVersion ?version .
     ?distribution dataid:file ?file .
@@ -191,7 +191,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
     ?distribution dataid:byteSize ?byteSize .
     {
       SELECT (?v as ?version) { 
-        ?dataset dataid:artifact <https://databus.dbpedia.org/john/animals/cats> . 
+        ?dataset dataid:artifact <https://databus.dbpedia.org/john/energy/turbines> . 
         ?dataset dct:hasVersion ?v . 
       } ORDER BY DESC (?version) LIMIT 1 
     }

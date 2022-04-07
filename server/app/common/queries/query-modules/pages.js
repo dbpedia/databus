@@ -19,7 +19,7 @@ instance.getPublishRankingData = async function () {
       account: UriUtils.uriToName(binding.accountUri),
       accountUri: binding.accountUri,
       numUploads: binding.numUploads,
-      uploadSize: binding.uploadSize / (1024 * 1024 * 1024)
+      uploadSize: DatabusUtils.formatFileSize(binding.uploadSize)
     });
   }
 

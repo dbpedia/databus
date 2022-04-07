@@ -7,7 +7,7 @@
 * [Use Cases](docs/usecases.md)
   * [Automated Deployment of DBpedia Services](docs/dbpediadeployment.md)
   * [Building Meta Registries](docs/building-meta-registries.md)
-  * [Maven for Data](overview/usecases/maven-for-data-manage-data-dependencies-like-code.md)
+  * [Maven for Data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
 
@@ -27,5 +27,5 @@
 
 * [Examples](examples/README.md)
 * [Databus API](docs/api.md)
-* [HTTPS & Proxy Setup](usage/https-and-proxy-setup.md)
+* [HTTPS & Proxy Setup](docs/https-and-proxy-setup.md)
 * [Development Environment](devenv/README.md)

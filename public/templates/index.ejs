@@ -26,14 +26,16 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-          <div class="column is-4 stats">
+          <div class="column is-4 stats" style="padding-right: 3em;">
             <p class="section-label">Recent Activity</p>
             <div ng-if="activityChartData.isLoading" style="text-align:center">
-              <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+              <div class="loading-rect" style="min-height: 400px;">
+                <div class="lds-ellipsis">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             </div>
             <activity-chart ng-if="!activityChartData.isLoading" data="activityChartData.entries" height="400">
@@ -41,12 +43,15 @@
             <br />
             <br />
 
-            <div ng-if="uploadRankingData.isLoading" style="text-align:center">
-              <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+            <div style="text-align:center" ng-if="uploadRankingData.isLoading"  >
+            <div class="loading-rect" style="min-height: 400px;">
+
+                <div class="lds-ellipsis">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             </div>
             <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
@@ -70,7 +75,8 @@
                 <div></div>
               </div>
             </div>
-            <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">New Artifacts</p>
+            <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">New
+              Artifacts</p>
             <br />
             <div ng-repeat="dataset in recentUploadsData.data">
               <entity-card style="flex: 1;" label="dataset.label" type="'Artifact'" uri="dataset.artifactUri"

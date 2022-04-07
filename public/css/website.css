@@ -10816,10 +10816,16 @@ a.navbar-item.is-active, a.navbar-item {
   background-color: #fafafa;
 }
 
+.loading-rect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f6f6;
+}
+
 .dropdown-item {
   font-size: 1em;
   padding: 0.25em 0.75em;
-  border-bottom: 1px solid #dbdbdb;
   cursor: pointer;
 }
 

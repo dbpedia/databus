@@ -65,7 +65,7 @@
             flex-basis: 20%;
             flex-grow: 0;
             min-height: 1000px;
-            background-color: #536575;
+            background-color: #343a40;
             color: white;
             background-image: url(../img/banner-background.png);
             background-repeat: repeat;
@@ -89,27 +89,24 @@
             padding: 12px 36px;
             display: flex;
             cursor: pointer;
-            background-color: #516272;
             position: relative;
             align-items: center;
           }
 
           .ce-sidebar-gadient {
             height: 128px;
-            background: rgb(81, 98, 114);
-            background: linear-gradient(180deg, rgba(81, 98, 114, 1) 0%, rgba(9, 9, 121, 0) 100%);
           }
 
           .ce-sidebar-button:hover {
-            background-color: #576979;
+            background-color: rgba(255, 255, 255, 0.15);
           }
 
           .ce-sidebar-button.is-active {
-            background-color: #607385;
+            background-color: rgba(255, 255, 255, 0.1);
           }
 
           .ce-sidebar-button.is-active:hover {
-            background-color: #6c8194;
+            background-color: rgba(255, 255, 255, 0.2);
           }
 
           .ce-sidebar-button.is-active .ce-sidebar-button-pointer {
@@ -195,38 +192,180 @@
             transform: translate(-50%, 0);
             z-index: 10000;
           }
+
+          .ce-action-bar {
+            background-color: #7aaea8;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 1em;
+          }
+
+          .ce-action-bar-title {
+            flex-basis: 20%;
+          }
+
+          .ce-action-bar-content {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 8px 0px;
+          }
+
+          .ce-action-bar-button {
+            padding: 4px;
+            display: flex;
+            opacity: 0.9;
+            cursor: pointer;
+            align-items: center;
+          }
+
+          .ce-action-bar-button:hover {
+            opacity: 1;
+          }
+
+          .ce-action-bar-separator {
+            width: 1px;
+            height: 36px;
+            margin: 0px 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+          }
         </style>
+
+        <div class="ce-action-bar" ng-if="session.activeTab == 0">
+          <div class="ce-action-bar-title">
+            Collection Editor
+          </div>
+          <div class="ce-action-bar-content">
+            <div style="flex: 1"> </div>
+            <div class="ce-action-bar-button" ng-click="createNewCollection()" style="margin-right: .5em;">
+              <databus-icon style="margin-right:8px;" color="'white'" shape="'add'" size="24"></databus-icon>
+              Create New Collection
+            </div>
+            <div class="ce-action-bar-separator"></div>
+            <div class="ce-action-bar-button" ng-click="editCopy()">
+              <databus-icon style="margin-right:8px;" color="'white'" shape="'copy'" size="24"></databus-icon>
+              Duplicate Active Collection
+            </div>
+
+            <div class="ce-action-bar-separator"></div>
+            <div class="ce-action-bar-button" ng-click="deleteCollection()">
+              <databus-icon style="margin-right:8px;" color="'white'" shape="'delete'" size="24"></databus-icon>
+              Delete Active Collection
+            </div>
+          </div>
+        </div>
+
+        <div class="ce-action-bar" ng-if="session.activeTab > 0">
+          <div class="ce-action-bar-title" ng-click="goToTab('')"
+            style="cursor: pointer; display: flex; align-items: center;">
+            <databus-icon shape="'left-thick'" color="'#fff'" size="16" style="margin-right: .5em;"></databus-icon>
+            {{ collectionManager.activeCollection.label }}
+          </div>
+
+
+      
+          <div class="ce-action-bar-content">
+            <div style="flex: 1"> </div>
+            <collection-status
+              is-published="collectionManager.activeCollection.isPublished"
+              is-draft="collectionManager.activeCollection.isDraft"
+              has-local-changes="collectionManager.activeCollection.hasLocalChanges" class="ng-isolate-scope">
+            </collection-status>
+            <div class="ce-action-bar-separator"></div>
+            <div class="ce-action-bar-button" ng-click="saveCollection()">
+              <databus-icon class="is-white" style="margin-right:12px;" color="'white'" shape="'upload'"
+                size="24">
+              </databus-icon>Commit Collection
+            </div>
+            <div class="ce-action-bar-separator" ng-if="!collectionManager.activeCollection.isDraft"></div>
+            <div class="ce-action-bar-button" ng-click="discardChanges()" ng-if="!collectionManager.activeCollection.isDraft">
+              <databus-icon style="margin-right:12px;" color="'black'" shape="'download'" size="24">
+              </databus-icon>Discard Changes
+            </div>
+            <div class="ce-action-bar-separator" ng-if="!collectionManager.activeCollection.isDraft && !collectionManager.activeCollection.isPublished"></div>
+            <div class="ce-action-bar-button" ng-click="unHideCollection()" ng-if="!collectionManager.activeCollection.isDraft && !collectionManager.activeCollection.isPublished">
+              <databus-icon style="margin-right:12px;" color="'black'" shape="'eye'" size="24">
+              </databus-icon>Unhide Collection
+            </div>
+
+            <div class="ce-action-bar-separator" ng-if="!collectionManager.activeCollection.isDraft && collectionManager.activeCollection.isPublished"></div>
+            <div class="ce-action-bar-button" ng-click="hideCollection()" ng-if="!collectionManager.activeCollection.isDraft && collectionManager.activeCollection.isPublished">
+              <databus-icon style="margin-right:12px;" color="'black'" shape="'hide'" size="24">
+              </databus-icon>Hide Collection
+            </div>
+            <div class="ce-action-bar-separator"></div>
+            <div class="dropdown is-hoverable">
+              <div class="dropdown-trigger">
+                <div class="ce-action-bar-button" aria-haspopup="true" aria-controls="dropdown-menu">
+                  <span>More</span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
+                <div class="dropdown-content">
+                  <a class="dropdown-item" ng-click="downloadAsJson()">
+                    Download as JSON
+                  </a>
+                  <a href="#" class="dropdown-item" ng-click="queryToClipboard()">
+                    Copy Query to Clipboard
+                  </a>
+                  <a ng-if="authenticated" class="dropdown-item" ng-click="createSnapshot()">
+                    Create stable Snapshot
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </p>
+
+            <div class="field has-addons" style="margin: 0;">
+               
+             
+             
+              <p class="control"
+                ng-if="!collectionManager.activeCollection.isDraft && collectionManager.activeCollection.isPublished">
+                <button class="button" ng-click="hideCollection()">
+                  <databus-icon style="margin-right:12px;" color="'black'" shape="'hide'" size="24">
+                  </databus-icon>Hide Collection
+                </button>
+              </p>
+
+            
+
+            </div>
+          </div>
+
+
+        </div>
 
         <div style="display: flex; width: 100%;">
           <div class="ce-sidebar">
-            <div class="ce-sidebar-header" ng-if="session.activeTab == 0">
-              Collection Editor
-            </div>
 
-            <div class="ce-sidebar-button"  ng-if="session.activeTab == 0" ng-class="{ 'is-active' : session.activeTab == 0 }" ng-click="goToTab('')">
+            <br />
+            <div class="ce-sidebar-button" ng-if="session.activeTab == 0"
+              ng-class="{ 'is-active' : session.activeTab == 0 }" ng-click="goToTab('')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'collections'" size="24">
               </databus-icon>
               My Collections<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-header" ng-if="session.activeTab > 0" ng-click="goToTab('')"
-              style="cursor: pointer; display: flex; align-items: center;">
-              <databus-icon shape="'left-thick'" color="'#fff'" size="16" style="margin-right: .5em;"></databus-icon>
-              {{ collectionManager.activeCollection.label }}
-            </div>
-            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 1 }"
-              ng-click="goToTab('edit')">
+           
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
+              ng-class="{ 'is-active' : session.activeTab == 1 }" ng-click="goToTab('edit')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'edit'" size="24">
               </databus-icon>
               Edit Content<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 2 }"
-              ng-click="goToTab('preview')">
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
+              ng-class="{ 'is-active' : session.activeTab == 2 }" ng-click="goToTab('preview')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'eye'" size="24">
               </databus-icon>
               Preview<div class="ce-sidebar-button-pointer"></div>
             </div>
-            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 3 }"
-              ng-click="goToTab('query')">
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
+              ng-class="{ 'is-active' : session.activeTab == 3 }" ng-click="goToTab('query')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'help'" size="24">
               </databus-icon>
               Query<div class="ce-sidebar-button-pointer"></div>
@@ -237,8 +376,8 @@
               <databus-icon style="margin-right:12px;" color="'white'" shape="'add'" size="24"></databus-icon>
               Add Groups & Artifacts<div class="ce-sidebar-button-pointer"></div>
             </div>-->
-            <div class="ce-sidebar-button" ng-if="session.activeTab > 0" ng-class="{ 'is-active' : session.activeTab == 5 }"
-              ng-click="goToTab('import')">
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
+              ng-class="{ 'is-active' : session.activeTab == 5 }" ng-click="goToTab('import')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'download'" size="24"></databus-icon>
               Import & Export<div class="ce-sidebar-button-pointer"></div>
             </div>
@@ -249,23 +388,8 @@
           </div>
           <div style="width: 100%;  background-color: #f9fafb;">
 
-            <div class="collection-editor-action-bar" ng-if="session.activeTab == 0">
 
-              <div class="button" ng-click="createNewCollection()" style="margin-right: .5em;">
-                <databus-icon style="margin-right:8px;" color="'black'" shape="'add'" size="24"></databus-icon>
-                Create New Collection
-              </div>
-              <div class="button" ng-click="editCopy()">
-                <databus-icon style="margin-right:8px;" color="'black'" shape="'copy'" size="24"></databus-icon>
-                Duplicate Active Collection
-              </div>
-              <div style="flex: 1"> </div>
-              <div class="button is-danger is-outlined" ng-click="deleteCollection()">
-                Delete Active Collection
-              </div>
-
-            </div>
-            <div style="flex: 1; padding: 2em;">
+            <div style="flex: 1; padding: 1.5em;">
 
               <!--div ng-if="session.activeTab > 0" class="ce-content-active-hint"><b>Active Collection:</b> {{ collectionManager.activeCollection.label }} </div>
       -->
@@ -309,82 +433,6 @@
 
               <div ng-if="session.activeTab == 1">
 
-                <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <div class="ce-content-header" style="flex: 1;">Edit Content of "{{
-                    collectionManager.activeCollection.label }}"</div>
-
-                  <collection-status style="margin-right: 16px;"
-                    is-published="collectionManager.activeCollection.isPublished"
-                    is-draft="collectionManager.activeCollection.isDraft"
-                    has-local-changes="collectionManager.activeCollection.hasLocalChanges" class="ng-isolate-scope">
-                  </collection-status>
-
-                  <div class="field has-addons" style="margin: 0;">
-                    <p class="control">
-                      <button class="button" ng-click="saveCollection()">
-                        <databus-icon class="is-white" style="margin-right:12px;" color="'black'" shape="'upload'"
-                          size="24">
-                        </databus-icon>Commit Collection
-                      </button>
-                    </p>
-                    <p class="control" ng-if="!collectionManager.activeCollection.isDraft">
-                      <button class="button" ng-click="discardChanges()">
-                        <databus-icon style="margin-right:12px;" color="'black'" shape="'download'" size="24">
-                        </databus-icon>Discard Changes
-                      </button>
-                    </p>
-                    <p class="control"
-                      ng-if="!collectionManager.activeCollection.isDraft && !collectionManager.activeCollection.isPublished">
-                      <button class="button" ng-click="unHideCollection()">
-                        <databus-icon style="margin-right:12px;" color="'black'" shape="'eye'" size="24">
-                        </databus-icon>Unhide Collection
-                      </button>
-                    </p>
-                    <p class="control"
-                      ng-if="!collectionManager.activeCollection.isDraft && collectionManager.activeCollection.isPublished">
-                      <button class="button" ng-click="hideCollection()">
-                        <databus-icon style="margin-right:12px;" color="'black'" shape="'hide'" size="24">
-                        </databus-icon>Hide Collection
-                      </button>
-                    </p>
-
-                    <div class="dropdown is-hoverable">
-                      <div class="dropdown-trigger">
-                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                          <span>More</span>
-                          <span class="icon is-small">
-                            <i class="fas fa-angle-down" aria-hidden="true"></i>
-                          </span>
-                        </button>
-                      </div>
-                      <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
-                        <div class="dropdown-content">
-                          <a class="dropdown-item" ng-click="downloadAsJson()">
-                            Download as JSON
-                          </a>
-                          <a href="#" class="dropdown-item" ng-click="queryToClipboard()">
-                            Copy Query to Clipboard
-                          </a>
-                          <a ng-if="authenticated" class="dropdown-item" ng-click="createSnapshot()">
-                            Create stable Snapshot
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-
-                  </div>
-
-
-
-
-                </div>
-
-
-                <div class="ce-content-hint">Edit the form below and click commit collection to save any changes to the
-                  server. All local changes will be automatically saved to your browser storage.</div>
-
-                <br />
                 <div class="ce-content-section">
                   <div style="flex: 1; display: flex; align-items: center;"
                     ng-click="session.showDescription = !session.showDescription">
@@ -412,8 +460,8 @@
                         <td>Collection Identifier</td>
                         <td>
                           <input type="text" class="input" ng-model="form.identifier.value" />
-                          <div>Collection will be accessible at <span
-                              style="color:#3867d6">{{ baseUrl }}/{{username}}/collections/{{form.identifier.value.length
+                          <div>Collection will be accessible at <span style="color:#3867d6">{{ baseUrl
+                              }}/{{username}}/collections/{{form.identifier.value.length
                               > 0 ? form.identifier.value : '...'}}</span></div>
                           <div class="has-text-danger" ng-if="form.identifier.error">{{
                             getStatusMessage(form.identifier.error) }}</div>
@@ -463,7 +511,7 @@
                     <div style="flex: 1;">Content</div>
                   </div>
 
-                 
+
                 </div>
 
 
@@ -475,7 +523,7 @@
                 </div>
 
 
-             <!--   <div class="ce-content-section">
+                <!--   <div class="ce-content-section">
 
                   <div style="flex: 2; display: flex; align-items: center;"
                     ng-click="session.showQueries = !session.showQueries">
@@ -548,15 +596,10 @@
 
               <div ng-if="session.activeTab == 2">
 
-                <div class="ce-content-header" style="margin-bottom: 1em;">Preview of "{{
-                  collectionManager.activeCollection.label }}"</div>
-                <div class="ce-content-hint">This page shows a preview of how other users will see your collection once
-                  it is published.</div>
 
                 <div style="padding: 1em; background-color: white; border: 1px solid #dbdbdb;">
                   <collection-statistics collection="collectionManager.activeCollection">
                   </collection-statistics>
-                  <br />
                   <br />
                   <collection-data-table collection="collectionManager.activeCollection">
                   </collection-data-table>
@@ -566,8 +609,7 @@
               <div ng-if="session.activeTab == 3">
 
                 <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <div class="ce-content-header" style="flex: 1;">Query of "{{ collectionManager.activeCollection.label
-                    }}"</div>
+               
                   <p class="control">
                     <button class="button" ng-click="queryToClipboard()">
                       <databus-icon style="margin-right:12px;" color="'#333'" shape="'copy'" size="24">
@@ -602,8 +644,8 @@
                   results to your active Databus Collection by clicking the <b>Add To Collection</b> button next to the
                   search result.</b>.</div>
 
-                <collection-search on-component-added="onComponentAdded()"
-                  target-databus-url="session.targetDatabusUrl" collection="collectionManager.activeCollection">
+                <collection-search on-component-added="onComponentAdded()" target-databus-url="session.targetDatabusUrl"
+                  collection="collectionManager.activeCollection">
                 </collection-search>
 
               </div>

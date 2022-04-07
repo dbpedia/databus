@@ -63,7 +63,7 @@ module.exports = function (router, protector) {
     if(req.params.account.length < 4) {
       next('route');
       return;
-    }
+    } 
     
     var repo = req.params.account;
     var path = req.params.group;
