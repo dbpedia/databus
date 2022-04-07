@@ -16,6 +16,7 @@ function FrontPageController($scope, $sce, $http) {
 
   $scope.activityChartData = {};
   $scope.activityChartData.isLoading = true;
+  $scope.searchQuery = "";
 
   $http.get(`/app/index/activity`).then(function (response) {
     $scope.activityChartData.entries = response.data;

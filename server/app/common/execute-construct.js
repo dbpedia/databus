@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 
 
 function escapeQuotes(value) {
-  return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r');
+  return value.replace('/\\/g', '\\\\').replace('/"/g', '\\"').replace('/\n/g', '\\n').replace('/\r/g', '\\r');
 }
 /**
  * 

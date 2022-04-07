@@ -3,35 +3,51 @@
 
   <div class="field" style="display: flex;">
     <div class="control" style="flex:1;">
-      <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()" placeholder="Search the Databus...">
+      <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()"
+        placeholder="Search the Databus...">
     </div>
     <div class="field" style="display:flex; align-items: center; line-height: 1;">
       <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterArtifact');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'">
+        </type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterGroup')" class="is-clickable">
-        <type-tag width="36" height="36"  ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'">
+        </type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterPublisher');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }" type="'PersonalProfileDocument'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }"
+          type="'PersonalProfileDocument'"></type-tag>
       </div>
       <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterCollection');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }" type="'Collection'"></type-tag>
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }"
+          type="'Collection'"></type-tag>
       </div>
-      
+
     </div>
   </div>
- 
-  <br ng-if="results.docs.length > 0" />  <br ng-if="$ctrl.results.docs.length > 0" />
 
-  <div class="dataset-name" ng-repeat="result in $ctrl.results.docs">
+  <div ng-if="$ctrl.searchInput.length > 0">
+    <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center;">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
 
-    <entity-card label="result.label[0]" 
-    type="result.typeName[0]" uri="result.resource[0]"
-    desc="result.comment[0]">
-  </entity-card>
+    <div ng-if="!$ctrl.isSearching" style="margin-top: 2em;">
+      <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any resource.</i></div>
+      <div class="dataset-name" ng-repeat="result in $ctrl.results.docs">
 
-   
-  <div ng-if="!$last" class="is-divider"></div>
-</div>
+        <entity-card label="result.label[0]" type="result.typeName[0]" uri="result.resource[0]"
+          desc="result.comment[0]">
+        </entity-card>
+
+
+        <div ng-if="!$last" class="is-divider"></div>
+      </div>
+    </div>
+  </div>
 </div>

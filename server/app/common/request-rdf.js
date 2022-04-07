@@ -7,7 +7,7 @@ function parseRdfSync(contentType, data) {
   var quads = [];
   return new Promise(function (resolve, reject) {
     rdfParser.parse(buffer, { contentType: contentType })
-      .on('data', (quad) => quads.push(quad))
+      .on('data', (quad) => { quads.push(quad); })
       .on('error', (error) => reject(error))
       .on('end', () => resolve(quads));
   });
@@ -39,7 +39,9 @@ requestRDF.requestQuads = async function(uri) {
   }
 
   console.log(`Content type ${contentType} detected. Parsing...`);
-  return await parseRdfSync(contentType, response.data);
+  var quads = await parseRdfSync(contentType, response.data);
+
+  return quads;
 }
 
 requestRDF.requestN3 = async function(uri) {

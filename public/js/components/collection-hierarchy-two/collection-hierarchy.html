@@ -353,7 +353,7 @@
       <div class="ce-artifact-tree-line">
       </div>
 
-      <div ng-if="groupNode.childNodes.length > 0">
+      <div ng-if="groupNode.childNodes.length > 0 || groupNode.files.length > 0">
         <div class="ce-line-button" style="left:86px" ng-if="groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupView)">
           <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
         </div>
@@ -664,10 +664,9 @@
           </div>
         </div>
       </div>
-
       <div ng-repeat-end style="margin-bottom: 1em;"></div>
     </div>
-    <div class="ce-content-file" ng-if="groupNode.files && groupNode.files.length > 0">
+    <div class="ce-content-file" ng-if="!groupView.collapsed && groupNode.files && groupNode.files.length > 0">
       <div ng-repeat="file in groupNode.files" class="file-row">
         <div class="ce-file-tree-line"></div>
         <div class="ce-content-files-header">
@@ -676,8 +675,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
   <div ng-repeat-end style="margin-bottom: 1em;"></div>
 </div>

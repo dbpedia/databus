@@ -672,7 +672,7 @@
                           <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
                             <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
                               <input placeholder="Search for a license" class="input" ng-model="licenseQuery" ng-change="filterLicenses(licenseQuery)" />
-                              <div ng-repeat="license in filteredLicenseList"
+                              <div ng-repeat="license in filteredLicenseList | limitTo: 25" style="padding: 0.5em 0.25em;"
                                 ng-click="version.license=license.id.value">
                                 {{ license.title.value }}
                               </div>

@@ -50,10 +50,11 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.result = {};
 
   $scope.filterLicenses = function(licenseQuery) {
-    var tokens = licenseQuery.split(' ');
+    // billo-suche mit lowercase und tokenization 
+    var tokens = licenseQuery.toLowerCase().split(' ');
     $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function(l) {
       for(var token of tokens) {
-        if(!l.title.value.includes(token)) {
+        if(!l.title.value.toLowerCase().includes(token)) {
           return false;
         }
       }

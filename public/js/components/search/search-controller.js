@@ -16,6 +16,8 @@ function SearchController($http, $interval, $sce) {
     ctrl.search();
   }
 
+  ctrl.isSearching = false;
+
   ctrl.searchInput = '';
   ctrl.filters = {};
   ctrl.filters.filterArtifact = false;
@@ -27,6 +29,7 @@ function SearchController($http, $interval, $sce) {
   $interval(function () {
 
     if (ctrl.searchChanged) {
+
 
       var typeFilters = '';
 
@@ -52,8 +55,10 @@ function SearchController($http, $interval, $sce) {
         method: 'GET',
         url: '/api/search?query=' + ctrl.searchInput + typeFilters
       }).then(function successCallback(response) {
+        ctrl.isSearching = false;
         ctrl.results = response.data;
       }, function errorCallback(response) {
+        ctrl.isSearching = false;
       });
 
       ctrl.searchChanged = false;
@@ -61,6 +66,7 @@ function SearchController($http, $interval, $sce) {
   }, ctrl.searchCooldown);
 
   ctrl.search = function () {
+    ctrl.isSearching = true;
     ctrl.searchChanged = true;
   };
 
