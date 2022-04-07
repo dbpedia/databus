@@ -42,6 +42,7 @@ srv-start-auth0:
 
 srv-start-dbpedia-keycloak:
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
+	DATABUS_NAME=${DATABUS_NAME} \
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://databus.dbpedia.org/auth/realms/databus \
 	DATABUS_OIDC_CLIENT_ID=databus-test-client \
