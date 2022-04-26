@@ -28,9 +28,9 @@ services:
   gstore:
     image: "dbpedia/gstore"
     environment:
-      VIRT_USER: ${VIRTUOSO_USER}
-      VIRT_PASS: ${VIRTUOSO_PASSWORD}
-      VIRT_URI: "http://virtuoso:8890"
+      STORAGE_USER: ${VIRTUOSO_USER}
+      STORAGE_PASS:  ${VIRTUOSO_PASSWORD}
+      STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
       GIT_ROOT: "/root/git"
     ports:
       - "127.0.0.1:3002:8080"
