@@ -32,9 +32,6 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
 
-    //console.log(`Non-Part Graphs:\n`);
-    //console.log(distributionlessGraphs);
-
     var tripleCount = 0;
     var step = 100;
 
@@ -54,14 +51,12 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
         });
       }
 
-      // console.log(`Distributions grabbed: ${datasetGraph[DatabusUris.DCAT_DISTRIBUTION]}`); 
-
       var slice = distributionlessGraphs.concat(distributionSubset);
 
       // console.log(JSON.stringify(slice, null, 3));
       var triples = await constructor.executeConstruct(slice, constructVersionQuery);
       tripleCount += DatabusUtils.lineCount(triples);
-      
+
       var subGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
       subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATAID_PART);
 
@@ -99,7 +94,13 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     // Validate the prefix of the Dataset identifier
     if (!datasetGraph["@id"].startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
-      return { code: 400, message: `${datasetGraph["@id"]} does not start with the databus base URL ${process.env.DATABUS_RESOURCE_BASE_URL}` };
+      notify(`${datasetGraph["@id"]} does not start with the databus base URL ${process.env.DATABUS_RESOURCE_BASE_URL}`);
+      return { code: 400, message: null };
+    }
+
+    if (!datasetGraph["@id"].startsWith(accountUri)) {
+      notify(`${datasetGraph["@id"]} does not start with the account URL ${accountUri} of the account in use.`);
+      return { code: 400, message: null };
     }
 
     // Do dataid-autocompletion
@@ -109,6 +110,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     if (before != after) {
       notify(`Auto-completed the input.`);
+      notify(JSON.stringify(expandedGraph, null, 3));
     }
 
     if (verifyParts) {
@@ -157,6 +159,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
         notify(`   * ${message}`);
       }
 
+
+      notify(JSON.stringify(shaclResult.report, null, 3));
       return { code: 400, message: null };
     }
 

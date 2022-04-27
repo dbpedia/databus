@@ -63,6 +63,8 @@ function PublishWizardController($scope, $http, focus, $q) {
     });
   }
 
+  $scope.filterLicenses("");
+
   $scope.watchSession = function () {
     return $scope.$watch('session', function (newVal, oldVal) {
       $scope.session.data.validate();

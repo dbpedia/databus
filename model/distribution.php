@@ -332,7 +332,7 @@ $shacl='<#properties-are-cvs>
 	sh:sparql [
 		sh:message "All used sub-properties of dataid:contentVariant MUST be used by all dataid:Parts exactly ONCE." ;
     sh:select """
-      SELECT ?this ?bindingCount ?distCount ?propCount
+      SELECT ?this ?value ?bindingCount ?distCount ?propCount
       {
         {
           SELECT ?this (COUNT(?cvProperty) AS ?bindingCount) {
@@ -356,6 +356,7 @@ $shacl='<#properties-are-cvs>
           } GROUP BY ?this
         }
       
+        BIND(STR(?bindingCount) AS ?value)
         FILTER((?distCount * ?propCount) != ?bindingCount)
       }
 			""" ;
@@ -376,7 +377,7 @@ $shacl='<#properties-are-cvs>
             {
               SELECT ?dist (CONCAT(STR(?format), ",", STR(?compression), ",", (COALESCE(GROUP_CONCAT(DISTINCT ?cvTuple; SEPARATOR=","), ""))) AS ?cvString) WHERE {
                 ?dist a <http://dataid.dbpedia.org/ns/core#Part> .
-                ?dist <http://dataid.dbpedia.org/ns/core#format> ?format .
+                ?dist <http://dataid.dbpedia.org/ns/core#formatExtension> ?format .
                 ?dist <http://dataid.dbpedia.org/ns/core#compression> ?compression .
                 OPTIONAL { 
                   ?dist ?cvProperty ?cvValue .
@@ -395,6 +396,39 @@ $shacl='<#properties-are-cvs>
         }
         FILTER(?distCount != ?distinguishableDistCount)
       }
+			""" ;
+	] .
+
+  <#is-part-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "Part URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?value
+			WHERE {
+        ?this <http://www.w3.org/ns/dcat#distribution> ?value .
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($value), str(?version)))
+			}
+			""" ;
+	] .
+
+  <#is-file-uri-correct>
+	a sh:NodeShape;
+	sh:targetClass dataid:Dataset ;
+	sh:sparql [
+		sh:message "File URI must contain the version URI of the associated version." ;
+		sh:prefixes dataid: ;
+    sh:select """
+			SELECT $this ?value
+			WHERE {
+        ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
+        ?dist <http://dataid.dbpedia.org/ns/core#file> ?value .
+				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        FILTER(!strstarts(str($value), str(?version)))
+			}
 			""" ;
 	] .
 ';

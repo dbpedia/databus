@@ -14,6 +14,7 @@ instance.minify = async function (rootFolder, format, targetFile, targetMap) {
 
   for(var f in files) {
     var file = files[f];
+
     minifiables[file] = fs.readFileSync(file, "utf8");
   }
    
@@ -21,6 +22,7 @@ instance.minify = async function (rootFolder, format, targetFile, targetMap) {
   var targetMapPath = __dirname + '/' + rootFolder + '/' + targetMap;
 
   var options =  { sourceMap: true };
+  
   var minified = await minify(minifiables, options);
 
   fs.writeFileSync(targetFilePath, minified.code, "utf8");

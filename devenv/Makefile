@@ -38,7 +38,7 @@ srv-start-auth0:
 	DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com \
 	DATABUS_OIDC_CLIENT_ID=e9eOLS9IkGvuyBl7cBorWUQTNgbqejhc \
 	DATABUS_OIDC_SECRET=0RVo9jMnbhPnkR6Ttz0aXQRTcRuSz5DpqyUEjbbcbgRuGA4rbwCjnHM2cOlTrv9q \
-	npm start --prefix ../server
+	npm start --prefix ./../server
 
 srv-start-dbpedia-keycloak:
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \

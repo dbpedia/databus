@@ -41,11 +41,12 @@
               </div>
             </div>
 
-            <activity-chart style="display: flex;" ng-if="!activityChartData.isLoading" data="activityChartData.entries" height="400">
+            <activity-chart style="display: flex;" ng-if="!activityChartData.isLoading" data="activityChartData.entries"
+              height="400">
             </activity-chart>
 
             <p class="section-label">Most Active Users</p>
-              
+
             <div style="text-align:center" ng-if="uploadRankingData.isLoading">
               <div class="loading-rect" style="min-height: 400px;">
                 <div class="lds-ellipsis">
@@ -67,14 +68,17 @@
             <search search-input="searchQuery"></search>
             <div ng-if="searchQuery.length == 0">
               <div ng-if="recentUploadsData.isLoading" style="text-align:center">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
+
+                <div class="loading-rect" style="min-height: 600px; margin-top: 2em;">
+                  <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
                 </div>
               </div>
-              <br/>
+              <br />
               <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">New
                 Artifacts</p>
               <br />

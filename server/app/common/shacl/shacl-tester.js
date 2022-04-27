@@ -89,7 +89,7 @@ async function validateJsonld(rdf, shaclFile) {
       }
     }
 
-    return { isSuccess: conforms, messages: messages };
+    return { isSuccess: conforms, messages: messages, report: JSON.parse(res) };
 
     /*
     if (instance.validators == null) {
@@ -127,6 +127,7 @@ async function validateJsonld(rdf, shaclFile) {
 */
   } catch (err) {
 
+    console.log(err);
     if (err.response == undefined) {
       return { isSuccess: false, message: err };
     }

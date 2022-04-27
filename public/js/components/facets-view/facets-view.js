@@ -27,7 +27,7 @@ class FacetSettings {
   changeSetting(key, value, targetState) {
     var parentState = this.findParentSettingState(key, value);
 
-    if(parentState != targetState) {
+    if (parentState != targetState) {
       this.createOrAddSetting(key, value, targetState);
     } else {
       this.removeSetting(key, value);
@@ -44,13 +44,13 @@ class FacetSettings {
    * @return {[type]}       [description]
    */
   findParentSettingState(key, value) {
-    if(this.parentFacets == undefined) {
+    if (this.parentFacets == undefined) {
       return false;
     }
 
-    for(var p in this.parentFacets) {
+    for (var p in this.parentFacets) {
       var setting = this.parentFacets[p];
-      if(setting.key == key && setting.value == value) {
+      if (setting.key == key && setting.value == value) {
         return setting.checked;
       }
     }
@@ -59,9 +59,9 @@ class FacetSettings {
   }
 
   findOwnSettingState(key, value) {
-    for(var p in this.facets) {
+    for (var p in this.facets) {
       var setting = this.facets[p];
-      if(setting.key == key && setting.value == value) {
+      if (setting.key == key && setting.value == value) {
         return setting.checked;
       }
     }
@@ -75,21 +75,21 @@ class FacetSettings {
   }
 
   createOrAddSetting(key, value, state) {
-    for(var p in this.facets) {
+    for (var p in this.facets) {
       var setting = this.facets[p];
-      if(p == key && setting.value == value) {
+      if (p == key && setting.value == value) {
         setting.checked = state;
         return;
       }
     }
 
-    this.facets[key] = { value : value, checked : state };
+    this.facets[key] = { value: value, checked: state };
   }
 
   removeSetting(key, value) {
-    for(var p in this.facets) {
+    for (var p in this.facets) {
       var setting = this.facets[p];
-      if(setting.key == key && setting.value == value) {
+      if (setting.key == key && setting.value == value) {
         this.facets.splice(p, 1);
         return;
       }
@@ -104,11 +104,11 @@ function FacetsViewController($http, $scope) {
   ctrl.$http = $http;
   ctrl.maxEntries = 6;
 
-  ctrl.$onInit = function() {
+  ctrl.$onInit = function () {
 
   }
 
-  ctrl.$onChanges = function() {
+  ctrl.$onChanges = function () {
     // create the queries...
     ctrl.isLoading = true;
 
@@ -116,27 +116,28 @@ function FacetsViewController($http, $scope) {
     ctrl.node = QueryNode.createFrom(ctrl.node);
     ctrl.viewModel = {};
 
-    if(ctrl.facets == undefined) {
+    if (ctrl.facets == undefined) {
       ctrl.facets = [];
     }
 
-    var queryUri = ctrl.resourceType == 'version' ? 
-      ctrl.node.uri + '/' + ctrl.node.facetSettings['http://purl.org/dc/terms/hasVersion'][0].value 
+    var queryUri = ctrl.resourceType == 'version' ?
+      ctrl.node.uri + '/' + ctrl.node.facetSettings['http://purl.org/dc/terms/hasVersion'][0].value
       : ctrl.node.uri;
 
     // Load the available resource facets
     // TODO: Remove resource type, can be derived from uri
     ctrl.$http.get('/system/pages/facets', {
-      params : { uri : queryUri, type : ctrl.resourceType } }).then(function(result) {
+      params: { uri: queryUri, type: ctrl.resourceType }
+    }).then(function (result) {
 
       // Facets data has been loaded
       ctrl.isLoading = false;
 
       // Fix artifact facet values for groups
-      if(ctrl.resourceType == 'group') {
-        for(var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
+      if (ctrl.resourceType == 'group') {
+        for (var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
           var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
-          result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i] 
+          result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
             = DatabusCollectionUtils.uriToName(value);
         }
       }
@@ -149,7 +150,7 @@ function FacetsViewController($http, $scope) {
 
       // Prepare visible facet settings and autofill data based on the facet data returned by the API
       // Create key base entries (unset, not overriden)
-      for(var key in result.data) {
+      for (var key in result.data) {
 
         var facetData = result.data[key];
 
@@ -163,74 +164,76 @@ function FacetsViewController($http, $scope) {
         ctrl.viewModel[key].autofill.selectedValues = [];
         ctrl.viewModel[key].autofill.input = '';
 
-        for(var v in facetData.values) {
+        for (var v in facetData.values) {
 
           var value = facetData.values[v];
 
           var facetSetting = {
-            value : value,
-            checked : false,
-            isOverride : false
+            value: value,
+            checked: false,
+            isOverride: false
           };
 
           ctrl.viewModel[key].visibleFacetSettings.push(facetSetting);
 
-          if(v >= ctrl.maxEntries - 1)
+          if (v >= ctrl.maxEntries - 1)
             break;
         }
       }
 
       // Add the "Latest Version" facet to the visible settings of the version facet
-      if(ctrl.resourceType != 'version') {
+      if (ctrl.resourceType != 'version') {
         ctrl.viewModel[FACET_VERSION_KEY].visibleFacetSettings.unshift({
-          value : FACET_LATEST_VERSION_VALUE,
-          checked : false,
-          isOverride : false
+          value: FACET_LATEST_VERSION_VALUE,
+          checked: false,
+          isOverride: false
         });
-      } else {
-        delete ctrl.viewModel[FACET_VERSION_KEY];
-      }
 
-     
 
-      // Apply the existing settings to the view model
-      var fullFacets = ctrl.node.createFullFacetSettings();
 
-     
+        // Apply the existing settings to the view model
+        var fullFacets = ctrl.node.createFullFacetSettings();
 
-      for(var key in fullFacets) {
-        var facetSettingList = fullFacets[key];
+        for (var key in fullFacets) {
+          var facetSettingList = fullFacets[key];
 
-        for(var i in facetSettingList) {
-          var facetSetting = facetSettingList[i];
+          for (var i in facetSettingList) {
+            var facetSetting = facetSettingList[i];
 
-          var visibleFacetSetting = ctrl.getOrCreateVisibleFacetSetting(key, facetSetting.value);
+            var visibleFacetSetting = ctrl.getOrCreateVisibleFacetSetting(key, facetSetting.value);
 
-          if(visibleFacetSetting != null) {
-            visibleFacetSetting.checked = facetSetting.checked;
-            visibleFacetSetting.isOverride = ctrl.node.isOverride(key, facetSetting.value, facetSetting.checked);
+            if (visibleFacetSetting != null) {
+              visibleFacetSetting.checked = facetSetting.checked;
+              visibleFacetSetting.isOverride = ctrl.node.isOverride(key, facetSetting.value, facetSetting.checked);
             }
+          }
         }
-      }
 
-       // If we're a group node, check for artifact nodes and add them as facets
-       if(ctrl.resourceType == 'group') {
-        for(var i in ctrl.node.childNodes) {
-          var artifactNode = ctrl.node.childNodes[i];
-          var facetValue = DatabusCollectionUtils.uriToName(artifactNode.uri)
-          var visibleFacetSetting = 
-            ctrl.getOrCreateVisibleFacetSetting('http://dataid.dbpedia.org/ns/core#artifact', facetValue);
-          visibleFacetSetting.checked = true;
-          visibleFacetSetting.isOverride = true;
+        if (ctrl.resourceType == 'version') {
+
+          delete ctrl.viewModel[FACET_VERSION_KEY];
+
         }
-      }
 
-      ctrl.onLoaded();
+        // If we're a group node, check for artifact nodes and add them as facets
+        if (ctrl.resourceType == 'group') {
+          for (var i in ctrl.node.childNodes) {
+            var artifactNode = ctrl.node.childNodes[i];
+            var facetValue = DatabusCollectionUtils.uriToName(artifactNode.uri)
+            var visibleFacetSetting =
+              ctrl.getOrCreateVisibleFacetSetting('http://dataid.dbpedia.org/ns/core#artifact', facetValue);
+            visibleFacetSetting.checked = true;
+            visibleFacetSetting.isOverride = true;
+          }
+        }
+
+        ctrl.onLoaded();
+      }
     });
   }
 
-  ctrl.getFacetLabel = function(value) {
-    if(value == FACET_LATEST_VERSION_VALUE) {
+  ctrl.getFacetLabel = function (value) {
+    if (value == FACET_LATEST_VERSION_VALUE) {
       return FACET_LATEST_VERSION_LABEL;
     }
 
@@ -243,13 +246,13 @@ function FacetsViewController($http, $scope) {
    * @param  {[type]} state [description]
    * @return {[type]}       [description]
    */
-  ctrl.changeFacetValueState = function(key, value, targetState) {
-    
-    if(ctrl.resourceType == 'group' && key == 'http://dataid.dbpedia.org/ns/core#artifact') {
+  ctrl.changeFacetValueState = function (key, value, targetState) {
+
+    if (ctrl.resourceType == 'group' && key == 'http://dataid.dbpedia.org/ns/core#artifact') {
 
       var childUri = ctrl.node.uri + '/' + value;
 
-      if(targetState) {
+      if (targetState) {
         var artifactNode = new QueryNode(childUri, 'dataid:artifact');
         QueryNode.addChild(ctrl.node, artifactNode);
       } else {
@@ -258,25 +261,24 @@ function FacetsViewController($http, $scope) {
 
       var visibleSetting = ctrl.getOrCreateVisibleFacetSetting(key, value);
 
-      if(visibleSetting != null) {
+      if (visibleSetting != null) {
         visibleSetting.checked = targetState;
         visibleSetting.isOverride = targetState;
       }
     }
-    else
-    {
+    else {
       // apply change to view model
       ctrl.node.setFacet(key, value, targetState);
 
       var visibleSetting = ctrl.getOrCreateVisibleFacetSetting(key, value);
-      
-      if(visibleSetting != null) {
+
+      if (visibleSetting != null) {
         visibleSetting.checked = targetState;
         visibleSetting.isOverride = ctrl.node.isOverride(key, value, targetState);
       }
     }
 
-    if(ctrl.viewModel[key].autofill.selectedValues.length > 0) {
+    if (ctrl.viewModel[key].autofill.selectedValues.length > 0) {
       ctrl.complete(ctrl.viewModel[key]);
     }
 
@@ -290,12 +292,12 @@ function FacetsViewController($http, $scope) {
    * @param  {[type]} value [description]
    * @return {[type]}       [description]
    */
-  ctrl.getOrCreateVisibleFacetSetting = function(key, value) {
+  ctrl.getOrCreateVisibleFacetSetting = function (key, value) {
 
-    if(ctrl.viewModel[key] == undefined) {
+    if (ctrl.viewModel[key] == undefined) {
       // This is a facet that the node does not have, but a parent has
 
-      var label =  DatabusCollectionUtils.uriToName(key);
+      var label = DatabusCollectionUtils.uriToName(key);
       label = label[0].toUpperCase() + label.slice(1);
 
       ctrl.viewModel[key] = {};
@@ -308,9 +310,9 @@ function FacetsViewController($http, $scope) {
       ctrl.viewModel[key].autofill.input = '';
     }
 
-    for(var i in ctrl.viewModel[key].visibleFacetSettings) {
+    for (var i in ctrl.viewModel[key].visibleFacetSettings) {
       var facetSetting = ctrl.viewModel[key].visibleFacetSettings[i];
-      if(facetSetting.value == value) {
+      if (facetSetting.value == value) {
         return facetSetting; // ctrl.facetSettings[key];
       }
     }
@@ -324,12 +326,12 @@ function FacetsViewController($http, $scope) {
   }
 
   // Get all active facets of a certain key
-  ctrl.getActiveFilters = function(key) {
+  ctrl.getActiveFilters = function (key) {
     var activeFilters = [];
 
-    for(var f in ctrl.facets[key].items) {
+    for (var f in ctrl.facets[key].items) {
       var filter = ctrl.facets[key].items[f];
-      if(filter.checked) {
+      if (filter.checked) {
         activeFilters.push(filter);
       }
     }
@@ -338,10 +340,10 @@ function FacetsViewController($http, $scope) {
   }
 
   // Checks whether any filter for a key is set
-  ctrl.hasActiveFilters = function(key) {
-    for(var f in ctrl.facets[key].items) {
+  ctrl.hasActiveFilters = function (key) {
+    for (var f in ctrl.facets[key].items) {
       var filter = ctrl.facets[key].items[f];
-      if(filter.checked) {
+      if (filter.checked) {
         return true;
       }
     }
@@ -349,32 +351,32 @@ function FacetsViewController($http, $scope) {
     return false;
   }
 
-  ctrl.complete = function(facetData){
+  ctrl.complete = function (facetData) {
     facetData.autofill.selectedValues.length = 0;
-		for(var a in facetData.autofill.values) {
+    for (var a in facetData.autofill.values) {
       var e = facetData.autofill.values[a];
-      if(e.toLowerCase().indexOf(facetData.autofill.input.toLowerCase()) >= 0) {
-        
+      if (e.toLowerCase().indexOf(facetData.autofill.input.toLowerCase()) >= 0) {
+
         var include = true;
 
-        for(var v in facetData.visibleFacetSettings) {
+        for (var v in facetData.visibleFacetSettings) {
           var visibleSettings = facetData.visibleFacetSettings[v];
-          if(visibleSettings.value == e.toLowerCase()) {
+          if (visibleSettings.value == e.toLowerCase()) {
             include = false;
           }
         }
 
-        if(include) {
+        if (include) {
           facetData.autofill.selectedValues.push(e);
         }
-			}
-		}
+      }
+    }
   }
 
   // Clears the autofill lists
-  ctrl.clearAutofill = function() {
+  ctrl.clearAutofill = function () {
     var self = ctrl;
-    for(var f in self.viewModel) {
+    for (var f in self.viewModel) {
       var data = self.viewModel[f];
       data.autofill.selectedValues.length = 0;
     }
