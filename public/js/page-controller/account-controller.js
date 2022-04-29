@@ -202,6 +202,10 @@ function AccountPageController($scope, $http, $location) {
   }
 
   $scope.refreshFeaturedContent = function () {
+    if($scope.profileData.featuredContent == undefined) {
+      return;
+    }
+    
     var featuredContentUris = $scope.profileData.featuredContent.split('\n');
     $scope.featuredContent = [];
 

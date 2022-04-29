@@ -16,7 +16,7 @@ var autocompleter = require('./dataid-autocomplete');
 var fileAnalyzer = require('../../common/file-analyzer');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
-module.exports = async function publishDataid(account, data, verifyParts, notify) {
+module.exports = async function publishDataid(account, data, verifyParts, notify, debug) {
 
   try {
 
@@ -52,8 +52,6 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       }
 
       var slice = distributionlessGraphs.concat(distributionSubset);
-
-      // console.log(JSON.stringify(slice, null, 3));
       var triples = await constructor.executeConstruct(slice, constructVersionQuery);
       tripleCount += DatabusUtils.lineCount(triples);
 
@@ -66,12 +64,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
         fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
           '@id': subGraph[DatabusUris.JSONLD_ID]
         });
-
       }
     }
-
-    // console.log(fullGraph);
-
 
     // Create multiple datasets by removing distributions
     // Fetch only relevant triples from the input via construct query
@@ -98,11 +92,6 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       return { code: 400, message: null };
     }
 
-    if (!datasetGraph["@id"].startsWith(accountUri)) {
-      notify(`${datasetGraph["@id"]} does not start with the account URL ${accountUri} of the account in use.`);
-      return { code: 400, message: null };
-    }
-
     // Do dataid-autocompletion
     var before = JSON.stringify(expandedGraph);
     autocompleter.autocomplete(expandedGraph, accountUri);
@@ -110,7 +99,9 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     if (before != after) {
       notify(`Auto-completed the input.`);
-      notify(JSON.stringify(expandedGraph, null, 3));
+      if (debug) {
+        notify(JSON.stringify(expandedGraph, null, 3));
+      }
     }
 
     if (verifyParts) {
@@ -159,8 +150,10 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
         notify(`   * ${message}`);
       }
 
-
-      notify(JSON.stringify(shaclResult.report, null, 3));
+      if (debug) {
+        notify(JSON.stringify(shaclResult.report, null, 3));
+      }
+      
       return { code: 400, message: null };
     }
 
@@ -172,6 +165,13 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
 
     notify(`Publishing as "${datasetPublisherUri}".`);
+
+    // accessValidator.hasAccess(accountUri, datasetGraph["@id"], datasetPublisherUri);
+
+    if (!datasetGraph["@id"].startsWith(accountUri)) {
+      notify(`Forbidden: ${datasetGraph["@id"]} does not start with the account URL ${accountUri} of the account in use.`);
+      return { code: 403, message: null };
+    }
 
     // Validate the publisher and account (<publisherUri<foaf:account<accountUri>)
     var isPublisherConnectedToAccount =

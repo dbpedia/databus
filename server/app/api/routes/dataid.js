@@ -41,7 +41,7 @@ module.exports = function (router, protector) {
       var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
         console.log(message);
         report += `> ${message}\n`;
-      });
+      }, false);
 
       
 

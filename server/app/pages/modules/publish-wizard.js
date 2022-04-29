@@ -19,7 +19,6 @@ module.exports = function (router, protector) {
       var dalicc = await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000');
       var publishers = await sparql.accounts.getPublishersByAccount(auth.info.accountName);
 
-
       res.render('publish-wizard', {
         title: 'Publish Data',
         data: { auth: auth, publisherData: publishers, licenseData: JSON.parse(dalicc) }
@@ -95,6 +94,7 @@ module.exports = function (router, protector) {
     if (header['content-disposition'] != undefined) {
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
+      console.log(filename);
       // console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
       parseFormatAndCompression(result, filename);
 
@@ -111,6 +111,21 @@ module.exports = function (router, protector) {
     return null;
   }
 
+  function getFileNameFromDisposition(disposition) {
+
+    console.log(disposition);
+    var entries = disposition.split(' ');
+
+    for(var entry of entries) {
+      if(entry.startsWith('filename')) {
+        return entry.split('=')[1];        
+      }
+    }
+
+    return undefined;
+  }
+
+  
   function transformGithubUrl(url) {
 
     url = url.replace("/blob/", "/");
@@ -120,6 +135,10 @@ module.exports = function (router, protector) {
   }
 
   function parseFormatAndCompression(result, value) {
+
+    if(value == undefined) {
+      return;
+    }
 
     var nameComponents = value.split('/');
 

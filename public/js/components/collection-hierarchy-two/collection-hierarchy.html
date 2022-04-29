@@ -386,7 +386,7 @@
                   <span ng-if="value.value == ''" style="color: #a3a3a3;">
                     <i>None</i>
                   </span>
-                  <span ng-if="value.value != ''">{{ value.value }}</span><span ng-if="!$last">, </span>
+                  <span ng-if="value.value != ''">{{ value.value == '$latest' ? 'Latest Version' : value.value }}</span><span ng-if="!$last">, </span>
                 </span>
               </div>
             </div>
@@ -564,7 +564,7 @@
 
             <p style="margin-bottom: 0.5em;"><b>Active Filters:</b></p>
 
-            <div style="display: flex; flex-wrap: wrap;">
+            <div>
 
               <!-- Active filters on the group node -->
               <div ng-repeat="uri in $ctrl.getAllFilters(artifactNode, groupNode)"
@@ -579,7 +579,7 @@
                       ng-if='groupNode.facetSettings[uri] != undefined'>
                       (from parent)</span>
                   </div>
-                  <multiselect-dropdown style="min-width: 250px" placeholder="Select values..."
+                  <multiselect-dropdown style="min-width: 350px" placeholder="Select values..."
                     parent-input="groupNode.facetSettings[uri]" input="artifactNode.facetSettings[uri]"
                     values="artifactView.facets[uri].values" on-change="$ctrl.onActiveFilterChanged(artifactNode)">
                   </multiselect-dropdown>

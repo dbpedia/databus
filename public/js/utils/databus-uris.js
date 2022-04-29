@@ -31,6 +31,8 @@ class DatabusUris {
   static DCT_CREATED = 'http://purl.org/dc/terms/created';
   static DCT_MODIFIED = 'http://purl.org/dc/terms/modified';
   static DCT_DISTRIBUTION = 'http://purl.org/dc/terms/distribution';
+  static DCT_SUBJECT = 'http://purl.org/dc/terms/subject';
+  static DCT_CREATOR = 'http://purl.org/dc/terms/creator'
 
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';
@@ -60,6 +62,14 @@ class DatabusUris {
   static SHACL_VALIDATION_RESULT = 'http://www.w3.org/ns/shacl#ValidationResult';
   static SHACL_CONFORMS = 'http://www.w3.org/ns/shacl#conforms';
   static SHACL_RESULT_MESSAGE = 'http://www.w3.org/ns/shacl#resultMessage';
+
+  // FOAF
+  static FOAF_PERSONAL_PROFILE_DOCUMENT = 'http://xmlns.com/foaf/0.1/PersonalProfileDocument';
+
+  // S4AC
+  static S4AC_ACCESS_POLICY = 'http://ns.inria.fr/s4ac/v2#AccessPolicy';
+  static S4AC_ACCESS_CREATE = 'http://ns.inria.fr/s4ac/v2#Create';
+  static S4AC_HAS_ACCESS_PRIVILEGE = 'http://ns.inria.fr/s4ac/v2#hasAccessPrivilege';
 }
 
 if(typeof module === "object" && module && module.exports)

@@ -130,7 +130,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     session.isAccountDataLoading = true;
     session.data.signature = $scope.createSignatureData();
     session.dataIdCreator = new DataIdCreator(session.accountName);
-    session.shasumClient = new ShasumClient($q, "/api/analyze-file?url=", 3);
+    session.shasumClient = new ShasumClient($q, "/app/publish-wizard/analyze-file?url=", 3);
     $scope.session = session;
     $scope.saveSession();
     window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -162,7 +162,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     $scope.session.dataIdCreator = new DataIdCreator($scope.session.accountName);
-    $scope.session.shasumClient = new ShasumClient($q, "/api/analyze-file?url=", 3);
+    $scope.session.shasumClient = new ShasumClient($q, "/app/publish-wizard/analyze-file?url=", 3);
     $scope.session.isPublishing = false;
   }
 

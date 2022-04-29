@@ -312,6 +312,8 @@ SELECT ?file WHERE {
           ctrl.facets.get(groupNode.uri).then(function (res) {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
             ctrl.view.groups[res.uri].facets = res.facets;
+            ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+
           });
 
           ctrl.query(groupNode);

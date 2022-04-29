@@ -15,6 +15,7 @@ var defaultContext = require('../../common/context.json');
 
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 module.exports = function (router, protector) {
 
@@ -218,7 +219,7 @@ module.exports = function (router, protector) {
 
       // Add triple to account!
       var path = `/${auth.info.accountName}/webid.jsonld`;
-      var accountJson = await gstore.read(auth.info.accountName, path);
+      var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
       for(var graph of expandedGraphs) {
@@ -234,13 +235,90 @@ module.exports = function (router, protector) {
       expandedGraphs.push(addon);
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-      var result = await gstore.save(auth.info.accountName, path, compactedGraph);
+      var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
 
       res.status(200).send('WebId linked to account.\n');
       return;
 
     } catch(err) {
       res.status(400).send(err.message);
+    }
+  });
+
+  router.post('/api/account/access/grant', protector.protect(), async function(req, res, next) {
+
+    try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var grantUri = decodeURIComponent(req.query.uri);
+      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${auth.info.accountName}`;
+
+      console.log(`Trying to grant access to ${accountUri} to ${grantUri}.`);
+
+      // Add triple to account!
+      var path = `/webid.jsonld`;
+      var accountJson = await GstoreHelper.read(auth.info.accountName, path);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
+
+      var policyGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.S4AC_ACCESS_POLICY);
+
+      for(var policyGraph of policyGraphs) {
+
+        if(policyGraph[DatabusUris.DCT_SUBJECT] == undefined) {
+          continue;
+        }
+
+        if(policyGraph[DatabusUris.DCT_SUBJECT]['@id'] == grantUri) {
+          res.status(403).send('This account has already been granted access.');
+          return;
+        }
+      }
+
+      var policy = {};
+      policy['@type'] = [ DatabusUris.S4AC_ACCESS_POLICY ];
+      policy[DatabusUris.S4AC_HAS_ACCESS_PRIVILEGE] = [ DatabusUris.S4AC_ACCESS_CREATE ];
+      policy[DatabusUris.DCT_CREATOR] = { '@id' : accountUri };
+      policy[DatabusUris.DCT_SUBJECT] = { '@id' : grantUri };
+
+      expandedGraphs.push(policy);
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      
+      console.log(compactedGraph);
+      
+      var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
+      res.status(200).send('Access granted to account.\n');
+      return;
+
+    } catch(err) {
+      console.log(err);
+      res.status(400).send(err.message);
+    }
+  });
+
+
+
+  router.post('/api/account/access/revoke', protector.protect(), async function(req, res, next) {
+    try {
+
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var revokeUri = decodeURIComponent(req.query.uri);
+    
+      var path = `/webid.jsonld`;
+      var accountJson = await GstoreHelper.read(auth.info.accountName, path);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
+
+      expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
+          return value['@id'] != webIdUri;
+      });
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
+
+      res.status(200).send('WebId removed from account.\n');
+      return;
+
+
+    } catch(err) {
+      res.status(500).send(err.message);
     }
   });
 

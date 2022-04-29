@@ -8,6 +8,7 @@ function ProfileController($scope, $http) {
   $scope.createAccountError = "";
   $scope.createApiKeyError = "";
   $scope.addWebIdUri = "";
+  $scope.grantAccessUri = "";
 
   $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
 
@@ -108,6 +109,26 @@ function ProfileController($scope, $http) {
       $scope.createApiKeyError = err.data;
     });
 
+  }
+
+  $scope.grantAccess = function() {
+    $http.post(`/api/account/access/grant?uri=${encodeURIComponent($scope.grantAccessUri)}`).then(function (result) {
+      $scope.profileData.authorizedAccounts.push($scope.grantAccessUri);
+    }, function (err) {
+      console.log(err);
+      $scope.grantAccessError = err.data;
+    });
+  }
+
+  $scope.revokeAccess = function(uri) {
+    $http.post(`/api/account/access/revoke?uri=${encodeURIComponent(uri)}`).then(function (result) {
+      $scope.profileData.authorizedAccounts = $scope.profileData.webIds.filter(function(value, index, arr) {
+        return value != uri;
+      });
+    }, function (err) {
+      console.log(err);
+      $scope.grantAccessError = err.data;
+    });
   }
 
   $scope.connectWebid = function() {

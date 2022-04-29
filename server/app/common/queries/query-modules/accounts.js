@@ -74,6 +74,14 @@ instance.getAccount = async function (accountName) {
     entry.uri = accountUri;
     entry.webIds = [];
 
+    console.log(entry.authorizedAccounts);
+
+    if(entry.authorizedAccounts == undefined) {
+      entry.authorizedAccounts = [];
+    } else {
+      entry.authorizedAccounts = entry.authorizedAccounts.split('\n');
+    }
+
     for(var e of entries) {
       
       if(e.account.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {

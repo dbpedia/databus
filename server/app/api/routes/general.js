@@ -55,6 +55,7 @@ module.exports = function (router, protector) {
 
       // Find graph
       var graph = req.body;
+      var debug = req.query['debug'] == "true" ? true : false;
 
       
       // Replace context if graph uses default context
@@ -74,14 +75,14 @@ module.exports = function (router, protector) {
 
       res.write('================================================\n');
 
-      verifyParts = req.query['verify-parts'] == "false" ? false : true;
-
+      var verifyParts = req.query['verify-parts'] == "false" ? false : true;
+    
       res.write(`Publishing DataId.\n`);
 
 
       var dataIdResult = await publishDataId(account, graph, verifyParts, function (message) {
         res.write(`> ${message}\n`);
-      });
+      }, debug);
 
       if (dataIdResult != undefined) {
         res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`)

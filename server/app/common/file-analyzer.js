@@ -3,7 +3,7 @@ const axios = require('axios');
 
 var analyzer = {};
 
-analyzer.analyzeFile = async function(url, notify) {
+analyzer.analyzeFile = async function (url, notify) {
 
   try {
     var hash = shasum.create();
@@ -49,13 +49,13 @@ analyzer.analyzeFile = async function(url, notify) {
  */
 analyzer.route = function (router, protector) {
 
-  router.get('/api/analyze-file', protector.protect(), async function (req, res) {
+  router.get('/app/publish-wizard/analyze-file', protector.protect(), async function (req, res) {
 
-    var result = await analyzer.analyzeFile(req.query.url, function(msg) {
+    var result = await analyzer.analyzeFile(req.query.url, function (msg) {
       res.write(msg);
     });
 
-    if(result.code == 200) {
+    if (result.code == 200) {
       res.write(JSON.stringify(result.data));
       res.end();
       return;
@@ -66,5 +66,5 @@ analyzer.route = function (router, protector) {
 }
 
 
-module.exports = analyzer; 
+module.exports = analyzer;
 
