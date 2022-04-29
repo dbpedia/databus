@@ -184,7 +184,7 @@
   }
 
   .ce-line-button {
-    z-index: 100000;
+    z-index: 5;
     position: absolute;
     border: 1px solid #dbdbdb;
     left: 22px;
@@ -354,10 +354,10 @@
       </div>
 
       <div ng-if="groupNode.childNodes.length > 0 || groupNode.files.length > 0">
-        <div class="ce-line-button" style="left:86px" ng-if="groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupView)">
+        <div class="ce-line-button" style="left:86px" ng-if="groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupNode, groupView)">
           <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
         </div>
-        <div class="ce-line-button" style="left:86px" ng-if="!groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupView)">
+        <div class="ce-line-button" style="left:86px" ng-if="!groupView.collapsed" ng-click="$ctrl.toggleCollapsed(groupNode, groupView)">
           <databus-icon style="display: flex;" shape="'remove'" size="16"></databus-icon>
         </div>
       </div>
@@ -482,10 +482,10 @@
         <div class="ce-artifact-tree-line"></div>
 
         <div ng-if="artifactNode.files.length > 0">
-          <div class="ce-line-button" style="left: -43px;" ng-if="artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactView)">
+          <div class="ce-line-button" style="left: -43px;" ng-if="artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactNode, artifactView)">
             <databus-icon style="display: flex;" shape="'add'" size="16"></databus-icon>
           </div>
-          <div class="ce-line-button" style="left: -43px;" ng-if="!artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactView)">
+          <div class="ce-line-button" style="left: -43px;" ng-if="!artifactView.collapsed" ng-click="$ctrl.toggleCollapsed(artifactNode, artifactView)">
             <databus-icon style="display: flex;" shape="'remove'" size="16"></databus-icon>
           </div>
         </div>

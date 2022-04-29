@@ -46,8 +46,12 @@ SELECT ?file WHERE {
     ctrl.onChange();
   }
 
-  ctrl.toggleCollapsed = function(view) {
+  ctrl.toggleCollapsed = function(node, view) {
     view.collapsed = !view.collapsed;
+
+    if(!view.collapsed) {
+      ctrl.query(node);
+    }
   }
 
   ctrl.addDatabusToCollection = async function (uri) {
@@ -324,6 +328,7 @@ SELECT ?file WHERE {
 
             ctrl.view.artifacts[artifactNode.uri] = {};
             ctrl.view.artifacts[artifactNode.uri].expanded = false;
+            ctrl.view.artifacts[artifactNode.uri].collapsed = true;
 
             ctrl.facets.get(artifactNode.uri).then(function (res) {
               ctrl.view.artifacts[res.uri].facets = res.facets;
@@ -492,6 +497,7 @@ SELECT ?file WHERE {
     delete node.facetSettings[facet];
 
     ctrl.onChange();
+
     ctrl.query(node);
   }
 

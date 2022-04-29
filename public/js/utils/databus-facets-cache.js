@@ -83,79 +83,95 @@ class DatabusFacetsCache {
 
 
   static GET_GROUP_FACETS = `
-    PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-    PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-    PREFIX dct: <http://purl.org/dc/terms/>
-    PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-    PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-
-    SELECT DISTINCT ?property ?value WHERE {
-
+  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+  PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+  PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+  
+  SELECT DISTINCT ?property ?value WHERE {
+    {
       GRAPH ?g {
         ?dataset dataid:group <%RESOURCE_URI%> .
-        ?dataset dcat:distribution ?distribution .
-
-        {
-          ?dataset dataid:artifact ?value .
-          BIND(dataid:artifact AS ?property)
-        }
-        UNION
-        {
-          ?distribution dct:hasVersion ?value .
-          BIND(dct:hasVersion AS ?property)
-        }
-        UNION
-        {
-          ?distribution dataid:compression ?value .
-          BIND(dataid:compression AS ?property)
-        }
-        UNION
-        {
-          ?distribution dataid:formatExtension ?value .
-          BIND(dataid:formatExtension AS ?property)
-        }
-        UNION
-        {
-          ?distribution ?property ?value .
-          ?property rdfs:subPropertyOf dataid:contentVariant .
-        }
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dct:hasVersion ?value .
+        BIND(dct:hasVersion AS ?property)
       }
-    }`;
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dataid:formatExtension ?value .
+        BIND(dataid:formatExtension AS ?property)
+      }
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dataid:compression ?value .
+        BIND(dataid:compression AS ?property)
+      }
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution ?property ?value .
+        ?property rdfs:subPropertyOf dataid:contentVariant .
+      }
+    }
+  }
+  `;
 
   static GET_ARTIFACT_FACETS = `
-    PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-    PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-    PREFIX dct: <http://purl.org/dc/terms/>
-    PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-    PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-    
-    SELECT DISTINCT ?property ?value WHERE {
-    
+  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+  PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+  PREFIX dct: <http://purl.org/dc/terms/>
+  PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+  PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+  
+  SELECT DISTINCT ?property ?value WHERE {
+    {
       GRAPH ?g {
         ?dataset dataid:artifact <%RESOURCE_URI%> .
-        ?dataset dcat:distribution ?distribution .
-    
-        {
-          ?distribution dct:hasVersion ?value .
-          BIND(dct:hasVersion AS ?property)
-        }
-        UNION
-        {
-          ?distribution dataid:compression ?value .
-          BIND(dataid:compression AS ?property)
-        }
-        UNION
-        {
-          ?distribution dataid:formatExtension ?value .
-          BIND(dataid:formatExtension AS ?property)
-        }
-        UNION
-        {
-          ?distribution ?property ?value .
-          ?property rdfs:subPropertyOf dataid:contentVariant .
-        }
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dct:hasVersion ?value .
+        BIND(dct:hasVersion AS ?property)
       }
-    }`;
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dataid:formatExtension ?value .
+        BIND(dataid:formatExtension AS ?property)
+      }
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution dataid:compression ?value .
+        BIND(dataid:compression AS ?property)
+      }
+    }
+    UNION
+    {
+      GRAPH ?g {
+        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        ?dataset dcat:distribution ?distribution . 
+        ?distribution ?property ?value .
+        ?property rdfs:subPropertyOf dataid:contentVariant .
+      }
+    }
+  }`;
 
 
 
