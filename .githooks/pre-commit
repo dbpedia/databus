@@ -7,7 +7,7 @@ PHP=`which php`
 cd ./model/
 
 # execute model php
-ls -A
+dir
 $PHP init.php 
 $PHP group.php > ../docs/group.md
 $PHP dataid.php > ../docs/dataid.md
