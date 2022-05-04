@@ -1,5 +1,5 @@
-cd .git/hooks 
-ln -s ../../.githooks/pre-commit pre-commit
+#cd .git/hooks 
+#ln -s ../../.githooks/pre-commit pre-commit
 #git config core.hooksPath .githooks
 
 cd ../../server
