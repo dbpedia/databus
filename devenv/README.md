@@ -22,7 +22,12 @@ sudo npm install -g npm@latest
 sudo apt-get install docker docker-compose
 ```
 
-## Cloning repository and preparation for development
+* `php`: v8.1.0 or higher
+```
+sudo apt install php-cli
+```
+
+## Clone Repository & Prepare for Development
 
 ```
 git clone https://github.com/dbpedia/databus.git
