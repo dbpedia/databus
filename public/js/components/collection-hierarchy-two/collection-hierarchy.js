@@ -305,13 +305,7 @@ SELECT ?file WHERE {
 
         if (DatabusUtils.isValidHttpUrl(groupNode.uri)) {
 
-          /*
-          ctrl.$http.get('/system/pages/artifacts-by-group',
-            { params: { uri: groupNode.uri } })
-            .then(function (result) {
-              ctrl.view.groups[groupNode.uri].artifacts = result.data;
-            });
-            */
+       
 
           ctrl.facets.get(groupNode.uri).then(function (res) {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
@@ -353,16 +347,7 @@ SELECT ?file WHERE {
             });
 
 
-            ctrl.$http.get('/system/pages/facets', {
-              params: { uri: artifactNode.uri, type: 'artifact' }
-            }).then(function (result) {
-
-              result.data['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-              var artifactUri = result.config.params.uri;
-              var groupUri = DatabusUtils.navigateUp(artifactUri);
-              ctrl.view.artifacts[artifactUri].facets = result.data;
-              ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
-            });
+          
             */
           }
         }

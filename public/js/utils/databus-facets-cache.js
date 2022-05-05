@@ -136,35 +136,29 @@ class DatabusFacetsCache {
   PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
   
   SELECT DISTINCT ?property ?value WHERE {
+    GRAPH ?g {
     {
-      GRAPH ?g {
+        BIND(dct:hasVersion AS ?property)
         ?dataset dataid:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution dct:hasVersion ?value .
-        BIND(dct:hasVersion AS ?property)
-      }
     }
     UNION
     {
-      GRAPH ?g {
+        BIND(dataid:formatExtension AS ?property)
         ?dataset dataid:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution dataid:formatExtension ?value .
-        BIND(dataid:formatExtension AS ?property)
-      }
     }
     UNION
     {
-      GRAPH ?g {
+        BIND(dataid:compression AS ?property)
         ?dataset dataid:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution dataid:compression ?value .
-        BIND(dataid:compression AS ?property)
-      }
     }
     UNION
     {
-      GRAPH ?g {
         ?dataset dataid:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution ?property ?value .

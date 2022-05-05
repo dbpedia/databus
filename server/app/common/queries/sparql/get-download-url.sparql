@@ -2,6 +2,8 @@ PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 
 Select ?downloadUrl {
-  ?singlefile dataid:file <%FILE_URI%> .
-  ?singlefile dcat:downloadURL ?downloadUrl .
+  GRAPH ?g {
+    ?singlefile dataid:file <%FILE_URI%> .
+    ?singlefile dcat:downloadURL ?downloadUrl .
+  }
 }

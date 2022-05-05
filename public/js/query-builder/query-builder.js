@@ -7,6 +7,14 @@ class QueryBuilder {
 
   createQuery(node, template, resourceBaseUrl) {
 
+    console.log(typeof QueryNode);
+
+    if (typeof QueryNode !== 'function') {
+      require("./query-node").assignParents(node);
+    } else {
+      QueryNode.assignParents(node);
+    }
+
     this.result = '';
     this.cvCounter = 0;
     this.resourceBaseUrl = resourceBaseUrl;
@@ -34,20 +42,24 @@ class QueryBuilder {
     var lines = query.split('\n');
     var result = "";
 
-    for(var line of lines) {
-      if(line.toLowerCase().startsWith('prefix')) {
+    for (var line of lines) {
+      if (line.toLowerCase().startsWith('prefix')) {
         this.prefixes.push(line);
       } else {
         result += line + '\n';
       }
     }
 
-    return result.substring(0, result.length -1);
+    return result.substring(0, result.length - 1);
   }
 
   prependPrefixes() {
 
-    this.prefixes = DatabusUtils.uniqueList(this.prefixes);
+    if (typeof DatabusUtils !== 'function') {
+      this.prefixes = require("./../utils/databus-utils").uniqueList(this.prefixes);
+    } else {
+      this.prefixes = DatabusUtils.uniqueList(this.prefixes);
+    }
 
     for (var line of this.prefixes) {
       this.prependLine(line, 0);
@@ -85,7 +97,7 @@ class QueryBuilder {
     this.appendTemplateHeader(indent);
     this.createNodeSubquery(node, indent + 1, true);
 
-    if(node.property == null && node.childNodes.length == 0) {
+    if (node.property == null && node.childNodes.length == 0) {
       this.appendLine(`?distribution a dataid:Nonsense .`, indent + 1)
     }
 
@@ -124,14 +136,26 @@ class QueryBuilder {
     }
 
     // Custom query node
-    if(node.uri != null && !DatabusUtils.isValidHttpUrl(node.uri)) {
-      var query = this.removeAndCollectPrefixes(node.property);
-      var lines = query.split('\n');
-      for(var line of lines) {
-        this.appendLine(line, indent);
+    if (node.uri != null) {
+
+      var isValidHttpUrl;
+
+      if (typeof DatabusUtils !== 'function') {
+        isValidHttpUrl = require("./../utils/databus-utils").isValidHttpUrl(node.uri);
+      } else {
+        isValidHttpUrl = DatabusUtils.isValidHttpUrl(node.uri);
       }
 
-      return;
+
+      if (!isValidHttpUrl) {
+        var query = this.removeAndCollectPrefixes(node.property);
+        var lines = query.split('\n');
+        for (var line of lines) {
+          this.appendLine(line, indent);
+        }
+
+        return;
+      }
     }
 
     // If a node property was set, add it as a restriction
@@ -152,11 +176,11 @@ class QueryBuilder {
     for (var i in node.childNodes) {
       if (k > 0) this.appendLine('UNION', indent);
 
-      if(node.childNodes[i].childNodes == null) {
+      if (node.childNodes[i].childNodes == null) {
         return;
       }
 
-      if(node.childNodes[i].property == undefined && node.childNodes[i].childNodes.length == 0) {
+      if (node.childNodes[i].property == undefined && node.childNodes[i].childNodes.length == 0) {
         continue;
       }
 
@@ -174,7 +198,16 @@ class QueryBuilder {
       return null;
     }
 
-    if(!DatabusUtils.isValidHttpUrl(node.uri)) {
+    var isValidHttpUrl;
+
+    if (typeof DatabusUtils !== 'function') {
+      isValidHttpUrl = require("./../utils/databus-utils").isValidHttpUrl(node.uri);
+    } else {
+      isValidHttpUrl = DatabusUtils.isValidHttpUrl(node.uri);
+    }
+
+
+    if (!isValidHttpUrl) {
       return null;
     }
 
@@ -421,7 +454,7 @@ class QueryBuilder {
    * @param {*} line 
    * @param {*} indent 
    */
-   prependLine(line, indent) {
+  prependLine(line, indent) {
     var text = '';
     for (var i = 0; i < indent; i++) text += '\t';
     text += line;

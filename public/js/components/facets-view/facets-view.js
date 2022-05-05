@@ -126,7 +126,7 @@ function FacetsViewController($http, $scope) {
 
     // Load the available resource facets
     // TODO: Remove resource type, can be derived from uri
-    ctrl.$http.get('/system/pages/facets', {
+    ctrl.$http.get('/app/utils/facets', {
       params: { uri: queryUri, type: ctrl.resourceType }
     }).then(function (result) {
 

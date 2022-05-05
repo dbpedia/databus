@@ -254,7 +254,7 @@ class DatabusCollectionManager {
 
       for (var s in graph.facetSettings) {
         if (graph.facetSettings[s][0].value === '$latest' ) {
-          this.http.get('/system/pages/facets', {
+          this.http.get('/app/utils/facets', {
             params: { uri: artifact.uri, type: 'group' }
           }).then(function (result) {
             let versions = result.data["http://purl.org/dc/terms/hasVersion"].values;
@@ -269,7 +269,7 @@ class DatabusCollectionManager {
 
         for (var s in artifact.facetSettings) {
           if (artifact.facetSettings[s][0].value === '$latest' ) {
-            this.http.get('/system/pages/facets', {
+            this.http.get('/app/utils/facets', {
               params: { uri: artifact.uri, type: 'artifact' }
             }).then(function (result) {
               let versions = result.data["http://purl.org/dc/terms/hasVersion"].values;

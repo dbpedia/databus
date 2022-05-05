@@ -27,11 +27,11 @@
     body: [
       `GRAPH ?g`,
       `{`,
+      `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?distribution dataid:file ?file .`,
       `\tOPTIONAL { ?dataset dct:license ?license . }`,
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
-      `%QUERY%`,
       `}`
     ]
   };
@@ -72,8 +72,8 @@
 
       `GRAPH ?g`,
       `{`,
-      `\t?dataset dcat:distribution ?distribution .`,
       `%QUERY%`,
+      `\t?dataset dcat:distribution ?distribution .`,
       `\t?distribution dataid:file ?file .`,
       `\t?distribution dataid:formatExtension ?format .`,
       `\t?distribution dataid:compression ?compression .`,
@@ -99,8 +99,8 @@
 
       `GRAPH ?g`,
       `{`,
-      `\t?dataset dcat:distribution ?distribution .`,
       `%QUERY%`,
+      `\t?dataset dcat:distribution ?distribution .`,
       `\t?distribution dataid:file ?file .`,
       `\t?distribution dataid:formatExtension ?format .`,
       `\t?distribution dataid:compression ?compression .`,
@@ -123,9 +123,9 @@
     body: [
       `GRAPH ?g`,
       `{`,
+      `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?distribution dataid:file ?file .`,
-      `%QUERY%`,
       `}`,
     ]
   };

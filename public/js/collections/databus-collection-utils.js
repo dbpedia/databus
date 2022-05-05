@@ -245,6 +245,41 @@ class DatabusCollectionUtils {
     return result;
   }
 
+  static async getCollectionFileURLs($http, collection) {
+
+    let query = QueryBuilder.build({
+      node : collection.content.root,
+      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      template: QueryTemplates.DEFAULT_FILE_TEMPLATE
+    });
+
+    var req = {
+      method: 'POST',
+      url: DATABUS_SPARQL_ENDPOINT_URL,
+      data: "format=json&query=" + encodeURIComponent(query),
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded"
+      },
+    }
+
+    var response = await $http(req);
+    var entries = response.data.results.bindings;
+
+    if (entries.length === 0) {
+      return null;
+    }
+
+    let result = "";
+    
+    for (let i in entries) {
+      let element = DatabusCollectionUtils.reduceBinding(entries[i]);
+      console.log(element);
+      result += element.file + '\n';
+    }
+
+    return result;
+  }
+
 
   /*
   static copyData(data) {

@@ -509,14 +509,12 @@
                     <i>None</i>
                   </span>
                   <span ng-if="value.value != ''">
-                    {{ value.value }}
+                    {{ value.value == '$latest' ? 'Latest Version' : value.value }}
                   </span>
                   <span ng-if="!$last">,</span>
                 </span>
               </div>
             </div>
-
-
             <div ng-repeat="(uri, setting) in artifactNode.facetSettings">
               <div ng-if="setting.length > 0" class="mini-filter-view">
                 <div>{{ artifactView.facets[uri].label}}</div>
@@ -528,7 +526,7 @@
                         <i>None</i>
                       </span>
                       <span ng-if="value.value != ''">
-                        {{ value.value }}
+                        {{ value.value == '$latest' ? 'Latest Version' : value.value }}
                       </span>
                     </span>
                     <span ng-if="!value.checked">

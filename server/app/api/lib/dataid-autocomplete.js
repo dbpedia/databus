@@ -86,6 +86,10 @@ autocompleter.autocomplete = function (expandedGraph) {
       fileGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
     }
 
+    fileGraph[DatabusUris.DCT_MODIFIED] = [{}];
+    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+    fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
+
     for (var propertyUri in fileGraph) {
       if (propertyUri.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
         contentVariantProperties.push(propertyUri);

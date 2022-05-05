@@ -4,6 +4,7 @@ var constants = require('../../constants');
 var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
 var DatabusResponse = require('../../../../../public/js/utils/databus-response');
 var QueryBuilder = require('../../../../../public/js/query-builder/query-builder');
+var QueryNode = require('../../../../../public/js/query-builder/query-node');
 const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
 const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
