@@ -1,8 +1,7 @@
-#cd .git/hooks 
-#ln -s ../../.githooks/pre-commit pre-commit
+#cd .git/hooks && ln -s ../../.githooks/pre-commit pre-commit && cd ../..
 #git config core.hooksPath .githooks
 
-cd ../../server
+cd server
 npm install
 
 cd ../public
