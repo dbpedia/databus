@@ -23,6 +23,8 @@ class DatabusUris {
   static DATAID_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
   static DATAID_SHASUM = 'http://dataid.dbpedia.org/ns/core#sha256sum';
   static DATAID_COLLECTION = 'http://dataid.dbpedia.org/ns/core#Collection';
+  static DATAID_FILE = 'http://dataid.dbpedia.org/ns/core#file';
+  static DATAID_COMPRESSION = 'http://dataid.dbpedia.org/ns/core#compression';
 
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';

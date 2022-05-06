@@ -29,6 +29,41 @@ function autocompleteResourceEntry(expandedGraph, prop, navUpAmount) {
   });
 }
 
+function autofillFileIdentifiers(datasetUri, fileGraph) {
+  var contentVariants = [];
+  var artifactUri = UriUtils.navigateUp(datasetUri, 1);
+  var baseUri = UriUtils.navigateUp(datasetUri, 0);
+  var artifactName = UriUtils.uriToName(artifactUri);
+
+  for(var property in fileGraph) {
+    if(property.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
+      contentVariants.push({ key: property, value: fileGraph[property][0][DatabusUris.JSONLD_VALUE] });      
+    }
+  }
+
+  var segment = artifactName;
+  for(var cv of contentVariants) {
+    var facet = UriUtils.uriToName(cv.key);
+    var value = cv.value;
+    segment += `_${facet}=${value}`;
+  }
+
+  var format = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
+  var compression = fileGraph[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
+
+  if(format != 'none') {
+    segment += `.${format}`;
+  }
+
+  if(compression != 'none') {
+    segment += `.${compression}`;
+  }
+
+  fileGraph[DatabusUris.DATAID_FILE] = [];
+  fileGraph[DatabusUris.DATAID_FILE].push({ '@id' : `${baseUri}/${segment}`});
+  fileGraph[DatabusUris.JSONLD_ID] = `${baseUri}#${segment}`;
+}
+
 autocompleter.autocomplete = function (expandedGraph) {
 
   var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
@@ -90,6 +125,8 @@ autocompleter.autocomplete = function (expandedGraph) {
     fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
     fileGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
 
+    autofillFileIdentifiers(datasetUri, fileGraph);
+
     for (var propertyUri in fileGraph) {
       if (propertyUri.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
         contentVariantProperties.push(propertyUri);
@@ -116,11 +153,16 @@ autocompleter.autocomplete = function (expandedGraph) {
     propertyGraph[DatabusUris.RDFS_SUB_PROPERTY_OF] = [{}];
     propertyGraph[DatabusUris.RDFS_SUB_PROPERTY_OF][0][DatabusUris.JSONLD_ID]
       = DatabusUris.DATAID_CONTENT_VARIANT;
-
     expandedGraph.push(propertyGraph);
   }
 
+  datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+
   for (var fileGraph of fileGraphs) {
+
+    datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+      '@id' : fileGraph[DatabusUris.JSONLD_ID]
+    });
 
     for (var contentVariantProperty of contentVariantProperties) {
 

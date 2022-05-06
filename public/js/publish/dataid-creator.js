@@ -111,9 +111,9 @@ class DataIdCreator {
       }
 
       var distribution = {
-        "@id": distributionUri,
+        //"@id": distributionUri,
         "@type": "Part",
-        "file": fileUri,
+        //"file": fileUri,
         "formatExtension": file.formatExtension,
         "compression": file.compression,
         "downloadURL": file.uri,
