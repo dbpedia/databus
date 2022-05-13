@@ -102,8 +102,6 @@
           <td>Format</td>
           <td>Compression</td>
           <td ng-repeat="cv in $ctrl.model.contentVariants">{{ cv.label }}</td>
-          <td>Size</td>
-          <td>Sha256</td>
           <td>Status / Actions</td>
           <td></td>
         </tr>
@@ -128,8 +126,6 @@
               ng-change="$ctrl.onChangeCv(file, cv)" ng-model="file.contentVariants[cv.label]" class='edit'
               ng-readonly="$index != $ctrl.edit.x || outerIndex != $ctrl.edit.y">
           </td>
-          <td class="readonly" style="padding: .5em;">{{ file.byteSize }}</td>
-          <td class="readonly" style="padding: .5em;">{{ file.sha256sum.substr(0, 20) }}...</td>
           <td class="readonly">
             <div style="display: flex; padding: .55em; justify-content: flex-end;">
               <div ng-if="file.errors != null && file.errors.length > 0" style="display: flex;" class="hover-note">
@@ -146,8 +142,6 @@
                   </ul>
                 </div>
               </div>
-              <databus-icon shape="'eye'" style="margin-left: 12px;" on-click="$ctrl.analyzeFile(file)" size="24">
-              </databus-icon>
               <databus-icon shape="'delete'" style="margin-left: 12px;" on-click="$ctrl.removeFileFromArtifact(file)"
                 size="24"></databus-icon>
             </div>

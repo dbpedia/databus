@@ -93,7 +93,7 @@ class PublishData {
       this.version.isConfigDirty = false;
     }
 
-    for (var f in this.version.files) {
+    /* for (var f in this.version.files) {
 
       var file = this.version.files[f];
 
@@ -106,19 +106,11 @@ class PublishData {
       if(analyzeErrIndex > -1) {
         file.errors.splice(analyzeErrIndex, 1);
       }
-     
-      if (this.version.files[f].sha256sum == undefined || this.version.files[f].byteSize == undefined) {
-
-        this.version.files[f].errors.push({
-          id: 'err_file_not_analyzed',
-          message: 'This file has not been analyzed yet. Press the eye icon to analyze the file.'
-        });
-      }
 
       if (this.version.files[f].errors.length > 0) {
         hasErrors = true;
       }
-    }
+    } */
 
     this.hasConfigurationError = hasErrors;
   }
@@ -146,6 +138,8 @@ class PublishData {
     if (name.length > 50) {
       name = name.substr(0, 50) + '...';
     }
+
+    name = decodeURIComponent(name);
     // Files with uri as key!!
 
     this.version.files.push({
@@ -153,9 +147,8 @@ class PublishData {
       uri: file.url,
       name: name,
       contentVariants: {},
-      sha256: {},
-      formatExtension: file.formatExtension,
       compression: file.compression,
+      formatExtension: file.formatExtension,
       artifactId: undefined,
       groupId: undefined,
     });
@@ -204,7 +197,10 @@ class PublishData {
 
     this.version.contentVariants.push({
       label: variant,
-      id: variant
+      id: variant,
+      fillRegex : '',
+      toLower : true,
+      pruneWhitespaces: true
     });
 
     this.version.isConfigDirty = true;
@@ -225,6 +221,33 @@ class PublishData {
     this.version.isConfigDirty = true;
   }
 
+  fillByRegex(variant) {
+    var regex = new RegExp(variant.fillRegex);
+
+    for (var f in this.version.files) {
+      var file = this.version.files[f];
+      var matches = file.name.match(regex);
+
+      if(matches != null) {
+        var val = matches[0];
+
+        if(variant.toLower) {
+          val = val.toLowerCase();
+        }
+
+        if(variant.pruneWhitespaces) {
+          val = val.replaceAll(' ', '');
+        }
+
+        file.contentVariants[variant.id] = val;
+      }
+
+
+    }
+
+    this.version.isConfigDirty = true;
+  }
+
   createVersionId(v) {
     if (v == 0) {
       this.version.id = new Date().toISOString().slice(0, 10);
@@ -234,7 +257,6 @@ class PublishData {
       this.version.id = new Date().toISOString().slice(0, 13);
     }
   }
-
 
   getRowIndex(files, name) {
     var k = 1;

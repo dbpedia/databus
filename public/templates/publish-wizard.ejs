@@ -339,12 +339,13 @@
               Login
             </span>
           </button>
-          
+
         </div>
       </div>
     </div>
 
-    <div class="section" ng-if="authenticated && !hasAccount" style="min-height: 600px; display: flex; align-items: center;">
+    <div class="section" ng-if="authenticated && !hasAccount"
+      style="min-height: 600px; display: flex; align-items: center;">
       <div class="container">
         <p class="collection-editor-info-text">You need to create a user account in order to publish data.</p>
         <br />
@@ -671,9 +672,10 @@
                           </div>
                           <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
                             <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
-                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery" ng-change="filterLicenses(licenseQuery)" />
-                              <div ng-repeat="license in filteredLicenseList | limitTo: 25" style="padding: 0.5em 0.25em;"
-                                ng-click="version.license=license.id.value">
+                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
+                                ng-change="filterLicenses(licenseQuery)" />
+                              <div ng-repeat="license in filteredLicenseList | limitTo: 25"
+                                style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
                                 {{ license.title.value }}
                               </div>
                             </div>
@@ -763,11 +765,36 @@
                   </div>
                 </div>
                 <div class="content-variants-panel">
-                  <div class="content-variant" ng-repeat="variant in version.contentVariants">
-                    <div style="flex: 1;">{{ variant.label }}</div>
-                    <databus-icon shape="'delete'" class='artifact-icon'
-                      on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
+                  <div style="border: 1px solid #dbdbdb;
+                  margin-bottom: 1em;" ng-repeat="variant in version.contentVariants">
+                    <div>
+                      <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
+                        variant.label }}</div>
 
+                      <div style="display: flex; align-items: center; padding: .5em;">
+                        <div style="flex: 1; display: flex; align-items: center;">
+                        <div class="field has-addons" style="margin: 0;">
+                          <div class="control">
+                            <input class="input" style="min-width: 300px;" ng-model="variant.fillRegex" type="text" placeholder="Enter a Regex (.* for file name)">
+                          </div>
+                          <div class="control">
+                            <div class="button" ng-click="session.data.fillByRegex(variant)">
+                              Fill By Regex
+                            </div>
+                          </div>
+                          
+                        </div>
+                          <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox" name="to lowercase">
+                          <label for="scales">To Lowercase</label>
+
+                          <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox" type="checkbox" name="prune">
+                          <label for="scales">Remove Whitespaces</label>
+                        </div>
+
+                        <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
+                          on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="field has-addons">
@@ -873,11 +900,12 @@
             </div>
 
             <div class="box-content">
-          
+
               <div class="row">
 
                 <div style="min-width: 240px">Group Metadata</div>
-                <pre ng-if="result.isReadyForUpload" style="width: 100%;">{{ result.groupUpdate["@graph"] | json }}</pre> 
+                <pre ng-if="result.isReadyForUpload"
+                  style="width: 100%;">{{ result.groupUpdate["@graph"] | json }}</pre>
                 <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
@@ -885,7 +913,8 @@
               <div class="row">
                 <div style="min-width: 240px">Artifact / Version Metadata</div>
 
-                <pre ng-if="result.isReadyForUpload"  style="width: 100%;">{{ result.versionUpdate["@graph"] | json }}</pre>
+                <pre ng-if="result.isReadyForUpload"
+                  style="width: 100%;">{{ result.versionUpdate["@graph"] | json }}</pre>
                 <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
@@ -894,16 +923,18 @@
               <div class="row">
 
                 <div style="min-width: 240px">Full Body</div>
-                <pre ng-if="result.isReadyForUpload && session.showContext" style="width: 100%; position: relative;"><div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ result.updateData | json }}</pre> 
-                <pre ng-if="result.isReadyForUpload && !session.showContext" style="width: 100%; position: relative;"><div ng-click="session.showContext = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre> 
-                 
-                  
+                <pre ng-if="result.isReadyForUpload && session.showContext"
+                  style="width: 100%; position: relative;"><div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ result.updateData | json }}</pre>
+                <pre ng-if="result.isReadyForUpload && !session.showContext"
+                  style="width: 100%; position: relative;"><div ng-click="session.showContext = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
+
+
 
                 <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
               </div>
-                
+
               <div class="row">
 
                 <p class="control" style="width: 100%; margin-top: 1em;">
@@ -914,7 +945,7 @@
                 </p>
               </div>
 
-            
+
             </div>
 
 
@@ -930,15 +961,15 @@
 
 
                 <div style="width: 100%; font-family: monospace; padding: 1.5em; background-color: #f5f5f5;">
-                  
+
                   <p ng-repeat="entry in result.publishLog">
 
-                    <span ng-if="entry.hasError" style="color:red">{{ entry.message }}</span> 
-                    <span ng-if="!entry.hasError">{{ entry.message }}</span> 
+                    <span ng-if="entry.hasError" style="color:red">{{ entry.message }}</span>
+                    <span ng-if="!entry.hasError">{{ entry.message }}</span>
                   </p>
                 </div>
 
-               
+
               </div>
               <div class="row">
 
@@ -1088,6 +1119,6 @@
         </div>
       </div>
     </section>
-    
+
   </div>
   <% include footer %>

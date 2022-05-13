@@ -32,8 +32,6 @@ function TableEditorController() {
     }
 
 
-    ctrl.columns.push({ title:'Size', width: 115, isReadonly : true });
-    ctrl.columns.push({ title:'Shasum', width: 200, isReadonly : true });
     ctrl.columns.push({ title:'Actions', width: 140, isReadonly : true });
 
     ctrl.progressWidth = (115 + 200) + 'px';
@@ -150,7 +148,7 @@ function TableEditorController() {
       return;
     }
 
-    var columnCount = 6;
+    var columnCount = 4;
 
     for(var c in ctrl.model.contentVariants) {
       columnCount++;

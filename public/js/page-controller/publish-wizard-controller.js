@@ -77,7 +77,7 @@ function PublishWizardController($scope, $http, focus, $q) {
         $scope.result.isReadyForUpload = $scope.checkReadyForUpload();
 
         if ($scope.result.isReadyForUpload) {
-          $scope.createTractate($scope.result.versionUpdate);
+          // $scope.createTractate($scope.result.versionUpdate);
         }
       }
 
@@ -463,7 +463,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       'Content-Type': 'application/json',
     }
 
-    fetch('/api/publish?verify-parts=false', {
+    fetch('/api/publish?verify-parts=true', {
       headers: headers,
       credentials: 'include',
       method: 'POST',
@@ -526,11 +526,11 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.createTractate = function (graph) {
-    $http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
-      $scope.session.data.signature.tractate = response.data;
-    }, function (err) {
-      console.log(err);
-    });
+    //$http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
+    //  $scope.session.data.signature.tractate = response.data;
+    //}, function (err) {
+    //  console.log(err);
+    //});
   }
 
   $scope.getArtifact = function (groupId, artifactId) {

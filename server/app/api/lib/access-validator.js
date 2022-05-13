@@ -4,7 +4,7 @@ const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const ArrayUtils = require('../../common/utils/array-utils');
 
-var access = {};
+var finder = {};
 
 access.hasAccess = function(graphUri, accountUri) {
 

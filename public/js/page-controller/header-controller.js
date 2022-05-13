@@ -56,17 +56,7 @@ function HeaderController($scope, $http, collectionManager) {
     window.location = '/system/logout?redirectUrl=' + encodeURIComponent(window.location);
   }
 
-  setTimeout(function () {
-    $scope.$watch(function () { return $scope.size() }, function (oldValue, newValue) {
-      if (oldValue != "") {
-        $('#cart-icon').addClass('pulseit');
-        setTimeout(function () {
-          $('#cart-icon').removeClass('pulseit');
-        }, 600);
-      }
-    })
-  }, 500);
-
+  
 
   $scope.size = function () {
     if ($scope.collectionManager == null) {

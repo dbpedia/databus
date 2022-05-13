@@ -48,14 +48,22 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
     segment += `_${facet}=${value}`;
   }
 
-  var format = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
-  var compression = fileGraph[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
+  var format = undefined;
+  var compression = undefined;
+  
+  if(fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] != undefined) {
+    format = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
+  }
 
-  if(format != 'none') {
+  if(fileGraph[DatabusUris.DATAID_COMPRESSION] != undefined) {
+    compression = fileGraph[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
+  }
+
+  if(format != undefined && format != 'none' && format != '') {
     segment += `.${format}`;
   }
 
-  if(compression != 'none') {
+  if(compression != undefined && compression != 'none' && compression != '') {
     segment += `.${compression}`;
   }
 
@@ -114,6 +122,7 @@ autocompleter.autocomplete = function (expandedGraph) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
     }
+
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
       fileGraph[DatabusUris.DCT_ISSUED] = [{}];
