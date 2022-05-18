@@ -24,6 +24,7 @@ module.exports = function (router, protector) {
       }
 
       var canonicalizedForm = await suite.expandAndCanonicalize(graph);
+
       console.log(`\x1b[32m${canonicalizedForm}\x1b[0m`);
       res.status(200).send(canonicalizedForm);
 

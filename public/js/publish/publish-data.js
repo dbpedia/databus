@@ -9,7 +9,6 @@ class PublishData {
     this.artifact = data != undefined ? data.artifact : {};
     this.version = data != undefined ? data.version : {};
     this.signature = data != undefined ? data.signature : undefined;
-
   }
 
   /**

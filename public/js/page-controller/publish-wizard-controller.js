@@ -1,4 +1,3 @@
-
 // Controller for the header section
 function PublishWizardController($scope, $http, focus, $q) {
 
@@ -8,8 +7,6 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   // TODO
   // console.log(data.licenseData);
-
-
   // Test cases:
   // https://www.pik-potsdam.de/members/giannou/sample-output-remind/at_download/file
   // https://data.dnb.de/opendata/?C=M;O=D
@@ -132,6 +129,8 @@ function PublishWizardController($scope, $http, focus, $q) {
     session.dataIdCreator = new DataIdCreator(session.accountName);
     session.shasumClient = new ShasumClient($q, "/app/publish-wizard/analyze-file?url=", 3);
     $scope.session = session;
+    $scope.session.group.createNew = true;
+    $scope.session.artifact.createNew = true;
     $scope.saveSession();
     window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname;
 
@@ -190,8 +189,6 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.stopTheWatch = $scope.watchSession();
-
-
   $scope.isWizardReady = false;
 
   $scope.onSelectPublisher = function (uri) {
@@ -526,11 +523,13 @@ function PublishWizardController($scope, $http, focus, $q) {
   }
 
   $scope.createTractate = function (graph) {
-    //$http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
-    //  $scope.session.data.signature.tractate = response.data;
-    //}, function (err) {
-    //  console.log(err);
-    //});
+    $scope.creatingTracate = true;
+    $http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
+      $scope.session.data.signature.tractate = response.data;
+      $scope.creatingTracate = false;
+    }, function (err) {
+      console.log(err);
+    });
   }
 
   $scope.getArtifact = function (groupId, artifactId) {
@@ -541,6 +540,10 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     return groups[groupId].artifacts[artifactId];
+  }
+
+  $scope.copyTracateToClipboard = function() {
+    DatabusUtils.copyStringToClipboard($scope.session.data.signature.tractate);
   }
 
   $scope.onRemoveDistribution = function (distribution) {

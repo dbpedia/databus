@@ -8,6 +8,7 @@ var jsonld = require('jsonld');
 const autocompleter = require('./dataid-autocomplete');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
+var fileAnalyzer = require('../../common/file-analyzer');
 
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 
@@ -36,9 +37,33 @@ signer.init = function () {
   signer.privateKey = new NodeRSA(encodedPrivateKeyString, 'pkcs8');
 }
 
-signer.expandAndCanonicalize = async function(graph) {
+signer.tryAnalyzeParts = async function (expandedGraph) {
+  var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+
+  for (var distribution of distributions) {
+
+    if(distribution[DatabusUris.DATAID_SHASUM] != undefined) {
+      continue;
+    }
+
+    var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
+    var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL, function (msg) {
+
+    });
+
+    if (analyzeResult.code != 200) {
+      throw analyzeResult;
+    }
+
+    distribution[DatabusUris.DATAID_SHASUM] = [{}];
+    distribution[DatabusUris.DATAID_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
+  }
+}
+
+signer.expandAndCanonicalize = async function (graph) {
   var expandedGraph = await jsonld.flatten(await jsonld.expand(graph));
   autocompleter.autocomplete(expandedGraph);
+  await this.tryAnalyzeParts(expandedGraph);
   return signer.canonicalize(expandedGraph);
 }
 
@@ -59,8 +84,11 @@ signer.canonicalize = function (expandedGraph) {
 
   for (var d in distributionGraphs) {
     var distributionGraph = distributionGraphs[d];
-    var shasum = JsonldUtils.getFirstObject(distributionGraph, tractateConfig.sha256sumProperty);
-    shasums.push(shasum['@value']);
+    var shasum = JsonldUtils.getFirstObject(distributionGraph, DatabusUris.DATAID_SHASUM);
+
+    if (shasum != null) {
+      shasums.push(shasum['@value']);
+    }
   }
 
   shasums.sort();
@@ -73,7 +101,7 @@ signer.canonicalize = function (expandedGraph) {
 }
 
 signer.createProof = function (datasetGraph) {
-  
+
   return {
     '@type': [DatabusUris.DATABUS_TRACTATE_V1],
     'https://w3id.org/security#signature': [{
@@ -126,7 +154,7 @@ signer.validate = async function (canonicalized, proof) {
       transform: function (body, response, resolveWithFullResponse) {
         return { 'headers': response.headers, 'data': body };
       }
-    };  
+    };
 
     console.log(`Fetching WebId document from ${publisherUri}...`);
     // Await the response
@@ -139,7 +167,7 @@ signer.validate = async function (canonicalized, proof) {
       contentType = 'text/turtle';
     }
 
-    if(contentType.startsWith('application/json')) {
+    if (contentType.startsWith('application/json')) {
       console.log('Content type is application/json. Changing to application/ld+json..');
       contentType = 'application/ld+json';
     }
@@ -180,7 +208,7 @@ signer.validate = async function (canonicalized, proof) {
 
     console.log('Failed to verify.');
     return false;
-  } catch(err) {
+  } catch (err) {
     console.log('Failed to verify:' + err);
     return false;
   }

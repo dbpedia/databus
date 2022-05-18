@@ -773,21 +773,24 @@
 
                       <div style="display: flex; align-items: center; padding: .5em;">
                         <div style="flex: 1; display: flex; align-items: center;">
-                        <div class="field has-addons" style="margin: 0;">
-                          <div class="control">
-                            <input class="input" style="min-width: 300px;" ng-model="variant.fillRegex" type="text" placeholder="Enter a Regex (.* for file name)">
-                          </div>
-                          <div class="control">
-                            <div class="button" ng-click="session.data.fillByRegex(variant)">
-                              Fill By Regex
+                          <div class="field has-addons" style="margin: 0;">
+                            <div class="control">
+                              <input class="input" style="min-width: 300px;" ng-model="variant.fillRegex" type="text"
+                                placeholder="Enter a Regex (.* for file name)">
                             </div>
+                            <div class="control">
+                              <div class="button" ng-click="session.data.fillByRegex(variant)">
+                                Fill By Regex
+                              </div>
+                            </div>
+
                           </div>
-                          
-                        </div>
-                          <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox" name="to lowercase">
+                          <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
+                            name="to lowercase">
                           <label for="scales">To Lowercase</label>
 
-                          <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox" type="checkbox" name="prune">
+                          <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
+                            type="checkbox" name="prune">
                           <label for="scales">Remove Whitespaces</label>
                         </div>
 
@@ -881,7 +884,11 @@
                       </label>
                     </div>
                     <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
-                      <pre style="margin-bottom: 4px;">{{ session.data.signature.tractate}}</pre>
+                      <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.data.signature.tractate}}</pre>
+                      <div style="display: flex; margin-bottom: 8px;">
+                        <div style="margin-right: 8px;" class="button" ng-click="createTractate(result.versionUpdate)" ng-disabled="creatingTracate">Create Tractate</div>
+                        <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                      </div>
                       <textarea ng-model="session.data.signature.userSignature" class="textarea"
                         placeholder="Signature"></textarea>
                     </div>

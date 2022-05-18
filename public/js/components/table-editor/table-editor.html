@@ -114,7 +114,7 @@
           <td class="readonly" style="padding: .5em; text-align: center;">{{ $index + 1 }}</td>
           <td style="padding: .5em; cursor: pointer" class="readonly"
             ng-class="{ 'selected' : $index == $ctrl.selection.x && $parent.$index == $ctrl.selection.y }">
-            <a ng-href="{{ file.uri }}">{{ file.name }}</a>
+            <a target="_blank" ng-href="{{ file.uri }}">{{ file.name }}</a>
           </td>
           <td class="readonly" style="padding: .5em;">{{ file.formatExtension }}</td>
           <td class="readonly" style="padding: .5em;">{{ file.compression }}</td>
