@@ -444,6 +444,17 @@ function PublishWizardController($scope, $http, focus, $q) {
     });
   }
 
+  $scope.addFiles = function(input) {
+    var lines = input.split('\n');
+    
+    for(var line of lines) {
+      if(line != undefined && line.length > 0) {
+        $scope.addFile(line);
+      }
+    }
+  }
+
+
   $scope.publish = function () {
 
     var session = $scope.session;

@@ -469,7 +469,7 @@
                 <div class="row" ng-if="group.createNew">
                   <div class="" style="min-width: 240px">Abstract</div>
                   <div style="flex: 1">
-                    <textarea wrap="hard" style="min-height: 80px;" class="input" type="text"
+                    <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
                       ng-model="group.abstract"></textarea>
                     <span ng-if="hasError(group.errors, 'err_invalid_group_abstract')" class="help is-danger">{{
                       errorMessages['err_invalid_group_abstract'] }}</span>
@@ -479,7 +479,7 @@
                 <div class="row" ng-if="group.createNew">
                   <div class="" style="min-width: 240px">Description</div>
                   <div style="flex: 1">
-                    <textarea wrap="hard" style="min-height: 180px;" class="input" type="text"
+                    <textarea wrap="hard" style="min-height: 180px; resize: vertical;" class="input" type="text"
                       ng-model="group.description"></textarea>
                     <span ng-if="hasError(group.errors, 'err_invalid_group_description')" class="help is-danger">{{
                       errorMessages['err_invalid_group_description'] }}</span>
@@ -577,7 +577,7 @@
                   <div class="row" ng-if="artifact.createNew">
                     <div class="" style="min-width: 240px">Abstract</div>
                     <div style="flex: 1">
-                      <textarea wrap="hard" style="min-height: 80px;" class="input" type="text"
+                      <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
                         ng-model="artifact.abstract"></textarea>
                       <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_abstract')" class="help is-danger">{{
                         errorMessages['err_invalid_artifact_abstract'] }}</span>
@@ -695,7 +695,7 @@
               <div class="row">
                 <div class="" style="min-width: 240px">Documentation</div>
                 <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 180px;" class="input" type="text"
+                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
                     ng-model="version.description"></textarea>
                   <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
                     errorMessages['err_invalid_version_description'] }}</span>
@@ -737,13 +737,15 @@
                     </div>
                   </div>
                   <div class="is-divider" data-content="OR" style="margin: 18px 0;"></div>
-                  <div class="field has-addons">
-                    <div class="control" style="width: 100%;">
-                      <input ng-model="session.addFileInput" class="input" type="text" placeholder="Enter a file URL">
+                  <div>
+                    <div class="control" style="width: 100%; margin-bottom: 0.5em;">
+                      <textarea ng-model="session.addFileInput"
+                      style="min-height: 160px; resize: vertical;" class="input" type="text-area" placeholder="Enter file URLs (seperated by newline)">
+                        </textarea>
                     </div>
                     <div class="control">
-                      <a class="button" ng-click="addFile(session.addFileInput)">
-                        Add URL
+                      <a class="button" ng-click="addFiles(session.addFileInput)">
+                        Add URLs
                       </a>
                     </div>
                   </div>
@@ -889,7 +891,7 @@
                         <div style="margin-right: 8px;" class="button" ng-click="createTractate(result.versionUpdate)" ng-disabled="creatingTracate">Create Tractate</div>
                         <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
                       </div>
-                      <textarea ng-model="session.data.signature.userSignature" class="textarea"
+                      <textarea ng-model="session.data.signature.userSignature" class="textarea" style="resize: vertical"
                         placeholder="Signature"></textarea>
                     </div>
                   </div>
@@ -1085,7 +1087,7 @@
             </div>
             <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
               <pre style="margin-bottom: 4px;">TRACTATE</pre>
-              <textarea ng-model="session.data.signature.userSignature" class="textarea"
+              <textarea ng-model="session.data.signature.userSignature" class="textarea" style="resize: vertical"
                 placeholder="Signature"></textarea>
             </div>
           </div>
