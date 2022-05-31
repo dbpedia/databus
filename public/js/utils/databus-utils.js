@@ -17,7 +17,7 @@ class DatabusUtils {
 
   static isValidAccountName(identifier) {
     var labelRegex = /^[a-z][a-z_\-]+[a-z]$/;
-    return this.checkField(identifier, labelRegex, 3, 10);
+    return this.checkField(identifier, labelRegex, 3, 15);
   }
 
   static isValidUrl(value) {
