@@ -21,6 +21,9 @@ requestRDF.requestQuads = async function(uri) {
   var options = {
     method: 'GET',
     uri: uri,
+    headers: {
+      "Accept": 'text/turtle'
+    },
     transform: function (body, response, resolveWithFullResponse) {
       return { 'headers': response.headers, 'data': body };
     }

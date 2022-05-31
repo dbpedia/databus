@@ -119,6 +119,9 @@ function PublishWizardController($scope, $http, focus, $q) {
     var session = {};
     session.data = new PublishData();
     session.data.validate();
+
+    session.data.group.createNew = true;
+    session.data.artifact.createNew = true;
     session.showContext = false;
     session.fetchFilesInput = "";
     session.addFileInput = "";
@@ -129,8 +132,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     session.dataIdCreator = new DataIdCreator(session.accountName);
     session.shasumClient = new ShasumClient($q, "/app/publish-wizard/analyze-file?url=", 3);
     $scope.session = session;
-    $scope.session.group.createNew = true;
-    $scope.session.artifact.createNew = true;
     $scope.saveSession();
     window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname;
 
@@ -528,6 +529,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       $scope.session.data.signature.tractate = response.data;
       $scope.creatingTracate = false;
     }, function (err) {
+      $scope.creatingTracate = false;
       console.log(err);
     });
   }

@@ -1,0 +1,66 @@
+Client
+kessler,stuff,@iamadamjowett/angular-click-outside,perpetual,material,MIT,git+ssh://git@github.com/IamAdamJowett/angular-click-outside.git,2.10.1,2.10.1,^2.10.1,Adam Jowett akuma.me@gmail.com
+kessler,stuff,angular,perpetual,material,MIT,git+https://github.com/angular/angular.js.git,1.8.3,1.8.2,^1.7.8,Angular Core Team angular-core+npm@google.com
+kessler,stuff,angular-content-editable,perpetual,material,ISC,git+https://github.com/codekraft-studio/angular-content-editable.git,1.2.3,1.2.3,^1.2.3,codekraft-studio
+kessler,stuff,angular-drag-and-drop-lists,perpetual,material,MIT,git+https://github.com/marceljuenemann/angular-drag-and-drop-lists.git,2.1.0,2.1.0,^2.1.0,
+kessler,stuff,bulma,perpetual,material,MIT,git+https://github.com/jgthms/bulma.git,0.7.5,0.7.5,^0.7.4,Jeremy Thomas bbxdesign@gmail.com https://jgthms.com
+kessler,stuff,bulma-carousel,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-carousel.git,4.0.24,4.0.24,^4.0.4,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,bulma-checkradio,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-checkradio.git,1.1.1,1.1.1,^1.1.1,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,bulma-divider,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-divider.git,0.2.0,0.2.0,^0.2.0,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,bulma-extensions,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-extensions.git,6.2.7,6.2.7,^6.2.7,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,bulma-steps,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-steps.git,2.2.1,2.2.1,^2.2.1,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,bulma-timeline,perpetual,material,MIT,git+https://github.com/Wikiki/bulma-timeline.git,3.0.5,3.0.4,^3.0.4,Wikiki wikiki@protonmail.com https://wikiki.github.io/bulma-extensions/overview
+kessler,stuff,check-licenses,perpetual,material,MIT,git+https://github.com/franciscop/check-licenses.git,1.0.6,1.0.6,^1.0.6,Francisco Presencia public@francisco.io https://francisco.io/
+kessler,stuff,codemirror,perpetual,material,MIT,git+https://github.com/codemirror/CodeMirror.git,5.65.3,5.63.0,^5.63.0,Marijn Haverbeke marijnh@gmail.com http://marijnhaverbeke.nl
+kessler,stuff,jquery,perpetual,material,MIT,git+https://github.com/jquery/jquery.git,3.6.0,3.6.0,^3.6.0,OpenJS Foundation and other contributors https://github.com/jquery/jquery/blob/3.6.0/AUTHORS.txt
+kessler,stuff,js-sha256,perpetual,material,MIT,git+https://github.com/emn178/js-sha256.git,0.9.0,0.9.0,^0.9.0,Chen Yi-Cyuan emn178@gmail.com
+kessler,stuff,jstable-editor,perpetual,material,MIT,git+https://github.com/vuongtaquoc/jexcel.git,3.15.45,3.15.45,^3.15.45,Vuong Ta Quoc tqv.itvn@gmail.com
+kessler,stuff,markdown-it,perpetual,material,MIT,git+https://github.com/markdown-it/markdown-it.git,13.0.1,12.3.2,>=12.3.2,
+kessler,stuff,moment,perpetual,material,MIT,git+https://github.com/moment/moment.git,2.29.3,2.29.1,^2.24.0,Iskren Ivov Chernev iskren.chernev@gmail.com https://github.com/ichernev
+kessler,stuff,requirejs,perpetual,material,MIT,git+https://github.com/jrburke/r.js.git,2.3.6,2.3.6,^2.3.6,James Burke jrburke@gmail.com http://github.com/jrburke
+kessler,stuff,sass,perpetual,material,MIT,git+https://github.com/sass/dart-sass.git,1.51.0,1.42.1,^1.22.9,Natalie Weizenbaum nweiz@google.com https://github.com/nex3
+kessler,stuff,stream-file,perpetual,material,MIT,git+https://github.com/brion/stream-file.git,0.2.4,0.2.4,^0.2.4,Brion Vibber brion@pobox.com
+kessler,stuff,yasgui-yasqe,perpetual,material,MIT,git+https://github.com/YASGUI/YASQE.git,2.11.22,2.11.22,^2.11.22,Laurens Rietveld
+Server
+kessler,stuff,@braintree/sanitize-url,perpetual,material,MIT,git+https://github.com/braintree/sanitize-url.git,6.0.0,6.0.0,^6.0.0,
+kessler,stuff,@rdfjs/parser-jsonld,perpetual,material,MIT,git://github.com/rdfjs-base/parser-jsonld.git,1.3.1,1.2.1,^1.2.1,Thomas Bergwinkl bergi@axolotlfarm.org https://www.bergnet.org/people/bergi/card#me
+kessler,stuff,@rdfjs/parser-n3,perpetual,material,MIT,git+https://github.com/rdfjs-base/parser-n3.git,1.1.4,1.1.4,^1.1.4,Thomas Bergwinkl bergi@axolotlfarm.org https://www.bergnet.org/people/bergi/card#me
+kessler,stuff,asn1js,perpetual,material,BSD-3-Clause,git://github.com/PeculiarVentures/asn1.js.git,2.4.0,2.1.1,^2.1.1,Yury Strozhevsky yury@strozhevsky.com
+kessler,stuff,axios,perpetual,material,MIT,git+https://github.com/axios/axios.git,0.21.4,0.21.4,^0.21.1,Matt Zabriskie
+kessler,stuff,cheerio,perpetual,material,MIT,git://github.com/cheeriojs/cheerio.git,1.0.0-rc.10,1.0.0-rc.10,^1.0.0-rc.9,Matt Mueller mattmuelle@gmail.com
+kessler,stuff,child-process,perpetual,material,ISC,git+https://github.com/npm/security-holder.git,1.0.2,1.0.2,^1.0.2,
+kessler,stuff,cookie-parser,perpetual,material,MIT,git+https://github.com/expressjs/cookie-parser.git,1.4.6,1.4.5,~1.4.4,TJ Holowaychuk tj@vision-media.ca http://tjholowaychuk.com
+kessler,stuff,cookies,perpetual,material,MIT,git+https://github.com/pillarjs/cookies.git,0.8.0,0.8.0,^0.8.0,Jed Schmidt tr@nslator.jp http://jed.is
+kessler,stuff,cors,perpetual,material,MIT,git+https://github.com/expressjs/cors.git,2.8.5,2.8.5,^2.8.5,Troy Goode troygoode@gmail.com https://github.com/troygoode/
+kessler,stuff,debug,perpetual,material,MIT,git://github.com/visionmedia/debug.git,2.6.9,2.6.9,~2.6.9,Josh Junon josh.junon@protonmail.com
+kessler,stuff,ejs,perpetual,material,Apache-2.0,git://github.com/mde/ejs.git,2.6.2,2.6.2,~2.6.1,Matthew Eernisse <mde@fleegix.org> (http://fleegix.org)
+kessler,stuff,express,perpetual,material,MIT,git+https://github.com/expressjs/express.git,4.18.1,4.17.1,^4.16.4,TJ Holowaychuk tj@vision-media.ca
+kessler,stuff,express-openid-connect,perpetual,material,MIT,https://github.com/auth0/express-openid-connect,2.7.2,2.5.0,^2.4.0,Auth0 support@auth0.com
+kessler,stuff,express-session,perpetual,material,MIT,git+https://github.com/expressjs/session.git,1.17.3,1.17.2,^1.17.2,TJ Holowaychuk tj@vision-media.ca http://tjholowaychuk.com
+kessler,stuff,get-random-values,perpetual,material,MIT,git+https://github.com/KenanY/get-random-values.git,1.2.2,1.2.2,^1.2.2,Kenan Yildirim kenan@kenany.me http://kenany.me/
+kessler,stuff,glob,perpetual,material,ISC,git://github.com/isaacs/node-glob.git,7.2.3,7.2.0,^7.1.7,Isaac Z. Schlueter i@izs.me http://blog.izs.me/
+kessler,stuff,glob-promise,perpetual,material,MIT,git+https://github.com/ahmadnassri/node-glob-promise.git,4.2.2,4.2.0,^4.2.0,Ahmad Nassri ahmad@ahmadnassri.com https://www.ahmadnassri.com/
+kessler,stuff,http-errors,perpetual,material,MIT,git+https://github.com/jshttp/http-errors.git,1.6.3,1.6.3,~1.6.3,Jonathan Ong me@jongleberry.com http://jongleberry.com
+kessler,stuff,js-sha256,perpetual,material,MIT,git+https://github.com/emn178/js-sha256.git,0.9.0,0.9.0,^0.9.0,Chen Yi-Cyuan emn178@gmail.com
+kessler,stuff,jsonld,perpetual,material,BSD-3-Clause,git+https://github.com/digitalbazaar/jsonld.js.git,5.2.0,5.2.0,^5.2.0,Digital Bazaar Inc. support@digitalbazaar.com https://digitalbazaar.com/
+kessler,stuff,jsonld-signatures,perpetual,material,BSD-3-Clause,git+https://github.com/digitalbazaar/jsonld-signatures.git,9.3.1,9.3.0,^9.0.2,Digital Bazaar Inc. support@digitalbazaar.com https://digitalbazaar.com/
+kessler,stuff,memorystore,perpetual,material,MIT,git+https://github.com/roccomuso/memorystore.git,1.6.7,1.6.6,^1.6.6,Rocco Musolino roccomuso
+kessler,stuff,minify,perpetual,material,MIT,git+ssh://git@github.com/coderaiser/minify.git,7.0.2,7.0.2,~7.0.2,coderaiser mnemonic.enemy@gmail.com https://github.com/coderaiser
+kessler,stuff,morgan,perpetual,material,MIT,git+https://github.com/expressjs/morgan.git,1.9.1,1.9.1,~1.9.1,
+kessler,stuff,node-cache,perpetual,material,MIT,git://github.com/mpneuried/nodecache.git,4.2.1,4.2.1,^4.2.0,mpneuried mp@tcs.de
+kessler,stuff,node-rsa,perpetual,material,MIT,git+https://github.com/rzcoder/node-rsa.git,1.1.1,1.1.1,^1.1.1,rzcoder
+kessler,stuff,openid-client,perpetual,material,MIT,git+https://github.com/panva/node-openid-client.git,3.15.10,3.15.10,^3.10.0,Filip Skokan panva.ip@gmail.com
+kessler,stuff,pem-jwk,perpetual,material,MPL-2.0,git+https://github.com/dannycoates/pem-jwk.git,2.0.0,2.0.0,^2.0.0,
+kessler,stuff,rdf-ext,perpetual,material,MIT,git://github.com/rdf-ext/rdf-ext.git,1.3.5,1.3.5,^1.3.1,Thomas Bergwinkl bergi@axolotlfarm.org https://www.bergnet.org/people/bergi/card#me
+kessler,stuff,rdf-parse,perpetual,material,MIT,git+ssh://git@github.com/rubensworks/rdf-parse.js.git,1.9.1,1.9.1,^1.8.0,Ruben Taelman rubensworks@gmail.com
+kessler,stuff,rdf-validate-shacl,perpetual,material,MIT,git+https://github.com/zazuko/rdf-validate-shacl.git,0.3.3,0.3.2,^0.3.2,Zazuko https://zazuko.com
+kessler,stuff,rdfstore,perpetual,material,MIT,git+https://github.com/antoniogarrote/rdfstore-js.git,0.9.17,0.9.17,^0.9.17,Antonio Garrote <antoniogarrote@gmail.com
+kessler,stuff,request,perpetual,material,Apache-2.0,git+https://github.com/request/request.git,2.88.2,2.88.2,^2.88.0,Mikeal Rogers mikeal.rogers@gmail.com
+kessler,stuff,request-digest,perpetual,material,ISC,git+https://github.com/bnjjj/node-request-digest.git,1.0.13,1.0.13,^1.0.13,Benjamin Coenen benjamin.coenen@hotmail.com
+kessler,stuff,request-promise,perpetual,material,ISC,git+https://github.com/request/request-promise.git,4.2.6,4.2.6,^4.2.4,Nicolai Kamenzky https://github.com/analog-nico
+kessler,stuff,serve-favicon,perpetual,material,MIT,git+https://github.com/expressjs/serve-favicon.git,2.5.0,2.5.0,^2.5.0,Douglas Christopher Wilson doug@somethingdoug.com
+kessler,stuff,ssh-key-decrypt,perpetual,material,ISC,git://github.com/isaacs/ssh-key-decrypt.git,0.1.2,0.1.2,^0.1.2,Isaac Z. Schlueter i@izs.me http://blog.izs.me/
+kessler,stuff,streamify-string,perpetual,material,MIT,git://github.com/chrisallenlane/streamify-string.git,1.0.1,1.0.1,^1.0.1,Chris Allen Lane chris@chris-allen-lane.com
+kessler,stuff,swagger-ui-express,perpetual,material,MIT,git+ssh://git@github.com/scottie1984/swagger-ui-express.git,4.4.0,4.3.0,^4.3.0,Stephen Scott scottie1984@gmail.com
+kessler,stuff,terser,perpetual,material,BSD-2-Clause,git+https://github.com/terser/terser.git,5.13.1,5.9.0,^5.7.0,Mihai Bazon mihai.bazon@gmail.com http://lisperator.net/
+kessler,stuff,yamljs,perpetual,material,MIT,git://github.com/jeremyfa/yaml.js.git,0.3.0,0.3.0,^0.3.0,Jeremy Faivre contact@jeremyfa.com
