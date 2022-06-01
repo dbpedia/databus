@@ -174,9 +174,6 @@
             cursor: pointer;
           }
 
-          .ce-content-body {
-            
-          }
 
           .ce-alert {
             display: flex;
@@ -357,7 +354,7 @@
           </div>
         </div>
 
-        <div class="ce-status-bar diagonal3" style="display: flex;">
+        <div class="ce-status-bar diagonal3" style="display: flex;" ng-if="session.activeTab > 0">
           <div class="inside" style="display: flex; align-items:center; padding-left: .5em;">
 
             <div style="color: #828385; margin-right: .5em;">Status:</div>
@@ -416,7 +413,7 @@
             </div>
           </div>
           <div style="width: 100%;  background-color: #f9fafb;">
-            <div style="flex: 1; padding: 3.5em 3em;">
+            <div style="flex: 1; padding: 3.5em 3.5em;">
               <div ng-if="session.activeTab == 0">
                 <div style="margin-bottom: 1em; border-top: 1px solid #dbdbdb">
                   <div ng-repeat="collection in collectionManager.local" class="ce-content-collection-entry"
