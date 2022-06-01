@@ -267,6 +267,7 @@ SELECT ?file WHERE {
     view.expanded = !view.expanded;
   }
 
+
   ctrl.isValidHttpUrl = function (url) {
     return DatabusUtils.isValidHttpUrl(url);
   }

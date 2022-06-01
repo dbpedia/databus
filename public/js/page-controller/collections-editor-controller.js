@@ -17,22 +17,22 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       return;
     }
 
-    //if (newVal == 'add') {
-    //  $scope.session.activeTab = 4;
-    //  return;
-    //}
-
     if (newVal == 'query') {
-      $scope.session.activeTab = 3;
+      $scope.session.activeTab = 4;
       return;
     }
 
     if (newVal == 'preview') {
+      $scope.session.activeTab = 3;
+      return;
+    }
+
+    if (newVal == 'content') {
       $scope.session.activeTab = 2;
       return;
     }
 
-    if (newVal == 'edit') {
+    if (newVal == 'docu') {
       $scope.session.activeTab = 1;
       return;
     }
@@ -173,7 +173,7 @@ SELECT DISTINCT ?file WHERE {\n\
   $scope.onCollectionClicked = function (collection) {
     // if already active
     if (collection.uuid == $scope.collectionManager.activeCollection.uuid && $scope.session.activeTab == 0) {
-      $scope.goToTab('edit');
+      $scope.goToTab('docu');
     }
 
     $scope.setActiveCollection(collection);

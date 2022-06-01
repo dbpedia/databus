@@ -57,7 +57,7 @@ function MultiselectDropdownController($timeout, $sce) {
 
     var mergedSettings = ctrl.mergeSettings(ctrl.parentInput, ctrl.input);
 
-    return ctrl.$sce.trustAsHtml(Object.keys(mergedSettings).map(function (key, index) {
+    var allEntries = Object.keys(mergedSettings).map(function (key, index) {
 
 
       var label = undefined;
@@ -73,9 +73,29 @@ function MultiselectDropdownController($timeout, $sce) {
       } else {
         return `<s>${label}</s>`;
       }
-    }).join(', '));
+    });
 
 
+    var list = [];
+    var maxLength = 50;
+    var length = 0;
+    var hasOverflow = false;
+
+    for(var entry of allEntries) {
+      if(entry.length + length > maxLength) {
+        hasOverflow = true;
+        break;
+      }
+
+      length += entry.length;
+      list.push(entry);
+    }
+
+    if(hasOverflow) {
+      list.push('...');
+    }
+    
+    return ctrl.$sce.trustAsHtml(list.join(', '));
   }
 
 

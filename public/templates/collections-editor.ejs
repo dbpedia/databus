@@ -98,15 +98,15 @@
           }
 
           .ce-sidebar-button:hover {
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.06);
           }
 
           .ce-sidebar-button.is-active {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: #709e70
           }
 
           .ce-sidebar-button.is-active:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: #7caa7c
           }
 
           .ce-sidebar-button.is-active .ce-sidebar-button-pointer {
@@ -175,7 +175,7 @@
           }
 
           .ce-content-body {
-            padding: 1em;
+            
           }
 
           .ce-alert {
@@ -194,16 +194,23 @@
           }
 
           .ce-action-bar {
-            background-color: #7aaea8;
-            color: white;
+            background-color: #4c5259;
+            color: #f1f1f1;
+
             display: flex;
             align-items: center;
-            padding: 0 1em;
+            padding: 0.25em 1.5em;
+
+            position: relative;
+            z-index: 1005;
           }
 
           .ce-action-bar-title {
             flex-basis: 20%;
             flex: 1;
+            font-weight: 600;
+            line-height: 1.125;
+            font-size: 1.3em;
           }
 
           .ce-action-bar-content {
@@ -230,6 +237,39 @@
             margin: 0px 10px;
             background-color: rgba(255, 255, 255, 0.2);
           }
+
+          div.diagonal3:before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -33px;
+            border-top: 32px solid #cfcfcf;
+            border-left: 32px solid transparent;
+            width: 0;
+            z-index: 1;
+          }
+
+          div.inside:before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -32px;
+            border-top: 31px solid #ebebeb;
+            border-left: 31px solid transparent;
+            width: 0;
+            z-index: 2;
+          }
+
+          .ce-status-bar {
+            height: 32px;
+            background-color: #ebebeb;
+            position: absolute;
+            right: 0;
+            z-index: 1000;
+            width: 320px;
+            border-bottom: 1px solid #cfcfcf;
+            border-left: 1px solid #ebebeb;
+          }
         </style>
 
         <div class="ce-action-bar" ng-if="session.activeTab == 0">
@@ -255,6 +295,7 @@
             </div>
           </div>
         </div>
+
         <div class="ce-action-bar" ng-if="session.activeTab > 0">
           <div class="ce-action-bar-title" ng-click="goToTab('')"
             style="cursor: pointer; display: flex; align-items: center;">
@@ -263,11 +304,6 @@
           </div>
           <div class="ce-action-bar-content">
             <div style="flex: 1"> </div>
-            <collection-status is-published="collectionManager.activeCollection.isPublished"
-              is-draft="collectionManager.activeCollection.isDraft"
-              has-local-changes="collectionManager.activeCollection.hasLocalChanges" class="ng-isolate-scope">
-            </collection-status>
-            <div class="ce-action-bar-separator"></div>
             <div class="ce-action-bar-button" ng-click="saveCollection()">
               <databus-icon class="is-white" style="margin-right:12px;" color="'white'" shape="'upload'" size="24">
               </databus-icon>Commit Collection
@@ -321,6 +357,17 @@
           </div>
         </div>
 
+        <div class="ce-status-bar diagonal3" style="display: flex;">
+          <div class="inside" style="display: flex; align-items:center; padding-left: .5em;">
+
+            <div style="color: #828385; margin-right: .5em;">Status:</div>
+            <collection-status is-published="collectionManager.activeCollection.isPublished"
+              is-draft="collectionManager.activeCollection.isDraft"
+              has-local-changes="collectionManager.activeCollection.hasLocalChanges" class="ng-isolate-scope">
+            </collection-status>
+          </div>
+        </div>
+
         <div style="display: flex; width: 100%;">
           <div class="ce-sidebar">
             <br />
@@ -331,19 +378,29 @@
               My Collections<div class="ce-sidebar-button-pointer"></div>
             </div>
             <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
-              ng-class="{ 'is-active' : session.activeTab == 1 }" ng-click="goToTab('edit')">
+              ng-class="{ 'is-active' : session.activeTab == 1 }" ng-click="goToTab('docu')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'edit'" size="24">
+              </databus-icon>
+              Edit Documentation<div class="ce-sidebar-button-pointer"></div>
+            </div>
+
+            <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
+              ng-class="{ 'is-active' : session.activeTab == 2 }" ng-click="goToTab('content')">
+              <databus-icon style="margin-right:12px;" color="'white'" shape="'collections-thin'" size="24">
               </databus-icon>
               Edit Content<div class="ce-sidebar-button-pointer"></div>
             </div>
+
+
+
             <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
-              ng-class="{ 'is-active' : session.activeTab == 2 }" ng-click="goToTab('preview')">
+              ng-class="{ 'is-active' : session.activeTab == 3 }" ng-click="goToTab('preview')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'eye'" size="24">
               </databus-icon>
               Preview<div class="ce-sidebar-button-pointer"></div>
             </div>
             <div class="ce-sidebar-button" ng-if="session.activeTab > 0"
-              ng-class="{ 'is-active' : session.activeTab == 3 }" ng-click="goToTab('query')">
+              ng-class="{ 'is-active' : session.activeTab == 4 }" ng-click="goToTab('query')">
               <databus-icon style="margin-right:12px;" color="'white'" shape="'help'" size="24">
               </databus-icon>
               Query<div class="ce-sidebar-button-pointer"></div>
@@ -359,7 +416,7 @@
             </div>
           </div>
           <div style="width: 100%;  background-color: #f9fafb;">
-            <div style="flex: 1; padding: 1.5em;">
+            <div style="flex: 1; padding: 3.5em 3em;">
               <div ng-if="session.activeTab == 0">
                 <div style="margin-bottom: 1em; border-top: 1px solid #dbdbdb">
                   <div ng-repeat="collection in collectionManager.local" class="ce-content-collection-entry"
@@ -379,15 +436,8 @@
                 </div>
               </div>
               <div ng-if="session.activeTab == 1">
-                <div class="ce-content-section">
-                  <div style="flex: 1; display: flex; align-items: center;"
-                    ng-click="session.showDescription = !session.showDescription">
-                    <expandable-arrow is-readonly="true" expanded="session.showDescription"></expandable-arrow>
-                    <div>Description</div>
-                  </div>
-                  <div style="flex: 1;"></div>
-                </div>
-                <div class="ce-content-body" ng-if="session.showDescription">
+
+                <div class="ce-content-body">
                   <table class="collection-summary table is-size-6 is-fullwidth">
                     <colgroup>
                       <col width="20%">
@@ -449,79 +499,24 @@
 
                 </div>
 
-                <div class="ce-content-section">
-
-                  <div style="flex: 2; display: flex; align-items: center;"
-                    ng-click="session.showGroups = !session.showGroups">
-                    <expandable-arrow is-readonly="true" expanded="session.showGroups"></expandable-arrow>
-                    <div style="flex: 1;">Content</div>
-                  </div>
 
 
-                </div>
+              </div>
 
 
-                <div style="margin-bottom: 5em;" class="ce-content-body" ng-if="session.showGroups">
+              <div ng-if="session.activeTab == 2">
 
+
+                <div style="margin-bottom: 5em;" class="ce-content-body">
                   <collection-hierarchy-two collection="collectionManager.activeCollection"
                     on-change="onActiveCollectionChanged()" on-add-content="onAddContent(source)">
                   </collection-hierarchy-two>
                 </div>
 
-                <div class="ce-content-body" ng-if="session.showQueries">
 
-                  <div class="ce-content-group" style="margin-bottom: .5em;"
-                    ng-repeat="node in collectionManager.activeCollection.content.customQueries track by node.guid">
-
-                    <div class="ce-content-group-header" style="height: 64px; padding-left:24px;">
-                      <div style="flex: 1;" ng-click="node.expanded = !node.expanded">{{ node.label }} (<i>Custom
-                          Query</i>)</div>
-
-                      <databus-icon style="margin-right:16px;" ng-if="!node.expanded" shape="'max'" size="24"
-                        on-click="node.expanded = true"></databus-icon>
-                      <databus-icon style="margin-right:16px;" ng-if="node.expanded" shape="'min'" size="24"
-                        on-click="node.expanded = false"></databus-icon>
-
-                      <databus-icon style="margin-right:16px;" shape="'delete'" size="24"
-                        on-click="removeCustomNode(node)">
-                      </databus-icon>
-                    </div>
-                    <div class="ce-content-group-body" ng-if="node.expanded">
-                      <table class="table is-size-6 is-fullwidth">
-                        <colgroup>
-                          <col width="20%">
-                          <col width="80%">
-                        </colgroup>
-                        <tbody>
-                          <tr>
-                            <td>Label</td>
-                            <td class="ng-binding">
-                              <edit-label single-line="true" text="node.label" on-change="onActiveCollectionChanged()">
-                              </edit-label>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Description</td>
-                            <td class="ng-binding">
-                              <edit-label single-line="false" text="node.description"
-                                on-change="onActiveCollectionChanged()">
-                              </edit-label>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="field">
-                        <yasqe-text query="node.query" valid="node.sparqlError" on-change="onActiveCollectionChanged()">
-                        </yasqe-text>
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
               </div>
 
-              <div ng-if="session.activeTab == 2">
+              <div ng-if="session.activeTab == 3">
 
 
                 <div style="padding: 1em; background-color: white; border: 1px solid #dbdbdb;">
@@ -533,7 +528,7 @@
                 </div>
               </div>
 
-              <div ng-if="session.activeTab == 3">
+              <div ng-if="session.activeTab == 4">
 
                 <div style="display: flex; align-items: center; margin-bottom: 1em;">
 
@@ -558,7 +553,7 @@
 
               </div>
 
-              <div ng-if="session.activeTab == 4">
+              <div ng-if="session.activeTab == 6">
                 <div style="display: flex; align-items: center;">
                   <div class="ce-content-header" style="flex: 1;">Add Groups & Artifacts to "{{
                     collectionManager.activeCollection.label }}"</div>

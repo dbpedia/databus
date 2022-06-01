@@ -3,6 +3,7 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.authenticated = data.auth.authenticated;
   $scope.licenseQuery = "";
+  $scope.loadRequestCount = 0;
 
 
   // TODO
@@ -346,7 +347,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     $http.get(uri).then(function (response) {
       session.isAccountDataLoading = false;
       session.accountData = response.data;
-      // $scope.setCreateNewGroup(session.data.group.createNew);
       $scope.isWizardReady = true;
     }, function (err) {
       console.log(err);
@@ -407,7 +407,11 @@ function PublishWizardController($scope, $http, focus, $q) {
       return;
     }
 
+    $scope.loadRequestCount++;
+
     $http.get('/app/publish-wizard/fetch-file?url=' + encodeURIComponent(input)).then(function (response) {
+
+      $scope.loadRequestCount--;
 
       if (response.data == null || response.data == "" || response.status != 200) {
         return;
@@ -417,7 +421,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       $scope.saveSession();
 
     }, function (err) {
-
+      $scope.loadRequestCount--;
     });
   }
 
@@ -434,13 +438,16 @@ function PublishWizardController($scope, $http, focus, $q) {
   // Fetch links using the fetch-links API of the Databus
   $scope.fetchFiles = function (parentUri) {
 
+    $scope.loadRequestCount++;
+
     $http.get('/app/publish-wizard/fetch-resource-page?url=' + encodeURIComponent(parentUri)).then(function (response) {
       for (var i in response.data) {
         var uri = response.data[i];
         $scope.addFile(uri);
       }
+      $scope.loadRequestCount--;
     }, function (err) {
-
+      $scope.loadRequestCount--;
     });
   }
 

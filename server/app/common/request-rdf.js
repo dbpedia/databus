@@ -22,7 +22,7 @@ requestRDF.requestQuads = async function(uri) {
     method: 'GET',
     uri: uri,
     headers: {
-      "Accept": 'text/turtle'
+      "Accept": 'text/turtle, application/ld+json, text/plain, application/rdf+xml, application/x-turtle'
     },
     transform: function (body, response, resolveWithFullResponse) {
       return { 'headers': response.headers, 'data': body };

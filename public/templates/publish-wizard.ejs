@@ -751,6 +751,7 @@
                   </div>
                 </div>
               </div>
+              <br/>
 
               <div class="row">
                 <div class="row-label">
@@ -816,13 +817,16 @@
                   </div>
                 </div>
               </div>
+
+              <br/>
               <div>
                 <table-editor ng-if="objSize(version.files) > 0" model="version"
                   analysis-processes="session.shasumClient.processes" on-analyze-file="analyzeFile(file)"
                   on-remove-file="removeFile(file)">
                 </table-editor>
 
-                <div ng-if="objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: 1em;
+               
+                <div ng-if="loadRequestCount == 0 && objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
                   <div class="hint-box">
                     <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
@@ -831,6 +835,19 @@
                 </div>
 
               </div>
+
+               <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
+               margin: -0.5em; margin-top: .5em;
+                border-top: solid 1px #dbdbdb;">
+                  <div class="loading-rect">
+                    <div class="lds-ellipsis">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
+                </div>
 
 
             </div>
