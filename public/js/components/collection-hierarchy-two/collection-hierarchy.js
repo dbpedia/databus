@@ -1,4 +1,3 @@
-
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
 
@@ -46,16 +45,15 @@ SELECT ?file WHERE {
     ctrl.onChange();
   }
 
-  ctrl.toggleCollapsed = function(node, view) {
+  ctrl.toggleCollapsed = function (node, view) {
     view.collapsed = !view.collapsed;
 
-    if(!view.collapsed) {
+    if (!view.collapsed) {
       ctrl.query(node);
     }
   }
 
-  ctrl.addDatabusToCollection = async function (uri) {
-    
+  ctrl.isDatabus = async function (uri) {
     var req = {
       method: 'GET',
       url: uri,
@@ -66,19 +64,43 @@ SELECT ?file WHERE {
 
     var res = await ctrl.$http(req);
     var manifest = await DatabusUtils.parseDatabusManifest(res.data);
-
     var expectedUri = new URL(uri);
 
-    if(manifest == undefined || manifest.uri != expectedUri.origin) {
-      return;
+    if (manifest == undefined || manifest.uri != expectedUri.origin) {
+      return false;
     }
 
-    ctrl.root.childNodes.push(new QueryNode(manifest.uri, null));
+    return true;
+  }
+
+  ctrl.getDatabusUri = async function (uri) {
+
+    var url = new URL(uri);
+    var segments = url.pathname.split('/');
+    var base = url.origin;
+    var currentUrl = base;
+
+    var isDatabus = await ctrl.isDatabus(currentUrl);
+
+    if (isDatabus) {
+      return currentUrl;
+    }
+
+    for (var i = 0; segments.length; i++) {
+
+      currentUrl += `/${segments[i]}`;
+      var isDatabus = await ctrl.isDatabus(currentUrl);
+
+      if (isDatabus) {
+        return currentUrl;
+      }
+    }
+
   }
 
   ctrl.onAddResource = async function (uri) {
 
-    if(uri.endsWith('/')) {
+    if (uri.endsWith('/')) {
       uri = uri.substr(0, uri.length - 1);
     }
 
@@ -89,18 +111,63 @@ SELECT ?file WHERE {
       return;
     }
 
-    // Determine resource type
-    var resourceType = 'Databus';
+    var databusUri = await ctrl.getDatabusUri(uri);
 
-    if (resourceType == 'Databus') {
-      await ctrl.addDatabusToCollection(uri);
+
+    var databusUriLength = DatabusUtils.getResourcePathLength(databusUri);
+    var resourceUriLength = DatabusUtils.getResourcePathLength(uri);
+    var diff = resourceUriLength - databusUriLength;
+
+    if (diff < 0 && diff > 3 || diff == 2) {
+      return;
+    }
+
+    if (diff == 0) {
+      ctrl.addDatabus(uri);
+    }
+
+    if (diff == 2) {
+      ctrl.addDatabus(databusUri);
+      let databusNode = QueryNode.findChildByUri(ctrl.root, databusUri);
+      ctrl.addGroup(databusNode, uri);
+    }
+
+    if(diff == 3) {
+      ctrl.addDatabus(databusUri);
+      let databusNode = QueryNode.findChildByUri(ctrl.root, databusUri);
+      let groupUri = DatabusUtils.navigateUp(uri);
+      ctrl.addGroup(databusNode, groupUri);
+      let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
+      ctrl.addArtifact(groupNode, uri);
     }
 
     ctrl.onChange();
     ctrl.updateViewModel();
-
-
     ctrl.$scope.$apply();
+  }
+
+  ctrl.addDatabus = function (uri) {
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+
+    if (node == null) {
+      ctrl.root.childNodes.push(new QueryNode(uri, null));
+    }
+  }
+
+  ctrl.addGroup = function (databusNode, uri) {
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+
+    if (node == null) {
+      databusNode.childNodes.push(new QueryNode(uri, DATAID_GROUP_PROPERTY));
+    }
+  }
+
+  ctrl.addArtifact = function (groupNode, uri) {
+    let node = QueryNode.findChildByUri(ctrl.root, uri);
+
+    if (node == null) {
+      groupNode.childNodes.push(new QueryNode(uri, DATAID_ARTIFACT_PROPERTY));
+    }
   }
 
   ctrl.addToCollection = function (source, view, result) {
@@ -306,7 +373,7 @@ SELECT ?file WHERE {
 
         if (DatabusUtils.isValidHttpUrl(groupNode.uri)) {
 
-       
+
 
           ctrl.facets.get(groupNode.uri).then(function (res) {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];

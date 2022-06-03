@@ -186,6 +186,11 @@ class DatabusUtils {
 
   static getResourcePathLength(uri) {
     var parts = DatabusUtils.splitResourceUri(uri);
+
+    if(parts.length == 1 && parts[0] == "") {
+      return 0;
+    }
+    
     return parts.length;
   }
 
