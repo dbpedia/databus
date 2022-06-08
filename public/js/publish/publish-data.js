@@ -197,8 +197,8 @@ class PublishData {
     this.version.contentVariants.push({
       label: variant,
       id: variant,
-      fillRegex : '',
-      toLower : true,
+      fillRegex: '',
+      toLower: true,
       pruneWhitespaces: true
     });
 
@@ -220,6 +220,31 @@ class PublishData {
     this.version.isConfigDirty = true;
   }
 
+  fill(variant) {
+
+    var val = variant.fillRegex;
+
+    for (var file of this.version.files) {
+
+      if (variant.toLower) {
+        val = val.toLowerCase();
+      }
+
+      if (variant.pruneWhitespaces) {
+        val = val.replaceAll(' ', '');
+      }
+
+      if (!variant.overwrite && file.contentVariants[variant.id] != undefined
+        && file.contentVariants[variant.id].length > 0) {
+        continue;
+      }
+
+      file.contentVariants[variant.id] = val;
+    }
+
+    this.version.isConfigDirty = true;
+  }
+
   fillByRegex(variant) {
     var regex = new RegExp(variant.fillRegex);
 
@@ -227,21 +252,24 @@ class PublishData {
       var file = this.version.files[f];
       var matches = file.name.match(regex);
 
-      if(matches != null) {
+      if (matches != null) {
         var val = matches[0];
 
-        if(variant.toLower) {
+        if (variant.toLower) {
           val = val.toLowerCase();
         }
 
-        if(variant.pruneWhitespaces) {
+        if (variant.pruneWhitespaces) {
           val = val.replaceAll(' ', '');
+        }
+
+        if (!variant.overwrite && file.contentVariants[variant.id] != undefined
+          && file.contentVariants[variant.id].length > 0) {
+          continue;
         }
 
         file.contentVariants[variant.id] = val;
       }
-
-
     }
 
     this.version.isConfigDirty = true;

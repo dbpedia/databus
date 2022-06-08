@@ -782,6 +782,11 @@
                                 placeholder="Enter a Regex (.* for file name)">
                             </div>
                             <div class="control">
+                              <div class="button" ng-click="session.data.fill(variant)">
+                                Fill
+                              </div>
+                            </div>
+                            <div class="control">
                               <div class="button" ng-click="session.data.fillByRegex(variant)">
                                 Fill By Regex
                               </div>
@@ -795,6 +800,10 @@
                           <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
                             type="checkbox" name="prune">
                           <label for="scales">Remove Whitespaces</label>
+
+                          <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox"
+                            type="checkbox" name="prune">
+                          <label for="scales">Overwrite</label>
                         </div>
 
                         <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
