@@ -31,7 +31,7 @@ $shacl='<#group-exists>
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
-      sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
+      sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
       sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
 	] .';
 
