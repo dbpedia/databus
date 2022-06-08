@@ -92,6 +92,9 @@ module.exports = function (router, protector) {
 
     // Prefer content disposition
     if (header['content-disposition'] != undefined) {
+
+      console.log(header['content-disposition']);
+
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
       console.log(filename);
@@ -117,8 +120,8 @@ module.exports = function (router, protector) {
     var entries = disposition.split(' ');
 
     for(var entry of entries) {
-      if(entry.startsWith('filename')) {
-        return entry.split('=')[1];        
+      if(entry.startsWith('filename=')) {
+        return entry.split('=')[1].replace(/(^")|("$)|(;$)|(";$)/g, "");        
       }
     }
 
@@ -139,6 +142,8 @@ module.exports = function (router, protector) {
     if(value == undefined) {
       return;
     }
+
+    console.log(value);
 
     var nameComponents = value.split('/');
 
