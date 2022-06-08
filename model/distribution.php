@@ -31,7 +31,7 @@ $shacl='<#part-exists>
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
-    sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}#[a-zA-Z0-9\\\\-_\\\\.=]{3,}(?<!#Dataset)$" ;
+    sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}#[a-zA-Z0-9\\\\-_\\\\.=]{3,}(?<!#Dataset)$" ;
     sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3, PART != \"Dataset\""@en ;
     ] . ';
 

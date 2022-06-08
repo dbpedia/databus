@@ -31,7 +31,7 @@ dataid:Dataset
 	sh:property [
 		sh:path [ sh:inversePath rdf:type ] ;
 		  sh:nodekind sh:IRI ;
-		sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}#Dataset$" ;
+		sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}#Dataset$" ;
 		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
 ```
@@ -226,7 +226,7 @@ dataid:group a owl:ObjectProperty;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
 
 <#is-group-uri-correct>
 	a sh:NodeShape;
@@ -276,7 +276,7 @@ dataid:artifact a owl:ObjectProperty;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
 
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
@@ -325,7 +325,7 @@ missing maybe obsolete
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
+  sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" .
 
 <#is-version-uri-correct>
 	a sh:NodeShape;
