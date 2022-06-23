@@ -16,23 +16,11 @@ services:
       STORAGE_USER: "dba"
       STORAGE_PASS: "everyoneknows"
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
-      #STORAGE_CLIENT_CLASS: org.dbpedia.databus.FusekiJDBCClient
-      #STORAGE_JDBC_PORT: 3030
-      GIT_ROOT: "/root/git"
     ports:
       - "127.0.0.1:3002:8080"
     volumes:
-      - ./data/repo:/root/git
-  # fuseki:
-  #  image: "stain/jena-fuseki"
-  #  container_name: devenv_fuseki
-  #  ports:
-  #    - "3004:3030"
-  #  environment:
-  #    ADMIN_PASSWORD: everyoneknows
-  #    FUSEKI_DATASET_1: ds
-  #  volumes:
-  #    - ./data/fuseki:/fuseki
+      - ./data/gstore/git:/gstore/git
+      - ./data/gstore/logs:/gstore/logs
   virtuoso:
     image: "pkleef/virtuoso-opensource-7:latest"
     container_name: devenv_virtuoso
@@ -43,10 +31,11 @@ services:
     ports:
       - "127.0.0.1:3003:8890"
     volumes: 
-      - ./data/virtuoso:/data
+      - ./data/virtuoso:/database
     entrypoint: /bin/bash -c "
         echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
+        echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         /virtuoso-entrypoint.sh
       "
       

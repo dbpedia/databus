@@ -6,7 +6,7 @@ const ArrayUtils = require('../../common/utils/array-utils');
 
 var finder = {};
 
-access.hasAccess = function(graphUri, accountUri) {
+finder.findFormatAndC = function(graphUri, accountUri) {
 
 
 

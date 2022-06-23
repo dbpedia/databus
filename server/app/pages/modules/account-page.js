@@ -68,7 +68,7 @@ module.exports = function (router, protector) {
 
       var cacheKey = `ck_collections_${isOwnProfile}__${req.query.account}`;
 
-      // console.log(`Getting stats for ${req.query.account} with CK ${cacheKey}`);
+      console.log(`Getting collections for ${req.query.account} with CK ${cacheKey}`);
 
       var collections = await cache.get(cacheKey, async () =>
         await sparql.collections.getCollectionsByAccount(req.query.account, !isOwnProfile));

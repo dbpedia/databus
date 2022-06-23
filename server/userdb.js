@@ -11,8 +11,13 @@ class DatabusUserDatabase {
     this.loadFromFile();
   }
 
+  requestRefresh() {
+    this.onChange(this.userTable);
+  }
+
   // Write action called from worker messages
   updateUser(data) {
+
     this.userTable[data.sub] = data;
     this.saveToFile();
 

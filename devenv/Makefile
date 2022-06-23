@@ -7,8 +7,7 @@ env-clean:
 	sudo rm -r ../server/users; \
 	docker rm -f devenv_lookup; \
 	docker rm -f devenv_virtuoso; \
-	docker rm -f devenv_gstore; \
-        docker rm -f devenv_fuseki;
+	docker rm -f devenv_gstore;
 
 env-build:
 	docker build -t lookup-servlet ../search; \

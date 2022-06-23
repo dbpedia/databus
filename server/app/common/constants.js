@@ -33,6 +33,7 @@ class Constants {
   static DATABUS_USER_CACHE_REFRESH = 0x01;
   static DATABUS_USER_ENTRY_UPDATE = 0x02;
   static DATABUS_SEARCH_INDEX_REBUILD = 0x03;
+  static DATABUS_REQUEST_USER_CACHE_REFRESH = 0x04;
 }
 
 module.exports = Constants;

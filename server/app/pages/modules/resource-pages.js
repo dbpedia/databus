@@ -15,14 +15,13 @@ module.exports = function (router, protector) {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var accountData = await sparql.accounts.getAccount(req.params.account);
 
-      console.log(accountData);
       if (accountData == null) {
-        res.status(404).send('Sorry cant find that!');
-        return;
+        next('route');
+        return; 
       }
 
       res.render('account', {
-        title: accountData == null ? 'Create Profile' : accountData.label,
+        title: accountData.label,
         data: {
           auth: auth,
           username: req.params.account,
@@ -33,7 +32,7 @@ module.exports = function (router, protector) {
 
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      next('route');
     }
   });
 

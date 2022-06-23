@@ -12,7 +12,7 @@ module.exports = function (router, protector) {
     data.auth = ServerUtils.getAuthInfoFromRequest(req);
 
     if (data.auth.authenticated) {
-      data.collections = await sparql.collections.getCollectionsByAccount(data.auth.info.username);
+      data.collections = await sparql.collections.getCollectionsByAccount(data.auth.info.accountName);
     }
 
     res.render('collections-editor', {

@@ -10,7 +10,7 @@ const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
 var initialize = require('./app/init');
-const Constants = require('./app/common/constants');
+var Constants = require('./app/common/constants');
 const DatabusUserDatabase = require('./userdb');
 const LookupSearchIndexer = require('./search-indexer');
 var userTablePath = __dirname + '/users/namespaces.csv';
@@ -74,6 +74,10 @@ function masterProcess() {
 
         if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
           searchIndexer.requestRebuild();
+        }
+
+        if(message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
+          userDatabase.requestRefresh();
         }
       });
     }

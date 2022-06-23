@@ -96,13 +96,8 @@ class DatabusProtect {
     });
 
     process.send({
-      id: Constants.DATABUS_USER_ENTRY_UPDATE,
-      body: JSON.stringify({
-        sub: process.pid,
-        username: `user_${process.pid}`,
-        name: `Name Of ${process.pid}`,
-        keys: []
-      })
+      id: Constants.DATABUS_REQUEST_USER_CACHE_REFRESH,
+      body: null
     });
 
     this.oidc = oidc;
