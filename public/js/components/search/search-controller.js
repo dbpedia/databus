@@ -53,7 +53,6 @@ function SearchController($http, $interval, $sce) {
         ctrl.filterVisible[resourceType] = true;
         ctrl.numFilters++;
       }
-
     }
   }
 

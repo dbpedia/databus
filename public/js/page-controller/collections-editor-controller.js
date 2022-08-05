@@ -73,6 +73,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   }
 
   $scope.collectionManager = collectionManager;
+
   $scope.collectionQuery = new DatabusCollectionWrapper($scope.collectionManager.activeCollection).createQuery();
   $scope.collectionJson = $scope.getCollectionJson();
 

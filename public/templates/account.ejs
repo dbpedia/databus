@@ -278,7 +278,7 @@
           </div>
 
           <div ng-if="group.isExpanded" style="border-left: 1px solid #dbdbdb; 
-          margin-left: 74px; padding-left: 24px; padding-top: 12px; padding-bottom: 12px; display: flex;">
+          margin-left: 74px; padding-left: 24px; padding-top: 16px; padding-bottom: 16px; margin-bottom: 1em;">
 
             <div ng-repeat="artifact in group.artifacts" >
 
@@ -288,10 +288,10 @@
                 </entity-card>
               </div>
 
-              <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+              <div ng-if="!$last" style="margin: 1.5em 1.5em;"></div>
             </div>
           </div>
-          <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+          <div ng-if="!$last" style="margin: 1.5em 1.5em;" class="is-divider"></div>
         </div>
 
         <!--

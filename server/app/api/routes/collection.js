@@ -55,8 +55,6 @@ module.exports = function (router, protector) {
         return;
       }
 
-      console.log(req.body);
-
       // Validate the group RDF with the shacl validation tool
       var shaclResult = await shaclTester.validateCollectionRDF(req.body);
       
@@ -82,8 +80,6 @@ module.exports = function (router, protector) {
 
       var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
     
-    
-
       // Possible TODO: validate instead of replace
       collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
       collectionGraph['http://purl.org/dc/terms/publisher'] = [ 
