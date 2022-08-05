@@ -105,10 +105,9 @@
           {{ createAccountError }}
 
           <ul ng-if="showAccountNameHints">
-            <li>At least 3 characters</li>
-            <li>At most 15 characters</li>
+            <li>Between 4 and 15 characters</li>
             <li>Starts and ends with a lowercase letter</li>
-            <li>Only lowercase letters, underscores and dashes allowed</li>
+            <li>Only lowercase letters, numbers, underscores and dashes allowed</li>
           </ul>
         </div>
 
@@ -261,27 +260,41 @@
 
         <div class="field is-grouped" style="margin-bottom: 1.5em;">
           <p class="control" style="flex: 1;">
-            <input class="input" placeholder="Find data..." input="searchInput" filters="searchFilters">
+            <search search-input="dataSearchInput" settings="dataSearchSettings">
+            </search>
+
           </p>
-          <p class="control">
-            <a href="/app/publish-wizard" class="button is-primary">
-              Publish Data
-            </a>
-          </p>
+
         </div>
 
-        <div ng-if="searchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
-          <div ng-repeat="artifact in group.artifacts">
-            <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
-              <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'" desc="artifact.abstract">
-              </entity-card>
+
+
+        <div ng-if="dataSearchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
+
+          <div style="display: flex; align-items: center; margin-top: 2em; margin-bottom: 1em;">
+            <expandable-arrow expanded="group.isExpanded"></expandable-arrow>
+            <entity-card label="group.label" uri="group.uri" type="'Group'">
+            </entity-card>
+          </div>
+
+          <div ng-if="group.isExpanded" style="border-left: 1px solid #dbdbdb; 
+          margin-left: 74px; padding-left: 24px; padding-top: 12px; padding-bottom: 12px; display: flex;">
+
+            <div ng-repeat="artifact in group.artifacts" >
+
+              <div class="node">
+                <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'"
+                  desc="artifact.abstract">
+                </entity-card>
+              </div>
+
+              <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
             </div>
           </div>
           <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
         </div>
 
         <!--
-
         <div ng-if="searchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
           <div class="node" style="padding-right:1em;">
             <expandable-arrow expanded="group.expanded"></expandable-arrow>
@@ -305,10 +318,11 @@
       <!-- COLLECTIONS -->
       <div class="container" ng-if="tabViewModel.activeTab == 2">
 
-        <div class="field is-grouped">
-          
+        <div class="field is-grouped" style="margin-bottom: 2em">
+
           <p class="control" style="flex: 1;">
-            <input class="input" placeholder="Find collections..." input="searchInput" filters="searchFilters">
+            <search search-input="collectionSearchInput" settings="collectionSearchSettings">
+          </search>
           </p>
           <p class="control">
             <a href="/app/collection-editor" class="button is-primary">
@@ -317,7 +331,10 @@
           </p>
         </div>
 
-        <div class="hierarchy" ng-repeat="collection in collectionsData.collections">
+        <div ng-if="collectionSearchInput == ''" class="hierarchy" ng-repeat="collection in collectionsData.collections">
+
+
+
           <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
             <entity-card label="collection.label" uri="collection.uri" type="'Collection'" desc="collection.abstract">
             </entity-card>

@@ -16,11 +16,25 @@ function AccountPageController($scope, $http, $location) {
   }
 
   // Initialize the user-internal search
-  $scope.searchInput = '';
-  $scope.searchFilters = [
-    'publisherUri=' + encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`),
-    'minRelevance=0.1'
-  ];
+  var uriComponent = encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`);
+
+  $scope.dataSearchInput = '';
+  $scope.dataSearchSettings = {
+    minRelevance: 0.01,
+    maxResults: 10,
+    placeholder: `Search ${$scope.profileData.accountName}'s data...`,
+    resourceTypes: [ 'Group', 'Artifact' ],
+    filter: `&partRequired=true&part=${$scope.profileData.accountName}&partWeight=0&typeNameWeight=0`
+  };
+
+  $scope.collectionSearchInput = '';
+  $scope.collectionSearchSettings = {
+    minRelevance: 0.01,
+    maxResults: 10,
+    placeholder: `Search ${$scope.profileData.accountName}'s collections...`,
+    resourceTypes: [ 'Collection' ],
+    filter: `&partRequired=true&part=${$scope.profileData.accountName}&partWeight=0&typeNameWeight=0`
+  };
 
   // Wait for additional artifact data to arrive
   $scope.artifactData = {};

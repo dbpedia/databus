@@ -71,7 +71,8 @@ databusApplication.component('search', {
   templateUrl: '/js/components/search/search.html',
   controller: ['$http', '$interval', '$sce', SearchController],
   bindings: {
-    searchInput: '='
+    searchInput: '=',
+    settings: '<',
   }
 });
 

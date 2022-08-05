@@ -2,28 +2,45 @@
 
 
   <div class="field" style="display: flex;">
-    <div class="control" style="flex:1;">
+    <div class="control has-icons-left " style="flex:1;">
+
       <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()"
-        placeholder="Search the Databus...">
+        ng-attr-placeholder="{{ $ctrl.placeholder }}">
+      <span class="icon is-left">
+        <i class="fas fa-search"></i>
+      </span>
     </div>
-    <div class="field" style="display:flex; align-items: center; line-height: 1;">
-      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterArtifact');" class="is-clickable">
+
+
+    <div class="field" style="display:flex; align-items: center; line-height: 1;" ng-if="$ctrl.numFilters != 1">
+
+      <div ng-repeat="resourceType in $ctrl.availableResourceTypes" ng-if="$ctrl.filterVisible[resourceType]"
+        ng-click="$ctrl.toggleFilter(resourceType);" style="margin-left:4px;" class="is-clickable">
+        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filterActive[resourceType] }" type="resourceType">
+        </type-tag>
+      </div>
+
+<!--
+      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Artifact']"
+        ng-click="$ctrl.toggleFilter('filterArtifact');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'">
         </type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterGroup')" class="is-clickable">
+      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Group']" ng-click="$ctrl.toggleFilter('filterGroup')"
+        class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'">
         </type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterPublisher');" class="is-clickable">
+      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['PersonalProfileDocument']"
+        ng-click="$ctrl.toggleFilter('PersonalProfileDocument');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }"
           type="'PersonalProfileDocument'"></type-tag>
       </div>
-      <div style="margin-left:4px;" ng-click="$ctrl.toggleFilter('filterCollection');" class="is-clickable">
+      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Collection']"
+        ng-click="$ctrl.toggleFilter('filterCollection');" class="is-clickable">
         <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }"
           type="'Collection'"></type-tag>
-      </div>
-
+      </div>-->
     </div>
   </div>
 
@@ -38,7 +55,8 @@
     </div>
 
     <div ng-if="!$ctrl.isSearching" style="margin-top: 2em;">
-      <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any resource.</i></div>
+      <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any
+          resource.</i></div>
       <div class="dataset-name" ng-repeat="result in $ctrl.results.docs">
 
         <entity-card label="result.label[0]" type="result.typeName[0]" uri="result.resource[0]"

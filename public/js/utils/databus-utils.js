@@ -16,7 +16,7 @@ class DatabusUtils {
   }
 
   static isValidAccountName(identifier) {
-    var labelRegex = /^[a-z][a-z_\-]+[a-z]$/;
+    var labelRegex = /^[a-z][0-9a-z_\-]+[a-z]$/;
     return this.checkField(identifier, labelRegex, 3, 15);
   }
 

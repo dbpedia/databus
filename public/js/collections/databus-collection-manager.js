@@ -31,11 +31,9 @@ class DatabusCollectionManager {
     this.remote = this.loadCollectionsFromStorage(false);
     this.local = this.loadCollectionsFromStorage(true);
 
-
-
   }
 
-  async tryInitialize() {
+  async tryInitialize(accountName) {
 
     // Already initialized, nothing to do
     if (this.isInitialized) {
@@ -44,8 +42,10 @@ class DatabusCollectionManager {
 
     try {
 
-      var res = await $http.get(`/app/account/collections?account=${$scope.auth.info.accountName}`);
+      var res = await this.http.get(`/app/account/collections?account=${accountName}`);
       this.initialize(res.data);
+
+      this.accountName = accountName;
 
     } catch(e) {
       console.log(`Failed to initialze collection manager.`);

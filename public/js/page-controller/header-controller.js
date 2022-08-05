@@ -14,12 +14,16 @@ function HeaderController($scope, $http, collectionManager) {
   // Collection Manager Init
   $scope.collectionManager = collectionManager;
 
+  if($scope.collectionManager.accountName != $scope.auth.info.accountName) {
+    $scope.collectionManager.isInitialized = false;
+  }
+
   if($scope.collectionManager.isInitialized) {
     $scope.collectionManager.findActive();
   }
 
   if($scope.authenticated) {
-    $scope.collectionManager.tryInitialize();
+    $scope.collectionManager.tryInitialize($scope.auth.info.accountName);
   }
 
   // Finds a display name for the account

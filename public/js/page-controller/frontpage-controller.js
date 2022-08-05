@@ -16,7 +16,15 @@ function FrontPageController($scope, $sce, $http) {
 
   $scope.activityChartData = {};
   $scope.activityChartData.isLoading = true;
+
   $scope.searchQuery = "";
+  $scope.searchSettings = {
+    minRelevance: 20,
+    maxResults: 25,
+    placeholder: `Search the Databus...`,
+    resourceTypes: undefined,
+    filter: `&typeNameWeight=0`
+  };
 
   $http.get(`/app/index/activity`).then(function (response) {
     $scope.activityChartData.entries = response.data;

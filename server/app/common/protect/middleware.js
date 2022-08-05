@@ -114,6 +114,17 @@ class DatabusProtect {
    * @returns 
    */
   getUser(sub) {
+
+    if(this.users == null || this.users.bySub == null) {
+      process.send({
+        id: Constants.DATABUS_REQUEST_USER_CACHE_REFRESH,
+        body: null
+      });
+
+      return null;
+    }
+
+
     return this.users.bySub[sub];
   }
 
