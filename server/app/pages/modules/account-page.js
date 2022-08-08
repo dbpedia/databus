@@ -61,7 +61,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/app/account/collections', protector.protect(), async function (req, res, next) {
+  router.get('/app/account/collections', protector.checkSso(), async function (req, res, next) {
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var isOwnProfile = auth.authenticated && auth.info.accountName === req.query.account;

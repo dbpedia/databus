@@ -66,7 +66,7 @@ class QueryBuilder {
     }
   }
 
-  appendTemplateHeader(indent) {
+   appendTemplateHeader(indent) {
     for (var line of this.template) {
 
       if (line == this.templateInsertionKey) {
@@ -135,7 +135,6 @@ class QueryBuilder {
       return;
     }
 
-    // Custom query node
     if (node.uri != null) {
 
       var isValidHttpUrl;
@@ -146,8 +145,9 @@ class QueryBuilder {
         isValidHttpUrl = DatabusUtils.isValidHttpUrl(node.uri);
       }
 
-
       if (!isValidHttpUrl) {
+
+        // Custom query node
         var query = this.removeAndCollectPrefixes(node.property);
         var lines = query.split('\n');
         for (var line of lines) {

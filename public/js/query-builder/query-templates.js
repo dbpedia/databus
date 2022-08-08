@@ -129,6 +129,20 @@
       `}`,
     ]
   };
+
+  /**
+   * The default selection (only file)
+   */
+   static CUSTOM_QUERY_FILE_TEMPLATE = {
+    prefixes: QueryTemplates.DEFAULT_PREFIXES,
+    indent: 1,
+    select: `SELECT ?file WHERE`,
+    body: [
+      `{`,
+      `%QUERY%`,
+      `}`,
+    ]
+  };
 }
 
 if(typeof module === "object" && module && module.exports)

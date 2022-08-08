@@ -38,7 +38,11 @@ class ServerUtils {
   static getAuthInfoFromRequest(req) {
 
     var result = {};
-    result.authenticated = req.databus.authenticated; //.isAuthenticated();
+    result.authenticated = false;
+
+    if(req.databus != undefined) {
+      result.authenticated = req.databus.authenticated; //.isAuthenticated();
+    }
 
     result.info = {};
 
