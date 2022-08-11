@@ -47,6 +47,7 @@
     "streamify-string": "^1.0.1",
     "swagger-ui-express": "^4.3.0",
     "terser": "^5.7.0",
+    "webdav-server": "^2.6.2",
     "yamljs": "^0.3.0"
   },
   "main": "app.js",

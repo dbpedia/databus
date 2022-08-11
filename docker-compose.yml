@@ -21,6 +21,7 @@ services:
       DATABUS_PROXY_SERVER_OWN_CERT_KEY: ${DATABUS_PROXY_SERVER_OWN_CERT_KEY} # When not using ACME, what is the name of the own certificate's key file?
       DATABUS_PROXY_SERVER_HOSTNAME: ${DATABUS_PROXY_SERVER_HOSTNAME} # What is the hostname of this machine, when using the proxy server?
     volumes:
+      - ./data/dav/:/databus/server/dav/
       - ./data/keypair/:/databus/server/keypair
       - ./data/users/:/databus/server/users
       - ./data/tls/:/tls:ro # path for TLS (HTTPS) certs when using integrated caddy proxy                                                                                                                 

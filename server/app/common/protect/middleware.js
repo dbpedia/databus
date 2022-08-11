@@ -438,7 +438,7 @@ class DatabusProtect {
 
       //return self.oidc.requiresAuth();
       // Other requests get denied
-      response.status(403).send('Access denied.\n');
+      response.status(401).send();
 
 
     }, this.fetchUser()];

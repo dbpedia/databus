@@ -9,6 +9,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 const ServerUtils = require('./common/utils/server-utils');
+const webdav = require('webdav-server').v2;
+const Constants = require("./common/constants");
+const DatabusUtils = require("../../public/js/utils/databus-utils");
 
 // Creation of the mighty server app
 var app = express();
@@ -19,12 +22,58 @@ var memoryStore = new session.MemoryStore();
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
 
-  // Fav Icon
-  app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
-
   // Create and attach the databus protector
   var DatabusProtect = require('./common/protect/middleware');
   var protector = new DatabusProtect(memoryStore);
+
+  const userManager = new webdav.SimpleUserManager();
+  const privilegeManager = new webdav.SimplePathPrivilegeManager();
+
+  var options = {
+    requireAuthentification: true,
+    httpAuthentication: new webdav.HTTPBasicAuthentication(userManager, 'Default realm'),
+    privilegeManager: privilegeManager,
+  }
+
+  const sessionPass = DatabusUtils.uuidv4();
+  const webDAVServer = new webdav.WebDAVServer(options);
+  webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem('/databus/server/dav/'));
+
+  process.on('message', function (msg) {
+    if (msg.id == Constants.DATABUS_USER_CACHE_REFRESH) {
+
+      for (var sub in msg.body) {
+
+        var databusUser = msg.body[sub];
+
+        if (databusUser.keys == null || databusUser.keys.length == 0) {
+          continue;
+        }
+
+        console.log(`Adding user ${databusUser.username}:${sessionPass}`);
+        const user = userManager.addUser(databusUser.username, sessionPass, false);
+        privilegeManager.setRights(user, `/${databusUser.username}/`, ['all']);
+
+        var folderTree = {}
+        folderTree[databusUser.username] = webdav.ResourceType.Directory;
+        webDAVServer.rootFileSystem().addSubTree(webDAVServer.createExternalContext(), folderTree);
+      }
+    }
+  });
+
+  app.all('/dav/*', protector.protect(), function(req, res, next) {
+    var auth = ServerUtils.getAuthInfoFromRequest(req);
+    var token = btoa(`${auth.info.accountName}:${sessionPass}`)
+    req.headers['Authorization'] = `Basic ${token}`;
+    next("route");
+  });
+
+
+  app.use(webdav.extensions.express('/dav', webDAVServer));
+
+  // Fav Icon
+  app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
+
 
   var router = new express.Router();
 
@@ -39,9 +88,9 @@ initialize(app, memoryStore).then(function () {
   app.use('/', router);
 
   // Handle 404
-  app.use(protector.protect(true), function(req, res, next) {
+  app.use(protector.protect(true), function (req, res, next) {
     res.status(404);
-  
+
     // respond with html page
     if (req.accepts('html')) {
       var data = {}
@@ -49,13 +98,13 @@ initialize(app, memoryStore).then(function () {
       res.render('404', { title: 'Not found', data: data });
       return;
     }
-  
+
     // respond with json
     if (req.accepts('json')) {
       res.json({ error: 'Not found' });
       return;
     }
-  
+
     // default to plain-text. send()
     res.type('txt').send('Not found');
   });
