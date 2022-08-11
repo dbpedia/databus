@@ -9,31 +9,25 @@ function HeaderController($scope, $http, collectionManager) {
   $scope.databusCookieConsentKey = 'databus_cookie_consent';
   let cookieConsent = window.localStorage.getItem($scope.databusCookieConsentKey);
   $scope.showCookieDialogue = cookieConsent === undefined;
-  
-  
-  // Collection Manager Init
-  $scope.collectionManager = collectionManager;
 
-  if($scope.authenticated) {
-    if($scope.collectionManager.accountName != $scope.auth.info.accountName) {
-      $scope.collectionManager.tryInitialize($scope.auth.info.accountName);
-    } else {
-      $scope.collectionManager.findActive();
-    }
+  if ($scope.authenticated) {
+    $scope.collectionManager = collectionManager;
+    // Collection Manager Init
+    var loadCollectionsFromServer = $scope.collectionManager.accountName != $scope.auth.info.accountName;
+    $scope.collectionManager.tryInitialize($scope.auth.info.accountName, loadCollectionsFromServer);
   }
 
-
   // Finds a display name for the account
-  $scope.getAccountName = function() {
-    if($scope.auth.info.accountName) {
+  $scope.getAccountName = function () {
+    if ($scope.auth.info.accountName) {
       return $scope.auth.info.accountName;
     }
-    
-    if($scope.auth.info.oidc_email) {
+
+    if ($scope.auth.info.oidc_email) {
       return $scope.auth.info.oidc_email;
     }
-    
-    if($scope.auth.info.oidc_name) {
+
+    if ($scope.auth.info.oidc_name) {
       return $scope.auth.info.oidc_name;
     }
 
@@ -54,7 +48,7 @@ function HeaderController($scope, $http, collectionManager) {
   }
 
   // Logout function
-  $scope.logout = function () { 
+  $scope.logout = function () {
     window.location = '/system/logout?redirectUrl=' + encodeURIComponent(window.location);
   }
 

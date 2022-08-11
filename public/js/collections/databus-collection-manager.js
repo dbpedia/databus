@@ -22,11 +22,14 @@ class DatabusCollectionManager {
 
   constructor($http, storageKey) {
 
-    this.storageKeyPrefix = `${DATABUS_RESOURCE_BASE_URL}${storageKey}_${encodeURI(DATABUS_RESOURCE_BASE_URL)}`;
-    window.sessionStorage.removeItem(`${this.storageKeyPrefix}_session`);
+    this.storageKeyPrefix = `${storageKey}_${encodeURI(DATABUS_RESOURCE_BASE_URL)}`;
+    // window.sessionStorage.removeItem(`${this.storageKeyPrefix}_session`);
 
     this.sessionInfo = JSON.parse(window.sessionStorage.getItem(`${this.storageKeyPrefix}_session`));
 
+    if(this.sessionInfo == undefined) {
+      this.sessionInfo == {};
+    }
     // window.sessionStorage.removeItem(this.storageKey);
     // window.sessionStorage.removeItem(this.storageKey + '_isInitialized');
     // window.localStorage.removeItem(this.storageKey);
@@ -38,12 +41,9 @@ class DatabusCollectionManager {
     return this.sessionInfo != undefined ? this.sessionInfo.accountName : undefined;
   }
 
-  async tryInitialize(accountName) {
+  async tryInitialize(accountName, loadFromServer) {
 
-    this.sessionInfo = {
-      accountName: accountName
-    };
-
+    this.sessionInfo.accountName = accountName;
     window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
 
     this.storageKey = `${this.storageKeyPrefix}__${accountName}`;
@@ -51,13 +51,15 @@ class DatabusCollectionManager {
     this.local = this.loadCollectionsFromStorage(true);
     this.findActive();
 
-    try {
-      var res = await this.http.get(`/app/account/collections?account=${accountName}`);
-      this.initialize(res.data);
+    if (loadFromServer) {
+      try {
+        var res = await this.http.get(`/app/account/collections?account=${accountName}`);
+        this.initialize(res.data);
 
-    } catch (e) {
-      console.log(`Failed to initialze collection manager.`);
-      console.log(e);
+      } catch (e) {
+        console.log(`Failed to initialze collection manager.`);
+        console.log(e);
+      }
     }
   }
 
@@ -128,7 +130,7 @@ class DatabusCollectionManager {
         this.local[identifier].content = { groups: [], customQueries: [] };
       }
     }
-    
+
     /*
     let activeIdentifier = this.activeCollectionIdentifier;
     // Set first collection as active
