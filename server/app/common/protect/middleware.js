@@ -369,7 +369,7 @@ class DatabusProtect {
     
     return [(req, res, next) => {
 
-      if (!isBrowserRequest(req)) {
+      if (req.oidc == undefined || !isBrowserRequest(req)) {
 
         var apiTokenUser = self.validateApiKey(req);
 
