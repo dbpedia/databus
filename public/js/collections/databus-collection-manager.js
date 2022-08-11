@@ -28,11 +28,8 @@ class DatabusCollectionManager {
     this.sessionInfo = JSON.parse(window.sessionStorage.getItem(`${this.storageKeyPrefix}_session`));
 
     if(this.sessionInfo == undefined) {
-      this.sessionInfo == {};
+      this.sessionInfo = {};
     }
-    // window.sessionStorage.removeItem(this.storageKey);
-    // window.sessionStorage.removeItem(this.storageKey + '_isInitialized');
-    // window.localStorage.removeItem(this.storageKey);
 
     this.http = $http;
   }
