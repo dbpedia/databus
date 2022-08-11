@@ -49,7 +49,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.collectionWidgetSelectionData.groupNode = $scope.groupNode;
 
   $scope.onFileQueryResult = function (args) {
-
     if (args == null) return;
     $scope.collectionWidgetSelectionData.query = args.query;
   }

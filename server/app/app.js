@@ -35,9 +35,9 @@ initialize(app, memoryStore).then(function () {
     userManager: userManager
   }
 
-  userManager.getDefaultUser(function(defaultUser) {
+  userManager.getDefaultUser(function (defaultUser) {
     console.log(`Setting default user rights.`);
-    privilegeManager.setRights(defaultUser, `/`, [ 'canRead', 'canSource' ]);
+    privilegeManager.setRights(defaultUser, `/`, ['canRead', 'canSource']);
   });
 
   const sessionPass = DatabusUtils.uuidv4();
@@ -57,7 +57,7 @@ initialize(app, memoryStore).then(function () {
 
         console.log(`Adding user ${databusUser.username}:${sessionPass}`);
         const user = userManager.addUser(databusUser.username, sessionPass, false);
-        privilegeManager.setRights(user, `/${databusUser.username}/`, [ 'all' ]);
+        privilegeManager.setRights(user, `/${databusUser.username}/`, ['all']);
 
         var folderTree = {};
         folderTree[databusUser.username] = webdav.ResourceType.Directory;
@@ -66,29 +66,28 @@ initialize(app, memoryStore).then(function () {
     }
   });
 
-  app.all('/dav/*', protector.checkSso(), function (req, res, next) {
+  function davAuth() {
 
-    if (req.method == "GET" || req.method == "HEAD") {
+    return async function (req, res, next) {
+      if (req.method == "GET" || req.method == "HEAD") {
+        next("route");
+        return;
+      }
+
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+
+      if (!auth.authenticated) {
+        res.status(401).send();
+        return;
+      }
+
+      var token = btoa(`${auth.info.accountName}:${sessionPass}`)
+      req.headers['Authorization'] = `Basic ${token}`;
       next("route");
-      return;
     }
+  }
 
-    var auth = ServerUtils.getAuthInfoFromRequest(req);
-
-    if(!auth.authenticated) {
-
-      console.log(`not authenticated`);
-      res.status(401).send();
-      return;
-    }
-
-    var token = btoa(`${auth.info.accountName}:${sessionPass}`)
-    req.headers['Authorization'] = `Basic ${token}`;
-    next("route");
-  });
-
-
-  app.use(webdav.extensions.express('/dav', webDAVServer));
+  app.use('/dav', protector.checkSso(), davAuth(), webdav.extensions.express('/', webDAVServer));
 
   // Fav Icon
   app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
