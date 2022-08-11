@@ -364,9 +364,27 @@ class DatabusProtect {
   }
 
   checkSso() {
+
+    var self = this;
+    
     return [(req, res, next) => {
 
       if (!isBrowserRequest(req)) {
+
+        var apiTokenUser = self.validateApiKey(req);
+
+        if (apiTokenUser != null) {
+          // Api token has been found
+          req.databus = {};
+          req.databus.sub = apiTokenUser.sub;
+          req.databus.authenticated = true;
+          req.databus.accountName = apiTokenUser.username;
+          req.databus.apiKeys = apiTokenUser.keys;
+  
+          return next();
+        }
+
+
         return next();
       }
 

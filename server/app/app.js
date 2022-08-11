@@ -30,10 +30,15 @@ initialize(app, memoryStore).then(function () {
   const privilegeManager = new webdav.SimplePathPrivilegeManager();
 
   var options = {
-    requireAuthentification: true,
     httpAuthentication: new webdav.HTTPBasicAuthentication(userManager, 'Default realm'),
     privilegeManager: privilegeManager,
+    userManager: userManager
   }
+
+  userManager.getDefaultUser(function(defaultUser) {
+    console.log(`Setting default user rights.`);
+    privilegeManager.setRights(defaultUser, `/`, [ 'canRead', 'canSource' ]);
+  });
 
   const sessionPass = DatabusUtils.uuidv4();
   const webDAVServer = new webdav.WebDAVServer(options);
@@ -52,17 +57,31 @@ initialize(app, memoryStore).then(function () {
 
         console.log(`Adding user ${databusUser.username}:${sessionPass}`);
         const user = userManager.addUser(databusUser.username, sessionPass, false);
-        privilegeManager.setRights(user, `/${databusUser.username}/`, ['all']);
+        privilegeManager.setRights(user, `/${databusUser.username}/`, [ 'all' ]);
 
-        var folderTree = {}
+        var folderTree = {};
         folderTree[databusUser.username] = webdav.ResourceType.Directory;
         webDAVServer.rootFileSystem().addSubTree(webDAVServer.createExternalContext(), folderTree);
       }
     }
   });
 
-  app.all('/dav/*', protector.protect(), function(req, res, next) {
+  app.all('/dav/*', protector.checkSso(), function (req, res, next) {
+
+    if (req.method == "GET" || req.method == "HEAD") {
+      next("route");
+      return;
+    }
+
     var auth = ServerUtils.getAuthInfoFromRequest(req);
+
+    if(!auth.authenticated) {
+
+      console.log(`not authenticated`);
+      res.status(401).send();
+      return;
+    }
+
     var token = btoa(`${auth.info.accountName}:${sessionPass}`)
     req.headers['Authorization'] = `Basic ${token}`;
     next("route");
