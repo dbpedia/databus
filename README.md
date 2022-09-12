@@ -7,14 +7,6 @@ description: >-
 
 # Databus
 
-##
-
-## Architecture
-
-diagram with clickable links
-
-## Acknowledgements
-
 ## License
 
 The source code of this repo is published under the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
@@ -25,7 +17,9 @@ The individual datasets are referenced via links (dcat:downloadURL) and can have
 
 ## Status
 
-This repo develops Databus version 2.0, which is a major upgrade of version 1.3-beta (currently running at http://dbpedia.databus.org) If you install it and find problems, please report in issue tracker to help us test this new version.
+This repo develops Databus version 2.0, which is a major upgrade of version 1.3-beta (currently running at https://databus.dbpedia.org) If you install it and find problems, please report in the [issue tracker](https://github.com/dbpedia/databus/issues) to help us test this new version.
+
+**Examples:** [https://energy.databus.dbpedia.org/](https://energy.databus.dbpedia.org/), [https://dev.databus.dbpedia.org/](https://dev.databus.dbpedia.org/)
 
 **API docu:** https://github.com/dbpedia/databus/blob/master/API.md
 
@@ -42,7 +36,7 @@ Additionally you need an OIDC provider.
 
 ## Starting the Databus Server
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository). It is possible to run the Databus on localhost in one shot with the default configuration to have a quick look. However, for proper setups it is required to start from a fresh/wiped state and perform [mandatory configuration settings](./#mandatory-configuration) first.&#x20;
+Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository). It is possible to run the Databus on localhost in one shot with the default configuration to have a quick look. However, for proper setups it is required to start from a fresh/wiped state and perform [mandatory configuration settings](#mandatory-configuration) first.&#x20;
 
 &#x20;run:
 
@@ -68,7 +62,7 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
 * **VIRTUOSO\_PASSWORD**: The password of the VIRTUOSO\_USER account
 
-If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](usage/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](usage/https-and-proxy-setup.md#external-proxy-example)).
+If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](docs/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](docs/https-and-proxy-setup.md#external-proxy-example)).
 
 ## Advanced Configuration
 
@@ -129,5 +123,3 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
-
-###
