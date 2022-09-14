@@ -47,21 +47,23 @@
 
         <!--Tabs-->
         <div class="collection-editor-tabs">
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
-            <div class="section-label">Artifacts</div>
-          </div>
+         
           <!--        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab=1;">-->
           <!--          <div class="section-label">Services</div>-->
           <!--        </div> -->
           <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 2 }" ng-click="activeTab=2;">
             <div class="section-label">Files</div>
           </div>
+
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
+            <div class="section-label">Artifacts</div>
+          </div>
         </div>
 
       </div>
     </div>
     <section class="section">
-      <div class="container">
+      <div class="container" style="min-height: 480px">
 
         <div ng-if="activeTab==1">
 
@@ -127,7 +129,7 @@
 
         <div ng-if="activeTab==2">
 
-          <div class="columns">
+          <div class="columns" style="margin-top: 0;">
             <div class="column is-3">
               <facets-view node="groupNode" resource-type="group" on-change="onFacetSettingsChanged()">
               </facets-view>

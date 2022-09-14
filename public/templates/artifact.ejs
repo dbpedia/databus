@@ -47,10 +47,12 @@
 
   <!--Services section-->
   <section class="section">
-    <div class="container">
+    <div class="container" style="min-height: 480px;">
 
       <!--Version table-->
-      <div class="topic" ng-if="activeTab==1">
+      <div class="topic" ng-if="activeTab==1" >
+
+
         <table class="table is-size-6 is-fullwidth">
           <col width="40%">
           <col width="30%">
@@ -103,10 +105,9 @@
           </div>
         </div>
       </div>
+
       <div class="topic file-browser" ng-if="activeTab==0">
-        
-       
-        <div class="columns">
+        <div class="columns" style="margin-top: 0;">
           <div class="column is-3">
 
             <facets-view node="artifactNode" resource-type="artifact" on-change="onFacetSettingsChanged()">
@@ -114,11 +115,9 @@
         
           </div>
           <div class="column">
-    
               <file-browser node="groupNode" 
                 full-query="fileSelector.fullQuery" query="fileSelector.query" 
                 config="fileSelector.config"></file-browser>
-       
           </div>
         </div>
 

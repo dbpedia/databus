@@ -8,7 +8,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.facetsView.resourceUri = $scope.group.uri;
   $scope.facetsView.settings = [];
   $scope.facetsView.parentSettings = null;
-  $scope.activeTab = 0;
+  $scope.activeTab = 2;
   $scope.authenticated = data.auth.authenticated;
   $scope.selection = [];
 

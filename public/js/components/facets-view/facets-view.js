@@ -181,6 +181,12 @@ function FacetsViewController($http, $scope) {
         }
       }
 
+      if (ctrl.resourceType == 'version') {
+
+        delete ctrl.viewModel[DatabusUris.DCT_HAS_VERSION];
+
+      }
+
       // Add the "Latest Version" facet to the visible settings of the version facet
       if (ctrl.resourceType != 'version') {
         ctrl.viewModel[FACET_VERSION_KEY].visibleFacetSettings.unshift({
@@ -209,11 +215,7 @@ function FacetsViewController($http, $scope) {
           }
         }
 
-        if (ctrl.resourceType == 'version') {
-
-          delete ctrl.viewModel[FACET_VERSION_KEY];
-
-        }
+       
 
         // If we're a group node, check for artifact nodes and add them as facets
         if (ctrl.resourceType == 'group') {

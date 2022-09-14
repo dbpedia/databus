@@ -13,7 +13,7 @@ env-build:
 	docker build -t lookup-servlet ../search; \
 
 env-start:
-	docker-compose up
+	docker compose up
 
 env-restart:
 	docker-compose restart

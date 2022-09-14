@@ -379,7 +379,7 @@ SELECT ?file WHERE {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
             ctrl.view.groups[res.uri].facets = res.facets;
             ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-
+            $scope.$apply();
           });
 
           ctrl.query(groupNode);
@@ -395,7 +395,7 @@ SELECT ?file WHERE {
             ctrl.facets.get(artifactNode.uri).then(function (res) {
               ctrl.view.artifacts[res.uri].facets = res.facets;
               ctrl.view.artifacts[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-
+              $scope.$apply();
               //var groupUri = DatabusUtils.navigateUp(artifactNode.uri);
               //ctrl.view.artifacts[artifactNode.uri].facets = result.data;
               //ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);

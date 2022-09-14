@@ -17,7 +17,7 @@ services:
       STORAGE_PASS: "everyoneknows"
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
     ports:
-      - "127.0.0.1:3002:8080"
+      - "3002:8080"
     volumes:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
@@ -29,7 +29,7 @@ services:
       SPARQL_UPDATE: "true"
       DEFAULT_GRAPH: "http://localhost:3000"
     ports:
-      - "127.0.0.1:3003:8890"
+      - "3003:8890"
     volumes: 
       - ./data/virtuoso:/database
     entrypoint: /bin/bash -c "

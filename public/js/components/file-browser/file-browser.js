@@ -60,6 +60,10 @@ function FileBrowserController($http, $scope) {
       }
     }
 
+    if(value == "") {
+      return "---";
+    }
+
     return value.substr(0, value.length - 2);
   }
 
