@@ -19,6 +19,22 @@ queryConfig:
       weight: 10
       tokenize: true
       queryByDefault: true
+    - fieldName: publisher
+      weight: 0
+      tokenize: true
+      queryByDefault: false
+      exact: true
+      allowPartialMatch: true
+      required: true
+      hightlight: false
+    - fieldName: group
+      weight: 0
+      tokenize: true
+      queryByDefault: false
+      exact: true
+      allowPartialMatch: true
+      required: true
+      hightlight: false
     - fieldName: typeName
       allowPartialMatch: true
       weight: 1.0

@@ -24,7 +24,7 @@ function AccountPageController($scope, $http, $location) {
     maxResults: 10,
     placeholder: `Search ${$scope.profileData.accountName}'s data...`,
     resourceTypes: [ 'Group', 'Artifact' ],
-    filter: `&partRequired=true&part=${$scope.profileData.accountName}&partWeight=0&typeNameWeight=0`
+    filter: `&publisher=${$scope.profileData.accountName}&typeNameWeight=0`
   };
 
   $scope.collectionSearchInput = '';
@@ -33,7 +33,7 @@ function AccountPageController($scope, $http, $location) {
     maxResults: 10,
     placeholder: `Search ${$scope.profileData.accountName}'s collections...`,
     resourceTypes: [ 'Collection' ],
-    filter: `&partRequired=true&part=${$scope.profileData.accountName}&partWeight=0&typeNameWeight=0`
+    filter: `&publisher=${$scope.profileData.accountName}&publisherWeight=0&typeNameWeight=0`
   };
 
   // Wait for additional artifact data to arrive

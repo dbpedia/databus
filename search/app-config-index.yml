@@ -148,3 +148,36 @@ indexConfig:
             VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
           }
         }
+    - fieldName: publisher
+      resourceName: resource
+      query: >
+        SELECT ?resource ?publisher WHERE {
+          VALUES ?n { 1 } 
+          {
+            SELECT DISTINCT ?resource WHERE {
+              GRAPH ?g {
+                ?resource a ?type.
+                VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+              }
+            }
+          }
+          BIND (replace(str(?resource), "^((.*?)\\/){3}", "pre/") as ?suffix) 
+          BIND (concat("^([^\\/]+\\/){", str(?n) ,"}") AS ?reg)
+          BIND (replace(replace(str(?suffix), ?reg, ""), "\\/.*$", "") AS ?publisher)
+        }
+    - fieldName: group
+      resourceName: artifact
+      query: >
+        SELECT ?artifact ?group WHERE {
+          VALUES ?n { 2 } 
+          {
+            SELECT DISTINCT ?artifact WHERE {
+              GRAPH ?g {
+                ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact> .
+              }
+            }
+          }
+          BIND (replace(str(?artifact), "^((.*?)\\/){3}", "pre/") as ?suffix) 
+          BIND (concat("^([^\\/]+\\/){", str(?n) ,"}") AS ?reg)
+          BIND (replace(replace(str(?suffix), ?reg, ""), "\\/.*$", "") AS ?group)
+        }

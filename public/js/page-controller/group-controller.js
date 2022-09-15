@@ -3,6 +3,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.group = data.group;
   $scope.artifacts = data.artifacts;
   $scope.services = data.services;
+  $scope.group.name = DatabusUtils.uriToName($scope.group.uri);
 
   $scope.facetsView = {};
   $scope.facetsView.resourceUri = $scope.group.uri;
@@ -196,7 +197,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       return;
     }
 
-    var typeFilters = '&typeName=Artifact&groupUriWeight=0.0&groupUri=' + $scope.group.uri + '&minRelevance=0.1';
+    var typeFilters = '&typeName=Artifact&group=' + $scope.group.name + '&minRelevance=0.1';
 
     $http({
       method: 'GET',
@@ -208,7 +209,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
         var result = response.data.docs[r];
         var artifact = {
           label: result.label[0],
-          desc: result.comment[0],
+          // desc: result.comment[0],
           artifactUri: result.resource[0]
         };
 
