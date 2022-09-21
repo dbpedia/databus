@@ -47,7 +47,7 @@ class DatabusCollectionUtils {
   }
 
   static checkText(value, min, max) {
-    var textRegex = /^[\x00-\x7F\n]*$/;
+    var textRegex = /^[\x00-\xFF\n]*$/;
     return this.checkField(value, textRegex, min, max);
   }
 

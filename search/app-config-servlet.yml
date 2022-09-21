@@ -26,7 +26,7 @@ queryConfig:
       exact: true
       allowPartialMatch: true
       required: true
-      hightlight: false
+      highlight: false
     - fieldName: group
       weight: 0
       tokenize: true
@@ -34,7 +34,7 @@ queryConfig:
       exact: true
       allowPartialMatch: true
       required: true
-      hightlight: false
+      highlight: false
     - fieldName: typeName
       allowPartialMatch: true
       weight: 1.0

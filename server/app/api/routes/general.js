@@ -125,10 +125,12 @@ module.exports = function (router, protector) {
           resBodyJson.query = req.query.query;
           res.status(200).send(resBodyJson);
         } catch (err) {
+          console.log(err);
           res.status(404).send('Search Unavailable.');
         }
       });
     }).on("error", function (err) {
+      console.log(err);
       res.status(404).send('Search Unavailable.');
     });
   });
