@@ -32,11 +32,11 @@ services:
       STORAGE_USER: ${VIRTUOSO_USER}
       STORAGE_PASS:  ${VIRTUOSO_PASSWORD}
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
-      GIT_ROOT: "/root/git"
     ports:
       - "127.0.0.1:3002:8080"
     volumes:
-      - ./data/repo:/root/git
+      - ./data/gstore/repo:/gstore/git
+      - ./data/gstore/logs:/gstore/logs
   virtuoso:
     image: "openlink/virtuoso-opensource-7"
     environment:
