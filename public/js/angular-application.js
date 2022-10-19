@@ -14,7 +14,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .controller("AccountPageController", ["$scope", "$http", "$location", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])
-  .controller("ArtifactPageController", ["$scope", "$sce","collectionManager", ArtifactPageController])
+  .controller("ArtifactPageController", ["$scope", "$sce", "collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
@@ -32,13 +32,13 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
     }
   });
 
-  databusApplication.config(function($locationProvider) {
-    $locationProvider.html5Mode({
-      enabled: true,
-      requireBase: false,
-      rewriteLinks: false
-    });
+databusApplication.config(function ($locationProvider) {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false,
+    rewriteLinks: false
   });
+});
 
 // Components
 databusApplication.component('overrideCheckbox', {
@@ -216,7 +216,7 @@ databusApplication.component('databusSearch', {
 
 databusApplication.component('editLabel', {
   templateUrl: '/js/components/edit-label/edit-label.html',
-  controller: [ '$element', EditLabelController ],
+  controller: ['$element', EditLabelController],
   bindings: {
     text: '=',
     singleLine: '<',
@@ -237,7 +237,7 @@ databusApplication.component('expandableArrow', {
 
 databusApplication.component('facetsView', {
   templateUrl: '/js/components/facets-view/facets-view.html',
-  controller: [ '$http', '$scope', FacetsViewController ],
+  controller: ['$http', '$scope', FacetsViewController],
   bindings: {
     node: '=',
     readonly: '<',
@@ -249,7 +249,7 @@ databusApplication.component('facetsView', {
 
 databusApplication.component('facetsViewHorizontal', {
   templateUrl: '/js/components/facets-view/facets-view-horizontal.html',
-  controller: [ '$http', '$scope', FacetsViewController ],
+  controller: ['$http', '$scope', FacetsViewController],
   bindings: {
     node: '=',
     readonly: '<',
@@ -261,7 +261,7 @@ databusApplication.component('facetsViewHorizontal', {
 
 databusApplication.component('fileBrowser', {
   templateUrl: '/js/components/file-browser/file-browser.html',
-  controller: [ '$http', '$scope', FileBrowserController ],
+  controller: ['$http', '$scope', FileBrowserController],
   bindings: {
     resourceUri: '<',
     resourceType: '@',
@@ -300,6 +300,8 @@ databusApplication.component('multiselectDropdown', {
   }
 });
 
+
+
 databusApplication.component('tableEditor', {
   templateUrl: '/js/components/table-editor/table-editor.html',
   controller: TableEditorController,
@@ -322,7 +324,7 @@ databusApplication.component('uriBreadcrumbs', {
 
 databusApplication.component('yasqeText', {
   templateUrl: '/js/components/yasqe-text/yasqe-text.html',
-  controller: [ '$scope', '$element', YasqeTextController ],
+  controller: ['$scope', '$element', YasqeTextController],
   bindings: {
     query: '=',
     readOnly: '<',
@@ -332,7 +334,7 @@ databusApplication.component('yasqeText', {
 
 databusApplication.component('collectionDataTable', {
   templateUrl: '/js/components/collection-data-table/collection-data-table.html',
-  controller: [ '$http', '$scope', '$location', '$sce', CollectionDataTableController ],
+  controller: ['$http', '$scope', '$location', '$sce', CollectionDataTableController],
   bindings: {
     collection: '<'
   }
@@ -395,6 +397,7 @@ databusApplication.directive('uploaderRanking', function () {
     }
   }
 });
+
 
 databusApplication.directive('groupsTable', function () {
   return {

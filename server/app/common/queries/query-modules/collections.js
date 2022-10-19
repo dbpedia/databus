@@ -22,7 +22,7 @@ instance.getCollection = async function (account, id) {
     PUBLISHER_COLLECTIONS_GRAPH_URI: UriUtils.createResourceUri([account, 'collections'])
   };
   let selectQuery = exec.formatQuery(require('../sparql/get-collection.sparql'), queryOptions);
-  console.log(selectQuery);
+  //console.log(selectQuery);
   let entry = await exec.executeSelect(selectQuery);
 
   if (entry.length === 0) {
@@ -47,7 +47,7 @@ instance.getCollectionStatistics = async function (collectionUri) {
 
   let selectQuery = exec.formatQuery(require('../sparql/get-collection.sparql'), queryOptions);
 
-  console.log(`Query: ${selectQuery}`);
+  //console.log(`Query: ${selectQuery}`);
   let entry = await exec.executeSelect(selectQuery);
 
   if (entry.length === 0) {
@@ -60,7 +60,7 @@ instance.getCollectionStatistics = async function (collectionUri) {
   let wrapperQuery = require('../sparql/file-statistics-query-template.sparql');
   let query = queryBuilder.createCollectionQuery(content, wrapperQuery, '%COLLECTION_QUERY%');
 
-  console.log(`More query: ${query}`);
+  //console.log(`More query: ${query}`);
   let entries = await exec.executeSelect(query);
 
   if (entries.length === 0) {
@@ -172,7 +172,7 @@ instance.getCollectionsByAccount = async function (accountName, onlyIssued) {
   };
   let query = exec.formatQuery(require('../sparql/get-collections-by-account.sparql'), queryOptions);
 
-  console.log(query);
+  // console.log(query);
   let bindings = await exec.executeSelect(query);
 
   if (bindings.length === 0) {

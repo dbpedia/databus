@@ -4,7 +4,7 @@ const fs = require('fs');
 
 var options = {
   customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/utils/swagger-page.js'
+  customJs: './swagger-client.js'
 };
 
 var header = `

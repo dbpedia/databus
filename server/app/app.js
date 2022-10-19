@@ -12,9 +12,23 @@ const ServerUtils = require('./common/utils/server-utils');
 const webdav = require('webdav-server').v2;
 const Constants = require("./common/constants");
 const DatabusUtils = require("../../public/js/utils/databus-utils");
+var config = require("../config.json");
 
 // Creation of the mighty server app
 var app = express();
+
+app.locals = {
+  databus: {
+    version: config.version
+  },
+  site: {
+    minifyJs: config.minifyJs,
+  },
+  author: {
+    name: 'Jan Forberg',
+    contact: 'forberg@infai.org'
+  }
+};
 
 // Create a session memory store (server cache)
 var memoryStore = new session.MemoryStore();

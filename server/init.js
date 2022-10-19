@@ -3,10 +3,11 @@ var createError = require('http-errors');
 var path = require('path');
 var logger = require('morgan');
 var fs = require('fs');
-var minifier = require("./minifier.js");
+var minifier = require("./app/minifier.js");
 var rp = require('request-promise');
 const crypto = require("crypto");
-const Constants = require('./common/constants.js');
+const Constants = require('./app/common/constants.js');
+var config = require('./config.json');
 
 function writeClientVariables() {
 
@@ -40,13 +41,22 @@ function writeManifest() {
   var manifest = require('./manifest-template.ttl');
 
   var placeholderMappings = {
-    DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL
+    DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+    DATABUS_VERSION: config.version
   };
 
+ 
   for (var placeholder in placeholderMappings) {
     var re = new RegExp('%' + placeholder + '%', "g");
     manifest = manifest.replace(re, placeholderMappings[placeholder]);
   }
+
+  console.log('');
+  console.log(`================= MANIFEST =====================`);
+  console.log('');
+  console.log(manifest);
+  console.log(`================================================`);
+  console.log('');
 
   fs.writeFileSync(manifestFile, manifest, ['utf8']);
 
@@ -62,8 +72,8 @@ function tryCreateKeyPair() {
   console.log(`Creating or loading PEM key-pair...`);
 
   // Create RSA key paths
-  var privateKeyFile = __dirname + '/../keypair/private-key.pem';
-  var publicKeyFile = __dirname + '/../keypair/public-key.pem';
+  var privateKeyFile = __dirname + '/keypair/private-key.pem';
+  var publicKeyFile = __dirname + '/keypair/public-key.pem';
 
   // Make a new keypair if not existing
   if (!fs.existsSync(privateKeyFile)) {
@@ -80,8 +90,8 @@ function tryCreateKeyPair() {
       }
     });
 
-    if (!fs.existsSync(__dirname + '/../keypair')) {
-      fs.mkdirSync(__dirname + '/../keypair');
+    if (!fs.existsSync(__dirname + '/keypair')) {
+      fs.mkdirSync(__dirname + '/keypair');
     }
 
     fs.writeFileSync(privateKeyFile, privateKey.toString('base64'), "utf8");
@@ -102,7 +112,7 @@ async function loadDefaultContext() {
 
     
     // Set file path
-    var contextFile = __dirname + '/common/context.json';
+    var contextFile = __dirname + '/app/common/context.json';
 
     // Request options
     var contextOptions = {
@@ -121,19 +131,21 @@ async function loadDefaultContext() {
     console.log(err);
     console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);
   }
-
-
 }
 
 module.exports = async function () {
+
   console.log(`================================================`);
   console.log(`Initializing...`);
   await loadDefaultContext();
   writeClientVariables();
   writeManifest();
+
+
   await minifyClientJS();
   tryCreateKeyPair();
   console.log(`Done initializing.`);
   console.log(`================================================`);
+
 
 }

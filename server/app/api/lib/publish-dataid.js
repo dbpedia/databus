@@ -138,6 +138,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     // console.log(JSON.stringify(expandedGraph, null, 3));
 
+    
+
     // Validate the group RDF with the shacl validation tool of the gstore
     var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
 
@@ -158,6 +160,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     }
 
     notify(`SHACL validation successful.`);
+
+    
 
     // Fetch important uris
     var datasetUri = datasetGraph['@id'];
@@ -204,6 +208,8 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       proofGraph = signer.createProof(expandedGraph);
       datasetGraph[DatabusUris.SEC_PROOF] = [proofGraph];
       expandedGraph = await jsonld.flatten(expandedGraph);
+
+      console.log(proofGraph);
     }
 
     // Get the type of the proof graph

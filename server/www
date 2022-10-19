@@ -9,16 +9,15 @@ var debug = require('debug')('databus-server:server');
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
-var initialize = require('./app/init');
+var initialize = require('./init');
 var Constants = require('./app/common/constants');
 const DatabusUserDatabase = require('./userdb');
 const LookupSearchIndexer = require('./search-indexer');
 var userTablePath = __dirname + '/users/namespaces.csv';
+
 /**
  * Get port from environment and store in Express.
  */
-
-
 
 
 initializeExtensions();
