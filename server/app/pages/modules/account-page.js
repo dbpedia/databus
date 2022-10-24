@@ -61,6 +61,25 @@ module.exports = function (router, protector) {
     }
   });
 
+  router.get('/app/account/content', async function (req, res, next) {
+    try {
+
+      var cacheKey = `ck_content__${req.query.account}`;
+
+      var content = await cache.get(cacheKey, async () => {
+        return {
+          groups: await sparql.dataid.getGroupsByAccount(req.query.account),
+          artifacts: await sparql.dataid.getArtifactsByAccount(req.query.account)
+        };
+      });
+
+      res.status(200).send(content);
+
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
+
   router.get('/app/account/collections', protector.checkSso(), async function (req, res, next) {
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);

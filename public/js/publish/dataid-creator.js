@@ -13,12 +13,16 @@ class DataIdCreator {
       "@graph": []
     };
 
-    for (var graph of group["@graph"]) {
-      result["@graph"].push(graph);
+    if (group != undefined) {
+      for (var graph of group["@graph"]) {
+        result["@graph"].push(graph);
+      }
     }
 
-    for (var graph of dataid["@graph"]) {
-      result["@graph"].push(graph);
+    if (dataid != undefined) {
+      for (var graph of dataid["@graph"]) {
+        result["@graph"].push(graph);
+      }
     }
 
     return result;
@@ -34,7 +38,7 @@ class DataIdCreator {
         {
           "@id": `${accountUri}/${data.group.id}`,
           "@type": "Group",
-          "title": data.group.label,
+          "title": data.group.title,
           "abstract": data.group.abstract,
           "description": data.group.description
         }
@@ -43,6 +47,10 @@ class DataIdCreator {
   }
 
   createVersionUpdate(data) {
+
+    if (data.group.publishGroupOnly) {
+      return undefined;
+    }
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
     var groupUri = accountUri + "/" + data.group.id;
@@ -57,7 +65,7 @@ class DataIdCreator {
       "@id": versionUri + "#Dataset",
       "publisher": data.signature.selectedPublisherUri,
       "hasVersion": version.id,
-      "title": artifact.label,
+      "title": artifact.title,
       "abstract": artifact.abstract,
       "description": version.description,
       "license": version.license,
@@ -129,7 +137,7 @@ class DataIdCreator {
           continue;
           // value = "";
         }
-        
+
         distribution['dcv:' + cv.id] = value;
 
         if (!customVariants.includes(cv.id)) {

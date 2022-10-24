@@ -438,7 +438,7 @@
                       <div class="dropdown-menu" id="dropdown-menu" role="menu">
                         <div class="dropdown-content">
 
-                          <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData"
+                          <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData.groups"
                             ng-click="selectGroup(grp)">
                             {{ grp.id }}
                           </div>
@@ -458,9 +458,9 @@
                   </div>
                 </div>
                 <div class="row" ng-if="group.createNew">
-                  <div class="row-label">Label</div>
+                  <div class="row-label">Title</div>
                   <div style="flex: 1">
-                    <input class="input" type="text" ng-model="group.label">
+                    <input class="input" type="text" ng-model="group.title">
                     <span ng-if="hasError(group.errors, 'err_invalid_group_label')" class="help is-danger">{{
                       errorMessages['err_invalid_group_label'] }}</span>
                   </div>
@@ -485,367 +485,376 @@
                       errorMessages['err_invalid_group_description'] }}</span>
                   </div>
                 </div>
+
+                <div class="row"  ng-if="group.createNew">
+                  <div class="row-label">Create Without Artifact/Version</div>
+
+                  <input id="createnewgroup" type="checkbox" ng-model="session.data.group.publishGroupOnly">
+                </div>
               </div>
             </div>
 
 
-            <!-- ARTIFACT INFO BOX-->
-            <div class="content-box" ng-init="artifact=session.data.artifact">
-              <div class="box-header">
-                <h3>ARTIFACT INFO</h3>
+            <div ng-if="!session.data.group.publishGroupOnly">
 
-                <div class="hover-note">
-                  <svg ng-if="artifact.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                    fill-rule="evenodd" clip-rule="evenodd">
-                    <path fill="red"
-                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                  </svg>
-                  <div class="hover-dropdown has-error content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="error in artifact.errors">
-                        {{ errorMessages[error] }}
-                      </li>
-                    </ul>
+              <!-- ARTIFACT INFO BOX-->
+              <div class="content-box" ng-init="artifact=session.data.artifact">
+                <div class="box-header">
+                  <h3>ARTIFACT INFO</h3>
+
+                  <div class="hover-note">
+                    <svg ng-if="artifact.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                      fill-rule="evenodd" clip-rule="evenodd">
+                      <path fill="red"
+                        d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                    </svg>
+                    <div class="hover-dropdown has-error content">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="error in artifact.errors">
+                          {{ errorMessages[error] }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown content">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="hint in hints.artifact">{{ hint }}</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-
-                <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.artifact">{{ hint }}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="box-content">
                 <div class="box-content">
+                  <div class="box-content">
 
-                  <div class="row">
-                    <div class="row-label">Create New Artifact</div>
+                    <div class="row">
+                      <div class="row-label">Create New Artifact</div>
 
-                    <input id="createnewartifact" type="checkbox" ng-disabled="group.createNew"
-                      ng-model="artifact.createNew" ng-change="setCreateNewArtifact(artifact.createNew);">
-                  </div>
+                      <input id="createnewartifact" type="checkbox" ng-disabled="group.createNew"
+                        ng-model="artifact.createNew" ng-change="setCreateNewArtifact(artifact.createNew);">
+                    </div>
 
-                  <div class="row" ng-if="!artifact.createNew">
-                    <div class="row-label">Id</div>
-                    <div style="flex: 1">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                            <span>{{ artifact.id }}</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </button>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
+                    <div class="row" ng-if="!artifact.createNew">
+                      <div class="row-label">Id</div>
+                      <div style="flex: 1">
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                              <span>{{ artifact.id }}</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
 
-                            <div class="dropdown-item" style="cursor: pointer;"
-                              ng-repeat="art in session.accountGroup.artifacts" ng-click="selectArtifact(art)">
-                              {{ art.id }}
+                              <div class="dropdown-item" style="cursor: pointer;"
+                                ng-repeat="art in session.accountGroup.artifacts" ng-click="selectArtifact(art)">
+                                {{ art.id }}
+                              </div>
                             </div>
                           </div>
                         </div>
+
                       </div>
 
                     </div>
 
-                  </div>
 
-
-                  <div class="row" ng-if="artifact.createNew">
-                    <div class="row-label">Id</div>
-                    <div style="flex: 1">
-                      <input class="input" type="text" ng-model="artifact.id">
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_id')" class="help is-danger">{{
-                        errorMessages['err_invalid_artifact_id'] }}</span>
-                    </div>
-                  </div>
-                  <div class="row" ng-if="artifact.createNew">
-                    <div class="row-label">Label</div>
-                    <div style="flex: 1">
-                      <input class="input" type="text" ng-model="artifact.label">
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
-                        errorMessages['err_invalid_artifact_label'] }}</span>
-                    </div>
-                  </div>
-
-                  <div class="row" ng-if="artifact.createNew">
-                    <div class="" style="min-width: 240px">Abstract</div>
-                    <div style="flex: 1">
-                      <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
-                        ng-model="artifact.abstract"></textarea>
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_abstract')" class="help is-danger">{{
-                        errorMessages['err_invalid_artifact_abstract'] }}</span>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-
-            <!-- VERSION INFO BOX-->
-            <div class="content-box" ng-init="version=session.data.version">
-
-              <div class="box-header">
-                <h3>VERSION INFO</h3>
-
-                <div class="hover-note">
-                  <svg ng-if="version.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                    fill-rule="evenodd" clip-rule="evenodd">
-                    <path fill="red"
-                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                  </svg>
-                  <div class="hover-dropdown has-error content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="error in version.errors">
-                        {{ errorMessages[error] }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.version">{{ hint }}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="" style="min-width: 240px">Version</div>
-                <div style="width: 100%;">
-                  <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
-                    <input class="control input" type="text" ng-model="version.id">
-                    <div class="control">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                            <span>Presets</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </a>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                            <a class="dropdown-item" ng-click="session.data.createVersionId(0)">
-                              Date YYYY-MM-DD
-                            </a>
-                            <a class="dropdown-item" ng-click="session.data.createVersionId(1)">
-                              Date YYYY-MM-DDTHH
-                            </a>
-                          </div>
-                        </div>
+                    <div class="row" ng-if="artifact.createNew">
+                      <div class="row-label">Id</div>
+                      <div style="flex: 1">
+                        <input class="input" type="text" ng-model="artifact.id">
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_id')" class="help is-danger">{{
+                          errorMessages['err_invalid_artifact_id'] }}</span>
                       </div>
                     </div>
+                    <div class="row" ng-if="artifact.createNew">
+                      <div class="row-label">Title</div>
+                      <div style="flex: 1">
+                        <input class="input" type="text" ng-model="artifact.title">
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
+                          errorMessages['err_invalid_artifact_label'] }}</span>
+                      </div>
+                    </div>
+
+                    <div class="row" ng-if="artifact.createNew">
+                      <div class="" style="min-width: 240px">Abstract</div>
+                      <div style="flex: 1">
+                        <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
+                          ng-model="artifact.abstract"></textarea>
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_abstract')"
+                          class="help is-danger">{{
+                          errorMessages['err_invalid_artifact_abstract'] }}</span>
+                      </div>
+                    </div>
+
                   </div>
-                  <span ng-if="hasError(version.errors, 'err_invalid_version_id')" class="help is-danger">{{
-                    errorMessages['err_invalid_version_id'] }}</span>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="row-label">License URI</div>
-                <div style="flex: 1">
+
+              <!-- VERSION INFO BOX-->
+              <div class="content-box" ng-init="version=session.data.version">
+
+                <div class="box-header">
+                  <h3>VERSION INFO</h3>
+
+                  <div class="hover-note">
+                    <svg ng-if="version.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                      fill-rule="evenodd" clip-rule="evenodd">
+                      <path fill="red"
+                        d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
+                    </svg>
+                    <div class="hover-dropdown has-error content">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="error in version.errors">
+                          {{ errorMessages[error] }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" class='artifact-icon' size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown content">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="hint in hints.version">{{ hint }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="" style="min-width: 240px">Version</div>
                   <div style="width: 100%;">
                     <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
-                      <input class="control input" type="text" ng-model="version.license">
+                      <input class="control input" type="text" ng-model="version.id">
                       <div class="control">
-                        <div class="dropdown is-hoverable" style="position: relative;">
+                        <div class="dropdown is-hoverable">
                           <div class="dropdown-trigger">
                             <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                              <span>Select License</span>
+                              <span>Presets</span>
                               <span class="icon is-small">
                                 <i class="fas fa-angle-down" aria-hidden="true"></i>
                               </span>
                             </a>
                           </div>
-                          <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
-                            <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
-                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
-                                ng-change="filterLicenses(licenseQuery)" />
-                              <div ng-repeat="license in filteredLicenseList | limitTo: 25"
-                                style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
-                                {{ license.title.value }}
-                              </div>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                              <a class="dropdown-item" ng-click="session.data.createVersionId(0)">
+                                Date YYYY-MM-DD
+                              </a>
+                              <a class="dropdown-item" ng-click="session.data.createVersionId(1)">
+                                Date YYYY-MM-DDTHH
+                              </a>
                             </div>
                           </div>
                         </div>
                       </div>
-
                     </div>
-                    <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
-                      errorMessages['err_invalid_version_license'] }}</span>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_id')" class="help is-danger">{{
+                      errorMessages['err_invalid_version_id'] }}</span>
                   </div>
                 </div>
 
+                <div class="row">
+                  <div class="row-label">License URI</div>
+                  <div style="flex: 1">
+                    <div style="width: 100%;">
+                      <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                        <input class="control input" type="text" ng-model="version.license">
+                        <div class="control">
+                          <div class="dropdown is-hoverable" style="position: relative;">
+                            <div class="dropdown-trigger">
+                              <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                <span>Select License</span>
+                                <span class="icon is-small">
+                                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                              </a>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
+                              <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
+                                <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
+                                  ng-change="filterLicenses(licenseQuery)" />
+                                <div ng-repeat="license in filteredLicenseList | limitTo: 25"
+                                  style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
+                                  {{ license.title.value }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-              </div>
+                      </div>
+                      <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
+                        errorMessages['err_invalid_version_license'] }}</span>
+                    </div>
+                  </div>
 
-              <div class="row">
-                <div class="" style="min-width: 240px">Documentation</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
-                    ng-model="version.description"></textarea>
-                  <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
-                    errorMessages['err_invalid_version_description'] }}</span>
+
                 </div>
-              </div>
-            </div>
 
-
-
-            <div class="content-box">
-
-              <div class="box-header">
-                <h3>Files</h3>
-                <div class="hover-note">
-
-                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown content"
-                    style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.files">{{ hint }}</li>
-                    </ul>
+                <div class="row">
+                  <div class="" style="min-width: 240px">Documentation</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                      ng-model="version.description"></textarea>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
+                      errorMessages['err_invalid_version_description'] }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="row-label">Add Files</div>
-                <div class="content-box" style="flex: 1; padding: 1em; margin-bottom: 0.5em;">
-                  <div class="field has-addons">
-                    <div class="control" style="width: 100%;">
-                      <input ng-model="session.fetchFilesInput" class="input" type="text"
-                        placeholder="Enter a resource page URL">
-                    </div>
-                    <div class="control">
-                      <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
-                        Fetch URLs
-                      </a>
-                    </div>
-                  </div>
-                  <div class="is-divider" data-content="OR" style="margin: 18px 0;"></div>
-                  <div>
-                    <div class="control" style="width: 100%; margin-bottom: 0.5em;">
-                      <textarea ng-model="session.addFileInput"
-                      style="min-height: 160px; resize: vertical;" class="input" type="text-area" placeholder="Enter file URLs (seperated by newline)">
-                        </textarea>
-                    </div>
-                    <div class="control">
-                      <a class="button" ng-click="addFiles(session.addFileInput)">
-                        Add URLs
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <br/>
 
-              <div class="row">
-                <div class="row-label">
-                  <div>Content Variants</div>
+
+              <div class="content-box">
+
+                <div class="box-header">
+                  <h3>Files</h3>
                   <div class="hover-note">
+
                     <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
                     </databus-icon>
                     <div class="hover-dropdown content"
-                      style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
+                      style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
                       <ul style="margin-top: 0; margin-left: 1.5em;">
-                        <li ng-repeat="hint in hints.variants">{{ hint }}</li>
+                        <li ng-repeat="hint in hints.files">{{ hint }}</li>
                       </ul>
                     </div>
                   </div>
                 </div>
-                <div class="content-variants-panel">
-                  <div style="border: 1px solid #dbdbdb;
-                  margin-bottom: 1em;" ng-repeat="variant in version.contentVariants">
+
+                <div class="row">
+                  <div class="row-label">Add Files</div>
+                  <div class="content-box" style="flex: 1; padding: 1em; margin-bottom: 0.5em;">
+                    <div class="field has-addons">
+                      <div class="control" style="width: 100%;">
+                        <input ng-model="session.fetchFilesInput" class="input" type="text"
+                          placeholder="Enter a resource page URL">
+                      </div>
+                      <div class="control">
+                        <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
+                          Fetch URLs
+                        </a>
+                      </div>
+                    </div>
+                    <div class="is-divider" data-content="OR" style="margin: 18px 0;"></div>
                     <div>
-                      <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
-                        variant.label }}</div>
-
-                      <div style="display: flex; align-items: center; padding: .5em;">
-                        <div style="flex: 1; display: flex; align-items: center;">
-                          <div class="field has-addons" style="margin: 0;">
-                            <div class="control">
-                              <input class="input" style="min-width: 300px;" ng-model="variant.fillRegex" type="text"
-                                placeholder="Enter a Regex (.* for file name)">
-                            </div>
-                            <div class="control">
-                              <div class="button" ng-click="session.data.fill(variant)">
-                                Fill
-                              </div>
-                            </div>
-                            <div class="control">
-                              <div class="button" ng-click="session.data.fillByRegex(variant)">
-                                Fill By Regex
-                              </div>
-                            </div>
-
-                          </div>
-                          <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
-                            name="to lowercase">
-                          <label for="scales">To Lowercase</label>
-
-                          <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
-                            type="checkbox" name="prune">
-                          <label for="scales">Remove Whitespaces</label>
-
-                          <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox"
-                            type="checkbox" name="prune">
-                          <label for="scales">Overwrite</label>
-                        </div>
-
-                        <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
-                          on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
+                      <div class="control" style="width: 100%; margin-bottom: 0.5em;">
+                        <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;"
+                          class="input" type="text-area" placeholder="Enter file URLs (seperated by newline)">
+                        </textarea>
+                      </div>
+                      <div class="control">
+                        <a class="button" ng-click="addFiles(session.addFileInput)">
+                          Add URLs
+                        </a>
                       </div>
                     </div>
                   </div>
+                </div>
+                <br />
 
-                  <div class="field has-addons">
-                    <div class="control" style="width: 100%;">
-                      <input ng-model="session.contentVariantInput" class="input" type="text"
-                        placeholder="Enter a content variant tag">
+                <div class="row">
+                  <div class="row-label">
+                    <div>Content Variants</div>
+                    <div class="hover-note">
+                      <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                      </databus-icon>
+                      <div class="hover-dropdown content"
+                        style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
+                        <ul style="margin-top: 0; margin-left: 1.5em;">
+                          <li ng-repeat="hint in hints.variants">{{ hint }}</li>
+                        </ul>
+                      </div>
                     </div>
-                    <div class="control">
-                      <a class="button"
-                        ng-click="session.data.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
-                        Add Content Variant
-                      </a>
+                  </div>
+                  <div class="content-variants-panel">
+                    <div style="border: 1px solid #dbdbdb;
+                  margin-bottom: 1em;" ng-repeat="variant in version.contentVariants">
+                      <div>
+                        <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
+                          variant.label }}</div>
+
+                        <div style="display: flex; align-items: center; padding: .5em;">
+                          <div style="flex: 1; display: flex; align-items: center;">
+                            <div class="field has-addons" style="margin: 0;">
+                              <div class="control">
+                                <input class="input" style="min-width: 300px;" ng-model="variant.fillRegex" type="text"
+                                  placeholder="Enter a Regex (.* for file name)">
+                              </div>
+                              <div class="control">
+                                <div class="button" ng-click="session.data.fill(variant)">
+                                  Fill
+                                </div>
+                              </div>
+                              <div class="control">
+                                <div class="button" ng-click="session.data.fillByRegex(variant)">
+                                  Fill By Regex
+                                </div>
+                              </div>
+
+                            </div>
+                            <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
+                              name="to lowercase">
+                            <label for="scales">To Lowercase</label>
+
+                            <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
+                              type="checkbox" name="prune">
+                            <label for="scales">Remove Whitespaces</label>
+
+                            <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox" type="checkbox"
+                              name="prune">
+                            <label for="scales">Overwrite</label>
+                          </div>
+
+                          <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
+                            on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field has-addons">
+                      <div class="control" style="width: 100%;">
+                        <input ng-model="session.contentVariantInput" class="input" type="text"
+                          placeholder="Enter a content variant tag">
+                      </div>
+                      <div class="control">
+                        <a class="button"
+                          ng-click="session.data.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
+                          Add Content Variant
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <br/>
-              <div>
-                <table-editor ng-if="objSize(version.files) > 0" model="version"
-                  analysis-processes="session.shasumClient.processes" on-analyze-file="analyzeFile(file)"
-                  on-remove-file="removeFile(file)">
-                </table-editor>
+                <br />
+                <div>
+                  <table-editor ng-if="objSize(version.files) > 0" model="version"
+                    analysis-processes="session.shasumClient.processes" on-analyze-file="analyzeFile(file)"
+                    on-remove-file="removeFile(file)">
+                  </table-editor>
 
-               
-                <div ng-if="loadRequestCount == 0 && objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
+
+                  <div ng-if="loadRequestCount == 0 && objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
-                  <div class="hint-box">
-                    <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
-                      and clicking the respective button.</div>
+                    <div class="hint-box">
+                      <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
+                        and clicking the respective button.</div>
+                    </div>
                   </div>
+
                 </div>
 
-              </div>
-
-               <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
+                <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
                margin: -0.5em; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
                   <div class="loading-rect">
@@ -859,75 +868,78 @@
                 </div>
 
 
-            </div>
-          </div>
+              </div>
 
 
-          <!-- ARTIFACT INFO BOX-->
-          <div class="content-box" ng-init="artifact=session.data.artifact">
-            <div class="box-header">
-              <h3>SIGNATURE</h3>
-            </div>
+              <!-- ARTIFACT INFO BOX-->
+              <div class="content-box" ng-init="artifact=session.data.artifact">
+                <div class="box-header">
+                  <h3>SIGNATURE</h3>
+                </div>
 
 
-            <div class="box-content">
-              <div class="row">
-                <div style="min-width: 240px">Publisher</div>
-                <div style="width: 100%;">
-                  <div class="field">
-                    <div class="control">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <button style="justify-content: space-between; min-width: 400px;" class="button"
-                            aria-haspopup="true" aria-controls="dropdown-menu4">
-                            <span>{{ session.data.signature.selectedPublisherUri}}</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </button>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                            <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
-                              ng-repeat="uri in session.data.signature.publisherUris">
-                              {{ uri }}
-                            </a>
+                <div class="box-content">
+                  <div class="row">
+                    <div style="min-width: 240px">Publisher</div>
+                    <div style="width: 100%;">
+                      <div class="field">
+                        <div class="control">
+                          <div class="dropdown is-hoverable">
+                            <div class="dropdown-trigger">
+                              <button style="justify-content: space-between; min-width: 400px;" class="button"
+                                aria-haspopup="true" aria-controls="dropdown-menu4">
+                                <span>{{ session.data.signature.selectedPublisherUri}}</span>
+                                <span class="icon is-small">
+                                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                              </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                              <div class="dropdown-content">
+                                <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
+                                  ng-repeat="uri in session.data.signature.publisherUris">
+                                  {{ uri }}
+                                </a>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div class="row">
-                <div style="min-width: 240px">Signature</div>
-                <div style="width: 100%;">
-                  <div class="field">
-                    <div class="control">
-                      <label class="checkbox">
-                        <input type="checkbox" ng-disabled="session.data.signature.autoGenerateSignatureLocked"
-                          ng-model="session.data.signature.autoGenerateSignature">
-                        Auto-generate Signature
-                      </label>
-                    </div>
-                    <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
-                      <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.data.signature.tractate}}</pre>
-                      <div style="display: flex; margin-bottom: 8px;">
-                        <div style="margin-right: 8px;" class="button" ng-click="createTractate(result.versionUpdate)" ng-disabled="creatingTracate">Create Tractate</div>
-                        <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                  <div class="row">
+                    <div style="min-width: 240px">Signature</div>
+                    <div style="width: 100%;">
+                      <div class="field">
+                        <div class="control">
+                          <label class="checkbox">
+                            <input type="checkbox" ng-disabled="session.data.signature.autoGenerateSignatureLocked"
+                              ng-model="session.data.signature.autoGenerateSignature">
+                            Auto-generate Signature
+                          </label>
+                        </div>
+                        <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
+                          <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.data.signature.tractate}}</pre>
+                          <div style="display: flex; margin-bottom: 8px;">
+                            <div style="margin-right: 8px;" class="button"
+                              ng-click="createTractate(result.versionUpdate)" ng-disabled="creatingTracate">Create
+                              Tractate</div>
+                            <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                          </div>
+                          <textarea ng-model="session.data.signature.userSignature" class="textarea"
+                            style="resize: vertical" placeholder="Signature"></textarea>
+                        </div>
                       </div>
-                      <textarea ng-model="session.data.signature.userSignature" class="textarea" style="resize: vertical"
-                        placeholder="Signature"></textarea>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
+
+
           </div>
-
-
-
 
           <div class="content-box" ng-init="artifact=session.data.artifact">
             <div class="box-header">

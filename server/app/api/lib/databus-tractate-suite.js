@@ -9,7 +9,8 @@ const autocompleter = require('./dataid-autocomplete');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 var fileAnalyzer = require('../../common/file-analyzer');
-
+var DatabusProtect = require('../../common/protect/middleware');
+var GstoreHelper = require('../../common/gstore-helper');
 var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
 
 var tractateConfig = {
@@ -42,7 +43,7 @@ signer.tryAnalyzeParts = async function (expandedGraph) {
 
   for (var distribution of distributions) {
 
-    if(distribution[DatabusUris.DATAID_SHASUM] != undefined) {
+    if (distribution[DatabusUris.DATAID_SHASUM] != undefined) {
       continue;
     }
 
@@ -142,38 +143,56 @@ signer.validate = async function (canonicalized, proof) {
     var publisherUri = tractateLines[1];
     var fetchUri = publisherUri;
 
+    var isInternalWebId = fetchUri.startsWith(baseUrl);
+
     // TODO: remove this in production
-    if (fetchUri.startsWith(baseUrl)) {
+    if (isInternalWebId) {
       fetchUri = fetchUri.replace(`${baseUrl}`, 'http://localhost:3000');
     }
 
-    // Do a POST request with the passed query
-    var options = {
-      method: 'GET',
-      uri: fetchUri,
-      transform: function (body, response, resolveWithFullResponse) {
-        return { 'headers': response.headers, 'data': body };
-      }
-    };
+    var content = null;
+    var contentType = null;
 
-    console.log(`Fetching WebId document from ${publisherUri}...`);
-    // Await the response
-    var response = await rp(options);
-    var contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
+    if (isInternalWebId) {
 
+      var webIdURL = new URL(publisherUri);
 
-    if (contentType.startsWith("text/plain")) {
-      console.log('Content type is text/plain. Defaulting to text/turtle..');
-      contentType = 'text/turtle';
-    }
+      var repo = webIdURL.pathname.substring(1);
+      var path = Constants.DATABUS_FILE_WEBID;
 
-    if (contentType.startsWith('application/json')) {
-      console.log('Content type is application/json. Changing to application/ld+json..');
+      content = JSON.stringify(await GstoreHelper.read(repo, path));
       contentType = 'application/ld+json';
+    } else {
+      // Do a POST request with the passed query
+      var options = {
+        method: 'GET',
+        uri: fetchUri,
+        transform: function (body, response, resolveWithFullResponse) {
+          return { 'headers': response.headers, 'data': body };
+        }
+      };
+
+      console.log(`Fetching WebId document from ${publisherUri}...`);
+      // Await the response
+      var response = await rp(options);
+      content = response.data;
+      contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
+
+      if (contentType.startsWith("text/plain")) {
+        console.log('Content type is text/plain. Defaulting to text/turtle..');
+        contentType = 'text/turtle';
+      }
+
+      if (contentType.startsWith('application/json')) {
+        console.log('Content type is application/json. Changing to application/ld+json..');
+        contentType = 'application/ld+json';
+      }
     }
 
     console.log(`WebId content type ${contentType} detected. Parsing...`);
-    var quads = await parseRdfSync(contentType, response.data);
+    var quads = await parseRdfSync(contentType, content);
+
+    console.log(quads);
     var keyNodes = getObjectValues(quads, publisherUri, 'http://www.w3.org/ns/auth/cert#key');
 
     for (var k in keyNodes) {
@@ -209,6 +228,7 @@ signer.validate = async function (canonicalized, proof) {
     console.log('Failed to verify.');
     return false;
   } catch (err) {
+    console.log(err);
     console.log('Failed to verify:' + err);
     return false;
   }

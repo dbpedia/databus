@@ -383,7 +383,6 @@ module.exports = function (router, protector) {
       json: true
     };
 
-    console.log(`Piping to ${options.url}`);
     request(options).pipe(res);
   });
 }

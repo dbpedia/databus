@@ -47,12 +47,12 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.result = {};
 
-  $scope.filterLicenses = function(licenseQuery) {
+  $scope.filterLicenses = function (licenseQuery) {
     // billo-suche mit lowercase und tokenization 
     var tokens = licenseQuery.toLowerCase().split(' ');
-    $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function(l) {
-      for(var token of tokens) {
-        if(!l.title.value.toLowerCase().includes(token)) {
+    $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {
+      for (var token of tokens) {
+        if (!l.title.value.toLowerCase().includes(token)) {
           return false;
         }
       }
@@ -67,8 +67,8 @@ function PublishWizardController($scope, $http, focus, $q) {
     return $scope.$watch('session', function (newVal, oldVal) {
       $scope.session.data.validate();
 
-      if ($scope.session.dataIdCreator != undefined) { 
-        
+      if ($scope.session.dataIdCreator != undefined) {
+
         $scope.result.updateData = $scope.session.dataIdCreator.createUpdate($scope.session.data);
         $scope.result.groupUpdate = $scope.session.dataIdCreator.createGroupUpdate($scope.session.data);
         $scope.result.versionUpdate = $scope.session.dataIdCreator.createVersionUpdate($scope.session.data);
@@ -259,14 +259,14 @@ function PublishWizardController($scope, $http, focus, $q) {
 
       group.createNew = true
       group.id = "";
-      group.label = "";
+      group.title = "";
       group.abstract = "";
       group.description = "";
       $scope.session.accountGroup = null;
       $scope.setCreateNewArtifact(true);
 
     } else {
-      var hasGroups = DatabusUtils.objSize($scope.session.accountData) > 0;
+      var hasGroups = DatabusUtils.objSize($scope.session.accountData.groups) > 0;
 
       if (!hasGroups) {
         $scope.setCreateNewGroup(true);
@@ -274,9 +274,8 @@ function PublishWizardController($scope, $http, focus, $q) {
       }
 
       if ($scope.session.accountGroup == null) {
-        for (var a in $scope.session.accountData) {
-          var targetGroup = $scope.session.accountData[a];
-          $scope.selectGroup(targetGroup);
+        for (var a in $scope.session.accountData.groups) {
+          $scope.selectGroup($scope.session.accountData.groups[a]);
           break;
         }
       }
@@ -291,7 +290,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     if (value) {
       artifact.createNew = value;
       artifact.id = "";
-      artifact.label = "";
+      artifact.title = "";
       artifact.abstract = "";
       artifact.description = "";
       $scope.session.accountArtifact = null;
@@ -317,7 +316,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.selectArtifact = function (targetArtifact) {
     var artifact = $scope.session.data.artifact;
     artifact.id = targetArtifact.id;
-    artifact.label = targetArtifact.label;
+    artifact.title = targetArtifact.title;
     artifact.abstract = targetArtifact.abstract;
     $scope.accountArtifact = targetArtifact;
   }
@@ -326,7 +325,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     var group = $scope.session.data.group;
     var artifact = $scope.session.data.artifact;
     group.id = targetGroup.id;
-    group.label = targetGroup.label;
+    group.title = targetGroup.title;
     group.abstract = targetGroup.abstract;
     group.description = targetGroup.description;
 
@@ -342,7 +341,7 @@ function PublishWizardController($scope, $http, focus, $q) {
    */
   $scope.fetchGroupsAndArtifacts = function () {
     var session = $scope.session;
-    var uri = `/app/account/artifacts?account=${encodeURIComponent(session.accountName)}`;
+    var uri = `/app/account/content?account=${encodeURIComponent(session.accountName)}`;
 
     $http.get(uri).then(function (response) {
       session.isAccountDataLoading = false;
@@ -373,6 +372,10 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     if (version.errors.length > 0) {
       return false;
+    }
+
+    if (group.publishGroupOnly) {
+      return true;
     }
 
     for (var f in version.files) {
@@ -451,11 +454,11 @@ function PublishWizardController($scope, $http, focus, $q) {
     });
   }
 
-  $scope.addFiles = function(input) {
+  $scope.addFiles = function (input) {
     var lines = input.split('\n');
-    
-    for(var line of lines) {
-      if(line != undefined && line.length > 0) {
+
+    for (var line of lines) {
+      if (line != undefined && line.length > 0) {
         $scope.addFile(line);
       }
     }
@@ -531,7 +534,7 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     try {
       await $scope.postDeferred(output.updateData);
-  
+
       $scope.session.isPublishing = false;
       $scope.$apply();
     } catch (err) {
@@ -562,7 +565,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     return groups[groupId].artifacts[artifactId];
   }
 
-  $scope.copyTracateToClipboard = function() {
+  $scope.copyTracateToClipboard = function () {
     DatabusUtils.copyStringToClipboard($scope.session.data.signature.tractate);
   }
 

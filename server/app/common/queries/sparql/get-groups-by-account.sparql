@@ -5,11 +5,12 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-select distinct ?group as ?uri ?publisherUri ?artifactUri where {
+SELECT DISTINCT ?group as ?uri ?title ?abstract ?description WHERE {
 
-?dataset dataid:group ?group .
-?dataset dct:publisher ?webid.
-?webid foaf:account <%PUBLISHER_URI%> .
-BIND(<%PUBLISHER_URI%> AS ?publisherUri)
+    ?group a dataid:Group .
+    OPTIONAL { ?group dct:title ?title. }
+    OPTIONAL { ?group dct:abstract ?abstract. }
+    OPTIONAL { ?group dct:description ?description. }
+    FILTER REGEX(?group, "%PUBLISHER_URI%/.*")
 }
 ORDER BY ?group

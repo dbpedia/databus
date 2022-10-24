@@ -29,6 +29,12 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
 
     var datasetGraph = JsonldUtils.getTypedGraph(distributionlessGraphs, DatabusUris.DATAID_DATASET);
+
+    if(datasetGraph == undefined) {
+      notify(`Nothing to publish.`);
+      return { code: 200, message: null };
+    }
+
     datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
 

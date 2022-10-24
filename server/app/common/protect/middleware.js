@@ -118,7 +118,7 @@ class DatabusProtect {
    */
   getUser(sub) {
 
-    if(this.users == null || this.users.bySub == null) {
+    if (this.users == null || this.users.bySub == null) {
       process.send({
         id: Constants.DATABUS_REQUEST_USER_CACHE_REFRESH,
         body: null
@@ -325,7 +325,7 @@ class DatabusProtect {
     return (req, res, next) => {
 
       // User already fetched and authenticated
-      if (req.databus != undefined && req.databus.authenticated) { 
+      if (req.databus != undefined && req.databus.authenticated) {
         console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
         return next();
       }
@@ -369,7 +369,7 @@ class DatabusProtect {
   checkSso() {
 
     var self = this;
-    
+
     return [(req, res, next) => {
 
       if (req.oidc == undefined || !self.isBrowserRequest(req)) {
@@ -383,7 +383,7 @@ class DatabusProtect {
           req.databus.authenticated = true;
           req.databus.accountName = apiTokenUser.username;
           req.databus.apiKeys = apiTokenUser.keys;
-  
+
           return next();
         }
 
@@ -406,7 +406,7 @@ class DatabusProtect {
         console.log('attempting silent login');
         try {
           return res.oidc.silentLogin();
-        } catch(e) {
+        } catch (e) {
           return next();
         }
       }
@@ -418,7 +418,7 @@ class DatabusProtect {
 
   protect(noRedirect, responseHandler) {
 
-    if(noRedirect == undefined) {
+    if (noRedirect == undefined) {
       noRedirect = false;
     }
 
@@ -447,11 +447,11 @@ class DatabusProtect {
         return next();
       }
 
-      if(request.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
+      if (request.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
         return next();
       }
 
-      if(request.path == Constants.DATABUS_OIDC_LOGIN_ROUTE) {
+      if (request.path == Constants.DATABUS_OIDC_LOGIN_ROUTE) {
         forceLogin(request, response);
         return;
       }
@@ -465,7 +465,7 @@ class DatabusProtect {
 
       }
 
-      if(responseHandler != undefined) {
+      if (responseHandler != undefined) {
         responseHandler(request, response);
         return;
       }

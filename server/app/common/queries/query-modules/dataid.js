@@ -153,6 +153,7 @@ instance.getGroupsByAccount = async function (account) {
 
   let queryOptions = { PUBLISHER_URI: UriUtils.createResourceUri([account]) };
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
+
   let bindings = await exec.executeSelect(query);
 
   if (bindings.length === 0) {
@@ -160,28 +161,16 @@ instance.getGroupsByAccount = async function (account) {
   }
 
   let result = [];
-  let currentGroup = null;
 
   for (let b in bindings) {
     let group = bindings[b];
 
-    if (currentGroup == null || currentGroup.uri !== group.uri) {
-
-      currentGroup = group;
-
-      group.label = UriUtils.uriToName(group.uri);
-      group.publisher = UriUtils.uriToName(group.publisherUri);
-      group.id = UriUtils.uriToName(group.uri);
-      group.artifacts = [];
-
-      result.push(group);
+    if(group.title == undefined) {
+      group.title =  UriUtils.uriToName(group.uri);
     }
 
-    let artifact = {}
-    artifact.uri = group.artifactUri;
-    artifact.label = UriUtils.uriToName(artifact.uri);
-
-    currentGroup.artifacts.push(artifact);
+    group.id = UriUtils.uriToName(group.uri);
+    result.push(group);
   }
 
   return result;

@@ -134,7 +134,7 @@ function FacetsViewController($http, $scope) {
       ctrl.isLoading = false;
 
       // Fix artifact facet values for groups
-      if (ctrl.resourceType == 'group') {
+      if (ctrl.resourceType == 'group' && result.data["http://dataid.dbpedia.org/ns/core#artifact"] != undefined) {
         for (var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
           var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
           result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
@@ -188,14 +188,12 @@ function FacetsViewController($http, $scope) {
       }
 
       // Add the "Latest Version" facet to the visible settings of the version facet
-      if (ctrl.resourceType != 'version') {
+      if (ctrl.resourceType != 'version' && ctrl.viewModel[FACET_VERSION_KEY] != undefined) {
         ctrl.viewModel[FACET_VERSION_KEY].visibleFacetSettings.unshift({
           value: FACET_LATEST_VERSION_VALUE,
           checked: false,
           isOverride: false
         });
-
-
 
         // Apply the existing settings to the view model
         var fullFacets = ctrl.node.createFullFacetSettings();
