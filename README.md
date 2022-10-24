@@ -114,11 +114,11 @@ Follow the documentation of your OIDC provider to configure a client. Connect th
 
 When configuring the client at the OIDC provider, you will be most likely asked to specify a callback URI for redirects after a login. The callback values need to be set to the following values:
 
-**Callback** `https://databus.example.org/system/callback`
+**Callback** `https://databus.example.org/app/callback`
 
-**Logout** `https://databus.example.org/system/logout`
+**Logout** `https://databus.example.org/app/logout`
 
-**Login** `https://databus.example.org/system/login`
+**Login** `https://databus.example.org/app/login`
 
 ### OIDC Providers
 

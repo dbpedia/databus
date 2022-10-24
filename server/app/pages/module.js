@@ -6,6 +6,7 @@ const ServerUtils = require('../common/utils/server-utils.js');
 const DatabusCache = require('../common/databus-cache');
 const LayeredCache = require('../common/layered-cache')
 const UriUtils = require('../common/utils/uri-utils');
+const Constants = require('../common/constants');
 
 module.exports = function (router, protector) {
 
@@ -52,7 +53,7 @@ module.exports = function (router, protector) {
 
 
   // Pages login and logout
-  router.get('/system/login', protector.protect(), function (req, res, next) {
+  router.get(Constants.DATABUS_OIDC_LOGIN_ROUTE, protector.protect(), function (req, res, next) {
     var redirectUrl = decodeURIComponent(req.query.redirectUrl);
     res.redirect(redirectUrl);
   });
@@ -66,13 +67,13 @@ module.exports = function (router, protector) {
       res.redirect(redirectUrl);
     });*/
 
-  router.get('/system/logout', function (req, res, next) {
+  router.get(Constants.DATABUS_OIDC_LOGOUT_ROUTE, function (req, res, next) {
 
     if (req.oidc.isAuthenticated()) {
       var requestUri = ServerUtils.getRequestUri(req);
 
       res.oidc.logout({
-        returnTo: `${requestUri}/system/logout?redirectUrl=${req.query.redirectUrl}`
+        returnTo: `${requestUri}${Constants.DATABUS_OIDC_LOGOUT_ROUTE}?redirectUrl=${req.query.redirectUrl}`
       });
     } else {
       res.redirect(decodeURIComponent(req.query.redirectUrl));

@@ -44,12 +44,12 @@ function HeaderController($scope, $http, collectionManager) {
 
   // Login function
   $scope.login = function () {
-    window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
+    window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
   }
 
   // Logout function
   $scope.logout = function () {
-    window.location = '/system/logout?redirectUrl=' + encodeURIComponent(window.location);
+    window.location = '/app/logout?redirectUrl=' + encodeURIComponent(window.location);
   }
 
   // ???

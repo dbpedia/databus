@@ -14,18 +14,23 @@
               </g>
             </svg>
             <div style="margin-left: 24px;">
-              <h1 class="title is-1 has-text-left is-marginless">404: Not Found</h1>
+              <h1 class="title is-1 has-text-left is-marginless">401: Unauthorized</h1>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="section" ng-if="!authenticated" style="min-height: 500px;">
-      <div class="container">
-        <br /> <br />
-        <p style="text-align: center; font-size: 1.1em">There's nothing here!</p>
-      </div>
-    </div>
+
+
+          
+          <div class="section" ng-if="!authenticated" style="min-height: 500px;">
+            <div class="container">
+              <br /> <br />
+              <p style="text-align: center; font-size: 1.1em">You are not allowed to view this page. Please log in to your Databus account.</p>
+            </div>
+          </div>
+
+
   </div>
   <% include footer %>

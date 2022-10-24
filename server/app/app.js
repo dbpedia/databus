@@ -109,12 +109,31 @@ initialize(app, memoryStore).then(function () {
 
   var router = new express.Router();
 
+
+  // Use protection
+  app.use(protector.auth());
+
+  if (process.env.DATABUS_PRIVATE_MODE) {
+    console.log(`Started cluster node in private mode`);
+    app.all('*', protector.protect(true, function (req, res) {
+      if (protector.isBrowserRequest(req)) {
+        var data = {}
+        data.auth = ServerUtils.getAuthInfoFromRequest(req);
+        res.status(401).render('unauthorized', {
+          title: 'Unauthorized',
+          data: data,
+        });
+      } else {
+        res.status(401).send();
+      }
+    }));
+  }
+
+
   // Attach modules to router
   require('./api/module')(router, protector); // API handlers
   require('./pages/module')(router, protector);// Web App handlers
 
-  // Use protection
-  app.use(protector.auth());
 
   // Attach router
   app.use('/', router);

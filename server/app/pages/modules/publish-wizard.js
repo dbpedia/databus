@@ -2,9 +2,6 @@ var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
 var rp = require('request-promise');
 const cheerio = require('cheerio');
 var sparql = require("../../common/queries/sparql");
-
-var webIdLookupUrl = 'http://databus.dbpedia.org/system/api/accounts?user='
-
 const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {

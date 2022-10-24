@@ -1,4 +1,5 @@
 var { spawn } = require('child_process');
+var fs = require('fs');
 
 class LookupSearchIndexer {
 
@@ -6,8 +7,15 @@ class LookupSearchIndexer {
     // this.rebuildAndRedeploy();
     this.iid = setInterval(this.tick.bind(this), rebuildMinIntervalMilliseconds);
     this.rebuildRequested = true;   
+    this.configPath = `../search/app-config-index.yml`;
+
+    var content = fs.readFileSync(this.configPath, ['utf8']).toString();
+    var regex = new RegExp(`sparqlEndpoint:\\s(.*)`, `g`);
+    content = content.replace(regex, `sparqlEndpoint: ${process.env.DATABUS_DATABASE_URL}/sparql`);
+    fs.writeFileSync(this.configPath, content, ['utf8']);
   }
 
+  
   tick() {
     if(this.rebuildRequested) {
       this.rebuildAndRedeploy();   
@@ -24,7 +32,7 @@ class LookupSearchIndexer {
     return new Promise((resolve, reject) => {
       var indexingProcess = spawn('java', [ 
         '-jar', '../search/lookup-indexer.jar', 
-        '-conf', '../search/app-config-index.yml'
+        '-conf', this.configPath
       ]);
 
       //indexingProcess.stdout.on('data', (data) => {

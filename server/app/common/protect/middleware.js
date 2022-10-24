@@ -24,7 +24,7 @@ function uuidv4() {
 function forceLogin(request, response) {
 
   response.oidc.getRedirectUri = function () {
-    return getRequestUri(request) + '/system/callback';
+    return getRequestUri(request) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
   }
 
   if (request.query.redirectUrl == undefined) {
@@ -76,11 +76,7 @@ function logAccess(user, url) {
   stream.end();
 }
 
-function isBrowserRequest(req) {
-  var agent = req.headers['user-agent'];
-  return agent != null && (agent.includes('Mozilla') || agent.includes('Chrome') ||
-    agent.includes('Safari'));
-}
+
 
 class DatabusProtect {
 
@@ -107,6 +103,13 @@ class DatabusProtect {
   hasUser(user) {
     return this.users.byUsername[user] != undefined;
   }
+
+  isBrowserRequest(req) {
+    var agent = req.headers['user-agent'];
+    return agent != null && (agent.includes('Mozilla') || agent.includes('Chrome') ||
+      agent.includes('Safari'));
+  }
+
 
   /**
    * Gets a user by sub identifier
@@ -306,7 +309,7 @@ class DatabusProtect {
 
     oidcConfig.routes = {
       "login": false,
-      "callback": "system/callback",
+      "callback": Constants.DATABUS_OIDC_CALLBACK_ROUTE,
       "logout": false
     };
 
@@ -369,7 +372,7 @@ class DatabusProtect {
     
     return [(req, res, next) => {
 
-      if (req.oidc == undefined || !isBrowserRequest(req)) {
+      if (req.oidc == undefined || !self.isBrowserRequest(req)) {
 
         var apiTokenUser = self.validateApiKey(req);
 
@@ -389,7 +392,7 @@ class DatabusProtect {
       }
 
       res.oidc.getRedirectUri = function () {
-        return getRequestUri(req) + '/system/callback';
+        return getRequestUri(req) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
       }
 
       const silentLoginAttempted = !!(req[COOKIES] || {})[COOKIE_NAME];
@@ -413,7 +416,7 @@ class DatabusProtect {
     }, this.fetchUser()];
   }
 
-  protect(noRedirect) {
+  protect(noRedirect, responseHandler) {
 
     if(noRedirect == undefined) {
       noRedirect = false;
@@ -444,9 +447,17 @@ class DatabusProtect {
         return next();
       }
 
+      if(request.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
+        return next();
+      }
+
+      if(request.path == Constants.DATABUS_OIDC_LOGIN_ROUTE) {
+        forceLogin(request, response);
+        return;
+      }
 
       // Html requests need a redirect
-      if (!noRedirect && isBrowserRequest(request)) {
+      if (!noRedirect && self.isBrowserRequest(request)) {
         // console.log('Accessing from Browser. Redirecting to web login...');
         // Get the user agent
         forceLogin(request, response);
@@ -454,10 +465,14 @@ class DatabusProtect {
 
       }
 
+      if(responseHandler != undefined) {
+        responseHandler(request, response);
+        return;
+      }
+
       //return self.oidc.requiresAuth();
       // Other requests get denied
       response.status(401).send();
-
 
     }, this.fetchUser()];
   }
