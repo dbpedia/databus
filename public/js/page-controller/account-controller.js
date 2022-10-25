@@ -37,30 +37,22 @@ function AccountPageController($scope, $http, $location) {
   };
 
   // Wait for additional artifact data to arrive
-  $scope.artifactData = {};
-  $scope.artifactData.isLoading = true;
+  $scope.publishedData = {};
+  $scope.publishedData.isLoading = true;
 
-  $http.get(`/app/account/artifacts?account=${encodeURIComponent($scope.profileData.accountName)}`)
+  $http.get(`/app/account/content?account=${encodeURIComponent($scope.profileData.accountName)}`)
     .then(function (response) {
-      $scope.artifactData.groups = response.data;
-      $scope.artifactData.isLoading = false;
 
-      var artifacts = [];
+      $scope.publishedData.groups = response.data.groups;
+      $scope.publishedData.artifacts = response.data.artifacts;
 
-      for (var g in $scope.artifactData.groups) {
-        var group = $scope.artifactData.groups[g];
-        for (var a in group.artifacts) {
-          var artifact = group.artifacts[a];
-          artifacts.push($scope.artifactData.groups[g].artifacts[a]);
-
-          if (group.lastUpdateDate == undefined || group.lastUpdateDate < artifact.date) {
-            group.lastUpdateDate = artifact.date;
-          }
-        }
+      for(var group of $scope.publishedData.groups) {
+        group.artifacts = $scope.publishedData.artifacts.filter(function(a) {
+          return a.groupUri == group.uri;
+        });
       }
-
-      artifacts.sort((a, b) => a.date > b.date ? -1 : 1);
-      $scope.recentUploads = artifacts.slice(0, 3);
+     
+      $scope.recentUploads = $scope.publishedData.artifacts.slice(0, 3);
 
       $scope.refreshFeaturedContent();
     }, function (err) {
@@ -174,8 +166,8 @@ function AccountPageController($scope, $http, $location) {
 
   $scope.findFeaturedContent = function (uri) {
 
-    for (var g in $scope.artifactData.groups) {
-      var group = $scope.artifactData.groups[g];
+    for (var g in $scope.publishedData.groups) {
+      var group = $scope.publishedData.groups[g];
 
       if (uri == group.uri) {
         return {

@@ -52,7 +52,7 @@ module.exports = function (router, protector) {
       // console.log(`Getting artifacts for ${req.query.account} with CK ${cacheKey}`);
 
       var artifacts = await cache.get(cacheKey, async () =>
-        await sparql.dataid.getArtifactsByAccount(req.query.account));
+        await sparql.dataid.getGroupsAndArtifactsByAccount(req.query.account));
 
       res.status(200).send(artifacts);
 

@@ -266,6 +266,8 @@ function PublishWizardController($scope, $http, focus, $q) {
       $scope.setCreateNewArtifact(true);
 
     } else {
+
+      group.publishGroupOnly = false;
       var hasGroups = DatabusUtils.objSize($scope.session.accountData.groups) > 0;
 
       if (!hasGroups) {
@@ -297,18 +299,20 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     } else {
 
-      var hasArtifacts = DatabusUtils.objSize($scope.session.accountGroup.artifacts) > 0;
+      var artifacts = $scope.session.accountData.artifacts.filter(function (value) {
+        return value.groupUri == $scope.session.accountGroup.uri;
+      })
 
-      if (!hasArtifacts) {
+
+
+      if (artifacts.length == 0) {
         $scope.setCreateNewArtifact(true);
+        return;
       }
 
       if ($scope.session.accountArtifact == null) {
-        for (a in $scope.session.accountGroup.artifacts) {
-          var targetArtifact = $scope.session.accountGroup.artifacts[a];
-          $scope.selectArtifact(targetArtifact);
-          break;
-        }
+        var targetArtifact = artifacts[0];
+        $scope.selectArtifact(targetArtifact);
       }
     }
   }
@@ -331,6 +335,10 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     if ($scope.session.accountGroup != targetGroup) {
       $scope.session.accountGroup = targetGroup;
+      $scope.session.accountGroup.artifacts =  $scope.session.accountData.artifacts.filter(function (value) {
+        return value.groupUri == $scope.session.accountGroup.uri;
+      })
+
       $scope.session.accountArtifact = null;
       $scope.setCreateNewArtifact(artifact.createNew);
     }

@@ -36,7 +36,7 @@ instance.getGroup = async function (accountName, group) {
  * Retrieves all artifacts by account name
  * @param {*} accountName 
  */
-instance.getArtifactsByAccount = async function (accountName) {
+instance.getGroupsAndArtifactsByAccount = async function (accountName) {
   try {
     // Get a sanitized account uri
     let accountUri = UriUtils.createResourceUri([accountName]);
@@ -76,6 +76,42 @@ instance.getArtifactsByAccount = async function (accountName) {
 
     // return the result object
     return result;
+  } catch (err) {
+    // log an error if there is one and return null;
+    console.log(err);
+    return null;
+  }
+}
+
+/**
+ * Retrieves all artifacts by account name
+ * @param {*} accountName 
+ */
+ instance.getArtifactsByAccount = async function (accountName) {
+  try {
+    // Get a sanitized account uri
+    let accountUri = UriUtils.createResourceUri([accountName]);
+    
+    if (accountUri == null) {
+      return null; // TODO throw error?
+    }
+
+    // Create the query and insert the account uri
+    let queryOptions = { ACCOUNT_URI: accountUri };
+    let query = require('../sparql/get-artifacts-by-account.sparql');
+
+    query = exec.formatQuery(query, queryOptions);
+    // Execute the query to get a list of bindings
+    let bindings = await exec.executeSelect(query);
+
+    // Do some post-processing on the bindings to create a result object
+    for (let b in bindings) {
+      let binding = bindings[b];
+      binding.id = UriUtils.uriToName(binding.artifactUri);
+    }
+
+    // return the result object
+    return bindings;
   } catch (err) {
     // log an error if there is one and return null;
     console.log(err);

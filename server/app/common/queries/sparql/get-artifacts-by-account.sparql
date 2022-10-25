@@ -5,18 +5,15 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?artifactUri ?label ?abstract ?license ?groupUri ?groupLabel ?groupAbstract ?groupDescription ?date (?maxVersion AS ?version)  WHERE {
+SELECT DISTINCT ?artifactUri ?title ?abstract ?license ?groupUri ?date (?maxVersion AS ?version)  WHERE {
   GRAPH ?g1 {
     ?dataset dataid:artifact ?artifactUri .
     ?dataset dct:hasVersion ?maxVersion .
-    ?dataset dct:title ?label .
+    ?dataset dct:title ?title .
     ?dataset dct:abstract ?abstract .
     ?dataset dct:issued ?date .
     ?dataset dataid:maintainer|dct:publisher ?publisher .
     ?dataset dataid:group ?groupUri .
-    OPTIONAL { ?groupUri dct:title ?groupLabel . }
-    OPTIONAL { ?groupUri dct:abstract ?groupAbstract . }
-    OPTIONAL { ?groupUri dct:description ?groupDescription . }
     ?dataset dct:license ?license .
     {
       SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
