@@ -1,6 +1,6 @@
 var sparql = require("../../common/queries/sparql");
 
-const DatabusCache = require('../../common/databus-cache');
+const DatabusCache = require('../../common/cache/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
 
 

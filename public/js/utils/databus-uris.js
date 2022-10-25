@@ -72,6 +72,12 @@ class DatabusUris {
   static S4AC_ACCESS_POLICY = 'http://ns.inria.fr/s4ac/v2#AccessPolicy';
   static S4AC_ACCESS_CREATE = 'http://ns.inria.fr/s4ac/v2#Create';
   static S4AC_HAS_ACCESS_PRIVILEGE = 'http://ns.inria.fr/s4ac/v2#hasAccessPrivilege';
+
+  // CERT
+  static CERT_KEY = 'http://www.w3.org/ns/auth/cert#key';
+  static CERT_MODULUS = 'http://www.w3.org/ns/auth/cert#modulus';
+  static CERT_EXPONENT = 'http://www.w3.org/ns/auth/cert#exponent';
+
 }
 
 if(typeof module === "object" && module && module.exports)

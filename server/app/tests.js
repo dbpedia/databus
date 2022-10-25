@@ -1,7 +1,7 @@
 var sparql = require('./common/queries/sparql');
 var assert = require('assert');
 
-var DatabusCache = require('./common/databus-cache');
+var DatabusCache = require('./common/cache/databus-cache');
 
 const DatabusUtils = require('../../public/js/utils/databus-utils');
 const UriUtils = require('./common/utils/uri-utils');

@@ -6,7 +6,7 @@ const publishDataId = require('../lib/publish-dataid');
 
 var sparql = require('../../common/queries/sparql');
 var request = require('request');
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';

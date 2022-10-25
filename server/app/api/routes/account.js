@@ -1,9 +1,9 @@
 const ServerUtils = require('../../common/utils/server-utils');
-const DatabusCache = require('../../common/databus-cache');
+const DatabusCache = require('../../common/cache/databus-cache');
 const JsonldUtils = require('../../common/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var shaclTester = require('../../common/shacl/shacl-tester');
 var request = require('request');
 var jsonld = require('jsonld');

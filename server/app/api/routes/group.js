@@ -3,7 +3,7 @@ const DatabusUris = require("../../../../public/js/utils/databus-uris");
 const Constants = require("../../common/constants");
 const publishGroup = require('../lib/publish-group');
 
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 var request = require('request');
 

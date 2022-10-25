@@ -6,7 +6,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 var request = require('request');
 var sparql = require('../../common/queries/sparql');
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var sparql = require('../../common/queries/sparql');
 var shaclTester = require('../../common/shacl/shacl-tester');
 var jsonld = require('jsonld');

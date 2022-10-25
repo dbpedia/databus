@@ -1,7 +1,6 @@
 const rdfParser = require("rdf-parse").default;
 const fs = require('fs');
 var rp = require('request-promise');
-var streamify = require('streamify-string');
 const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
@@ -9,9 +8,8 @@ const autocompleter = require('./dataid-autocomplete');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 var fileAnalyzer = require('../../common/file-analyzer');
-var DatabusProtect = require('../../common/protect/middleware');
-var GstoreHelper = require('../../common/gstore-helper');
-var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
+var GstoreHelper = require('../../common/utils/gstore-helper');
+var requestRdf = require('../../common/request-rdf');
 
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0',
@@ -112,17 +110,6 @@ signer.createProof = function (datasetGraph) {
   };
 }
 
-function parseRdfSync(contentType, data) {
-  var buffer = streamify(data);
-  var quads = [];
-  return new Promise(function (resolve, reject) {
-    rdfParser.parse(buffer, { contentType: contentType })
-      .on('data', (quad) => quads.push(quad))
-      .on('error', (error) => reject(error))
-      .on('end', () => resolve(quads));
-  });
-}
-
 function getObjectValues(quads, subject, predicate) {
 
   console.log(`Getting object values for <${subject}> <${predicate}> ?o...`);
@@ -141,65 +128,32 @@ signer.validate = async function (canonicalized, proof) {
     var signature = proof[DatabusUris.SEC_SIGNATURE][0][DatabusUris.JSONLD_VALUE];
     var tractateLines = canonicalized.split('\n');
     var publisherUri = tractateLines[1];
-    var fetchUri = publisherUri;
 
-    var isInternalWebId = fetchUri.startsWith(baseUrl);
+    var isInternalWebId = publisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL);
 
-    // TODO: remove this in production
-    if (isInternalWebId) {
-      fetchUri = fetchUri.replace(`${baseUrl}`, 'http://localhost:3000');
-    }
-
-    var content = null;
-    var contentType = null;
+    var quads = [];
 
     if (isInternalWebId) {
-
+      // Parse the WebId URL
       var webIdURL = new URL(publisherUri);
-
+      // Extract the pathname of the URL without leading slash
       var repo = webIdURL.pathname.substring(1);
-      var path = Constants.DATABUS_FILE_WEBID;
+      // Read the WebId directly from the Gstore to avoid access problems in private mode
+      var content = JSON.stringify(await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID));
+      quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, content)
 
-      content = JSON.stringify(await GstoreHelper.read(repo, path));
-      contentType = 'application/ld+json';
     } else {
-      // Do a POST request with the passed query
-      var options = {
-        method: 'GET',
-        uri: fetchUri,
-        transform: function (body, response, resolveWithFullResponse) {
-          return { 'headers': response.headers, 'data': body };
-        }
-      };
-
-      console.log(`Fetching WebId document from ${publisherUri}...`);
-      // Await the response
-      var response = await rp(options);
-      content = response.data;
-      contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
-
-      if (contentType.startsWith("text/plain")) {
-        console.log('Content type is text/plain. Defaulting to text/turtle..');
-        contentType = 'text/turtle';
-      }
-
-      if (contentType.startsWith('application/json')) {
-        console.log('Content type is application/json. Changing to application/ld+json..');
-        contentType = 'application/ld+json';
-      }
+      // Get the WebId via HTTP request
+      quads = await requestRdf.requestQuads(publisherUri);
     }
-
-    console.log(`WebId content type ${contentType} detected. Parsing...`);
-    var quads = await parseRdfSync(contentType, content);
-
-    console.log(quads);
-    var keyNodes = getObjectValues(quads, publisherUri, 'http://www.w3.org/ns/auth/cert#key');
+      
+    var keyNodes = getObjectValues(quads, publisherUri, DatabusUris.CERT_KEY);
 
     for (var k in keyNodes) {
 
       var keyNode = keyNodes[k];
-      var modulus = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#modulus');
-      var exponent = getObjectValues(quads, keyNode, 'http://www.w3.org/ns/auth/cert#exponent');
+      var modulus = getObjectValues(quads, keyNode, DatabusUris.CERT_MODULUS);
+      var exponent = getObjectValues(quads, keyNode, DatabusUris.CERT_EXPONENT);
 
       if (modulus.length != 1 || exponent.length != 1) {
         continue;

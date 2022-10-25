@@ -7,8 +7,9 @@ PREFIX databus: <https://databus.dbpedia.org/>
 
 SELECT DISTINCT ?label ?comment ?uri ?groupdocu WHERE {
   GRAPH ?g {
-    <%GROUP_URI%> dct:title ?label . 
-    <%GROUP_URI%> dct:abstract ?comment .
+    <%GROUP_URI%> a dataid:Group .
+    OPTIONAL { <%GROUP_URI%> dct:title ?label . }
+    OPTIONAL { <%GROUP_URI%> dct:abstract ?comment . }
     BIND(<%GROUP_URI%> AS ?uri) 
     OPTIONAL { 
       SELECT ?groupdocu WHERE {

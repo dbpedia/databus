@@ -1,8 +1,13 @@
 const rdfParser = require("rdf-parse").default;
 var rp = require('request-promise');
 var streamify = require('streamify-string');
+const Constants = require("./constants");
 
-function parseRdfSync(contentType, data) {
+
+
+var requestRDF = {};
+
+requestRDF.parseRdf = async function(contentType, data) {
   var buffer = streamify(data);
   var quads = [];
   return new Promise(function (resolve, reject) {
@@ -13,8 +18,6 @@ function parseRdfSync(contentType, data) {
   });
 }
 
-var requestRDF = {};
-
 requestRDF.requestQuads = async function(uri) {
 
   // Do a POST request with the passed query
@@ -22,7 +25,7 @@ requestRDF.requestQuads = async function(uri) {
     method: 'GET',
     uri: uri,
     headers: {
-      "Accept": 'text/turtle, application/ld+json, text/plain, application/rdf+xml, application/x-turtle'
+      "Accept": Constants.HTTP_ACCEPT_RDF
     },
     transform: function (body, response, resolveWithFullResponse) {
       return { 'headers': response.headers, 'data': body };
@@ -33,16 +36,16 @@ requestRDF.requestQuads = async function(uri) {
   var response = await rp(options);
   var contentType = response.headers['content-type'].split(' ')[0].split(';')[0];
 
-  if (contentType.startsWith("text/plain")) {
-    contentType = 'text/turtle';
+  if (contentType.startsWith(Constants.HTTP_CONTENT_TYPE_TEXT)) {
+    contentType = Constants.HTTP_CONTENT_TYPE_TURTLE;
   }
 
-  if(contentType.startsWith('application/json')) {
-    contentType = 'application/ld+json';
+  if(contentType.startsWith(Constants.HTTP_CONTENT_TYPE_JSON)) {
+    contentType = Constants.HTTP_CONTENT_TYPE_JSONLD;
   }
 
   console.log(`Content type ${contentType} detected. Parsing...`);
-  var quads = await parseRdfSync(contentType, response.data);
+  var quads = await requestRdf.parseRdf(contentType, response.data);
 
   return quads;
 }

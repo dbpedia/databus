@@ -4,7 +4,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 
 var shaclTester = require('../../common/shacl/shacl-tester');
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');

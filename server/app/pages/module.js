@@ -3,8 +3,8 @@ var request = require('request');
 var cors = require('cors');
 
 const ServerUtils = require('../common/utils/server-utils.js');
-const DatabusCache = require('../common/databus-cache');
-const LayeredCache = require('../common/layered-cache')
+const DatabusCache = require('../common/cache/databus-cache');
+const LayeredCache = require('../common/cache/layered-cache')
 const UriUtils = require('../common/utils/uri-utils');
 const Constants = require('../common/constants');
 

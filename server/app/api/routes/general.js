@@ -30,7 +30,7 @@ module.exports = function (router, protector) {
 
     var options = {
       method: 'POST',
-      uri: sparqlEndpoint + '?timeout=10000',
+      uri: sparqlEndpoint,
       body: "query=" + encodeURIComponent(query),
       headers: {
         "Accept": accept,

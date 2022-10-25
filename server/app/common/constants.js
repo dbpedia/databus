@@ -38,6 +38,13 @@ class Constants {
   static DATABUS_OIDC_LOGIN_ROUTE = `/app/login`;
   static DATABUS_OIDC_LOGOUT_ROUTE = `/app/logout`;
   static DATABUS_OIDC_CALLBACK_ROUTE = `/app/callback`;
+
+  static HTTP_CONTENT_TYPE_JSONLD = 'application/ld+json';
+  static HTTP_CONTENT_TYPE_TURTLE =  'text/turtle';
+  static HTTP_CONTENT_TYPE_JSON = 'application/json';
+  static HTTP_CONTENT_TYPE_TEXT =  'text/plain';
+  
+  static HTTP_ACCEPT_RDF = 'text/turtle, application/ld+json, text/plain, application/rdf+xml, application/x-turtle';
 }
 
 module.exports = Constants;

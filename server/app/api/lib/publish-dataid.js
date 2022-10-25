@@ -6,7 +6,7 @@ const fs = require('fs');
 
 var signer = require('./databus-tractate-suite');
 var shaclTester = require('../../common/shacl/shacl-tester');
-var GstoreHelper = require('../../common/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var sparql = require('../../common/queries/sparql');
 var defaultContext = require('../../../../model/generated/context.json');
@@ -21,38 +21,47 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
   try {
 
     var expandedGraph = await jsonld.flatten(data);
+    
+    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
     var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
-    var distributionlessGraphs = JSON.parse(JSON.stringify(expandedGraph.filter(function (g) {
-      return g[DatabusUris.JSONLD_TYPE] == undefined || g[DatabusUris.JSONLD_TYPE] != DatabusUris.DATAID_PART;
-    })));
+    //var distributionlessGraphs = JSON.parse(JSON.stringify(expandedGraph.filter(function (g) {
+    //  return g[DatabusUris.JSONLD_TYPE] == undefined || g[DatabusUris.JSONLD_TYPE] != DatabusUris.DATAID_PART
+    //    || g[DatabusUris.JSONLD_TYPE] != DatabusUris.DATAID_GROUP;
+    //})));
 
-
-    var datasetGraph = JsonldUtils.getTypedGraph(distributionlessGraphs, DatabusUris.DATAID_DATASET);
 
     if(datasetGraph == undefined) {
       notify(`Nothing to publish.`);
       return { code: 200, message: null };
     }
 
+
+    var dataIdGraphs = [];
+    dataIdGraphs.push(datasetGraph);
+
     datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
+   
 
     var tripleCount = 0;
     var step = 100;
 
-    var fullGraph = JSON.parse(JSON.stringify(distributionlessGraphs));
-    var fullDatasetGraph = JsonldUtils.getTypedGraph(fullGraph, DatabusUris.DATAID_DATASET);
-    fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+    var datasetGraphCopy = JSON.parse(JSON.stringify(datasetGraph));
+    var distributionlessGraphs = [ datasetGraphCopy ];
+
+
+    //var fullDatasetGraph = JsonldUtils.getTypedGraph(fullGraph, DatabusUris.DATAID_DATASET);
+    //fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
     for (var i = 0; i < distributionGraphs.length; i += step) {
 
       var distributionSubset = distributionGraphs.slice(i, Math.min(distributionGraphs.length, i + step))
 
-      datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+      datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
 
       for (var j = 0; j < distributionSubset.length; j++) {
-        datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+        datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push({
           '@id': distributionSubset[j][DatabusUris.JSONLD_ID]
         });
       }
@@ -65,13 +74,14 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATAID_PART);
 
       for (var subGraph of subGraphs) {
-        fullGraph.push(subGraph);
+        dataIdGraphs.push(subGraph);
 
-        fullDatasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+        datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
           '@id': subGraph[DatabusUris.JSONLD_ID]
         });
       }
     }
+
 
     // Create multiple datasets by removing distributions
     // Fetch only relevant triples from the input via construct query
@@ -85,12 +95,12 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     notify(`${tripleCount} triples selected via construct query.`);
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
-    // Convert the n-triples back to flattened jsonld
-    var expandedGraph = fullGraph;
+   
 
+    
     // console.log(`parsed back to jsonld`);
     // Re-fetch the dataset graph
-    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
+    // var datasetGraph = JsonldUtils.getTypedGraph(dataIdGraphs, DatabusUris.DATAID_DATASET);
 
     // Validate the prefix of the Dataset identifier
     if (!datasetGraph["@id"].startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
@@ -98,21 +108,25 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       return { code: 400, message: null };
     }
 
+
     // Do dataid-autocompletion
-    var before = JSON.stringify(expandedGraph);
-    autocompleter.autocomplete(expandedGraph, accountUri);
-    var after = JSON.stringify(expandedGraph);
+    var before = JSON.stringify(dataIdGraphs);
+    autocompleter.autocomplete(dataIdGraphs, accountUri);
+    var after = JSON.stringify(dataIdGraphs);
 
     if (before != after) {
       notify(`Auto-completed the input.`);
       if (debug) {
-        notify(JSON.stringify(expandedGraph, null, 3));
+        notify(JSON.stringify(dataIdGraphs, null, 3));
       }
     }
 
+    console.log(JSON.stringify(dataIdGraphs, null, 3));
+    
+
     if (verifyParts) {
 
-      var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+      var distributions = JsonldUtils.getTypedGraphs(dataIdGraphs, DatabusUris.DATAID_PART);
 
       for (var distribution of distributions) {
 
@@ -147,7 +161,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     
 
     // Validate the group RDF with the shacl validation tool of the gstore
-    var shaclResult = await shaclTester.validateDataidRDF(expandedGraph);
+    var shaclResult = await shaclTester.validateDataidRDF(dataIdGraphs);
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
@@ -194,7 +208,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
 
     // Fetch the proof graph
     var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.SEC_PROOF);
-    var proofGraph = JsonldUtils.getGraphById(expandedGraph, proofId);
+    var proofGraph = JsonldUtils.getGraphById(dataIdGraphs, proofId);
     var generatingSignature = false;
 
     // Not setting the proof is allowed!
@@ -211,9 +225,9 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
       notify(`Generating signature.`);
       generatingSignature = true;
 
-      proofGraph = signer.createProof(expandedGraph);
+      proofGraph = signer.createProof(dataIdGraphs);
       datasetGraph[DatabusUris.SEC_PROOF] = [proofGraph];
-      expandedGraph = await jsonld.flatten(expandedGraph);
+      dataIdGraphs = await jsonld.flatten(dataIdGraphs);
 
       console.log(proofGraph);
     }
@@ -229,7 +243,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     }
 
     // Validate the proof 
-    var validationSuccess = await signer.validate(signer.canonicalize(expandedGraph), proofGraph);
+    var validationSuccess = await signer.validate(signer.canonicalize(dataIdGraphs), proofGraph);
 
     if (!validationSuccess) {
 
@@ -245,7 +259,7 @@ module.exports = async function publishDataid(account, data, verifyParts, notify
     notify(`Signature validation successful.`);
 
     // Create compacted graph
-    var compactedGraph = await jsonld.compact(expandedGraph, defaultContext);
+    var compactedGraph = await jsonld.compact(dataIdGraphs, defaultContext);
 
     // TODO enable this: 
     compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_DEFAULT_CONTEXT_URL;

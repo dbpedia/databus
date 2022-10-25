@@ -2,7 +2,7 @@ var sparql = require('../../common/queries/sparql');
 var jsonld = require('jsonld');
 
 const ServerUtils = require('../../common/utils/server-utils.js');
-var DatabusCache = require('../../common/databus-cache');
+var DatabusCache = require('../../common/cache/databus-cache');
 
 var cache = new DatabusCache(15);
 

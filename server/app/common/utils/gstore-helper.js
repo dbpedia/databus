@@ -1,5 +1,5 @@
 var rp = require('request-promise');
-const Constants = require('./constants');
+const Constants = require('../constants');
 
 
 class GstoreHelper {
