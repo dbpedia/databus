@@ -19,7 +19,6 @@ function writeClientVariables() {
 
   content = writeConstant(content, `DATABUS_RESOURCE_BASE_URL`, process.env.DATABUS_RESOURCE_BASE_URL);
   content = writeConstant(content, `DATABUS_DEFAULT_CONTEXT_URL`, process.env.DATABUS_DEFAULT_CONTEXT_URL);
-  content = writeConstant(content, `DATABUS_NAME`, process.env.DATABUS_NAME);
  
   fs.writeFileSync(constantsFile, content, ['utf8']);
 }
@@ -52,10 +51,10 @@ function writeManifest() {
   }
 
   console.log('');
-  console.log(`================= MANIFEST =====================`);
+  console.log('\x1b[36m%s\x1b[0m', `================= MANIFEST =====================`);
   console.log('');
-  console.log(manifest);
-  console.log(`================================================`);
+  console.log('\x1b[36m%s\x1b[0m', manifest);
+  console.log('\x1b[36m%s\x1b[0m', `================================================`);
   console.log('');
 
   fs.writeFileSync(manifestFile, manifest, ['utf8']);
@@ -97,6 +96,10 @@ function tryCreateKeyPair() {
     fs.writeFileSync(privateKeyFile, privateKey.toString('base64'), "utf8");
     fs.writeFileSync(publicKeyFile, publicKey.toString('base64'), "utf8");
   }
+
+  console.log(`Using public key at ${publicKeyFile}:`);
+  console.log( fs.readFileSync(publicKeyFile, "utf8"));
+
 }
 
 async function loadDefaultContext() {
@@ -125,8 +128,8 @@ async function loadDefaultContext() {
     // Request and save to file
     var response = await rp(contextOptions);
     fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
-
-    
+    console.log(`Successfully saved context to ${contextFile}:`);
+    console.log(response);
   } catch (err) {
     console.log(err);
     console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);
@@ -137,12 +140,15 @@ module.exports = async function () {
 
   console.log(`================================================`);
   console.log(`Initializing...`);
+  console.log(config);
   await loadDefaultContext();
   writeClientVariables();
   writeManifest();
 
-
-  await minifyClientJS();
+  if(config.minifyJs) {
+    await minifyClientJS();
+  }
+  
   tryCreateKeyPair();
   console.log(`Done initializing.`);
   console.log(`================================================`);

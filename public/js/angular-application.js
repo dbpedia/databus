@@ -1,6 +1,7 @@
 
 
 var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
+  .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .factory('collectionManager', ["$http", function ($http) { return new DatabusCollectionManager($http, 'databus_collections'); }])
   .factory('focus', ["$timeout", "$window", function ($timeout, $window) {
     return function (id) {
@@ -31,14 +32,16 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
       }
     }
   });
-
-databusApplication.config(function ($locationProvider) {
+ 
+function config($locationProvider) {
   $locationProvider.html5Mode({
     enabled: true,
     requireBase: false,
     rewriteLinks: false
   });
-});
+};
+
+databusApplication.config(['$locationProvider', config]);
 
 // Components
 databusApplication.component('overrideCheckbox', {
@@ -410,10 +413,7 @@ databusApplication.directive('groupsTable', function () {
   }
 });
 
-/**
- * Directive to create the activity chart
- * @return {[type]} [description]
- */
+
 databusApplication.directive('activityChart', function () {
   return {
     restrict: 'E',

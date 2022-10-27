@@ -15,6 +15,7 @@ const DatabusUserDatabase = require('./userdb');
 const LookupSearchIndexer = require('./search-indexer');
 var userTablePath = __dirname + '/users/namespaces.csv';
 
+
 /**
  * Get port from environment and store in Express.
  */
@@ -44,9 +45,8 @@ function masterProcess() {
   console.log(`#     # #    #   #   #    # #    # #    # #    #`);
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
-  console.log(`================================================`);
-
-
+  console.log(`================================================`); 
+  
   var userDatabase = new DatabusUserDatabase(userTablePath, function (table) {
     broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
   });

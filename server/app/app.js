@@ -19,7 +19,10 @@ var app = express();
 
 app.locals = {
   databus: {
-    version: config.version
+    version: config.version,
+    name: process.env.DATABUS_NAME,
+    defaultContextUrl: process.env.DATABUS_DEFAULT_CONTEXT_URL,
+    resourceBaseUrl: process.env.DATABUS_RESOURCE_BASE_URL
   },
   site: {
     minifyJs: config.minifyJs,
