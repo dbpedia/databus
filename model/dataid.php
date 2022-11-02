@@ -78,8 +78,10 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## abstract
+
 <?php
+/*
+## abstract
 $owl='dct:abstract
 	rdfs:label "Abstract"@en ;
 	rdfs:comment "A summary of the resource."@en ;
@@ -110,6 +112,7 @@ $example='"abstract": "Registered a version of the DBpedia Ontology into my acco
 $context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+*/
 ?>
 
 

@@ -89,47 +89,7 @@ dct:title
 ```
 
 
-## abstract (Group)
 
-
-Example (JSON-LD):
-```javascript
-{	
-	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx",
-	"abstract": "Collected ontologies to be used in Project X as dependencies for development.",
-}
-```
-Spec (OWL, SHACL, JSON-LD Context)
-```turtle
-dct:abstract
-	rdfs:label "Abstract"@en ;
-	rdfs:comment "A summary of the resource."@en ;
-	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
-```
-```turtle
-<#abstract-group>
-	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
-	sh:property [
-	    sh:path dct:abstract ;
-	    sh:severity sh:Violation ;
-	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
-	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:qualifiedMinCount 1 ;
-		sh:qualifiedMaxCount 1 ;	
-	];
-	sh:property [
-		sh:path dct:abstract ;
-	    sh:severity sh:Violation ;
-	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
-	    sh:uniqueLang true;
-	    sh:maxLength 200 ;
-	] . 
-```
-```javascript
-"abstract": { "@id": "dct:abstract" }
-```
 
 
 ## description (Group)

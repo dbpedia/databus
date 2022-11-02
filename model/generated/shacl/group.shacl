@@ -44,25 +44,6 @@
 		sh:uniqueLang true ;
 	] . 
 
-<#abstract-group>
-	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
-	sh:property [
-	    sh:path dct:abstract ;
-	    sh:severity sh:Violation ;
-	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
-	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:qualifiedMinCount 1 ;
-		sh:qualifiedMaxCount 1 ;	
-	];
-	sh:property [
-		sh:path dct:abstract ;
-	    sh:severity sh:Violation ;
-	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
-	    sh:uniqueLang true;
-	    sh:maxLength 200 ;
-	] . 
-
 <#description-group>
 	a sh:NodeShape ;
 	sh:targetClass dataid:Group ;
