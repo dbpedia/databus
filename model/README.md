@@ -1,11 +1,21 @@
 # Model Generation:
+
+A small helper program to keep docu and code in sync. 
+The PHP files contain templates and variables that contain docu an code. 
+From these Markdown is generated and committed
+
+## Installation
+```
 sudo apt install php7.4-cli
 ./.git/hooks/pre-commit
+```
 
-RECOMMENDED if context or shacl was changed
+## Updating context.json and shacl 
+```
 cat generated/context.json | jq
 cd generated/shacl/
 for i in `ls *.shacl` ; do rapper -gc $i  ; done
+```
 
 Goal:
 * php script is a template to fill a markdown doc (stdout)
