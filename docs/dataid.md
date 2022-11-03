@@ -293,12 +293,6 @@ dataid:artifact a owl:ObjectProperty;
 			""" ;
 	] .
 ```
-```javascript
-"artifact": {
-      "@id": "dataid:artifact",
-      "@type": "@id"
-    }
-```
 
 
 ## version

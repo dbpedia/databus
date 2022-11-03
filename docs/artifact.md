@@ -83,9 +83,6 @@ dct:title
 		sh:uniqueLang true ;
 	] . 
 ```
-```javascript
-"title": { "@id": "dct:title" }
-```
 
 
 ## abstract (Artifact)
@@ -125,9 +122,6 @@ dct:abstract
 	    sh:maxLength 300 ;
 	] . 
 ```
-```javascript
-"abstract": { "@id": "dct:abstract" }
-```
 
 
 ## description (Artifact)
@@ -165,9 +159,6 @@ dct:description
 		sh:message "Each language of dct:description must occure only once."@en ;
 		sh:uniqueLang true ;
 	] . 
-```
-```javascript
-"description": { "@id": "dct:description" }
 ```
 
 

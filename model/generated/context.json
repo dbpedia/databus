@@ -32,21 +32,10 @@
 	"@type": "@id"
 	},
 
-"title": { "@id": "dct:title" },
-
-"abstract": { "@id": "dct:abstract" },
-
-"description": { "@id": "dct:description" },
-
 "Dataset": 	"dataid:Dataset" ,
 
 "publisher": {
       "@id": "dct:publisher",
-      "@type": "@id"
-    },
-
-"artifact": {
-      "@id": "dataid:artifact",
       "@type": "@id"
     },
 
