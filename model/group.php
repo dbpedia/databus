@@ -32,7 +32,7 @@ $shacl='<#group-exists>
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
-      sh:message "IRI for dataid:Group must match /USER/GROUP , |USER|>3"@en ;
+      sh:message "IRI for dataid:Group must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
 	] .';
 
 $example='"@type": "Group",';
@@ -64,15 +64,14 @@ $shacl='<#title-group>
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
-		sh:message "Required property dct:title MUST occur exactly once without language tag."@en ;
+		sh:message "Property dct:title MAY occur exactly once without language tag."@en ;
         sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:qualifiedMinCount 1 ;
 		sh:qualifiedMaxCount 1 ;		
     ] ;
         sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
-		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:message "dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . ';
 
@@ -99,17 +98,16 @@ $shacl='<#abstract-group>
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "Required property dct:abstract MUST occur at least once without language tag."@en ;
+	    sh:message "Property dct:abstract MAY occur at least once without language tag."@en ;
 	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:qualifiedMinCount 1 ;
 		sh:qualifiedMaxCount 1 ;	
 	];
 	sh:property [
 		sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 200 characters and each language must occure only once. "@en ;
+	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once. "@en ;
 	    sh:uniqueLang true;
-	    sh:maxLength 200 ;
+	    sh:maxLength 300 ;
 	] . ';
 
 $example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
@@ -135,15 +133,14 @@ $shacl='<#description-group>
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
-		sh:message "Required property dct:description MUST occur exactly once without language tag."@en ;
+		sh:message "Property dct:description MAY occur exactly once without language tag."@en ;
         sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:qualifiedMinCount 1 ;
 		sh:qualifiedMaxCount 1 ;		
     ] ;
         sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
-		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:message "dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . ';
 

@@ -31,7 +31,7 @@ $shacl='<#artifact-exists>
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
-      sh:message "IRI for dataid:Artifact must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:message "IRI for dataid:Artifact must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
 	] .';
 
 $example='"@type": "Artifact",';
