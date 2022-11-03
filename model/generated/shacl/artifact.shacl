@@ -1,0 +1,81 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+
+<#artifact-exists>
+	a sh:NodeShape ;
+	sh:targetNode dataid:Artifact ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1;
+	  sh:message "Exactly one subject with an rdf:type of dataid:Artifact must occur."@en ;
+	] ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	    sh:nodekind sh:IRI ;
+      sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
+      sh:message "IRI for dataid:Artifact must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+	] .
+
+<#title-artifact>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Artifact ;
+	sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+		sh:message "Property dct:title MAY occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:title ;
+		sh:severity sh:Violation ;
+	    sh:maxLength 100 ;
+		sh:message "dct:title must have less than 100 characters and each language must occure only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+
+<#abstract-artifact>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Artifact ;
+	sh:property [
+	    sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "Property dct:abstract MAY occur at least once without language tag."@en ;
+	    sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMaxCount 1 ;	
+	];
+	sh:property [
+		sh:path dct:abstract ;
+	    sh:severity sh:Violation ;
+	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once."@en ;
+	    sh:uniqueLang true;
+	    sh:maxLength 300 ;
+	] . 
+
+<#description-artifact>
+	a sh:NodeShape ;
+	sh:targetClass dataid:Artifact ;
+	sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Property dct:description MAY occur exactly once without language tag."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:qualifiedMaxCount 1 ;		
+    ] ;
+        sh:property [
+		sh:path dct:description ;
+		sh:severity sh:Violation ;
+		sh:message "Each language of dct:description must occure only once."@en ;
+		sh:uniqueLang true ;
+	] . 
+

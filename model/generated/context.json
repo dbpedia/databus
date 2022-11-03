@@ -25,6 +25,19 @@
 
 "description": { "@id": "dct:description" },
 
+"Artifact": 	"dataid:Artifact",
+
+"artifact": {
+	"@id": "dataid:artifact",
+	"@type": "@id"
+	},
+
+"title": { "@id": "dct:title" },
+
+"abstract": { "@id": "dct:abstract" },
+
+"description": { "@id": "dct:description" },
+
 "Dataset": 	"dataid:Dataset" ,
 
 "publisher": {
