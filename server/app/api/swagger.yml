@@ -46,7 +46,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                     "@type": "Group",
                     "title": "Cleaned Data",
-                    "abstract": "Cleaned datasets from DBpedia",
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
@@ -54,7 +53,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
                     "description": "Cleaned version of the geonames dataset from DBpedia",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
@@ -134,7 +132,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                     "@type": "Group",
                     "title": "Cleaned Data",
-                    "abstract": "Cleaned datasets from DBpedia",
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
@@ -142,7 +139,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
                     "description": "Cleaned version of the geonames dataset from DBpedia",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
@@ -221,7 +217,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                     "@type": "Group",
                     "title": "Cleaned Data",
-                    "abstract": "Cleaned datasets from DBpedia",
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
@@ -229,7 +224,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
                     "description": "Cleaned version of the geonames dataset from DBpedia",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
@@ -309,7 +303,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                     "@type": "Group",
                     "title": "Cleaned Data",
-                    "abstract": "Cleaned datasets from DBpedia",
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
@@ -317,7 +310,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
                     "description": "Cleaned version of the geonames dataset from DBpedia",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
@@ -403,7 +395,6 @@ paths:
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "Group",
                   "title": "Cleaned Data",
-                  "abstract": "Various cleaned datasets from DBpedia using AI.",
                   "description": "Various cleaned datasets from DBpedia using AI."
                 }
               }'
@@ -457,7 +448,6 @@ paths:
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
-                  "abstract": "Cleaned datasets from DBpedia",
                   "description": "Cleaned datasets from DBpedia",
                   "title": "Cleaned Data",
                   "@context": {
@@ -466,9 +456,6 @@ paths:
                     },
                     "description": {
                       "@id": "http://purl.org/dc/terms/description"
-                    },
-                    "abstract": {
-                      "@id": "http://purl.org/dc/terms/abstract"
                     },
                     "dbo": "http://dbpedia.org/ontology/",
                     "sec": "https://w3id.org/security#",
@@ -567,7 +554,6 @@ paths:
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                   "hasVersion": "2022-02-09",
                   "title": "Cleaned Geonames",
-                  "abstract": "Cleaned version of the geonames dataset from DBpedia",
                   "description": "Cleaned version of the geonames dataset from DBpedia",
                   "license": "http://creativecommons.org/licenses/by/4.0/",
                   "distribution": [
@@ -664,7 +650,6 @@ paths:
                       "artifact": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
                       "group": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                       "version": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09",
-                      "abstract": "Cleaned version of the geonames dataset from DBpedia",
                       "description": "Cleaned version of the geonames dataset from DBpedia",
                       "hasVersion": "2022-02-09",
                       "issued": "2022-02-10T10:22:00.713Z",
@@ -808,7 +793,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                     "@type": "Group",
                     "title": "Cleaned Data",
-                    "abstract": "Cleaned datasets from DBpedia",
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
@@ -816,7 +800,6 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned version of the geonames dataset from DBpedia",
                     "description": "Cleaned version of the geonames dataset from DBpedia",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
@@ -889,7 +872,6 @@ paths:
                       "artifact": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
                       "group": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                       "version": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09",
-                      "abstract": "Cleaned version of the geonames dataset from DBpedia",
                       "description": "Cleaned version of the geonames dataset from DBpedia",
                       "hasVersion": "2022-02-09",
                       "issued": "2022-02-11T13:28:58.132Z",
@@ -1034,7 +1016,6 @@ paths:
                     "@type": "dataid:Collection",
                     "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
                     "title": "Cleaned Geonames",
-                    "abstract": "Cleaned Geonames Data (latest version) from DBpedia.",
                     "description": "Cleaned Geonames Data (latest version) from DBpedia.",
                     "dataid:content": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%222022-02-09%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
                   }
@@ -1059,11 +1040,6 @@ paths:
                       "http://dataid.dbpedia.org/ns/core#content": [
                         {
                           "@value": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2Fcleaned%2Fgeonames%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
-                        }
-                      ],
-                      "http://purl.org/dc/terms/abstract": [
-                        {
-                          "@value": "Cleaned geonames (version 2022-02-09) from DBpedia."
                         }
                       ],
                       "http://purl.org/dc/terms/description": [
@@ -1147,7 +1123,6 @@ paths:
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
-                  "abstract": "Cleaned datasets from DBpedia",
                   "description": "Cleaned datasets from DBpedia",
                   "title": "Cleaned Data",
                   "@context": {
@@ -1156,9 +1131,6 @@ paths:
                     },
                     "description": {
                       "@id": "http://purl.org/dc/terms/description"
-                    },
-                    "abstract": {
-                      "@id": "http://purl.org/dc/terms/abstract"
                     },
                     "dbo": "http://dbpedia.org/ontology/",
                     "sec": "https://w3id.org/security#",
@@ -1313,7 +1285,6 @@ paths:
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
-                  "abstract": "Cleaned datasets from DBpedia",
                   "description": "Cleaned datasets from DBpedia",
                   "title": "Cleaned Data",
                   "@context": {
@@ -1322,9 +1293,6 @@ paths:
                     },
                     "description": {
                       "@id": "http://purl.org/dc/terms/description"
-                    },
-                    "abstract": {
-                      "@id": "http://purl.org/dc/terms/abstract"
                     },
                     "dbo": "http://dbpedia.org/ontology/",
                     "sec": "https://w3id.org/security#",

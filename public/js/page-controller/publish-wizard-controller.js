@@ -122,6 +122,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     session.data.validate();
 
     session.data.group.createNew = true;
+    session.data.group.generateAbstract = true;
     session.data.artifact.createNew = true;
     session.showContext = false;
     session.fetchFilesInput = "";
@@ -227,24 +228,17 @@ function PublishWizardController($scope, $http, focus, $q) {
     "You can add content variants to files by adding a content variant dimension (e.g. 'language' or 'lang') and inserting values (e.g. 'en', 'de', 'fr', ...) into the newly created column. "
   ];
 
-
-
   $scope.errorMessages = {
     'err_invalid_group_description': 'The group description is invalid. Please enter at least 25 characters.',
-    'err_invalid_group_abstract': 'The group abstract is invalid. Please enter at least 25 characters (plain text).',
     'err_invalid_group_label': 'The group label is invalid. Please enter at least 3 characters.',
-    'err_invalid_group_id': 'The group id is invalid. Please enter at least 3 characters.',
-
+    'err_invalid_group_name': 'The group name is invalid. Please enter between 3 to 50 characters. Regex: [a-zA-Z0-9_\\-\\.]{3,50}$',
     'err_invalid_artifact_id': 'The artifact id is invalid. Please enter at least 3 characters.',
     'err_invalid_artifact_label': 'The artifact label is invalid. Please enter at least 3 characters.',
-    'err_invalid_artifact_abstract': 'The artifact abstract is invalid. Please enter at least 25 characters (plain text).',
-
     'err_invalid_version_id': 'The version id is invalid. Please enter at least 3 characters.',
     'err_invalid_version_description': 'The version documentation is invalid. Please enter at least 25 characters.',
     'err_invalid_version_license': 'The license is invalid. Please enter a license URI.',
     'err_no_files': 'You have to upload at least one file.',
     'err_not_analyzed': 'This file has not been analzyed yet.'
-
   };
 
 
@@ -258,10 +252,11 @@ function PublishWizardController($scope, $http, focus, $q) {
     if (value) {
 
       group.createNew = true
-      group.id = "";
+      group.name = "";
       group.title = "";
-      group.abstract = "";
       group.description = "";
+      group.abstract = "";
+      group.generateAbstract = true;
       $scope.session.accountGroup = null;
       $scope.setCreateNewArtifact(true);
 
@@ -293,7 +288,6 @@ function PublishWizardController($scope, $http, focus, $q) {
       artifact.createNew = value;
       artifact.id = "";
       artifact.title = "";
-      artifact.abstract = "";
       artifact.description = "";
       $scope.session.accountArtifact = null;
 
@@ -321,16 +315,14 @@ function PublishWizardController($scope, $http, focus, $q) {
     var artifact = $scope.session.data.artifact;
     artifact.id = targetArtifact.id;
     artifact.title = targetArtifact.title;
-    artifact.abstract = targetArtifact.abstract;
     $scope.accountArtifact = targetArtifact;
   }
 
   $scope.selectGroup = function (targetGroup) {
     var group = $scope.session.data.group;
     var artifact = $scope.session.data.artifact;
-    group.id = targetGroup.id;
+    group.name = targetGroup.name;
     group.title = targetGroup.title;
-    group.abstract = targetGroup.abstract;
     group.description = targetGroup.description;
 
     if ($scope.session.accountGroup != targetGroup) {

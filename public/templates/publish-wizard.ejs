@@ -307,13 +307,17 @@
       .content-box .row {
         display: flex;
         padding: .0em.5em;
-        align-items: center;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.75em;
       }
 
       .content-box .row .row-label {
         min-width: 240px;
+        padding-top: .3em;
         display: flex;
+      }
+
+      .optional {
+        color: #aaa;
       }
     </style>
 
@@ -419,17 +423,23 @@
                 <div class="row">
                   <div class="row-label">Create New Group</div>
 
-                  <input id="createnewgroup" type="checkbox" ng-model="group.createNew"
-                    ng-change="setCreateNewGroup(group.createNew);">
+                  <div class="field override-checkbox" ng-class="{ 'is-override' : group.createNew }">
+                    <input id="check--createnewgroup" name="check--createnewgroup" class="is-checkradio" type="checkbox"
+                      ng-model="group.createNew" ng-change="setCreateNewGroup(group.createNew);">
+                    <label for="check--createnewgroup">
+                      <span></span>
+                    </label>
+                  </div>
+
                 </div>
 
                 <div class="row" ng-if="!group.createNew">
-                  <div class="row-label">Id</div>
+                  <div class="row-label">Name</div>
                   <div style="flex: 1">
                     <div class="dropdown is-hoverable">
                       <div class="dropdown-trigger">
                         <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                          <span>{{ group.id }}</span>
+                          <span>{{ group.name }}</span>
                           <span class="icon is-small">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                           </span>
@@ -438,9 +448,9 @@
                       <div class="dropdown-menu" id="dropdown-menu" role="menu">
                         <div class="dropdown-content">
 
-                          <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData.groups"
-                            ng-click="selectGroup(grp)">
-                            {{ grp.id }}
+                          <div class="dropdown-item" style="cursor: pointer;"
+                            ng-repeat="grp in session.accountData.groups" ng-click="selectGroup(grp)">
+                            {{ grp.name }}
                           </div>
                         </div>
                       </div>
@@ -450,13 +460,50 @@
 
                 </div>
                 <div class="row" ng-if="group.createNew">
-                  <div class="row-label">Id</div>
+                  <div class="row-label">Name</div>
                   <div style="flex: 1">
-                    <input class="input" type="text" ng-model="group.id">
-                    <span ng-if="hasError(group.errors, 'err_invalid_group_id')" class="help is-danger">{{
-                      errorMessages['err_invalid_group_id'] }}</span>
+                    <input class="input" type="text" ng-model="group.name">
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_name')" class="help is-danger">{{
+                      errorMessages['err_invalid_group_name'] }}</span>
                   </div>
                 </div>
+
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label optional">Title</div>
+                  <div style="flex: 1">
+                    <input class="input" type="text" ng-model="group.title">
+                  </div>
+                </div>
+
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label optional">Abstract</div>
+                  <div style="flex: 1">
+                    <div>
+                      <div class="field override-checkbox" style="margin-bottom: .25em;"
+                        ng-class="{ 'is-override' : group.generateAbstract }">
+                        <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                          type="checkbox" ng-model="group.generateAbstract">
+                        <label for="check--generate--abstract">
+                          <span>Generate Abstract From Description</span>
+                        </label>
+                      </div>
+                      <textarea wrap="hard" ng-disabled="group.generateAbstract"
+                        style="min-height: 120px; resize: vertical;" class="input" type="text"
+                        ng-model="group.abstract"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label optional">Description</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                      ng-model="group.description"></textarea>
+                  </div>
+                </div>
+
+
+                <!--
                 <div class="row" ng-if="group.createNew">
                   <div class="row-label">Title</div>
                   <div style="flex: 1">
@@ -467,29 +514,45 @@
                 </div>
 
                 <div class="row" ng-if="group.createNew">
-                  <div class="" style="min-width: 240px">Abstract</div>
+                  <div class="row-label">Abstract</div>
                   <div style="flex: 1">
-                    <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
-                      ng-model="group.abstract"></textarea>
-                    <span ng-if="hasError(group.errors, 'err_invalid_group_abstract')" class="help is-danger">{{
-                      errorMessages['err_invalid_group_abstract'] }}</span>
+                    <div>
+                      <div class="field override-checkbox" style="margin-bottom: .25em;" ng-class="{ 'is-override' : group.generateAbstract }">
+                        <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                          type="checkbox" ng-model="group.generateAbstract">
+                        <label for="check--generate--abstract">
+                          <span>Generate Abstract From Description</span>
+                        </label>
+                      </div>
+
+                      <textarea wrap="hard" ng-disabled="group.generateAbstract" style="min-height: 120px; resize: vertical;" class="input" type="text"
+                        ng-model="group.abstract"></textarea>
+
+                    </div>
                   </div>
                 </div>
 
                 <div class="row" ng-if="group.createNew">
-                  <div class="" style="min-width: 240px">Description</div>
+                  <div class="row-label">Description</div>
                   <div style="flex: 1">
-                    <textarea wrap="hard" style="min-height: 180px; resize: vertical;" class="input" type="text"
+                    <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
                       ng-model="group.description"></textarea>
                     <span ng-if="hasError(group.errors, 'err_invalid_group_description')" class="help is-danger">{{
                       errorMessages['err_invalid_group_description'] }}</span>
                   </div>
-                </div>
+                </div>-->
 
-                <div class="row"  ng-if="group.createNew">
-                  <div class="row-label">Create Without Artifact/Version</div>
+                <div class="row" ng-if="group.createNew">
+                  <div class="row-label">Create Without Version</div>
 
-                  <input id="createnewgroup" type="checkbox" ng-model="session.data.group.publishGroupOnly">
+                  <div class="field override-checkbox"
+                    ng-class="{ 'is-override' : session.data.group.publishGroupOnly }">
+                    <input id="check--createwithoutversion" name="check--createwithoutversion" class="is-checkradio"
+                      type="checkbox" ng-model="session.data.group.publishGroupOnly">
+                    <label for="check--createwithoutversion">
+                      <span></span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -533,8 +596,14 @@
                     <div class="row">
                       <div class="row-label">Create New Artifact</div>
 
-                      <input id="createnewartifact" type="checkbox" ng-disabled="group.createNew"
-                        ng-model="artifact.createNew" ng-change="setCreateNewArtifact(artifact.createNew);">
+                      <div class="field override-checkbox" ng-class="{ 'is-override' : artifact.createNew && !group.createNew }">
+                        <input id="check--createnewartifact" name="check--createnewartifact" class="is-checkradio" type="checkbox"
+                          ng-model="artifact.createNew" ng-change="setCreateNewArtifact(artifact.createNew);"
+                          ng-disabled="group.createNew">
+                        <label for="check--createnewartifact">
+                          <span></span>
+                        </label>
+                      </div>
                     </div>
 
                     <div class="row" ng-if="!artifact.createNew">
@@ -566,7 +635,7 @@
 
 
                     <div class="row" ng-if="artifact.createNew">
-                      <div class="row-label">Id</div>
+                      <div class="row-label">Name</div>
                       <div style="flex: 1">
                         <input class="input" type="text" ng-model="artifact.id">
                         <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_id')" class="help is-danger">{{
@@ -582,16 +651,37 @@
                       </div>
                     </div>
 
-                    <div class="row" ng-if="artifact.createNew">
-                      <div class="" style="min-width: 240px">Abstract</div>
+                    <div class="row" ng-if="group.createNew">
+                      <div class="row-label">Abstract</div>
                       <div style="flex: 1">
-                        <textarea wrap="hard" style="min-height: 80px; resize: vertical;" class="input" type="text"
-                          ng-model="artifact.abstract"></textarea>
-                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_abstract')"
-                          class="help is-danger">{{
-                          errorMessages['err_invalid_artifact_abstract'] }}</span>
+                        <div>
+                          <div class="field override-checkbox" style="margin-bottom: .25em;"
+                            ng-class="{ 'is-override' : group.generateAbstract }">
+                            <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                              type="checkbox" ng-model="group.generateAbstract">
+                            <label for="check--generate--abstract">
+                              <span>Generate Abstract From Description</span>
+                            </label>
+                          </div>
+
+                          <textarea wrap="hard" ng-disabled="group.generateAbstract"
+                            style="min-height: 120px; resize: vertical;" class="input" type="text"
+                            ng-model="group.abstract"></textarea>
+
+                        </div>
                       </div>
                     </div>
+
+                    <div class="row" ng-if="group.createNew">
+                      <div class="row-label">Description</div>
+                      <div style="flex: 1">
+                        <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                          ng-model="group.description"></textarea>
+                        <span ng-if="hasError(group.errors, 'err_invalid_group_description')" class="help is-danger">{{
+                          errorMessages['err_invalid_group_description'] }}</span>
+                      </div>
+                    </div>
+
 
                   </div>
                 </div>

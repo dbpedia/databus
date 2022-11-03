@@ -9,6 +9,7 @@ cd ./model/
 # execute model php
 $PHP init.php 
 $PHP group.php > ../docs/group.md
+$PHP artifact.php > ../docs/artifact.md
 $PHP dataid.php > ../docs/dataid.md
 $PHP distribution.php > ../docs/distribution.md
 $PHP finalize.php 
@@ -17,4 +18,5 @@ $PHP finalize.php
 git add ../docs/group.md
 git add ../docs/dataid.md
 git add ../docs/distribution.md
+git add ../docs/artifact.md
 git add generated/

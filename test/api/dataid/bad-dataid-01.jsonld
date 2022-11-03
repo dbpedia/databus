@@ -4,12 +4,6 @@
     "@type": [
       "http://dataid.dbpedia.org/ns/core#Dataset"
     ],
-    "http://purl.org/dc/terms/abstract": [
-      {
-        "@language": "en",
-        "@value": "Test Dataset Abstract for Testing."
-      }
-    ],
     "http://dataid.dbpedia.org/ns/core#artifact": [
       {
         "@id": "https://databus.janni.org/azureman/test/success"

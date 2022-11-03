@@ -54,7 +54,7 @@ async function loadDatasetN3Object(n3) {
 
 
 // Runs a shacl validation on rdf in jsonld using the passed shacl file (ttl)
-async function validateJsonld(rdf, shaclFile) {
+instance.validateJsonld = async function(rdf, shaclFile) {
 
   try {
 
@@ -165,13 +165,12 @@ async function validateN3(rdf, shaclFile) {
   }
 }
 
-
 instance.validateGroupRDF = async function (rdf) {
-  return await validateJsonld(rdf, './../../../../model/generated/shacl/group.shacl');
+  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/group.shacl');
 }
 
 instance.validateDataidRDF = async function (rdf) {
-  return await validateJsonld(rdf, './../../../../model/generated/shacl/dataid.shacl');
+  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/dataid.shacl');
 }
 
 instance.validateCollectionRDF = async function (rdf) {
@@ -179,7 +178,7 @@ instance.validateCollectionRDF = async function (rdf) {
 }
 
 instance.validateWebIdRDF = async function (rdf) {
-  return await validateJsonld(rdf, 'account-shacl.ttl');
+  return await instance.validateJsonld(rdf, 'account-shacl.ttl');
 }
 
 module.exports = instance;

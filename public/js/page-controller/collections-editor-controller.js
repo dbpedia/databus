@@ -108,7 +108,6 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.form = {};
   $scope.form.label = {};
   $scope.form.identifier = {};
-  $scope.form.abstract = {};
   $scope.form.description = {};
   $scope.form.collectionPublishTag = '';
 
@@ -474,9 +473,8 @@ SELECT DISTINCT ?file WHERE {\n\
       var toLoad = JSON.parse(loadFromJsonString);
 
       var target = $scope.collectionManager.activeCollection;
-      target.label = toLoad.label;
+      target.title = toLoad.title;
       target.description = toLoad.description;
-      target.abstract = toLoad.abstract;
       target.content = toLoad.content;
       $scope.statusCode = DatabusResponse.COLLECTION_IMPORTED;
 

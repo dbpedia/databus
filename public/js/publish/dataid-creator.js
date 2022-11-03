@@ -39,7 +39,6 @@ class DataIdCreator {
           "@id": `${accountUri}/${data.group.id}`,
           "@type": "Group",
           "title": data.group.title,
-          "abstract": data.group.abstract,
           "description": data.group.description
         }
       ]
@@ -66,9 +65,9 @@ class DataIdCreator {
       "publisher": data.signature.selectedPublisherUri,
       "hasVersion": version.id,
       "title": artifact.title,
-      "abstract": artifact.abstract,
       "description": version.description,
       "license": version.license,
+      "attribution": version.attribution,
       "distribution": []
     }
 
@@ -119,9 +118,7 @@ class DataIdCreator {
       }
 
       var distribution = {
-        //"@id": distributionUri,
         "@type": "Part",
-        //"file": fileUri,
         "formatExtension": file.formatExtension,
         "compression": file.compression,
         "downloadURL": file.uri,

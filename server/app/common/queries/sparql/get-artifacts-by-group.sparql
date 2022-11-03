@@ -5,27 +5,36 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?artifactUri ?dataset ?label ?desc ?license ?publisher ?groupUri ?date (?maxVersion AS ?version) WHERE {
-  GRAPH ?g1 {
-    ?dataset dataid:artifact ?artifactUri.
-    ?dataset dct:hasVersion ?maxVersion.
-    ?dataset dct:title ?label.
-    ?dataset dct:abstract ?desc.
-    ?dataset dct:issued ?date.
-    ?dataset dct:publisher ?publisher.
-    ?dataset dct:license ?license.
+SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?latestVersionTitle
+  ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?publisher ?group 
+  ?license ?attribution WHERE {
+   
+   GRAPH ?g1 {
+    ?dataset dataid:artifact ?artifact .
+    OPTIONAL { ?artifact dct:title ?title . }
+    OPTIONAL { ?artifact dct:abstract ?abstract . }
+    OPTIONAL { ?artifact dct:description ?description . }
+    ?dataset dct:hasVersion ?latestVersion .
+    ?dataset dct:title ?latestVersionTitle .
+    ?dataset dct:abstract ?latestVersionAbstract .
+    ?dataset dct:description ?latestVersionDescription .
+    ?dataset dct:issued ?latestVersionDate .
+    ?dataset dataid:group ?group .
+    ?dataset dct:publisher ?oublisher .
+    ?dataset dct:license ?license .
+    OPTIONAL { ?dataset dataid:attribution ?attribution . }
     {
-    SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
-      GRAPH ?g2 {
-        ?artifact a dataid:Artifact .
-        ?dataset dataid:artifact ?artifactUri.
-        ?dataset dataid:group <%GROUP_URI%> .
-        ?dataset dct:hasVersion ?version .
+      SELECT ?artifact (max(?version) as ?latestVersion) WHERE {
+        GRAPH ?g2 {
+          ?artifact a dataid:Artifact .
+          ?dataset dataid:artifact ?artifact .
+          ?dataset dct:hasVersion ?version .
+          ?dataset dataid:group <%GROUP_URI%> .
+        }
+       
       }
+      GROUP BY ?artifact
     }
-    GROUP BY ?artifactUri
-    }
-    BIND(<%GROUP_URI%> AS ?groupUri)
   }
-}
-ORDER BY ?groupUri desc(?date)
+} ORDER BY ?groupUri desc(?latestVersionDate)
+  

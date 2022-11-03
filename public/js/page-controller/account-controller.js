@@ -172,9 +172,9 @@ function AccountPageController($scope, $http, $location) {
       if (uri == group.uri) {
         return {
           type: 'Group',
-          label: group.label,
+          title: group.title,
           uri: uri,
-          abstract: group.abstract
+          description: group.description
         }
       }
 
@@ -184,9 +184,9 @@ function AccountPageController($scope, $http, $location) {
         if (uri == artifact.artifactUri) {
           return {
             type: 'Artifact',
-            label: artifact.label,
+            title: artifact.title,
             uri: uri,
-            abstract: artifact.abstract
+            description: artifact.description
           }
         }
       }
@@ -198,9 +198,9 @@ function AccountPageController($scope, $http, $location) {
       if (uri == collection.uri) {
         return {
           type: 'Collection',
-          label: collection.label,
+          title: collection.title,
           uri: uri,
-          abstract: collection.abstract
+          description: collection.description
         }
       }
     }

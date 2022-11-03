@@ -109,36 +109,8 @@
         </div>
 
 
-        <div ng-if="serviceData.shared.length > 0">
-          <br />
-          <br />
-          <p class="section-label">
-            Shared Services <a href="https://github.com/dbpedia/databus-content/blob/master/services.ttl#L8"
-              target="_blank">(?)</a>
-          </p>
-          <div class="sliderboy">
-            <div ng-repeat="data in serviceData.shared" class="carousel-item" style="padding: 16px;">
-              <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.abstract">
-              </entity-card>
-            </div>
-          </div>
-        </div>
 
-        <div ng-if="serviceData.dedicated.length > 0">
-          <br />
-          <p class="section-label">
-            Dedicated Services
-          </p>
-          <div class="sliderboy">
-            <div ng-repeat="data in serviceData.dedicated" class="carousel-item">
-              <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.abstract">
-              </entity-card>
-            </div>
-          </div>
-          <br />
-          <br />
-          <br />
-        </div>
+      
 
         <div ng-if="modsData.length > 0">
           <br />

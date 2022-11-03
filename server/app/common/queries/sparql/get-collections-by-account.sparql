@@ -6,7 +6,7 @@ SELECT * WHERE
 {
    ?uri a dataid:Collection .
    ?uri dct:publisher <%ACCOUNT_URI%> .
-   ?uri dct:title ?label .
+   ?uri dct:title ?title .
    ?uri dct:abstract ?abstract .
    ?uri dct:description ?description .
    ?uri dataid:content ?content .

@@ -22,25 +22,21 @@ class PublishData {
     this.artifact.errors = [];
     this.version.errors = [];
 
-    if (!DatabusUtils.isValidResourceIdentifier(this.group.id, 3)) {
-      this.group.errors.push('err_invalid_group_id');
+    if (!DatabusUtils.isValidGroupName(this.group.name)) {
+      this.group.errors.push('err_invalid_group_name');
       hasErrors = true;
     }
 
+    /*
     if (!DatabusUtils.isValidResourceLabel(this.group.title, 3)) {
       this.group.errors.push('err_invalid_group_label');
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidResourceText(this.group.abstract, 25)) {
-      this.group.errors.push('err_invalid_group_abstract');
       hasErrors = true;
     }
 
     if (!DatabusUtils.isValidResourceText(this.group.description, 25)) {
       this.group.errors.push('err_invalid_group_description');
       hasErrors = true;
-    }
+    }*/
 
     if (this.group.publishGroupOnly) {
       this.hasConfigurationError = hasErrors;
@@ -57,12 +53,6 @@ class PublishData {
       this.artifact.errors.push('err_invalid_artifact_label')
       hasErrors = true;
     }
-
-    if (!DatabusUtils.isValidResourceText(this.artifact.abstract, 25)) {
-      this.artifact.errors.push('err_invalid_artifact_abstract');
-      hasErrors = true;
-    }
-
 
     if (!DatabusUtils.isValidVersionIdentifier(this.version.id)) {
       this.version.errors.push('err_invalid_version_id');

@@ -19,8 +19,6 @@ var DatabusResponse =
 
   COLLECTION_MISSING_LABEL : 4010,
   COLLECTION_INVALID_LABEL : 4011,
-  COLLECTION_MISSING_ABSTRACT : 4012,
-  COLLECTION_INVALID_ABSTRACT : 4013,
   COLLECTION_MISSING_DESCRIPTION : 4014,
   COLLECTION_INVALID_DESCRIPTION : 4015,
   COLLECTION_IMPORTED_FAILED: 4016,
@@ -50,7 +48,6 @@ DatabusResponse.Message =
   4002 : "Failed to create the requested identifiers.",
   4010 : "The label field is required.",
   4011 : "Please enter at most 200 characters. The label should not contain any special characters except '(' and ')'.",
-  4012 : "The abstract field is required",
   4013 : "Please enter at least 50 and at most 500 characters.",
   4014 : "The description field is required",
   4015 : "Please enter at least 50 characters.",

@@ -8,10 +8,6 @@
     "@value": "Test Collection",
     "@language": "en"
   },
-  "http://purl.org/dc/terms/abstract": {
-    "@value": "Yoyoyo, Lorem ipsum dolor sit amet. The test has been successful.",
-    "@language": "en"
-  },
   "http://purl.org/dc/terms/description": {
     "@value": "Lorem ipsum dolor sit amet. The test has been successful.",
     "@language": "en"

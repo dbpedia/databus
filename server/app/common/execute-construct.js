@@ -20,15 +20,13 @@ self.executeConstruct = async function (jsonld, query) {
 
     //console.log(`Loading store!`);
     var store = await self.createStore();
-    var tripleCount = await self.loadJsonld(store, jsonld);
+    await self.loadJsonld(store, jsonld);
 
-    //console.log(`store loaded with ${tripleCount} triples.`);
-    
-    var graph = await self.queryStore(store, query);
-    var triples = self.convertToN3(graph);
-
+    var quads = await self.queryStore(store, query);
+    var triples = self.convertToN3(quads);
+    console.log(triples);
     return triples;
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return '';
   }
@@ -44,7 +42,7 @@ self.convertToN3 = function (graph) {
     var objectValue = `<${triple.object.nominalValue}>`;
     var dataType = ``;
 
-    if(triple.object.datatype) {
+    if (triple.object.datatype) {
       dataType = `^^<${triple.object.datatype}>`
     }
 
@@ -55,7 +53,7 @@ self.convertToN3 = function (graph) {
       if (triple.object.language != undefined) {
         objectValue += `@${triple.object.language}`;
       }
-      
+
     }
 
     triples += `${subjectValue} ${predicateValue} ${objectValue} .\n`;
@@ -66,37 +64,52 @@ self.convertToN3 = function (graph) {
 
 self.queryStore = function (store, query) {
   return new Promise(function (resolve, reject) {
-    store.execute(query, function (err, graph) {
-      if (err != undefined) {
-        reject(err);
-      } else {
-        resolve(graph);
-      }
-    });
+    try {
+      store.execute(query, function (err, graph) {
+        if (err != undefined) {
+          reject(err);
+        } else {
+          resolve(graph);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
   });
 }
 
 self.loadJsonld = function (store, jsonld) {
   return new Promise(function (resolve, reject) {
-    store.load("application/ld+json", jsonld, function (err, results) {
-      if (err != undefined) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
+    try {
+      store.load("application/ld+json", jsonld, function (err, results) {
+        if (err != undefined) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
   });
 }
 
 self.createStore = function () {
   return new Promise(function (resolve, reject) {
-    rdfstore.create(function (err, store) {
-      if (err != undefined) {
-        reject(err);
-      } else {
-        resolve(store);
-      }
-    });
+    try {
+      rdfstore.create(function (err, store) {
+        if (err != undefined) {
+          reject(err);
+        } else {
+          resolve(store);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
   });
 }
 

@@ -13,8 +13,8 @@ var initialize = require('./init');
 var Constants = require('./app/common/constants');
 const DatabusUserDatabase = require('./userdb');
 const LookupSearchIndexer = require('./search-indexer');
-var userTablePath = __dirname + '/users/namespaces.csv';
-
+const userTablePath = __dirname + '/users/namespaces.csv';
+var searchIndexer = null;
 
 /**
  * Get port from environment and store in Express.
@@ -35,6 +35,24 @@ function broadcast(msg) {
   });
 }
 
+function createFork(userDatabase) {
+  var fork = cluster.fork();
+
+  fork.on('message', function (message) {
+    if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
+      userDatabase.updateUser(JSON.parse(message.body));
+    }
+
+    if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
+      searchIndexer.requestRebuild();
+    }
+
+    if(message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
+      userDatabase.requestRefresh();
+    }
+  });
+}
+
 function masterProcess() {
 
   console.log(`######`);
@@ -51,7 +69,7 @@ function masterProcess() {
     broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
   });
 
-  var searchIndexer = new LookupSearchIndexer(5000);
+  searchIndexer = new LookupSearchIndexer(5000);
 
   initialize().then(function () {
 
@@ -64,27 +82,14 @@ function masterProcess() {
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);
-      var fork = cluster.fork();
-
-      fork.on('message', function (message) {
-        if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
-          userDatabase.updateUser(JSON.parse(message.body));
-        }
-
-        if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
-          searchIndexer.requestRebuild();
-        }
-
-        if(message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
-          userDatabase.requestRefresh();
-        }
-      });
+      createFork(userDatabase);
+     
     }
 
     cluster.on('exit', (worker, code, signal) => {
       console.log(`worker ${worker.process.pid} died`);
       console.log("Forking another worker!");
-      cluster.fork();
+      createFork(userDatabase);
     });
 
 

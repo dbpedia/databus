@@ -48,25 +48,6 @@ indexConfig:
             ?dataset <http://purl.org/dc/terms/title> ?label.
           }
         }
-    #- fieldName: comment
-    #  resourceName: artifact
-    #  query: >
-    #    SELECT DISTINCT ?artifact ?comment WHERE {
-    #      {
-    #        SELECT ?artifact (max(?version) as ?maxVersion) WHERE {
-    #          GRAPH ?g2 {
-    #            ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
-    #            ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
-    #          }
-    #        }
-    #        GROUP BY ?artifact
-    #      }
-    #      GRAPH ?g1 {
-    #        ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
-    #        ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
-    #        ?dataset <http://purl.org/dc/terms/abstract> ?comment.
-    #      }
-    #    }
     - fieldName: label
       resourceName: account
       query: >

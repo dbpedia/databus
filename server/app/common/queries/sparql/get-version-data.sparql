@@ -8,14 +8,13 @@ PREFIX databus: <https://databus.dbpedia.org/>
 PREFIX dataiddebug: <http://dataid.dbpedia.org/ns/debug.ttl#>
 
 # Get the information of the latest dataset for a specific artifact
-SELECT DISTINCT ?dataset ?label ?comment ?groupdocu ?groupLabel ?description ?license ?date ?version ?uri ?artifactUri ?publisherUri ?codeReference ?documentationLocation ?feedbackChannel ?issueTracker WHERE {
+SELECT DISTINCT ?dataset ?title ?groupdocu ?groupLabel ?description ?license ?date ?version ?uri ?artifactUri ?publisherUri ?codeReference ?documentationLocation ?feedbackChannel ?issueTracker WHERE {
 
   GRAPH ?g {
     ?dataset dataid:version <%VERSION_URI%> .
     ?dataset dataid:group ?group.
     ?dataset dct:hasVersion ?version.
-    ?dataset dct:title ?label.
-    ?dataset dct:abstract ?comment.
+    ?dataset dct:title ?title.
     ?dataset dct:issued ?date.
     ?dataset dct:license ?license.
     ?dataset dct:description ?description.

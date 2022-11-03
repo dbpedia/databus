@@ -14,7 +14,6 @@ module.exports = function (router, protector) {
 
   /* GET home page. */
   router.get('/', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
-
     var data = {};
     data.auth = ServerUtils.getAuthInfoFromRequest(req);
     res.render('index', { title: 'Databus', data: data });

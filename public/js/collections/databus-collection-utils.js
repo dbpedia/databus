@@ -15,17 +15,6 @@ class DatabusCollectionUtils {
       form.label.error = null;
     }
 
-    if (!this.checkText(collection.abstract, 50, 500)) {
-      hasError = true;
-      if (collection.abstract == undefined || collection.abstract == "") {
-        form.abstract.error = DatabusResponse.COLLECTION_MISSING_ABSTRACT;
-      } else {
-        form.abstract.error = DatabusResponse.COLLECTION_INVALID_ABSTRACT;
-      }
-    } else {
-      form.abstract.error = null;
-    }
-
     if (!this.checkText(collection.description, 50, 0)) {
       hasError = true;
       if (collection.description == undefined || collection.description == "") {
@@ -84,14 +73,6 @@ class DatabusCollectionUtils {
 
     if (!labelReg.test(collection.label) || collection.label.length > 200) {
       return DatabusResponse.COLLECTION_INVALID_LABEL;
-    }
-
-    if (collection.abstract == undefined || collection.abstract == "") {
-      return DatabusResponse.COLLECTION_MISSING_ABSTRACT;
-    }
-
-    if (!textReg.test(collection.abstract) || collection.abstract.length < 50 || collection.abstract.length > 500) {
-      return DatabusResponse.COLLECTION_INVALID_ABSTRACT;
     }
 
     if (collection.description == undefined || collection.description == "") {

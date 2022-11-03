@@ -65,7 +65,6 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
         result[binding.groupUri].label = binding.groupLabel;
         result[binding.groupUri].id = UriUtils.uriToName(binding.groupUri);
         result[binding.groupUri].uri = binding.groupUri;
-        result[binding.groupUri].abstract = binding.groupAbstract;
         result[binding.groupUri].description = binding.groupDescription;
         result[binding.groupUri].artifacts = [];
       }

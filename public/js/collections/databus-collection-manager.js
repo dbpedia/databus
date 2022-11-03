@@ -314,7 +314,6 @@ class DatabusCollectionManager {
 
     collection.label = `Snapshot of ${source.label}`;
     collection.description = source.description;
-    collection.abstract = source.abstract;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
     this.saveLocally();
@@ -351,7 +350,6 @@ class DatabusCollectionManager {
     let serializedLocalContent = DatabusCollectionUtils.serialize(localCollection.content);
 
     return localCollection.label !== remoteCollection.label
-      || localCollection.abstract !== remoteCollection.abstract
       || localCollection.description !== remoteCollection.description
       || serializedLocalContent !== serializedRemoteContent;
   }
@@ -377,7 +375,6 @@ class DatabusCollectionManager {
     }
 
     this.local[uuid].label = this.remote[uuid].label;
-    this.local[uuid].abstract = this.remote[uuid].abstract;
     this.local[uuid].description = this.remote[uuid].description;
     this.local[uuid].content = DatabusCollectionUtils.createCleanCopy(this.remote[uuid].content);
     this.local[uuid].hasLocalChanges = this.hasLocalChanges(this.local[uuid]);
@@ -442,7 +439,6 @@ class DatabusCollectionManager {
     collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
     collection.label = `Copy of ${source.label}`;
     collection.description = source.description;
-    collection.abstract = source.abstract;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
     this.saveLocally();
@@ -530,7 +526,6 @@ class DatabusCollectionManager {
             "@type": "dataid:Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.label,
-            "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
             "dataid:content": contentString
           }
@@ -661,7 +656,6 @@ class DatabusCollectionManager {
       this.local[collection.uuid].created = getResponse.data.created;
       this.local[collection.uuid].issued = getResponse.data.issued;
       this.local[collection.uuid].label = getResponse.data.label;
-      this.local[collection.uuid].abstract = getResponse.data.abstract;
       this.local[collection.uuid].description = getResponse.data.description;
       this.local[collection.uuid].files = getResponse.data.files;
     } catch (errResponse) {

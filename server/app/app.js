@@ -45,6 +45,7 @@ initialize(app, memoryStore).then(function () {
 
   const userManager = new webdav.SimpleUserManager();
   const privilegeManager = new webdav.SimplePathPrivilegeManager();
+  var addedUsers = {};
 
   var options = {
     httpAuthentication: new webdav.HTTPBasicAuthentication(userManager, 'Default realm'),
@@ -53,7 +54,6 @@ initialize(app, memoryStore).then(function () {
   }
 
   userManager.getDefaultUser(function (defaultUser) {
-    console.log(`Setting default user rights.`);
     privilegeManager.setRights(defaultUser, `/`, ['canRead', 'canSource']);
   });
 
@@ -72,13 +72,19 @@ initialize(app, memoryStore).then(function () {
           continue;
         }
 
-        console.log(`Adding user ${databusUser.username}:${sessionPass}`);
+        if(addedUsers[databusUser.username] == true) {
+          continue;
+        }
+
+        console.log(`Adding DAV user ${databusUser.username}:${sessionPass}`);
         const user = userManager.addUser(databusUser.username, sessionPass, false);
         privilegeManager.setRights(user, `/${databusUser.username}/`, ['all']);
 
         var folderTree = {};
         folderTree[databusUser.username] = webdav.ResourceType.Directory;
         webDAVServer.rootFileSystem().addSubTree(webDAVServer.createExternalContext(), folderTree);
+
+        addedUsers[databusUser.username] = true;
       }
     }
   });

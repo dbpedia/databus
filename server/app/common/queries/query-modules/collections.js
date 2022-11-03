@@ -31,7 +31,6 @@ instance.getCollection = async function (account, id) {
 
   entry[0].uri = queryOptions.COLLECTION_URI;
   entry[0].label = unescape(entry[0].label);
-  entry[0].abstract = unescape(entry[0].abstract);
   entry[0].description = unescape(entry[0].description);
   entry[0].content = DatabusUtils.tryParseJson(unescape(entry[0].content));
 
@@ -187,7 +186,7 @@ instance.getCollectionsByAccount = async function (accountName, onlyIssued) {
       continue;
     }
 
-    bindings[e].label = unescape(bindings[e].label);
+    bindings[e].title = unescape(bindings[e].title);
     bindings[e].abstract = unescape(bindings[e].abstract);
     bindings[e].description = unescape(bindings[e].description);
     bindings[e].content = DatabusUtils.tryParseJson(unescape(bindings[e].content));

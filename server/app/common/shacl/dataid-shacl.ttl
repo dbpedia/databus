@@ -36,16 +36,6 @@
 	sh:languageIn ("en") ;
 	sh:uniqueLang true .
 
-<#has-abstract-dataid>
-	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:title MUST occur at least once AND have one @en "@en ;
-	sh:path dct:abstract ;
-	sh:minCount 1 ;
-	sh:languageIn ("en") ;
-	sh:uniqueLang true .
-
 <#has-description-dataid>
 	a sh:PropertyShape ;
   sh:targetClass dataid:Dataset ;

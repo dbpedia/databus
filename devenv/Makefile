@@ -31,6 +31,7 @@ srv-install:
 	npm install --prefix ../public
 
 srv-start-auth0:
+	mongod --dbpath=./data; \
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
 	DATABUS_NAME=${DATABUS_NAME} \
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \

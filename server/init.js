@@ -9,27 +9,6 @@ const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
 
-function writeClientVariables() {
-
-  console.log(`Writing client environment variables...`);
-
-  // Write environment variables to client constants
-  var constantsFile = './../public/js/utils/databus-constants.js';
-  var content = fs.readFileSync(constantsFile, ['utf8']).toString();
-
-  content = writeConstant(content, `DATABUS_RESOURCE_BASE_URL`, process.env.DATABUS_RESOURCE_BASE_URL);
-  content = writeConstant(content, `DATABUS_DEFAULT_CONTEXT_URL`, process.env.DATABUS_DEFAULT_CONTEXT_URL);
- 
-  fs.writeFileSync(constantsFile, content, ['utf8']);
-}
-
-function writeConstant(string, key, value) {
-  var regex = new RegExp(`${key}\\s=\\s"(.*)";`, `gm`);
-  
-  return string.replace(regex,
-    `${key} = "${value}";`);
-}
-
 function writeManifest() {
 
   console.log(`Writing manifest...`);
@@ -142,13 +121,12 @@ module.exports = async function () {
   console.log(`Initializing...`);
   console.log(config);
   await loadDefaultContext();
-  writeClientVariables();
   writeManifest();
 
   if(config.minifyJs) {
     await minifyClientJS();
   }
-  
+
   tryCreateKeyPair();
   console.log(`Done initializing.`);
   console.log(`================================================`);

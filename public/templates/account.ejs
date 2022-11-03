@@ -168,23 +168,6 @@
           </div>
           <div class="column main" style="padding-left: 2em;">
 
-            <!-- div class="dashboard-card">
-              <div class="dashboard-card-title">Popular Content</div>
-
-              <div>
-                <div  ng-if="artifactData.isLoading" style="text-align:center" >
-                  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                </div>
-
-                <div ng-if="!artifactData.isLoading" ng-repeat="content in featuredContent" style="padding: 1em 0.5em;">
-                  <entity-card type="content.type" label="content.label" uri="content.uri" desc="content.abstract">
-                  </entity-card>
-                </div>
-              </div>
-            </div>-->
-
-
-
             <div class="dashboard-card">
               <div class="dashboard-card-title">Publisher Activity</div>
               <div ng-if="activityData.isLoading" style="text-align:center">
@@ -284,7 +267,7 @@
 
               <div class="node">
                 <entity-card label="artifact.title" uri="artifact.artifactUri" type="'Artifact'"
-                  desc="artifact.abstract">
+                  desc="artifact.description">
                 </entity-card>
               </div>
 
@@ -294,26 +277,7 @@
           <div ng-if="!$last" style="margin: 1.5em 1.5em;" class="is-divider"></div>
         </div>
 
-        <!--
-        <div ng-if="searchInput == ''" class="hierarchy" ng-repeat="group in artifactData.groups">
-          <div class="node" style="padding-right:1em;">
-            <expandable-arrow expanded="group.expanded"></expandable-arrow>
-            <entity-card label="group.label" uri="group.uri" type="'Group'"></entity-card>
-          </div>
-          <div class="node-children" ng-if="group.expanded">
-            <div ng-repeat="artifact in group.artifacts">
-              <div class="node" style="padding: 1.5em;">
-                <entity-card label="artifact.label" uri="artifact.artifactUri" type="'Artifact'"
-                  desc="artifact.abstract"></entity-card>
-
-                <artifact-card artifact="uploadsByPublisher[index]"></artifact-card>
-              </div>
-              <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
-            </div>
-          </div>
-        </div>
-      </div>
--->
+      
       </div>
       <!-- COLLECTIONS -->
       <div class="container" ng-if="tabViewModel.activeTab == 2">
@@ -336,7 +300,7 @@
 
 
           <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
-            <entity-card label="collection.label" uri="collection.uri" type="'Collection'" desc="collection.abstract">
+            <entity-card label="collection.label" uri="collection.uri" type="'Collection'" desc="collection.description">
             </entity-card>
           </div>
           <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
@@ -349,173 +313,7 @@
         <% include profile %>
       </div>
 
-      <!--
-
-    <div class="container">
-      <h1 class="title is-1"></h1>
-      <div id="publisher-info"></div>
-      <div class="columns">
-        <div class="column side is-4">
-
-         <div class="publisher-info" style="margin-top: -350px; background-color: white; text-align:center;
-              box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);">
-              <div><a target="_blank" href="{{ getImageUrl() }}"><img class="profile-image" style="width: 512px; margin-bottom: 0; vertical-align: middle" ng-src="{{ getImageUrl() }}"></img></a></div>
-              <div class="publisher-data" style="padding: 1.5em; border: 1px solid #dbdbdb;">
-                <h2 class="title is-4">{{ profileData.label }}</h2>
-
-                <h2 class="subtitle is-6">@{{ publisherData.account }}</h2>
-                <h2 ng-if="publisherData.homepage" class="subtitle is-6">
-                  <a ng-href="{{ publisherData.homepage }}" target="_blank">{{ publisherData.homepage }}</a></h2>
-
-                <ul class="upload-info">
-                  <li>
-                    <h1>Artifacts</h1>
-                    <p>{{ publisherData.numUploads }}</p>
-                  </li>
-                  <li>
-                    <h1>Uploaded Data</h1>
-                    <p>{{ formatUploadSize(publisherData.uploadSize / (1024 * 1024 * 1024)) }} GB</p>
-                  </li>
-
-                </ul>
-
-                  </div>
-            </div
-
-          <div ng-if="aboutEntries.length > 0">
-            <br />
-            <br />
-            <p class="section-label">
-              About
-            </p>
-            <table class="table is-fullwidth">
-              <tr ng-repeat="entry in aboutEntries">
-                <td><b>{{ entry.key }}</b></td>
-                <td>{{ entry.value }}</td>
-              </tr>
-            </table>
-          </div>
-          <br />
-          <br />
-          <p class="section-label">
-            Recent Uploads
-          </p>
-          <br />
-
-          <div class="timeline">
-            <div ng-repeat="dataset in recentUploads">
-
-              <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
-                <span class="tag is-medium is-primary">Now</span>
-              </header>
-
-              <header class="timeline-header"
-                ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
-                <span class="tag is-primary">{{ recentUploads[$index - 1].year }}</span>
-              </header>
-
-
-              <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
-                && recentUploads[$index - 1].month != dataset.month">
-                <span class="tag is-primary">{{ recentUploads[$index - 1].month }}</span>
-              </header>
-
-              <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                  <p class="has-text-weight-semibold is-4">{{ dataset.label }}</p>
-                  <uri-breadcrumbs class="subtitle is-6 has-text-link" uri="dataset.artifactUri"></uri-breadcrumbs>
-                  <p style="margin-top: 0.5em" class="subtitle has-text-grey-light is-6">{{ dataset.date }}</p>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="timeline-header is-clickable" ng-click="toggleTimelineShowMore()">
-              <span ng-if="!timeLineShowMore" class="tag is-medium is-primary">More..</span>
-              <span ng-if="timeLineShowMore" class="tag is-medium is-primary">Less..</span>
-            </div>
-          </div>
-
-        </div>
-        <div class="column main">
-
-          <div class="tabs">
-            <ul>
-              <li ng-repeat="tab in tabViewModel.tabs" ng-click="selectTab($index)" ng-if="tab.data.length > 0"
-                ng-class="{ 'is-active' : tabViewModel.activeTab == $index }">
-                <a>{{ tab.label }}</a>
-              </li>
-            </ul>
-          </div>
-
-          <div style="margin-top: 2em;">
-
-            <div ng-if="tabViewModel.activeTab == 1">
-              <div ng-repeat="service in tabViewModel.tabs[1].data">
-                <entity-card type="'Service'" label="service.title" uri="service.uri" desc="service.abstract">
-                </entity-card>
-                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
-              </div>
-            </div>
-
-            <div ng-if="tabViewModel.activeTab == 2">
-              <div ng-repeat="app in tabViewModel.tabs[2].data">
-                <entity-card type="'Service'" label="app.title" uri="app.uri" desc="app.abstract">
-                </entity-card>
-                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
-              </div>
-            </div>
-            <div ng-if="tabViewModel.activeTab == 3">
-              <div ng-repeat="collection in tabViewModel.tabs[3].data">
-                <entity-card type="'Collection'" label="collection.label" uri="collection.uri"
-                  desc="collection.abstract">
-                </entity-card>
-                <div ng-if="!$last" style="margin: 1.5em 0em;" class="is-divider"></div>
-              </div>
-            </div>
-
-            <div ng-if="tabViewModel.activeTab == 0" class="hierarchy">
-
-              <div class="field" style="display: flex; line-height: 1;">
-                <div class="control" style="flex:1;margin-right: 0.5em;">
-                  <input class="input" type="text" ng-model="$parent.searchInput" ng-change="invokeSearch();"
-                    placeholder="Search...">
-                </div>
-              </div>
-              <div ng-if="$parent.searchInput != ''" class="dataset-name" ng-repeat="result in results">
-                <div style="display: flex; align-items: center;">
-                  <entity-card style="flex: 1;" label="result.label" type="result.type" uri="result.uri"
-                    desc="result.desc">
-                  </entity-card>
-                </div>
-                <div ng-if="!$last" class="is-divider"></div>
-              </div>
-
-              <div ng-if="$parent.searchInput == ''" ng-repeat="group in tabViewModel.tabs[0].data">
-                <div class="node" style="padding-right:1em;">
-                  <expandable-arrow expanded="group.expanded"></expandable-arrow>
-                  <div class="node-label">{{ group.label }}</div>
-                  <databus-icon shape="'goto'" size="24" on-click="goToResource(group.uri)"></databus-icon>
-                </div>
-                <div class="node-children" ng-if="group.expanded">
-                  <div ng-repeat="index in group.indices">
-                    <div class="node" style="padding: 1.5em;">
-                      <entity-card label="uploadsByPublisher[index].label" uri="uploadsByPublisher[index].artifactUri"
-                        desc="uploadsByPublisher[index].desc" date="uploadsByPublisher[index].date">
-                      </entity-card>
-
-                     <artifact-card artifact="uploadsByPublisher[index]"></artifact-card>
-                    </div>
-                    <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>-->
+      
       </section>
     </div>
     <% include footer %>

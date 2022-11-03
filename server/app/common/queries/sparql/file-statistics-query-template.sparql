@@ -8,8 +8,9 @@ SELECT DISTINCT
   ?versionUri
   ?dataset
   ?distribution
-  ?label    
-  ?comment
+  ?title
+  ?abstract
+  ?description
   (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?downloadURLs)
   ?license
   ?size
@@ -28,7 +29,8 @@ WHERE {
   ?distribution dct:hasVersion ?version .
   ?dataset dcat:distribution ?distribution .
   ?dataset dataid:version ?versionUri .
-  ?dataset dct:title ?label .
-  ?dataset dct:abstract ?comment.
+  ?dataset dct:title ?title .
+  ?dataset dct:abstract ?abstract .
+  ?dataset dct:description ?description.
 }
-GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview
+GROUP BY ?versionUri ?dataset ?distribution ?title ?description ?license ?size ?version ?format ?preview

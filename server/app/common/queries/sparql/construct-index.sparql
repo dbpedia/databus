@@ -33,13 +33,13 @@ WHERE
   ?artifact a dataid:Artifact .
   ?dataset dataid:artifact ?artifact .
   ?dataset dct:title ?artifactLabel .
-  ?dataset rdfs:comment ?artifactDescription .
+  ?dataset dct:description ?artifactDescription .
   ?dataset dct:publisher ?webid .
   ?webid foaf:name ?artifactPublisherName .
   ?webid foaf:account ?publisher .
   ?service a databus-sys:Service .
   ?service dct:title ?serviceLabel .
-  ?service dct:abstract ?serviceDescription .
+  ?service dct:description ?serviceDescription .
   ?service databus-sys:publisher ?servicePublisher .
   ?serviceWebId foaf:account ?servicePublisher .
   ?serviceWebId foaf:name ?servicePublisherName .

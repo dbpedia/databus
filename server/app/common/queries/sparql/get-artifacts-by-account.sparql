@@ -5,28 +5,36 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?artifactUri ?title ?abstract ?license ?groupUri ?date (?maxVersion AS ?version)  WHERE {
-  GRAPH ?g1 {
-    ?dataset dataid:artifact ?artifactUri .
-    ?dataset dct:hasVersion ?maxVersion .
-    ?dataset dct:title ?title .
-    ?dataset dct:abstract ?abstract .
-    ?dataset dct:issued ?date .
-    ?dataset dataid:maintainer|dct:publisher ?publisher .
-    ?dataset dataid:group ?groupUri .
+SELECT DISTINCT ?artifact AS ?uri ?title ?abstract ?description ?latestVersion ?latestVersionTitle
+  ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?group ?license ?attribution WHERE
+{
+ GRAPH ?g1 {
+    ?dataset dataid:artifact ?artifact .
+    OPTIONAL { ?artifact dct:title ?title . }
+    OPTIONAL { ?artifact dct:abstract ?abstract . }
+    OPTIONAL { ?artifact dct:description ?description . }
+    ?dataset dct:hasVersion ?latestVersion .
+    ?dataset dct:title ?latestVersionTitle .
+    ?dataset dct:abstract ?latestVersionAbstract .
+    ?dataset dct:description ?latestVersionDescription .
+    ?dataset dct:issued ?latestVersionDate .
+    ?dataset dataid:group ?group .
     ?dataset dct:license ?license .
+    OPTIONAL { ?dataset dataid:attribution ?attribution . }
     {
-      SELECT ?artifactUri (max(?version) as ?maxVersion) WHERE {
+      SELECT ?artifact (max(?version) as ?latestVersion) WHERE {
         GRAPH ?g2 {
-          ?dataset dataid:artifact ?artifactUri .
+          ?artifact a dataid:Artifact .
+          ?dataset dataid:artifact ?artifact .
           ?dataset dct:hasVersion ?version .
+          ?dataset dct:publisher ?publisher .
+          GRAPH ?g3 {
+            ?publisher foaf:account <%PUBLISHER_URI%> .
+          }
         }
+       
       }
-      GROUP BY ?artifactUri
+      GROUP BY ?artifact
     }
   }
-  GRAPH ?g3 {
-    ?publisher foaf:account <%ACCOUNT_URI%> .
-  }
-}
-ORDER BY desc(?date)
+} ORDER BY desc(?latestVersionDate)

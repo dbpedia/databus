@@ -5,11 +5,12 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?label ?comment ?uri ?groupdocu WHERE {
+SELECT DISTINCT ?uri ?title ?abstract ?description ?groupdocu WHERE {
   GRAPH ?g {
     <%GROUP_URI%> a dataid:Group .
-    OPTIONAL { <%GROUP_URI%> dct:title ?label . }
-    OPTIONAL { <%GROUP_URI%> dct:abstract ?comment . }
+    OPTIONAL { <%GROUP_URI%> dct:title ?title . }
+    OPTIONAL { <%GROUP_URI%> dct:abstract ?abstract . }
+    OPTIONAL { <%GROUP_URI%> dct:description ?description . }
     BIND(<%GROUP_URI%> AS ?uri) 
     OPTIONAL { 
       SELECT ?groupdocu WHERE {
