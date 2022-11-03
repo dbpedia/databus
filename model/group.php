@@ -37,7 +37,7 @@ $shacl='<#group-exists>
 
 $example='"@type": "Group",';
 
-$context='"Group": 	"dataid:Group",
+$context='"Group": 	"dataid:Groooooup",
 
 "group": {
 	"@id": "dataid:group",
