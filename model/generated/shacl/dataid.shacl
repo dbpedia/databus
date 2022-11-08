@@ -72,6 +72,16 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
 
+<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
 <#has-group>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -188,16 +198,6 @@
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .
-
-<#has-license>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
-	sh:path dct:license;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .
 
 
 

@@ -6,17 +6,26 @@ require_once("function.php");
 init();
 
 ?>
-## Dataset (Version)
+## Dataset
+
+A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
+1. artifact (see TODO): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
+2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
+3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
+
+
 
 <?php
 $section="dataid" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset";
 $owl=
-'dataid:Dataset
+'#copied from DataId ontology
+dataid:Dataset
 	a owl:Class ;
 	rdfs:label "Databus Dataset"@en ;
 	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
-	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; #copied from dataid ontology
+	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; 
 	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
 ';
 
@@ -44,7 +53,7 @@ $context='"Dataset": 	"dataid:Dataset" ';
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## General Properties
+## 1. General Metadata
 
 ### title
 <?php
@@ -184,7 +193,52 @@ $context='"publisher": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## Structuring Properties
+## 2. Legal Metadata & Attribution
+
+### license
+
+Note:
+* see roadmap above for planned changes
+* must be an IRI
+* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
+
+<?php
+$owl='dct:license
+	rdfs:label "License"@en ;
+	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
+	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
+	dcam:rangeIncludes dct:LicenseDocument ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
+
+$shacl='<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
+
+$example='"license": "http://creativecommons.org/licenses/by/4.0/",';
+
+$context='"license": {
+      "@context":{"@base": null },
+      "@id": "dct:license",
+      "@type": "@id"
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
+
+
+
+
+## 3. Structural Metadata
+
+`group`, `artifact`, `version`, `hasVersion` are the main properties used to structure all entries on the Databus for querying and retrieval. The most basic query here is to retrieve the latest version for each artifact in some group or to check, whether there is a new version available for one artifact.   
 
 
 ### group
@@ -468,43 +522,6 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-### license
-
-Note:
-* see roadmap above for planned changes
-* must be an IRI
-* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
-* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
-
-<?php
-$owl='dct:license
-	rdfs:label "License"@en ;
-	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
-	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
-	dcam:rangeIncludes dct:LicenseDocument ;
-	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
-
-$shacl='<#has-license>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
-	sh:path dct:license;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .';
-
-$example='"license": "http://creativecommons.org/licenses/by/4.0/",';
-
-$context='"license": {
-      "@context":{"@base": null },
-      "@id": "dct:license",
-      "@type": "@id"
-    }';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
 
 
 

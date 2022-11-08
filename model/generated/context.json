@@ -30,6 +30,12 @@
       "@type": "@id"
     },
 
+"license": {
+      "@context":{"@base": null },
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"
@@ -55,12 +61,6 @@
 "modified": {
       "@id": "dct:modified",
       "@type": "xsd:dateTime"
-    },
-
-"license": {
-      "@context":{"@base": null },
-      "@id": "dct:license",
-      "@type": "@id"
     },
 
 "signature":	{"@id": "sec:signature"},
