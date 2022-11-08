@@ -160,6 +160,15 @@
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .
 
+<#has-distribution>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
+	sh:path dcat:distribution;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI .
+
 <#has-issued>
 	a sh:PropertyShape ;
 	sh:targetClass dataid:Dataset ;
@@ -188,15 +197,6 @@
 	sh:path dct:license;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .
-
-<#has-distribution>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
-	sh:path dcat:distribution;
-	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .
 
 

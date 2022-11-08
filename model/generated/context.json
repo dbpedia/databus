@@ -42,6 +42,11 @@
 
 "hasVersion": 	{"@id": "dct:hasVersion"},
 
+"distribution": {
+      "@type": "@id",
+      "@id": "dcat:distribution"
+},
+
 "issued": {
       "@id": "dct:issued",
       "@type": "xsd:dateTime"
@@ -57,11 +62,6 @@
       "@id": "dct:license",
       "@type": "@id"
     },
-
-"distribution": {
-      "@type": "@id",
-      "@id": "dcat:distribution"
-},
 
 "signature":	{"@id": "sec:signature"},
 "proof":	{"@id": "sec:proof"},

@@ -6,6 +6,8 @@ require_once("function.php");
 init();
 
 ?>
+## Dataset (Version)
+
 <?php
 $section="dataid" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset";
@@ -117,7 +119,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## description
+### description
 <?php
 $owl='dct:description
 	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
@@ -152,7 +154,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## publisher
+### publisher
 
 <?php
 $owl='dct:publisher
@@ -182,8 +184,10 @@ $context='"publisher": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
+## Structuring Properties
 
-## group
+
+### group
 
 <?php #TODO single value restriction??
 $owl=
@@ -230,7 +234,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## artifact 
+### artifact 
 
 
 <?php
@@ -283,7 +287,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## version
+### version
 
 <?php
 $owl='missing maybe obsolete';
@@ -325,7 +329,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## hasVersion
+### hasVersion
 
 Note: see section versioning above
 
@@ -350,111 +354,6 @@ $shacl='<#has-hasVersion-dataset>
 $example='"hasVersion": "2021-12-06",';
 
 $context='"hasVersion": 	{"@id": "dct:hasVersion"}';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
-
-
-## issued
-
-<?php
-$owl='dct:issued
-	rdfs:label "Date Issued"@en ;
-	rdfs:comment "Date of formal issuance of the resource."@en ;
-	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
-	dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:range rdfs:Literal ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
-
-$shacl='<#has-issued>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
-	sh:path dct:issued;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:datatype xsd:dateTime .';
-
-$example='"issued": "2021-12-06T11:34:17Z",';
-
-$context='"issued": {
-      "@id": "dct:issued",
-      "@type": "xsd:dateTime"
-    }';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
-
-## modified
-
-Note: dct:modified is *always* set by the Databus on post.
-
-<?php
-$owl='dct:modified
-	rdfs:label "Date Modified"@en ;
-	rdfs:comment "Date on which the resource was changed."@en ;
-	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
-	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:range rdfs:Literal ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .';
-
-$shacl='<#has-modified>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
-	sh:path dct:modified;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:datatype xsd:dateTime .';
-
-$example='"modified": "%NOW%",';
-
-$context='"modified": {
-      "@id": "dct:modified",
-      "@type": "xsd:dateTime"
-    }';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
-
-
-## license
-
-Note:
-* see roadmap above for planned changes
-* must be an IRI
-* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
-* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
-
-<?php
-$owl='dct:license
-	rdfs:label "License"@en ;
-	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
-	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
-	dcam:rangeIncludes dct:LicenseDocument ;
-	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
-	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
-
-$shacl='<#has-license>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
-	sh:path dct:license;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI .';
-
-$example='"license": "http://creativecommons.org/licenses/by/4.0/",';
-
-$context='"license": {
-      "@context":{"@base": null },
-      "@id": "dct:license",
-      "@type": "@id"
-    }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
@@ -501,7 +400,115 @@ $context='"distribution": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## proof
+## Other Metadata
+
+### issued
+
+<?php
+$owl='dct:issued
+	rdfs:label "Date Issued"@en ;
+	rdfs:comment "Date of formal issuance of the resource."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	dct:issued "2000-07-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .';
+
+$shacl='<#has-issued>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:issued;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
+
+$example='"issued": "2021-12-06T11:34:17Z",';
+
+$context='"issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:dateTime"
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
+
+### modified
+
+Note: dct:modified is *always* set by the Databus on post.
+
+<?php
+$owl='dct:modified
+	rdfs:label "Date Modified"@en ;
+	rdfs:comment "Date on which the resource was changed."@en ;
+	dct:description "Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty."@en ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:range rdfs:Literal ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .';
+
+$shacl='<#has-modified>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
+	sh:path dct:modified;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:datatype xsd:dateTime .';
+
+$example='"modified": "%NOW%",';
+
+$context='"modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:dateTime"
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
+
+
+### license
+
+Note:
+* see roadmap above for planned changes
+* must be an IRI
+* license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
+* context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
+
+<?php
+$owl='dct:license
+	rdfs:label "License"@en ;
+	rdfs:comment "A legal document giving official permission to do something with the resource."@en ;
+	dct:description "Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided."@en ;
+	dcam:rangeIncludes dct:LicenseDocument ;
+	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
+	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .';
+
+$shacl='<#has-license>
+	a sh:PropertyShape ;
+	sh:targetClass dataid:Dataset ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
+	sh:path dct:license;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .';
+
+$example='"license": "http://creativecommons.org/licenses/by/4.0/",';
+
+$context='"license": {
+      "@context":{"@base": null },
+      "@id": "dct:license",
+      "@type": "@id"
+    }';
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
+
+
+
+### proof
 
 <?php
 $owl=
