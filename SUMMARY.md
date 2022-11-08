@@ -16,7 +16,7 @@
 * [Model](docs/model.md)
   * [Quickstart Examples](docs/quickstart-examples.md)
   * [Group](docs/group.md)
-  * [DataId](docs/dataid.md)
+  * [Version](docs/dataid.md)
   * [Distribution](docs/distribution.md)
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)
