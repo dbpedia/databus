@@ -4,9 +4,9 @@
 
 A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
-1. artifact (see [here](https://dbpedia.gitbook.io/databus/model/model/artifact)): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
-2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
-3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: [https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/])   
+1. artifact (see [here](https://dbpedia.gitbook.io/databus/model/model/artifact)): the abstract concept of a dataset (e.g. the DBpedia Label dataset, [https://databus.dbpedia.org/dbpedia/generic/labels/](https://databus.dbpedia.org/dbpedia/generic/labels/)).
+2. **version (this page, see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, [https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01](https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01)).
+3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: [https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/](https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/))   
 
 
 
@@ -243,6 +243,35 @@ dataid:attribution a owl:DataTypeProperty;
 "attribution":	{"@id": "dataid:attribution"}
 ```
 
+### wasDerivedFrom
+
+
+Example (JSON-LD):
+```javascript
+{	
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+	"wasDerivedFrom": "https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01",
+}
+```
+Spec (OWL, SHACL, JSON-LD Context)
+```turtle
+prov:wasDerivedFrom a owl:ObjectProperty ;
+    rdfs:isDefinedBy <http://www.w3.org/ns/prov-o#> ;
+    rdfs:label "wasDerivedFrom" ;
+    prov:definition "A derivation is a transformation of an entity into another, an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity."@en ;
+    rdfs:domain prov:Entity ;
+    rdfs:range prov:Entity .
+
+```
+```turtle
+
+```
+```javascript
+"wasDerivedFrom":	{
+	"@id": "prov:wasDerivedFrom", 
+	"@type": "@id"
+}
+```
 
 ## 3. Structural Metadata
 
