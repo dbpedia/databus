@@ -1,26 +1,24 @@
-# Version
-
-_auto-generated from model/_.php via [pre-commit hook](../model/)\*
-
+# Dataset Version - the DataId
+*auto-generated from model/*.php via [pre-commit hook](https://github.com/dbpedia/databus/blob/master/model/README.md)*
 ## Dataset
 
-A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
-
+A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
 1. artifact (see TODO): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
 2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
-3. distribution (see [here](distribution.md)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)
+3. distribution (see [here](../model/distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
+
+
+
 
 Example (JSON-LD):
-
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"@type": "dataid:Dataset",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 #copied from DataId ontology
 dataid:Dataset
@@ -29,8 +27,8 @@ dataid:Dataset
 	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
 	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; 
 	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
-```
 
+```
 ```turtle
 <#dataset-exists>
 	a sh:NodeShape ;
@@ -48,7 +46,6 @@ dataid:Dataset
 		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
   ] . 
 ```
-
 ```javascript
 "Dataset": 	"dataid:Dataset" 
 ```
@@ -58,16 +55,13 @@ dataid:Dataset
 ### title
 
 Example (JSON-LD):
-
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"title": "DBpedia Ontology",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:title
 	rdfs:label "Title"@en ;
@@ -76,7 +70,6 @@ dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
-
 ```turtle
 <#title-dataid>
 	a sh:NodeShape ;
@@ -97,19 +90,20 @@ dct:title
 	] . 
 ```
 
+
+
+
+
 ### description
 
 Example (JSON-LD):
-
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"description": "Registered a version of the DBpedia Ontology into my account. Using markdown:\n  1. This is the version used in [project x](http://example.org) as a stable snapshot dependency\n  2. License was checked -> CC-BY\n",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:description
 	dct:description "Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource."@en ;
@@ -118,7 +112,6 @@ dct:description
 	rdfs:label "Description"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
-
 ```turtle
 <#description-dataid>
 	a sh:NodeShape ;
@@ -139,19 +132,18 @@ dct:description
 	] . 
 ```
 
+
 ### publisher
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"publisher": TODO
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:publisher
 	dcam:rangeIncludes dct:Agent ;
@@ -160,7 +152,6 @@ dct:publisher
 	rdfs:label "Publisher"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/publisher> .
 ```
-
 ```turtle
 <#has-publisher>
 	a sh:PropertyShape ;
@@ -172,7 +163,6 @@ dct:publisher
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-
 ```javascript
 "publisher": {
       "@id": "dct:publisher",
@@ -185,23 +175,20 @@ dct:publisher
 ### license
 
 Note:
-
 * see roadmap above for planned changes
 * must be an IRI
 * license is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractacte.
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"license": "http://creativecommons.org/licenses/by/4.0/",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:license
 	rdfs:label "License"@en ;
@@ -211,7 +198,6 @@ dct:license
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/rights>, dct:rights .
 ```
-
 ```turtle
 <#has-license>
 	a sh:PropertyShape ;
@@ -223,7 +209,6 @@ dct:license
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-
 ```javascript
 "license": {
       "@context":{"@base": null },
@@ -232,23 +217,25 @@ dct:license
     }
 ```
 
+
+
+
 ## 3. Structural Metadata
 
-`group`, `artifact`, `version`, `hasVersion` are the main properties used to structure all entries on the Databus for querying and retrieval. The most basic query here is to retrieve the latest version for each artifact in some group or to check, whether there is a new version available for one artifact.
+`group`, `artifact`, `version`, `hasVersion` are the main properties used to structure all entries on the Databus for querying and retrieval. The most basic query here is to retrieve the latest version for each artifact in some group or to check, whether there is a new version available for one artifact.   
+
 
 ### group
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"group": "https://databus.dbpedia.org/janni/onto_dep_projectx",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dataid:group a owl:ObjectProperty; 
 	rdfs:label "has parent Group"@en ;
@@ -257,8 +244,8 @@ dataid:group a owl:ObjectProperty;
 	rdfs:range dataid:Group ;
 	rdfs:subPropertyOf dct:isPartOf ; 
 	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
-```
 
+```
 ```turtle
 <#has-group>
 	a sh:PropertyShape ;
@@ -287,19 +274,19 @@ dataid:group a owl:ObjectProperty;
 	] .
 ```
 
-### artifact
 
-autogenerated... Example (JSON-LD):
+### artifact 
 
+
+autogenerated...
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dataid:artifact a owl:ObjectProperty; 
 	rdfs:label "has parent Artifact"@en ;
@@ -309,7 +296,6 @@ dataid:artifact a owl:ObjectProperty;
 	rdfs:subPropertyOf dct:isPartOf ; 
 	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
 ```
-
 ```turtle
 <#has-artifact>
 	a sh:PropertyShape ;
@@ -337,7 +323,6 @@ dataid:artifact a owl:ObjectProperty;
 			""" ;
 	] .
 ```
-
 ```javascript
 "artifact": {
       "@id": "dataid:artifact",
@@ -345,23 +330,21 @@ dataid:artifact a owl:ObjectProperty;
     }
 ```
 
+
 ### version
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 missing maybe obsolete
 ```
-
 ```turtle
 <#has-version>
 	a sh:PropertyShape ;
@@ -389,7 +372,6 @@ missing maybe obsolete
 			""" ;
 	] .
 ```
-
 ```javascript
 "version": {
       "@id": "dataid:version",
@@ -397,21 +379,20 @@ missing maybe obsolete
     }
 ```
 
+
 ### hasVersion
 
 Note: see section versioning above
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"hasVersion": "2021-12-06",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:hasVersion
 	dct:description "Changes in version imply substantive changes in content rather than differences in format. This property is intended to be used with non-literal values. This property is an inverse property of Is Version Of."@en ;
@@ -420,7 +401,6 @@ dct:hasVersion
 	rdfs:label "Has Version"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/relation>, dct:relation .
 ```
-
 ```turtle
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
@@ -432,7 +412,6 @@ dct:hasVersion
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal .
 ```
-
 ```javascript
 "hasVersion": 	{"@id": "dct:hasVersion"}
 ```
@@ -440,7 +419,6 @@ dct:hasVersion
 ## distribution
 
 Example (JSON-LD):
-
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
@@ -458,9 +436,7 @@ Example (JSON-LD):
               }]
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dcat:distribution
   a owl:ObjectProperty ;
@@ -472,7 +448,6 @@ dcat:distribution
   rdfs:subPropertyOf dct:relation ;
   skos:definition "An available distribution of the dataset."@en .
 ```
-
 ```turtle
 <#has-distribution>
 	a sh:PropertyShape ;
@@ -483,7 +458,6 @@ dcat:distribution
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI .
 ```
-
 ```javascript
 "distribution": {
       "@type": "@id",
@@ -495,17 +469,15 @@ dcat:distribution
 
 ### issued
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"issued": "2021-12-06T11:34:17Z",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:issued
 	rdfs:label "Date Issued"@en ;
@@ -516,7 +488,6 @@ dct:issued
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dct:date .
 ```
-
 ```turtle
 <#has-issued>
 	a sh:PropertyShape ;
@@ -528,7 +499,6 @@ dct:issued
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .
 ```
-
 ```javascript
 "issued": {
       "@id": "dct:issued",
@@ -538,19 +508,17 @@ dct:issued
 
 ### modified
 
-Note: dct:modified is _always_ set by the Databus on post.
+Note: dct:modified is *always* set by the Databus on post.
+
 
 Example (JSON-LD):
-
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
 	"modified": "%NOW%",
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 dct:modified
 	rdfs:label "Date Modified"@en ;
@@ -560,7 +528,6 @@ dct:modified
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
 ```
-
 ```turtle
 <#has-modified>
 	a sh:PropertyShape ;
@@ -572,7 +539,6 @@ dct:modified
 	sh:maxCount 1 ;
 	sh:datatype xsd:dateTime .
 ```
-
 ```javascript
 "modified": {
       "@id": "dct:modified",
@@ -580,10 +546,14 @@ dct:modified
     }
 ```
 
+
+
+
+
 ### proof
 
-Example (JSON-LD):
 
+Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
@@ -593,9 +563,7 @@ Example (JSON-LD):
 }
 }
 ```
-
 Spec (OWL, SHACL, JSON-LD Context)
-
 ```turtle
 sec:proof a owl:ObjectProperty; 
 	rdfs:label "has cryptographic proof"@en ;
@@ -603,11 +571,11 @@ sec:proof a owl:ObjectProperty;
 	#rdfs:domain  ;
 	#rdfs:range  ;
 	rdfs:isDefinedBy <https://w3id.org/security#> . 
-```
 
+```
 ```turtle
-```
 
+```
 ```javascript
 "signature":	{"@id": "sec:signature"},
 "proof":	{"@id": "sec:proof"}
