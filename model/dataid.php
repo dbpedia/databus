@@ -10,9 +10,9 @@ init();
 
 A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
-1. artifact (see TODO): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
+1. artifact (see [here](https://dbpedia.gitbook.io/databus/model/model/artifact)): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
 2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
-3. distribution (see [here](../model/distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
+3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: [https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/])   
 
 
 
@@ -233,7 +233,25 @@ $context='"license": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
+### attribution
 
+<?php
+$owl='dataid:attribution a owl:DataTypeProperty; 
+	rdfs:label "attribution"@en ;
+	rdfs:comment "TODO"@en ;
+	rdfs:domain dataid:Artifact, dataid:Dataset, dataid:Group ;
+	rdfs:range xsd:string ;
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . ';
+
+$shacl='';
+
+$example='"attribution": "TODO",';
+
+$context='"attribution":	{"@id": "dataid:attribution"}';
+
+
+table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+?>
 
 
 ## 3. Structural Metadata
@@ -412,7 +430,7 @@ $context='"hasVersion": 	{"@id": "dct:hasVersion"}';
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## distribution
+### distribution
 <?php
 $owl='dcat:distribution
   a owl:ObjectProperty ;
@@ -454,7 +472,7 @@ $context='"distribution": {
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
-## Other Metadata
+## 4. Other Metadata
 
 ### issued
 

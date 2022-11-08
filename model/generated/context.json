@@ -36,6 +36,8 @@
       "@type": "@id"
     },
 
+"attribution":	{"@id": "dataid:attribution"},
+
 "artifact": {
       "@id": "dataid:artifact",
       "@type": "@id"

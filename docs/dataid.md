@@ -4,9 +4,9 @@
 
 A specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
-1. artifact (see TODO): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
+1. artifact (see [here](https://dbpedia.gitbook.io/databus/model/model/artifact)): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
 2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
-3. distribution (see [here](../model/distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
+3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: [https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/])   
 
 
 
@@ -217,7 +217,31 @@ dct:license
     }
 ```
 
+### attribution
 
+
+Example (JSON-LD):
+```javascript
+{	
+	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#Dataset",
+	"attribution": "TODO",
+}
+```
+Spec (OWL, SHACL, JSON-LD Context)
+```turtle
+dataid:attribution a owl:DataTypeProperty; 
+	rdfs:label "attribution"@en ;
+	rdfs:comment "TODO"@en ;
+	rdfs:domain dataid:Artifact, dataid:Dataset, dataid:Group ;
+	rdfs:range xsd:string ;
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+```
+```turtle
+
+```
+```javascript
+"attribution":	{"@id": "dataid:attribution"}
+```
 
 
 ## 3. Structural Metadata
@@ -416,7 +440,7 @@ dct:hasVersion
 "hasVersion": 	{"@id": "dct:hasVersion"}
 ```
 
-## distribution
+### distribution
 
 Example (JSON-LD):
 ```javascript
@@ -465,7 +489,7 @@ dcat:distribution
 }
 ```
 
-## Other Metadata
+## 4. Other Metadata
 
 ### issued
 
