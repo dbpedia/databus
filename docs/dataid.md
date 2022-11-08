@@ -6,7 +6,7 @@ A specific version of a Databus artifact (artifacts = version-independent, abstr
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
 1. artifact (see TODO): the abstract concept of a dataset (e.g. the DBpedia Label dataset, https://databus.dbpedia.org/dbpedia/generic/labels/).
 2. **version (see below)**: a specific version of a dataset (e.g. DBpedia Label dataset of Sep 1st, 2022, https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01).
-3. distribution (see [here](https://dbpedia.gitbook.io/databus/model/model/distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
+3. distribution (see [here](../distribution)): the bag of files of a specific version (e.g. the download location: https://downloads.dbpedia.org/repo/dbpedia/generic/labels/2022.09.01/)   
 
 
 
