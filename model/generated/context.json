@@ -26,6 +26,8 @@
 
 "Dataset": 	"dataid:Dataset" ,
 
+"Dataset": 	"dataid:Dataset" ,
+
 "publisher": {
       "@id": "dct:publisher",
       "@type": "@id"
