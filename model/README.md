@@ -1,16 +1,18 @@
 # Model Generation:
 
 A small helper program to keep docu and code in sync. 
-The PHP files contain templates and variables that contain docu an code. 
-From these Markdown is generated and committed
+The PHP files contain templates and variables that contain docu and code. 
+From these Markdown is generated and committed to git and available in gitbook: https://dbpedia.gitbook.io/databus/model/model
 
 ## Installation
 ```
 sudo apt install php7.4-cli
-./.git/hooks/pre-commit
+cd .git/hooks
+ln -s ../../.githooks/pre-commit pre-commit
 ```
 
 ## Updating context.json and shacl 
+
 ```
 cat generated/context.json | jq
 cd generated/shacl/

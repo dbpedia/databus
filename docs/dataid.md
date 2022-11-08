@@ -1,5 +1,5 @@
 # Dataset Version - the DataId
-**auto-generated from model/*.php via pre-commit hook. Edit in PHP in git and enable hook with `cd .git/hooks && ln -s ../../.githooks/pre-commit pre-commit`**
+*auto-generated from model/*.php via [pre-commit hook](https://github.com/dbpedia/databus/blob/master/model/README.md)*
 
 Example (JSON-LD):
 ```javascript
@@ -39,8 +39,9 @@ dataid:Dataset
 "Dataset": 	"dataid:Dataset" 
 ```
 
+## General Properties
 
-## title
+### title
 
 Example (JSON-LD):
 ```javascript

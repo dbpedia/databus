@@ -42,8 +42,9 @@ $context='"Dataset": 	"dataid:Dataset" ';
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
+## General Properties
 
-## title
+### title
 <?php
 $owl='dct:title
 	rdfs:label "Title"@en ;
