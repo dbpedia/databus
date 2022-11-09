@@ -10,9 +10,11 @@
   * [Maven for Data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
-* [Instructions](overview/instructions.md)
 
 ## Install
+
+* [Instructions](overview/instructions.md)
+
 
 ## Model
 
