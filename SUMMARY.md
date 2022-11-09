@@ -12,6 +12,8 @@
 * [Roadmap](docs/roadmap.md)
 * [Instructions](overview/instructions.md)
 
+## Install
+
 ## Model
 
 * [Model](docs/model.md)
