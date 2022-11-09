@@ -14,7 +14,7 @@
 ## Install
 
 * [Instructions](overview/instructions.md)
-
+* [Persistence (HowTo)](install/persistence-howto.md)
 
 ## Model
 
