@@ -67,7 +67,7 @@ module.exports = function (router, protector) {
 
       var groupResult = await publishGroup(account, graph, null, function (message) {
         res.write(`> ${message}\n`);
-      });
+      }, true);
 
       if (groupResult != undefined) {
         res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`)

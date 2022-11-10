@@ -192,10 +192,10 @@ class DatabusUtils {
   static getResourcePathLength(uri) {
     var parts = DatabusUtils.splitResourceUri(uri);
 
-    if(parts.length == 1 && parts[0] == "") {
+    if (parts.length == 1 && parts[0] == "") {
       return 0;
     }
-    
+
     return parts.length;
   }
 
@@ -273,12 +273,53 @@ class DatabusUtils {
         && quad.object.id == `http://dataid.dbpedia.org/ns/core#Databus`) {
 
         return {
-          uri : quad.subject.id
+          uri: quad.subject.id
         }
       }
     }
 
     return undefined;
+  }
+
+  /**
+   * Create a dct:abstract from the content of a dct:description
+   * @param {*} description 
+   */
+  static createAbstractFromDescription(description) {
+
+    try {
+      var markdownParser = undefined;
+
+      if (typeof module === "object" && module && module.exports) {
+        markdownParser = require('markdown-it')();
+      } else {
+        markdownParser = window.markdownit();
+      }
+
+      var tokens = markdownParser.parse(description);
+      var paragraphFound = false;
+      var result = "";
+
+      var firstParagraphText = null;
+
+      for (var i = 0; i < tokens.length; i++) {
+
+        var token = tokens[i];
+        var appendText = null;
+
+        if (token.type == 'inline' && tokens[i - 1].type == 'paragraph_open' && token.level == 1) {
+          result = token.content;
+          break;
+        }
+
+      }
+
+      return result;
+
+    } catch(err) {
+      console.log(err);
+      return undefined;
+    }
   }
 
 }

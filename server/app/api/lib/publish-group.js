@@ -10,8 +10,9 @@ var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
 var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+var autocompleter = require('./dataid-autocomplete');
 
-module.exports = async function publishGroup(account, data, uri, notify) {
+module.exports = async function publishGroup(account, data, uri, notify, debug) {
 
   try {
 
@@ -40,6 +41,17 @@ module.exports = async function publishGroup(account, data, uri, notify) {
         code: 400, message:
           `You cannot specify multiple graphs. (${expandedGraphs.length} specified)`
       };
+    }
+
+    var before = JSON.stringify(expandedGraphs);
+    autocompleter.autocompleteGroup(expandedGraphs);
+    var after = JSON.stringify(expandedGraphs);
+
+    if (before != after) {
+      notify(`Auto-completed the input.`);
+      if (debug) {
+        notify(JSON.stringify(expandedGraphs, null, 3));
+      }
     }
 
 

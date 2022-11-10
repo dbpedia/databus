@@ -270,10 +270,7 @@ $shacl='<#has-artifact>
 
 $example='"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",';
 
-$context='"artifact": {
-      "@id": "dataid:artifact",
-      "@type": "@id"
-    }';
+$context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>

@@ -169,6 +169,10 @@ instance.validateGroupRDF = async function (rdf) {
   return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/group.shacl');
 }
 
+instance.validateArtifactRDF = async function (rdf) {
+  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/artifact.shacl');
+}
+
 instance.validateDataidRDF = async function (rdf) {
   return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/dataid.shacl');
 }

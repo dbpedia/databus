@@ -8,11 +8,11 @@ var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructArtifactQuery = require('../../common/queries/constructs/construct-artifact.sparql');
-var artifactShacl = require('./../../../../model/generated/shacl/artifact.shacl');
 var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+var autocompleter = require('./dataid-autocomplete');
 
-module.exports = async function publishGroup(account, data, uri, notify) {
+module.exports = async function publishGroup(accountName, data, uri, notify) {
 
   try {
 
@@ -43,12 +43,20 @@ module.exports = async function publishGroup(account, data, uri, notify) {
       };
     }
 
+    var before = JSON.stringify(expandedGraphs);
+    autocompleter.autocompleteArtifact(expandedGraphs);
+    var after = JSON.stringify(expandedGraphs);
+
+    if (before != after) {
+      notify(`Auto-completed the input.`);
+      if (debug) {
+        notify(JSON.stringify(expandedGraphs, null, 3));
+      }
+    }
+
 
     // Validate the group RDF with the shacl validation tool
-    var shaclResult = await shaclTester.validateJsonld(expandedGraphs);
-
-    console.log(shaclResult);
-
+    var shaclResult = await shaclTester.validateArtifactRDF(expandedGraphs);
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
@@ -63,38 +71,34 @@ module.exports = async function publishGroup(account, data, uri, notify) {
     }
 
     notify(`SHACL validation successful.`);
-
     // Get the group graph (enforced by earlier SHACL test)
-    var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
-    var groupUri = groupGraph['@id'];
+    var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
+    var artifactUri = artifactGraph['@id'];
 
-    if(uri != undefined && uri != groupUri) {
-      notify(`Forbidden: Invalid group identifier "${groupUri}". Expected "${uri}"`);
+    if(uri != undefined && uri != artifactUri) {
+      notify(`Forbidden: Invalid artifact identifier "${artifactUri}". Expected "${uri}"`);
       return { code: 403, message: null };
     }
-
 
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
 
     // Check for namespace violation
-    if (!groupUri.startsWith(expectedUriPrefix)) {
-      return { code: 403, message: `Invalid group identifier ${groupUri}.` };
+    if (!artifactUri.startsWith(expectedUriPrefix)) {
+      return { code: 403, message: `Invalid artifact identifier ${artifactUri}.` };
     }
 
-    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${Constants.DATABUS_FILE_GROUP}`);
+    var targetPath = UriUtils.getPrunedPath(`${artifactUri}/${Constants.DATABUS_FILE_ARTIFACT}`);
+    var groupName = UriUtils.getPrunedPath(artifactUri, 2);
 
-    var groupIdentifier = UriUtils.getPrunedPath(groupUri, 1);
-
-    if(groupIdentifier == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
-      notify(`Cannot create group with name ${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER} as it is reserved for Databus Collections`);
+    if(groupName == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+      notify(`Cannot create an artifact in a group with name ${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER} as it is reserved for Databus Collections`);
     }
 
-    notify(`Saving to "${groupUri}"`);
+    notify(`Saving to "${artifactUri}"`);
 
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
-    
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
 

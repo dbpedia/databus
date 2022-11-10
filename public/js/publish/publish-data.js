@@ -38,6 +38,11 @@ class PublishData {
       hasErrors = true;
     }*/
 
+    if(this.group.generateAbstract) {
+
+      this.group.abstract = DatabusUtils.createAbstractFromDescription(this.group.description);
+    }
+
     if (this.group.publishGroupOnly) {
       this.hasConfigurationError = hasErrors;
       return;

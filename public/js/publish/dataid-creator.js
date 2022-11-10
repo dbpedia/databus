@@ -28,18 +28,30 @@ class DataIdCreator {
     return result;
   }
 
+  getValidString(value) {
+    if(value == undefined || value.length == 0) {
+      return undefined;
+    }
+
+    return value;
+  }
+
   createGroupUpdate(data) {
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
+
+
+
 
     return {
       "@context": 'https://downloads.dbpedia.org/databus/context.jsonld',
       "@graph": [
         {
-          "@id": `${accountUri}/${data.group.id}`,
+          "@id": `${accountUri}/${data.group.name}`,
           "@type": "Group",
-          "title": data.group.title,
-          "description": data.group.description
+          "title": this.getValidString(data.group.title),
+          "abstract": this.getValidString(data.group.abstract),
+          "description": this.getValidString(data.group.description)
         }
       ]
     };
@@ -150,22 +162,13 @@ class DataIdCreator {
       "@graph": [graph]
     }
 
-    /*
-
-    for (var c in customVariants) {
-      var cv = customVariants[c];
-
-      result["@graph"].push({
-        "@type": "rdf:Property",
-        "@id": `http://dataid.dbpedia.org/ns/cv#${cv}`,
-        "rdfs:subPropertyOf": {
-          "@id": "dataid:contentVariant"
-        }
-      });
-    }
-    */
-
     return result;
   }
 
+  
 }
+
+
+
+if (typeof module === "object" && module && module.exports)
+  module.exports = DataIdCreator;

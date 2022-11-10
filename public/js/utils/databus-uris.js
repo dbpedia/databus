@@ -35,6 +35,9 @@ class DatabusUris {
   static DCT_DISTRIBUTION = 'http://purl.org/dc/terms/distribution';
   static DCT_SUBJECT = 'http://purl.org/dc/terms/subject';
   static DCT_CREATOR = 'http://purl.org/dc/terms/creator'
+  static DCT_TITLE = 'http://purl.org/dc/terms/title'
+  static DCT_ABSTRACT = 'http://purl.org/dc/terms/abstract'
+  static DCT_DESCRIPTION = 'http://purl.org/dc/terms/description'
 
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';

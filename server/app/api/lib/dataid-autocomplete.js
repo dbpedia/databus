@@ -3,6 +3,8 @@ const JsonldUtils = require('../../common/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const ArrayUtils = require('../../common/utils/array-utils');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+const { JSONLD_VALUE } = require('../../../../public/js/utils/databus-uris');
 
 var autocompleter = {};
 
@@ -180,6 +182,50 @@ autocompleter.autocomplete = function (expandedGraph) {
         fileGraph[contentVariantProperty][0][DatabusUris.JSONLD_VALUE] = "";
       }
     }
+  }
+}
+
+
+autocompleter.autocompleteArtifact = function (expandedGraphs) {
+
+  var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
+  var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
+
+  var groupUri = UriUtils.navigateUp(artifactUri, 1);
+  expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATAID_GROUP });
+
+  if (artifactGraph[DatabusUris.DCT_TITLE] == undefined) {
+    artifactGraph[DatabusUris.DCT_TITLE] = [{}];
+    artifactGraph[DatabusUris.DCT_TITLE][0][JSONLD_VALUE] = UriUtils.uriToLabel(artifactUri);
+  }
+
+  if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined 
+    && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+
+    var description = artifactGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
+    artifactGraph[DatabusUris.DCT_ABSTRACT] = [{}];
+    artifactGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+      DatabusUtils.createAbstractFromDescription(description);
+  }
+}
+
+autocompleter.autocompleteGroup = function (expandedGraphs) {
+
+  var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
+  var groupUri = groupGraph[DatabusUris.JSONLD_ID];
+
+  if (groupGraph[DatabusUris.DCT_TITLE] == undefined) {
+    groupGraph[DatabusUris.DCT_TITLE] = [{}];
+    groupGraph[DatabusUris.DCT_TITLE][0][JSONLD_VALUE] = UriUtils.uriToLabel(groupUri);
+  }
+
+  if (groupGraph[DatabusUris.DCT_ABSTRACT] == undefined 
+    && groupGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+
+    var description = groupGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
+    groupGraph[DatabusUris.DCT_ABSTRACT] = [{}];
+    groupGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+      DatabusUtils.createAbstractFromDescription(description);
   }
 }
 

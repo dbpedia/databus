@@ -77,7 +77,7 @@ $shacl='<#title-artifact>
 
 $example='"title": "Ontologies used in Project X" ,';
 
-$context='"title": { "@id": "dct:title" }';
+$context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
@@ -112,7 +112,7 @@ $shacl='<#abstract-artifact>
 
 $example='"abstract": "Collected ontologies to be used in Project X as dependencies for development.",';
 
-$context='"abstract": { "@id": "dct:abstract" }';
+$context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
@@ -146,7 +146,7 @@ $shacl='<#description-artifact>
 
 $example='"description": "Collected ontologies to be used in Project X as dependencies for development. The following work has beend done: \n1License was checked, all ontologies can be used in the project\n2. we created artifact using the original download location if the ontologies were ok, or we made a copy of a cleaned up version.",';
 
-$context='"description": { "@id": "dct:description" }';
+$context='duplicate';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
