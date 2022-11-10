@@ -11,12 +11,18 @@
 * [Customizing, Mods, Metadata Quality](docs/mods.md)
 * [Roadmap](docs/roadmap.md)
 
+## Install
+
+* [Instructions](overview/instructions.md)
+* [Persistence (HowTo)](install/persistence-howto.md)
+
 ## Model
 
 * [Model](docs/model.md)
   * [Quickstart Examples](docs/quickstart-examples.md)
   * [Group](docs/group.md)
-  * [DataId](docs/dataid.md)
+  * [Artifact](docs/artifact.md)
+  * [Version](docs/dataid.md)
   * [Distribution](docs/distribution.md)
 * [URI Design](docs/uridesign.md)
 * [Versioning](docs/versioning.md)

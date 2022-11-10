@@ -9,6 +9,7 @@
 	"cert": "http://www.w3.org/ns/auth/cert#",
 	"dbo": "http://dbpedia.org/ontology/",
 	"foaf": "http://xmlns.com/foaf/0.1/",
+	"prov": "http://www.w3.org/ns/prov-o#",
 	"sec": "https://w3id.org/security#",
 
 
@@ -39,12 +40,30 @@
       "@type": "@id"
     },
 
+"license": {
+      "@context":{"@base": null },
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+
+"wasDerivedFrom":	{
+	"@id": "prov:wasDerivedFrom", 
+	"@type": "@id"
+},
+
+"attribution":	{"@id": "dataid:attribution"},
+
 "version": {
       "@id": "dataid:version",
       "@type": "@id"
     },
 
 "hasVersion": 	{"@id": "dct:hasVersion"},
+
+"distribution": {
+      "@type": "@id",
+      "@id": "dcat:distribution"
+},
 
 "issued": {
       "@id": "dct:issued",
@@ -55,17 +74,6 @@
       "@id": "dct:modified",
       "@type": "xsd:dateTime"
     },
-
-"license": {
-      "@context":{"@base": null },
-      "@id": "dct:license",
-      "@type": "@id"
-    },
-
-"distribution": {
-      "@type": "@id",
-      "@id": "dcat:distribution"
-},
 
 "signature":	{"@id": "sec:signature"},
 "proof":	{"@id": "sec:proof"},

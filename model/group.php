@@ -83,9 +83,11 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
 
-## abstract (Group)
 
 <?php
+
+## abstract (Group)
+
 $owl='dct:abstract
 	rdfs:label "Abstract"@en ;
 	rdfs:comment "A summary of the resource."@en ;
@@ -115,6 +117,7 @@ $example='"abstract": "Collected ontologies to be used in Project X as dependenc
 $context='"abstract": { "@id": "dct:abstract" }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
+
 ?>
 
 

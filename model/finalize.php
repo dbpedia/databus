@@ -26,6 +26,7 @@ function headerFooterContext($contextFile){
 	"cert": "http://www.w3.org/ns/auth/cert#",
 	"dbo": "http://dbpedia.org/ontology/",
 	"foaf": "http://xmlns.com/foaf/0.1/",
+	"prov": "http://www.w3.org/ns/prov-o#",
 	"sec": "https://w3id.org/security#",
 
 ';
