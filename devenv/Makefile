@@ -24,14 +24,13 @@ env-start-fuseki:
 	docker-compose up
 
 env-clean-start: env-clean
-	docker-compose up
+	docker compose up
 
 srv-install:
 	npm install --prefix ../server; \
 	npm install --prefix ../public
 
 srv-start-auth0:
-	mongod --dbpath=./data; \
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
 	DATABUS_NAME=${DATABUS_NAME} \
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
