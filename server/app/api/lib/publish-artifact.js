@@ -12,7 +12,7 @@ var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var autocompleter = require('./dataid-autocomplete');
 
-module.exports = async function publishGroup(accountName, data, uri, notify) {
+module.exports = async function publishArtifact(accountName, data, uri, notify, debug) {
 
   try {
 
@@ -80,7 +80,7 @@ module.exports = async function publishGroup(accountName, data, uri, notify) {
       return { code: 403, message: null };
     }
 
-    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
+    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
 
     // Check for namespace violation
     if (!artifactUri.startsWith(expectedUriPrefix)) {
@@ -100,7 +100,7 @@ module.exports = async function publishGroup(accountName, data, uri, notify) {
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
     // Save the RDF with the current path using the database manager
-    var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
+    var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {

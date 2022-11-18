@@ -3,8 +3,9 @@
  */
 class PublishData {
 
-  constructor(data) {
+  constructor(data, accountData) {
 
+    this.accountData = accountData;
     this.group = data != undefined ? data.group : {};
     this.artifact = data != undefined ? data.artifact : {};
     this.version = data != undefined ? data.version : {};
@@ -21,26 +22,47 @@ class PublishData {
     this.group.errors = [];
     this.artifact.errors = [];
     this.version.errors = [];
+    this.group.warnings = [];
+    this.artifact.warnings = [];
+    this.version.warnings = [];
 
     if (!DatabusUtils.isValidGroupName(this.group.name)) {
       this.group.errors.push('err_invalid_group_name');
       hasErrors = true;
     }
 
-    /*
-    if (!DatabusUtils.isValidResourceLabel(this.group.title, 3)) {
-      this.group.errors.push('err_invalid_group_label');
-      hasErrors = true;
+    var self = this;
+
+    var existingGroup = this.accountData.groups.filter(function (value) {
+      return value.name == self.group.name;
+    });
+
+    if (existingGroup.length > 0 && this.group.createNew) {
+      this.group.warnings.push('warning_group_exists');
     }
 
-    if (!DatabusUtils.isValidResourceText(this.group.description, 25)) {
-      this.group.errors.push('err_invalid_group_description');
-      hasErrors = true;
-    }*/
+    var existingArtifact = this.accountData.artifacts.filter(function (value) {
+      return value.groupName == self.group.name && value.name == self.artifact.name;
+    });
 
-    if(this.group.generateAbstract) {
+    if (existingArtifact.length > 0 && this.artifact.createNew) {
+      this.artifact.warnings.push('warning_artifact_exists');
+    }
 
+    if (this.group.generateAbstract) {
       this.group.abstract = DatabusUtils.createAbstractFromDescription(this.group.description);
+    }
+
+    if (this.version.generateAbstract) {
+      this.version.abstract = DatabusUtils.createAbstractFromDescription(this.version.description);
+    }
+
+    if (this.version.useArtifactTitle) {
+      this.version.title = this.artifact.title;
+    }
+
+    if (this.artifact.generateAbstract) {
+      this.artifact.abstract = DatabusUtils.createAbstractFromDescription(this.artifact.description);
     }
 
     if (this.group.publishGroupOnly) {
@@ -48,19 +70,13 @@ class PublishData {
       return;
     }
 
-
-    if (!DatabusUtils.isValidResourceIdentifier(this.artifact.id)) {
-      this.artifact.errors.push('err_invalid_artifact_id');
+    if (!DatabusUtils.isValidResourceIdentifier(this.artifact.name)) {
+      this.artifact.errors.push('err_invalid_artifact_name');
       hasErrors = true;
     }
 
-    if (!DatabusUtils.isValidResourceLabel(this.artifact.title, 3)) {
-      this.artifact.errors.push('err_invalid_artifact_label')
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidVersionIdentifier(this.version.id)) {
-      this.version.errors.push('err_invalid_version_id');
+    if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
+      this.version.errors.push('err_invalid_version_name');
       hasErrors = true;
     }
 
@@ -69,7 +85,17 @@ class PublishData {
       hasErrors = true;
     }
 
-    if (!DatabusUtils.isValidResourceText(this.version.description, 25)) {
+    if (!DatabusUtils.isValidResourceText(this.version.title, 1)) {
+      this.version.errors.push('err_invalid_version_title');
+      hasErrors = true;
+    }
+
+    if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
+      this.version.errors.push('err_invalid_version_abstract');
+      hasErrors = true;
+    }
+
+    if (!DatabusUtils.isValidResourceText(this.version.description, 1)) {
       this.version.errors.push('err_invalid_version_description');
       hasErrors = true;
     }
@@ -91,25 +117,6 @@ class PublishData {
       this.cvSplit(this.version, files, 0);
       this.version.isConfigDirty = false;
     }
-
-    /* for (var f in this.version.files) {
-
-      var file = this.version.files[f];
-
-      if (this.version.files[f].errors == undefined) {
-        this.version.files[f].errors = [];
-      }
-
-      var analyzeErrIndex = file.errors.findIndex(e => e.id == 'err_file_not_analyzed');
-
-      if(analyzeErrIndex > -1) {
-        file.errors.splice(analyzeErrIndex, 1);
-      }
-
-      if (this.version.files[f].errors.length > 0) {
-        hasErrors = true;
-      }
-    } */
 
     this.hasConfigurationError = hasErrors;
   }
@@ -275,13 +282,13 @@ class PublishData {
     this.version.isConfigDirty = true;
   }
 
-  createVersionId(v) {
+  createVersionName(v) {
     if (v == 0) {
-      this.version.id = new Date().toISOString().slice(0, 10);
+      this.version.name = new Date().toISOString().slice(0, 10);
     }
 
     if (v == 1) {
-      this.version.id = new Date().toISOString().slice(0, 13);
+      this.version.name = new Date().toISOString().slice(0, 13);
     }
   }
 

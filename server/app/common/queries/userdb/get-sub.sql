@@ -1,0 +1,1 @@
+SELECT sub FROM apikeys WHERE apikey="%APIKEY%"

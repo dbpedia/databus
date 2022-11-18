@@ -71,6 +71,7 @@ function PublishWizardController($scope, $http, focus, $q) {
 
         $scope.result.updateData = $scope.session.dataIdCreator.createUpdate($scope.session.data);
         $scope.result.groupUpdate = $scope.session.dataIdCreator.createGroupUpdate($scope.session.data);
+        $scope.result.artifactUpdate = $scope.session.dataIdCreator.createArtifactUpdate($scope.session.data);
         $scope.result.versionUpdate = $scope.session.dataIdCreator.createVersionUpdate($scope.session.data);
         $scope.result.isReadyForUpload = $scope.checkReadyForUpload();
 
@@ -118,12 +119,15 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.createNewSession = function () {
     var session = {};
-    session.data = new PublishData();
+    session.data = new PublishData(null, $scope.accountData);
     session.data.validate();
 
     session.data.group.createNew = true;
     session.data.group.generateAbstract = true;
     session.data.artifact.createNew = true;
+    session.data.artifact.generateAbstract = true;
+    session.data.version.generateAbstract = true;
+    session.data.version.useArtifactTitle = true;
     session.showContext = false;
     session.fetchFilesInput = "";
     session.addFileInput = "";
@@ -146,7 +150,7 @@ function PublishWizardController($scope, $http, focus, $q) {
       return;
     }
 
-    $scope.session.data = new PublishData($scope.session.data);
+    $scope.session.data = new PublishData($scope.session.data, $scope.accountData);
 
     var signatureData = $scope.session.data.signature;
 
@@ -168,30 +172,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     $scope.session.isPublishing = false;
   }
 
-  // Reload the session from the session storage on reload
-  try {
 
-    $scope.resumeSession();
-
-    if ($scope.session != null && $scope.session.isOver) {
-      $scope.session = null;
-    }
-
-    if ($scope.session != null && $scope.session.accountName != data.auth.info.accountName) {
-      $scope.session = null;
-    }
-
-  } catch (err) {
-    // Any errors lead to a new clean session
-    console.log(err);
-    $scope.session = null;
-  }
-
-  if ($scope.session == null) {
-    $scope.createNewSession();
-  }
-
-  $scope.stopTheWatch = $scope.watchSession();
   $scope.isWizardReady = false;
 
   $scope.onSelectPublisher = function (uri) {
@@ -232,13 +213,19 @@ function PublishWizardController($scope, $http, focus, $q) {
     'err_invalid_group_description': 'The group description is invalid. Please enter at least 25 characters.',
     'err_invalid_group_label': 'The group label is invalid. Please enter at least 3 characters.',
     'err_invalid_group_name': 'The group name is invalid. Please enter between 3 to 50 characters. Regex: [a-zA-Z0-9_\\-\\.]{3,50}$',
-    'err_invalid_artifact_id': 'The artifact id is invalid. Please enter at least 3 characters.',
+    'err_invalid_artifact_name': 'The artifact name is invalid. Please enter between 3 to 50 characters. Regex: [a-zA-Z0-9_\\-\\.]{3,50}$',
     'err_invalid_artifact_label': 'The artifact label is invalid. Please enter at least 3 characters.',
-    'err_invalid_version_id': 'The version id is invalid. Please enter at least 3 characters.',
-    'err_invalid_version_description': 'The version documentation is invalid. Please enter at least 25 characters.',
+    'err_invalid_version_name': 'The version name is invalid. Please enter at least 3 characters.',
+    'err_invalid_version_title': 'The version title is missing.',
+    'err_invalid_version_abstract': 'The version abstract is missing.',
+    
+    'err_invalid_version_description': 'The version documentation is missing.',
     'err_invalid_version_license': 'The license is invalid. Please enter a license URI.',
     'err_no_files': 'You have to upload at least one file.',
-    'err_not_analyzed': 'This file has not been analzyed yet.'
+    'err_not_analyzed': 'This file has not been analzyed yet.',
+
+    'warning_group_exists': 'A group with this name already exits. Publishing will overwrite its metadata.',
+    'warning_artifact_exists': 'An artifact with this name already exits. Publishing will overwrite its metadata.'
   };
 
 
@@ -263,16 +250,18 @@ function PublishWizardController($scope, $http, focus, $q) {
     } else {
 
       group.publishGroupOnly = false;
-      var hasGroups = DatabusUtils.objSize($scope.session.accountData.groups) > 0;
+      var hasGroups = DatabusUtils.objSize($scope.accountData.groups) > 0;
 
       if (!hasGroups) {
         $scope.setCreateNewGroup(true);
         return;
       }
 
+
+
       if ($scope.session.accountGroup == null) {
-        for (var a in $scope.session.accountData.groups) {
-          $scope.selectGroup($scope.session.accountData.groups[a]);
+        for (var a in $scope.accountData.groups) {
+          $scope.selectGroup($scope.accountData.groups[a]);
           break;
         }
       }
@@ -286,15 +275,15 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     if (value) {
       artifact.createNew = value;
-      artifact.id = "";
+      artifact.name = "";
       artifact.title = "";
       artifact.description = "";
       $scope.session.accountArtifact = null;
 
     } else {
 
-      var artifacts = $scope.session.accountData.artifacts.filter(function (value) {
-        return value.groupUri == $scope.session.accountGroup.uri;
+      var artifacts = $scope.accountData.artifacts.filter(function (value) {
+        return value.group == $scope.session.accountGroup.uri;
       })
 
 
@@ -313,7 +302,7 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.selectArtifact = function (targetArtifact) {
     var artifact = $scope.session.data.artifact;
-    artifact.id = targetArtifact.id;
+    artifact.name = targetArtifact.name;
     artifact.title = targetArtifact.title;
     $scope.accountArtifact = targetArtifact;
   }
@@ -327,8 +316,8 @@ function PublishWizardController($scope, $http, focus, $q) {
 
     if ($scope.session.accountGroup != targetGroup) {
       $scope.session.accountGroup = targetGroup;
-      $scope.session.accountGroup.artifacts =  $scope.session.accountData.artifacts.filter(function (value) {
-        return value.groupUri == $scope.session.accountGroup.uri;
+      $scope.session.accountGroup.artifacts =  $scope.accountData.artifacts.filter(function (value) {
+        return value.group == $scope.session.accountGroup.uri;
       })
 
       $scope.session.accountArtifact = null;
@@ -340,13 +329,40 @@ function PublishWizardController($scope, $http, focus, $q) {
    * Fetches existing groups and artifacts
    */
   $scope.fetchGroupsAndArtifacts = function () {
-    var session = $scope.session;
-    var uri = `/app/account/content?account=${encodeURIComponent(session.accountName)}`;
+    var uri = `/app/account/content?account=${encodeURIComponent(data.auth.info.accountName)}`;
 
     $http.get(uri).then(function (response) {
-      session.isAccountDataLoading = false;
-      session.accountData = response.data;
+      
+
+      $scope.isAccountDataLoading = false;
+      $scope.accountData = response.data;
+
+      // Reload the session from the session storage on reload
+      try {
+
+        $scope.resumeSession();
+
+        if ($scope.session != null && $scope.session.isOver) {
+          $scope.session = null;
+        }
+
+        if ($scope.session != null && $scope.session.accountName != data.auth.info.accountName) {
+          $scope.session = null;
+        }
+
+      } catch (err) {
+        // Any errors lead to a new clean session
+        console.log(err);
+        $scope.session = null;
+      }
+
+      if ($scope.session == null) {
+        $scope.createNewSession();
+      }
+
       $scope.isWizardReady = true;
+      $scope.stopTheWatch = $scope.watchSession();
+
     }, function (err) {
       console.log(err);
     });

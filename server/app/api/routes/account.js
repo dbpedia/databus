@@ -129,14 +129,15 @@ module.exports = function (router, protector) {
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
 
-    var accountExists = protector.hasUser(req.params.account);
-
+    
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
     
       if(req.params.account == `sparql`) {
         res.status(403).send(`Forbidden.\n`);
       }
+
+      var accountExists = await protector.hasUser(req.params.account);
 
       if(accountExists) {
         // deny, this account name is taken
@@ -151,7 +152,7 @@ module.exports = function (router, protector) {
     var result = await putOrPatchAccount(req, res, next, accountExists);
 
     if (result) {
-      protector.addUser(req.oidc.user.name, req.oidc.user.sub, req.params.account);
+      await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);
     }
   });
 

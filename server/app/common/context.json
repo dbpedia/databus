@@ -1,1 +1,132 @@
-{"@context":{"dataid":"http://dataid.dbpedia.org/ns/core#","dcv":"http://dataid.dbpedia.org/ns/cv#","rdfs":"http://www.w3.org/2000/01/rdf-schema#","dct":"http://purl.org/dc/terms/","dcat":"http://www.w3.org/ns/dcat#","xsd":"http://www.w3.org/2001/XMLSchema#","cert":"http://www.w3.org/ns/auth/cert#","dbo":"http://dbpedia.org/ontology/","foaf":"http://xmlns.com/foaf/0.1/","sec":"https://w3id.org/security#","Group":"dataid:Group","group":{"@id":"dataid:group","@type":"@id"},"title":{"@id":"dct:title"},"abstract":{"@id":"dct:abstract"},"description":{"@id":"dct:description"},"Dataset":"dataid:Dataset","publisher":{"@id":"dct:publisher","@type":"@id"},"artifact":{"@id":"dataid:artifact","@type":"@id"},"version":{"@id":"dataid:version","@type":"@id"},"hasVersion":{"@id":"dct:hasVersion"},"issued":{"@id":"dct:issued","@type":"xsd:dateTime"},"modified":{"@id":"dct:modified","@type":"xsd:dateTime"},"license":{"@context":{"@base":null},"@id":"dct:license","@type":"@id"},"distribution":{"@type":"@id","@id":"dcat:distribution"},"Part":"dataid:Part","file":{"@id":"dataid:file","@type":"@id"},"format":{"@id":"dataid:format"},"formatExtension":{"@id":"dataid:formatExtension"},"compression":{"@id":"dataid:compression"},"downloadURL":{"@id":"dcat:downloadURL","@type":"@id"},"byteSize":{"@id":"dcat:byteSize","@type":"xsd:decimal"},"sha256sum":{"@id":"dataid:sha256sum"},"subPropertyOf":{"@id":"rdfs:subPropertyOf","@type":"@id"},"maker":{"@id":"foaf:maker","@type":"@id"},"primaryTopic":{"@id":"foaf:primaryTopic","@type":"@id"},"name":{"@id":"foaf:name"},"account":{"@id":"foaf:account","@type":"@id"},"img":{"@id":"foaf:img","@type":"@id"},"key":{"@id":"cert:key"},"modulus":{"@id":"cert:modulus"},"exponent":{"@id":"cert:exponent"},"signature":{"@id":"sec:signature"},"proof":{"@id":"sec:proof"}}}
+{
+   "@context": {
+      "dataid": "http://dataid.dbpedia.org/ns/core#",
+      "dcv": "http://dataid.dbpedia.org/ns/cv#",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+      "dct": "http://purl.org/dc/terms/",
+      "dcat": "http://www.w3.org/ns/dcat#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "cert": "http://www.w3.org/ns/auth/cert#",
+      "dbo": "http://dbpedia.org/ontology/",
+      "foaf": "http://xmlns.com/foaf/0.1/",
+      "prov": "http://www.w3.org/ns/prov-o#",
+      "sec": "https://w3id.org/security#",
+      "Group": "dataid:Group",
+      "group": {
+         "@id": "dataid:group",
+         "@type": "@id"
+      },
+      "title": {
+         "@id": "dct:title"
+      },
+      "abstract": {
+         "@id": "dct:abstract"
+      },
+      "description": {
+         "@id": "dct:description"
+      },
+      "Artifact": "dataid:Artifact",
+      "artifact": {
+         "@id": "dataid:artifact",
+         "@type": "@id"
+      },
+      "Dataset": "dataid:Dataset",
+      "publisher": {
+         "@id": "dct:publisher",
+         "@type": "@id"
+      },
+      "license": {
+         "@context": {
+            "@base": null
+         },
+         "@id": "dct:license",
+         "@type": "@id"
+      },
+      "wasDerivedFrom": {
+         "@id": "prov:wasDerivedFrom",
+         "@type": "@id"
+      },
+      "attribution": {
+         "@id": "dataid:attribution"
+      },
+      "version": {
+         "@id": "dataid:version",
+         "@type": "@id"
+      },
+      "hasVersion": {
+         "@id": "dct:hasVersion"
+      },
+      "distribution": {
+         "@type": "@id",
+         "@id": "dcat:distribution"
+      },
+      "issued": {
+         "@id": "dct:issued",
+         "@type": "xsd:dateTime"
+      },
+      "modified": {
+         "@id": "dct:modified",
+         "@type": "xsd:dateTime"
+      },
+      "signature": {
+         "@id": "sec:signature"
+      },
+      "proof": {
+         "@id": "sec:proof"
+      },
+      "Part": "dataid:Part",
+      "file": {
+         "@id": "dataid:file",
+         "@type": "@id"
+      },
+      "formatExtension": {
+         "@id": "dataid:formatExtension"
+      },
+      "compression": {
+         "@id": "dataid:compression"
+      },
+      "downloadURL": {
+         "@id": "dcat:downloadURL",
+         "@type": "@id"
+      },
+      "byteSize": {
+         "@id": "dcat:byteSize",
+         "@type": "xsd:decimal"
+      },
+      "sha256sum": {
+         "@id": "dataid:sha256sum"
+      },
+      "subPropertyOf": {
+         "@id": "rdfs:subPropertyOf",
+         "@type": "@id"
+      },
+      "maker": {
+         "@id": "foaf:maker",
+         "@type": "@id"
+      },
+      "primaryTopic": {
+         "@id": "foaf:primaryTopic",
+         "@type": "@id"
+      },
+      "name": {
+         "@id": "foaf:name"
+      },
+      "account": {
+         "@id": "foaf:account",
+         "@type": "@id"
+      },
+      "img": {
+         "@id": "foaf:img",
+         "@type": "@id"
+      },
+      "key": {
+         "@id": "cert:key"
+      },
+      "modulus": {
+         "@id": "cert:modulus"
+      },
+      "exponent": {
+         "@id": "cert:exponent"
+      }
+   }
+}

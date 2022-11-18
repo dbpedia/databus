@@ -43,6 +43,7 @@
     "request-digest": "^1.0.13",
     "request-promise": "^4.2.4",
     "serve-favicon": "^2.5.0",
+    "sqlite": "^4.1.2",
     "sqlite3": "^5.1.2",
     "ssh-key-decrypt": "^0.1.2",
     "streamify-string": "^1.0.1",

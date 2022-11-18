@@ -16,9 +16,14 @@ class Constants {
   static KEY_ACTIONS = 'actions';
   static KEY_MODS = 'mods';
 
+
+  static DATABUS_SQLITE_USER_DATABASE_DIR = '/sqlite/';
+  static DATABUS_SQLITE_USER_DATABASE_PATH = '/sqlite/users.db';
+
   static DATAID_DEFAULT_IMAGE_URL = 'https://picsum.photos/id/223/320/320';
   static DEFAULT_DATABASE_URL = 'http://localhost:3002';
   static DATABUS_DEFAULT_CONTEXT_URL = 'https://downloads.dbpedia.org/databus/context.jsonld';
+  static DATABUS_DEFAULT_CONTEXT = '';
 
   static DATABUS_FILE_GROUP = 'group.jsonld';
   static DATABUS_FILE_ARTIFACT = 'artifact.jsonld';

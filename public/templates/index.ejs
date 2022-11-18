@@ -83,8 +83,12 @@
                 Artifacts</p>
               <br />
               <div ng-repeat="dataset in recentUploadsData.data">
-                <entity-card style="flex: 1;" label="dataset.label" type="'Artifact'" uri="dataset.artifactUri"
-                  desc="dataset.desc" date="dataset.date">
+                <entity-card style="flex: 1;" 
+                  type="'Artifact'"
+                  uri="dataset.uri"
+                  label="dataset.title != undefined ? dataset.title : dataset.latestVersionTitle"  
+                  desc="dataset.abstract != undefined ? dataset.abstract : dataset.latestVersionAbstract"
+                  date="formatDate(dataset.latestVersionDate)">
                 </entity-card>
                 <div ng-if="!$last" class="is-divider"></div>
               </div>

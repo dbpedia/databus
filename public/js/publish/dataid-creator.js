@@ -1,3 +1,4 @@
+
 class DataIdCreator {
 
   constructor(accountName) {
@@ -6,15 +7,22 @@ class DataIdCreator {
 
   createUpdate(data) {
     var group = this.createGroupUpdate(data);
+    var artifact = this.createArtifactUpdate(data);
     var dataid = this.createVersionUpdate(data);
 
     var result = {
-      "@context": 'https://downloads.dbpedia.org/databus/context.jsonld',
+      "@context": this.getContext(),
       "@graph": []
     };
 
     if (group != undefined) {
       for (var graph of group["@graph"]) {
+        result["@graph"].push(graph);
+      }
+    }
+
+    if (artifact != undefined) {
+      for (var graph of artifact["@graph"]) {
         result["@graph"].push(graph);
       }
     }
@@ -36,15 +44,20 @@ class DataIdCreator {
     return value;
   }
 
+  getContext() {
+    if(DATABUS_CONTEXT_URL != undefined && DatabusUtils.isValidHttpUrl(DATABUS_CONTEXT_URL)) {
+      return DATABUS_CONTEXT_URL;
+    }
+
+    return DATABUS_CONTEXT[DatabusUris.JSONLD_CONTEXT];
+  }
+
   createGroupUpdate(data) {
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
 
-
-
-
     return {
-      "@context": 'https://downloads.dbpedia.org/databus/context.jsonld',
+      "@context": this.getContext(),
       "@graph": [
         {
           "@id": `${accountUri}/${data.group.name}`,
@@ -57,6 +70,24 @@ class DataIdCreator {
     };
   }
 
+  createArtifactUpdate(data) {
+
+    var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
+
+    return {
+      "@context": this.getContext(),
+      "@graph": [
+        {
+          "@id": `${accountUri}/${data.group.name}/${data.artifact.name}`,
+          "@type": "Artifact",
+          "title": this.getValidString(data.artifact.title),
+          "abstract": this.getValidString(data.artifact.abstract),
+          "description": this.getValidString(data.artifact.description)
+        }
+      ]
+    };
+  }
+
   createVersionUpdate(data) {
 
     if (data.group.publishGroupOnly) {
@@ -64,19 +95,18 @@ class DataIdCreator {
     }
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
-    var groupUri = accountUri + "/" + data.group.id;
+    var versionUri = `${accountUri}/${data.group.name}/${data.artifact.name}/${data.version.name}`
+
     var artifact = data.artifact;
     var version = data.version;
-    var artifactUri = groupUri + '/' + artifact.id;
-    var versionUri = groupUri + '/' + artifact.id + '/' + version.id;
-
 
     var graph = {
       "@type": "Dataset",
       "@id": versionUri + "#Dataset",
       "publisher": data.signature.selectedPublisherUri,
-      "hasVersion": version.id,
-      "title": artifact.title,
+      "hasVersion": version.name,
+      "title": version.title,
+      "abstract": version.abstract,
       "description": version.description,
       "license": version.license,
       "attribution": version.attribution,
@@ -112,7 +142,7 @@ class DataIdCreator {
         variantSuffix += '_' + cv.id + '=' + value;
       }
 
-      var fileName = artifact.id; // DatabusUtils.uriToName(file.uri);
+      var fileName = artifact.name; // DatabusUtils.uriToName(file.uri);
 
       var distributionUri = `${versionUri}#${fileName}`;
       var fileUri = `${versionUri}/${fileName}${variantSuffix}`;
@@ -158,7 +188,7 @@ class DataIdCreator {
     }
 
     var result = {
-      "@context": 'https://downloads.dbpedia.org/databus/context.jsonld',
+      "@context": this.getContext(),
       "@graph": [graph]
     }
 

@@ -10,11 +10,16 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?
   ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?group 
   ?latestVersionLicense ?latestVersionAttribution  WHERE {
 
+ 
   GRAPH ?g1 {
     ?dataset dataid:artifact ?artifact.
-    OPTIONAL { ?artifact dct:title ?title . }
-    OPTIONAL { ?artifact dct:abstract ?abstract . }
-    OPTIONAL { ?artifact dct:description ?description . }
+    OPTIONAL {
+      GRAPH ?g4 {
+        OPTIONAL { ?artifact dct:title ?title . }
+        OPTIONAL { ?artifact dct:abstract ?abstract . }
+        OPTIONAL { ?artifact dct:description ?description . }
+      }
+    }
     ?dataset dct:hasVersion ?latestVersion .
     ?dataset dct:title ?latestVersionTitle .
     ?dataset dct:abstract ?latestVersionAbstract .

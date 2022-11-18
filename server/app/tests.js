@@ -5,6 +5,7 @@ var DatabusCache = require('./common/cache/databus-cache');
 
 const DatabusUtils = require('../../public/js/utils/databus-utils');
 const UriUtils = require('./common/utils/uri-utils');
+const DatabusUserDatabase = require('../userdb');
 
 
 async function cacheTests() {
@@ -25,6 +26,48 @@ async function cacheTests() {
    // cached call without promise - should still return the correct result
    result = await cache.get('ga', () => async function() { });
    assert(result.length > 0);
+}
+
+async function databaseTests() {
+
+   var params = {
+      SUB : "testerman_ones_sub_token",
+      DISPLAYNAME : "Testerman One",
+      USERNAME : "one",
+      APIKEY : "000000000000000",
+      KEYNAME : "testkey"
+   }
+
+   const db = new DatabusUserDatabase();
+   db.debug = true;
+
+   var result = false;
+
+   result = await db.connect();
+   assert(result);
+
+   result = await db.getUsers();
+   console.log(result);
+
+   await db.deleteUser(params.SUB);
+
+   result = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
+   assert(!result);
+
+   result = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
+   assert(result);
+
+   result = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
+   assert(result);
+
+   result = await db.getUser(params.SUB);
+   assert(result.sub == params.SUB);
+
+   result = await db.deleteUser(params.SUB);
+   assert(result);
+
+   result = await db.getSub(params.APIKEY);
+   assert(result == null);
 }
 
 async function utilTests() {
@@ -136,6 +179,7 @@ async function sparqlTests() {
 }
 
 module.exports = async function() {
+   await databaseTests();
    await cacheTests();
    await utilTests();
    await sparqlTests();

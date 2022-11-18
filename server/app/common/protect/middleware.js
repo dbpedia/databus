@@ -13,6 +13,8 @@ var getRandomValues = require('get-random-values');
 
 var fs = require('fs');
 const Constants = require('../constants');
+const DatabusUserDatabase = require('../../../userdb');
+const DatabusMessage = require('../databus-message');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -81,27 +83,14 @@ class DatabusProtect {
 
   constructor(memoryStore) {
 
-    var self = this;
-
-    // Receive messages from the master process.
-    process.on('message', function (msg) {
-      if (msg.id == Constants.DATABUS_USER_CACHE_REFRESH) {
-        self.updateHashTables(msg.body)
-      }
-    });
-
-    process.send({
-      id: Constants.DATABUS_REQUEST_USER_CACHE_REFRESH,
-      body: null
-    });
+    this.userdb = new DatabusUserDatabase();
+    this.userdb.connect();
 
     this.oidc = oidc;
     this.oidc.debug = (str) => console.log(str);
   }
 
-  hasUser(user) {
-    return this.users.byUsername[user] != undefined;
-  }
+
 
   isBrowserRequest(req) {
     var agent = req.headers['user-agent'];
@@ -109,73 +98,24 @@ class DatabusProtect {
       agent.includes('Safari'));
   }
 
-
-  /**
-   * Gets a user by sub identifier
-   * @param {*} sub 
-   * @returns 
-   */
-  getUser(sub) {
-
-    if (this.users == null || this.users.bySub == null) {
-      process.send({
-        id: Constants.DATABUS_REQUEST_USER_CACHE_REFRESH,
-        body: null
-      });
-
-      return null;
-    }
-
-
-    return this.users.bySub[sub];
+  async hasUser(username) {
+    var user = await this.userdb.getUserByUsername(username);
+    return user != null;
   }
 
-  addUser(name, sub, username) {
-
-    var user = {
-      name: name,
-      sub: sub,
-      username: username,
-      keys: [],
-    };
-
-    this.users.byUsername[username] = user;
-    this.users.bySub[sub] = user;
-
-    this.saveUser(user);
+  async getUser(sub) {
+    return await this.userdb.getUser(sub);
   }
 
-  /**
-   * Sends a message to the master process to save and propagate user changes 
-   * in the cluster
-   * @param {} user 
-   */
-  saveUser(user) {
-    process.send({
-      id: Constants.DATABUS_USER_ENTRY_UPDATE,
-      body: JSON.stringify(user)
-    });
+  async addUser(sub, name, username) {
+    if (await this.userdb.addUser(sub, name, username)) {
+      process.send({ id: DatabusMessage.DATABUS_USER_ADDED });
+    }
   }
 
-  addApiKey(sub, name) {
-
-    var key = uuidv4();
-    var user = this.getUser(sub);
-
-    if (user == null) {
-      return null;
-    }
-
-    if (user.keys == null) {
-      user.keys = [];
-    }
-
-    user.keys.push({ name: name, key: key });
-
-    //this.users.byApiKey[key] = user;
-
-    this.saveUser(user);
-    return { name: name, key: key };
+  async addApiKey(sub, name) {
+    var apikey = uuidv4();
+    return await this.userdb.addApiKey(sub, name, apikey);
   }
 
   /**
@@ -184,119 +124,20 @@ class DatabusProtect {
    * @param {*} name 
    * @returns 
    */
-  removeApiKey(sub, name) {
+  async removeApiKey(sub, name) {
 
-    try {
-      var user = this.getUser(sub);
-
-      if (user == null) {
-        return false;
-      }
-
-      if (user.keys == null) {
-        return false;
-      }
-
-      var keys = user.keys.filter(function (k) {
-        return k.name != name;
-      });
-
-      if (keys.length != user.keys.length) {
-        user.keys = keys;
-
-        this.saveUser(user);
-        return true;
-      }
-
-      return false;
-
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+    return await this.userdb.deleteApiKey(sub, name, apikey);
   }
 
-  validateApiKey(req) {
+  async getApiKeyUser(req) {
+    let apikey = req.headers["x-api-key"];
+    var entry = await this.userdb.getSub(apikey);
 
-    let apiKey = req.headers["x-api-key"];
-
-    if (apiKey == undefined) {
+    if(entry == null) {
       return null;
     }
 
-    try {
-
-      var user = this.users.byApiKey[apiKey];
-      return user;
-
-    } catch (err) {
-      return null;
-    };
-  }
-
-  updateHashTables(bySubTable) {
-
-    this.users = {};
-    this.users.bySub = bySubTable;
-    this.users.byUsername = {};
-    this.users.byApiKey = {};
-
-    for (var sub in this.users.bySub) {
-
-      var obj = this.users.bySub[sub];
-      this.users.byUsername[obj.username] = obj;
-
-      for (var k in obj.keys) {
-        var entry = obj.keys[k];
-        this.users.byApiKey[entry.key] = obj;
-      }
-    }
-
-    // console.log(`User table updated on worker ${process.pid}`);
-  }
-
-  createUserHashtable(csv) {
-
-    var lines = csv.split("\n");
-    this.users = {};
-    this.users.bySub = {};
-    this.users.byUsername = {};
-    this.users.byApiKey = {};
-
-    for (var i = 0; i < lines.length; i++) {
-
-      try {
-
-        if (lines[i].length == 0) {
-          continue;
-        }
-
-        var currentline = lines[i].split(",");
-
-        let buff = new Buffer.from(currentline[3], 'base64');
-        let keysString = buff.toString('ascii');
-
-
-        var obj = {
-          name: currentline[0],
-          sub: currentline[1],
-          username: currentline[2],
-          keys: JSON.parse(keysString)
-        };
-
-        this.users.bySub[obj.sub] = obj;
-        this.users.byUsername[obj.username] = obj;
-
-        for (var k in obj.keys) {
-          var entry = obj.keys[k];
-          this.users.byApiKey[entry.key] = obj;
-        }
-
-
-      } catch (err) {
-        console.log(`Unable to parse user:\n${err}`);
-      }
-    }
+    return await this.userdb.getUser(entry.sub);
   }
 
   auth() {
@@ -321,7 +162,7 @@ class DatabusProtect {
 
   fetchUser() {
 
-    return (req, res, next) => {
+    return async (req, res, next) => {
 
       // User already fetched and authenticated
       if (req.databus != undefined && req.databus.authenticated) {
@@ -351,13 +192,12 @@ class DatabusProtect {
       req.databus.oidc_email = req.oidc.user.email;
 
       // Looking up the user...
-      var user = this.getUser(req.oidc.user.sub);
+      var user = await this.userdb.getUser(req.oidc.user.sub);
 
       if (user != undefined) {
         req.databus.sub = user.sub;
         req.databus.accountName = user.username;
-        req.databus.apiKeys = user.keys;
-        // console.log(`Set databus.username of user [${req.oidc.user.sub}] to ${req.databus.accountName}`);
+        req.databus.apiKeys = await this.userdb.getApiKeys(user.sub);
       }
 
       console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
@@ -369,11 +209,11 @@ class DatabusProtect {
 
     var self = this;
 
-    return [(req, res, next) => {
+    return [async (req, res, next) => {
 
       if (req.oidc == undefined || !self.isBrowserRequest(req)) {
 
-        var apiTokenUser = self.validateApiKey(req);
+        var apiTokenUser = await self.getApiKeyUser(req);
 
         if (apiTokenUser != null) {
           // Api token has been found
@@ -381,7 +221,7 @@ class DatabusProtect {
           req.databus.sub = apiTokenUser.sub;
           req.databus.authenticated = true;
           req.databus.accountName = apiTokenUser.username;
-          req.databus.apiKeys = apiTokenUser.keys;
+          req.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
 
           return next();
         }
@@ -424,10 +264,8 @@ class DatabusProtect {
     var self = this;
     return [async function (request, response, next) {
 
-      // console.log(`Protecting request to ${request.originalUrl}...`);
       // Consider doing webid tls here 
-
-      var apiTokenUser = self.validateApiKey(request);
+      var apiTokenUser = await self.getApiKeyUser(request);
 
       if (apiTokenUser != null) {
         // Api token has been found
@@ -435,7 +273,7 @@ class DatabusProtect {
         request.databus.sub = apiTokenUser.sub;
         request.databus.authenticated = true;
         request.databus.accountName = apiTokenUser.username;
-        request.databus.apiKeys = apiTokenUser.keys;
+        req.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
 
         return next();
       }
@@ -457,7 +295,6 @@ class DatabusProtect {
 
       // Html requests need a redirect
       if (!noRedirect && self.isBrowserRequest(request)) {
-        // console.log('Accessing from Browser. Redirecting to web login...');
         // Get the user agent
         forceLogin(request, response);
         return;
@@ -469,7 +306,6 @@ class DatabusProtect {
         return;
       }
 
-      //return self.oidc.requiresAuth();
       // Other requests get denied
       response.status(401).send();
 

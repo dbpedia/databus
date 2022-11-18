@@ -106,7 +106,8 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
     // Do some post-processing on the bindings to create a result object
     for (let b in bindings) {
       let binding = bindings[b];
-      binding.id = UriUtils.uriToName(binding.artifactUri);
+      binding.name = UriUtils.uriToName(binding.uri);
+      binding.groupName = UriUtils.uriToName(binding.group);
     }
 
     // return the result object
@@ -204,7 +205,7 @@ instance.getGroupsByAccount = async function (account) {
       group.title =  UriUtils.uriToName(group.uri);
     }
 
-    group.id = UriUtils.uriToName(group.uri);
+    group.name = UriUtils.uriToName(group.uri);
     result.push(group);
   }
 

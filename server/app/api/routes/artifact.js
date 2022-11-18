@@ -1,20 +1,20 @@
 const ServerUtils = require("../../common/utils/server-utils");
 const DatabusUris = require("../../../../public/js/utils/databus-uris");
 const Constants = require("../../common/constants");
-const publishGroup = require('../lib/publish-group');
+const publishArtifact = require('../lib/publish-artifact');
 
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 var request = require('request');
 
-const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
+const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing artifact finished with code ';
 
 module.exports = function (router, protector) {
 
   /**
-  * Publishing of groups via PUT request
+  * Publishing of artifacts via PUT request
   */
-  router.put('/:account/:group', protector.protect(true), async function (req, res, next) {
+  router.put('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
 
     try {
 
@@ -25,7 +25,7 @@ module.exports = function (router, protector) {
       }
 
       var account = req.databus.accountName;
-      var groupUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
+      var artifactUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
 
       var graph = req.body;
 
@@ -35,15 +35,15 @@ module.exports = function (router, protector) {
       }
 
       // Call the publishing routine and log to a string
-      var report = `Publishing Group.\n`;
+      var report = `Publishing Artifact.\n`;
 
-      var groupResult = await publishGroup(account, graph, groupUri, function (message) {
+      var result = await publishArtifact(account, graph, artifactUri, function (message) {
         report += `> ${message}\n`;
       });
 
       // Return the result with the logging string
       res.set('Content-Type', 'text/plain');
-      var returnCode = groupResult.code;
+      var returnCode = result.code;
 
       if (returnCode < 200) {
         returnCode = 400;
@@ -58,7 +58,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/:group', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
+  router.get('/:account/:group/:artifact', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
     if(req.params.account.length < 4) {
       next('route');
@@ -66,7 +66,7 @@ module.exports = function (router, protector) {
     } 
     
     var repo = req.params.account;
-    var path = `${req.params.group}/${Constants.DATABUS_FILE_GROUP}`;
+    var path = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
 
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
@@ -80,7 +80,7 @@ module.exports = function (router, protector) {
     return;
   });
 
-  router.delete('/:account/:group', protector.protect(true), async function (req, res, next) {
+  router.delete('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
 
     // Requesting a DELETE on an uri outside of one's namespace is rejected
     if (req.params.account != req.databus.accountName) {
@@ -88,7 +88,7 @@ module.exports = function (router, protector) {
       return;
     }
 
-    var path = `${req.params.group}/${Constants.DATABUS_FILE_GROUP}`;
+    var path = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
     var resource = await GstoreHelper.read(req.params.account, path);
 
     if (resource == null) {
@@ -100,9 +100,9 @@ module.exports = function (router, protector) {
     var message = '';
 
     if (result.isSuccess) {
-      message = `The group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
+      message = `The artifact "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
     } else {
-      message = `Internal database error. Failed to delete the group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
+      message = `Internal database error. Failed to delete the artifact "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
     }
 
     res.status(result.isSuccess ? 200 : 500).send(message);

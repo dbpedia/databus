@@ -27,6 +27,28 @@ class ServerUtils {
     }
   }
 
+  /**
+   * placeHolderMappings is a map string => string. This function replaces all
+   * occurrances of %key% in query with value.
+   */
+  static formatQuery(query, placeholderMappings) {
+
+    if (placeholderMappings == undefined) {
+      return query;
+    }
+
+    for (var placeholder in placeholderMappings) {
+      var re = new RegExp('%' + placeholder + '%', "g");
+
+      var insert = placeholderMappings[placeholder];
+
+      query = query.replace(re, insert);
+    }
+
+    return query;
+  }
+
+
 
 
   /**

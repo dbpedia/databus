@@ -7,6 +7,7 @@ var defaultContext = require('../../../../model/generated/context.json');
 const publishGroup = require('../lib/publish-group');
 const publishDataId = require('../lib/publish-dataid');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const publishArtifact = require('../lib/publish-artifact');
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
@@ -59,6 +60,7 @@ module.exports = function (router, protector) {
 
       
       // Replace context if graph uses default context
+
       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
         graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
@@ -67,10 +69,22 @@ module.exports = function (router, protector) {
 
       var groupResult = await publishGroup(account, graph, null, function (message) {
         res.write(`> ${message}\n`);
-      }, true);
+      }, debug);
 
       if (groupResult != undefined) {
         res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`)
+      }
+
+      res.write('================================================\n');
+
+      res.write(`Publishing Artifact.\n`);
+
+      var artifactResult = await publishArtifact(account, graph, null, function (message) {
+        res.write(`> ${message}\n`);
+      }, debug);
+
+      if (artifactResult != undefined) {
+        res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${artifactResult.code}.\n`)
       }
 
       res.write('================================================\n');
@@ -87,6 +101,7 @@ module.exports = function (router, protector) {
       if (dataIdResult != undefined) {
         res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`)
       }
+
 
       res.end();
 

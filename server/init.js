@@ -8,6 +8,9 @@ var rp = require('request-promise');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
+const DatabusUris = require('../public/js/utils/databus-uris.js');
+const DatabusUserDatabase = require('./userdb.js');
+
 
 function writeManifest() {
 
@@ -23,7 +26,7 @@ function writeManifest() {
     DATABUS_VERSION: config.version
   };
 
- 
+
   for (var placeholder in placeholderMappings) {
     var re = new RegExp('%' + placeholder + '%', "g");
     manifest = manifest.replace(re, placeholderMappings[placeholder]);
@@ -77,53 +80,85 @@ function tryCreateKeyPair() {
   }
 
   console.log(`Using public key at ${publicKeyFile}:`);
-  console.log( fs.readFileSync(publicKeyFile, "utf8"));
-
+  console.log(fs.readFileSync(publicKeyFile, "utf8"));
 }
 
-async function loadDefaultContext() {
+async function initializeContext() {
 
-  try {
-    // Overwrite default if configured
-    if (process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined) {
-      process.env.DATABUS_DEFAULT_CONTEXT_URL = Constants.DATABUS_DEFAULT_CONTEXT_URL;
+  // Load the internal default context
+  var context = require('../model/generated/context.json');
+
+  // Overwrite default if configured
+  if (process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined) {
+    process.env.DATABUS_DEFAULT_CONTEXT_URL = Constants.DATABUS_DEFAULT_CONTEXT_URL;
+  }
+
+  if (config.loadExternalJsonldContext) {
+
+    // Use the context URL specified as env variable
+    var contextUrl = process.env.DATABUS_DEFAULT_CONTEXT_URL;
+
+    // If no env variable was specified, use the default context URL 
+    // (https://downloads.dbpedia.org/databus/context.jsonld)
+    if (contextUrl == null) {
+      contextUrl = Constants.DATABUS_DEFAULT_CONTEXT_URL;
     }
 
+    console.log(`Loading default context from ${contextUrl}...`);
 
-    console.log(`Loading default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}...`);
+    try {
+      // Request options
+      var contextOptions = {
+        method: 'GET',
+        uri: contextUrl,
+        headers: { 'User-Agent': 'Request-Promise' },
+        json: true
+      };
 
-    
-    // Set file path
-    var contextFile = __dirname + '/app/common/context.json';
+      // Request and save to file
+      context = await rp(contextOptions);
+      process.env.DATABUS_CONTEXT_URL = contextUrl;
 
-    // Request options
-    var contextOptions = {
-      method: 'GET',
-      uri: process.env.DATABUS_DEFAULT_CONTEXT_URL,
-      headers: { 'User-Agent': 'Request-Promise' },
-      json: true
-    };
-
-    // Request and save to file
-    var response = await rp(contextOptions);
-    fs.writeFileSync(contextFile, JSON.stringify(response), "utf8");
-    console.log(`Successfully saved context to ${contextFile}:`);
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-    console.error(`Failed to fetch default context from ${process.env.DATABUS_DEFAULT_CONTEXT_URL}`);
+    } catch (err) {
+      console.log(err);
+      console.error(`Failed to fetch default context from ${defaultContextUrl}`);
+    }
   }
+
+  // Set file path
+  var contextFile = __dirname + '/app/common/context.json';
+
+  var contextString = JSON.stringify(context, null, 3);
+
+  console.log(``);
+  console.log('\x1b[36m%s\x1b[0m', `================== CONTEXT =====================`);
+  console.log('\x1b[36m%s\x1b[0m', contextString);
+  console.log('\x1b[36m%s\x1b[0m', `================================================`);
+
+  console.log(``);
+  fs.writeFileSync(contextFile, contextString, "utf8");
+  console.log(`Successfully saved context to ${contextFile}:`);
 }
+
+async function initializeUserDatabase() {
+  var userDatabase = new DatabusUserDatabase();
+  await userDatabase.connect();
+}
+
 
 module.exports = async function () {
 
   console.log(`================================================`);
   console.log(`Initializing...`);
   console.log(config);
-  await loadDefaultContext();
+
+  await initializeUserDatabase();
+
+  await initializeContext();
+
   writeManifest();
 
-  if(config.minifyJs) {
+  if (config.minifyJs) {
     await minifyClientJS();
   }
 

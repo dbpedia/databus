@@ -14,6 +14,7 @@ module.exports = function (router, protector) {
   require('./routes/collection')(router, protector);
   require('./routes/account')(router, protector);
   require('./routes/group')(router, protector);
+  require('./routes/artifact')(router, protector);
   require('./routes/dataid')(router, protector);
 
   router.get('/', cors(), ServerUtils.NOT_HTML_ACCEPTED, async function(req, res, next) {

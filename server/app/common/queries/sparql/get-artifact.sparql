@@ -11,9 +11,13 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?
 {
  GRAPH ?g1 {
     ?dataset dataid:artifact ?artifact .
-    OPTIONAL { ?artifact dct:title ?title . }
-    OPTIONAL { ?artifact dct:abstract ?abstract . }
-    OPTIONAL { ?artifact dct:description ?description . }
+    OPTIONAL { 
+      GRAPH ?g3 {
+        OPTIONAL { ?artifact dct:title ?title . }
+        OPTIONAL { ?artifact dct:abstract ?abstract . }
+        OPTIONAL { ?artifact dct:description ?description . }
+      }
+    }
     ?dataset dct:hasVersion ?latestVersion .
     ?dataset dct:title ?latestVersionTitle .
     ?dataset dct:abstract ?latestVersionAbstract .

@@ -2,6 +2,8 @@ var sparql = require('../common/queries/sparql');
 var request = require('request');
 var cors = require('cors');
 
+var { setTimeout } = require('timers/promises');
+
 const ServerUtils = require('../common/utils/server-utils.js');
 const DatabusCache = require('../common/cache/databus-cache');
 const LayeredCache = require('../common/cache/layered-cache')
@@ -12,7 +14,6 @@ module.exports = function (router, protector) {
 
   var cache = new LayeredCache(15, 6000);
 
-  /* GET home page. */
   router.get('/', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
     var data = {};
     data.auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -48,8 +49,6 @@ module.exports = function (router, protector) {
       res.status(500).send(err);
     }
   });
-
-
 
   // Pages login and logout
   router.get(Constants.DATABUS_OIDC_LOGIN_ROUTE, protector.protect(), function (req, res, next) {

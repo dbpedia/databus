@@ -1,103 +1,248 @@
 var fs = require('fs');
 const DatabusUtils = require('../public/js/utils/databus-utils');
+const sqlite3 = require('sqlite3');
+const { open } = require('sqlite');
+const ServerUtils = require('./app/common/utils/server-utils.js');
+const Constants = require('./app/common/constants');
 
 class DatabusUserDatabase {
 
-  constructor(path, onChange) {
-    this.path = path;
-    this.onChange = onChange;
-    this.userTable = {};
-
-    this.loadFromFile();
+  constructor() {
+    this.addUserQuery = require('./app/common/queries/userdb/add-user.sql');
+    this.addApiKeyQuery = require('./app/common/queries/userdb/add-api-key.sql');
+    this.getUserQuery = require('./app/common/queries/userdb/get-user.sql');
+    this.getUsersQuery = require('./app/common/queries/userdb/get-users.sql');
+    this.getUserByUsernameQuery = require('./app/common/queries/userdb/get-user-by-username.sql');
+    this.getSubQuery = require('./app/common/queries/userdb/get-sub.sql');
+    this.deleteUserQuery = require('./app/common/queries/userdb/delete-user.sql');
+    this.deleteApiKeyQuery = require('./app/common/queries/userdb/delete-api-key.sql');
+    this.getApiKeysQuery = require('./app/common/queries/userdb/get-api-keys.sql');
   }
 
-  requestRefresh() {
-    this.onChange(this.userTable);
-  }
+  async connect() {
 
-  // Write action called from worker messages
-  updateUser(data) {
-
-    this.userTable[data.sub] = data;
-    this.saveToFile();
-
-    // Call on-change to broadcast to workers in www script
-    this.onChange(this.userTable);
-  }
-
-  // Serialize to CSV
-  saveToFile() {
-    var csvString = "";
-    for (var u in this.userTable) {
-      var user = this.userTable[u];
-
-      if(user.keys == undefined) {
-        user.keys = [];
+    try {
+      if (!fs.existsSync(__dirname + Constants.DATABUS_SQLITE_USER_DATABASE_DIR)) {
+        fs.mkdirSync(__dirname + Constants.DATABUS_SQLITE_USER_DATABASE_DIR);
       }
 
+      this.db = await open({
+        filename: __dirname + Constants.DATABUS_SQLITE_USER_DATABASE_PATH,
+        driver: sqlite3.Database
+      });
 
-      let buff = new Buffer.from(JSON.stringify(user.keys));
-      let keyString = buff.toString('base64');
+      await this.db.get("PRAGMA foreign_keys = ON");
+      await this.db.run(require('./app/common/queries/userdb/create-user-table.sql'));
+      await this.db.run(require('./app/common/queries/userdb/create-api-key-table.sql'));
 
-      if (user.username != undefined) {
-        csvString += `${user.name},${user.sub},${user.username},${keyString}\n`;
+      if (this.debug) {
+        console.log(`Connected to user database at ${__dirname + Constants.DATABUS_SQLITE_USER_DATABASE_PATH}.`);
+      }
+      return true;
+    } catch (err) {
+      if (this.debug) {
+        console.log(err);
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Retrieve a user
+   * @param {*} sub 
+   * @returns 
+   */
+  async getUser(sub) {
+    return await this.get(this.getUserQuery, {
+      SUB: sub,
+    });
+  }
+
+  /**
+  * Retrieve all users
+  * @param {*} sub 
+  * @returns 
+  */
+  async getUsers() {
+    return await this.all(this.getUsersQuery, null);
+  }
+
+  /**
+   * Retrieve a user ny username
+   * @param {*} sub 
+   * @returns 
+   */
+  async getUserByUsername(username) {
+    return await this.get(this.getUserByUsernameQuery, {
+      USERNAME: username,
+    });
+  }
+
+
+  /**
+   * Retrieve a sub string by apikey
+   * @param {*} apikey 
+   * @returns 
+   */
+  async getSub(apikey) {
+    return await this.get(this.getSubQuery, {
+      APIKEY: apikey
+    });
+  }
+
+  /**
+   * Adds an API key to a user 
+   * @param {} sub 
+   * @param {*} apikey 
+   * @param {*} debugLog 
+   * @returns 
+   */
+  async addApiKey(sub, name, apikey) {
+    return await this.run(this.addApiKeyQuery, {
+      SUB: sub,
+      KEYNAME: name,
+      APIKEY: apikey
+    });
+  }
+
+  async getApiKeys(sub) {
+    return await this.all(this.getApiKeysQuery, {
+      SUB: sub,
+    });
+  }
+
+  /**
+   * Delete api key
+   * @param {*} sub 
+   * @returns 
+   */
+  async deleteApiKey(apikey) {
+    return await this.run(this.deleteApiKeyQuery, {
+      APIKEY: apikey,
+    });
+  }
+
+  /**
+  * Adds a user 
+  * @param {*} sub 
+  * @param {*} email 
+  * @param {*} username 
+  * @returns 
+  */
+  async addUser(sub, displayname, username) {
+    return await this.run(this.addUserQuery, {
+      SUB: sub,
+      DISPLAYNAME: displayname,
+      USERNAME: username
+    });
+  }
+
+  /**
+   * Delete user
+   * @param {*} sub 
+   * @returns 
+   */
+  async deleteUser(sub) {
+    return await this.run(this.deleteUserQuery, {
+      SUB: sub,
+    });
+  }
+
+
+  sanitize(params) {
+
+    for (var key in params) {
+
+      console.log(key);
+      console.log( params[key]);
+      var sanitizedValue = params[key].replace("\"", "").replace(";", "");
+
+      if (sanitizedValue != params[key]) {
+        console.log(`UserDatabase: Had to sanitize SQL parameter: changed ${params[key]} to ${sanitizedValue}`);
+        params[key] = sanitizedValue;
       }
     }
 
-    fs.writeFileSync(this.path, csvString, "utf8");
+    return params;
   }
 
-  // Deserialize from CSV
-  loadFromFile() {
+  /**
+   * Run formatted SQL query
+   * @param {*} query 
+   * @param {*} params 
+   * @returns 
+   */
+  async run(query, params) {
+    try {
 
-    if (!fs.existsSync(this.path)) {
+      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
 
-      var folderPath = DatabusUtils.navigateUp(this.path);
-
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath);
+      if (this.debug) {
+        console.log(formattedQuery);
       }
 
-      console.log(`Creating user file at ${this.path}.`);
-      fs.writeFileSync(this.path, "", "utf8");
+      await this.db.run(formattedQuery);
+      return true;
+    } catch (err) {
+
+      if (this.debug) {
+        console.log(err);
+      }
+
+      return false;
     }
-
-    console.log(`Parsing user table from ${this.path}`);
-    this.createUserHashtable(fs.readFileSync(this.path, "utf8"));
   }
 
-  // Create the Hashtable from CSV
-  createUserHashtable(csv) {
+  /**
+   * Run formatted SQL GET query
+   * @param {*} query 
+   * @param {*} params 
+   * @returns 
+   */
+  async get(query, params) {
 
-    var lines = csv.split("\n");
-    this.userTable = {};
+    try {
 
-    for (var i = 0; i < lines.length; i++) {
+      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
 
-      try {
-
-        if (lines[i].length == 0) {
-          continue;
-        }
-
-        var currentline = lines[i].split(",");
-
-        let buff = new Buffer.from(currentline[3], 'base64');
-        let keysString = buff.toString('ascii');
-
-
-        var obj = {
-          name: currentline[0],
-          sub: currentline[1],
-          username: currentline[2],
-          keys: JSON.parse(keysString)
-        };
-
-        this.userTable[obj.sub] = obj;
-
-      } catch (err) {
-        console.log(`Unable to parse user:\n${err}`);
+      if (this.debug) {
+        console.log(formattedQuery);
       }
+
+      return await this.db.get(formattedQuery);
+    } catch (err) {
+
+      if (this.debug) {
+        console.log(err);
+      }
+
+      return null;
+    }
+  }
+
+  /**
+   * Run formatted SQL GET query
+   * @param {*} query 
+   * @param {*} params 
+   * @returns 
+   */
+  async all(query, params) {
+    try {
+
+      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+
+      if (this.debug) {
+        console.log(formattedQuery);
+      }
+
+      return await this.db.all(formattedQuery);
+    } catch (err) {
+
+      if (this.debug) {
+        console.log(err);
+      }
+
+      return null;
     }
   }
 }

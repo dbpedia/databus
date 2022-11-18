@@ -11,10 +11,10 @@ const http = require('http');
 const numCPUs = require('os').cpus().length;
 var initialize = require('./init');
 var Constants = require('./app/common/constants');
-const DatabusUserDatabase = require('./userdb');
 const LookupSearchIndexer = require('./search-indexer');
 const userTablePath = __dirname + '/users/namespaces.csv';
 var searchIndexer = null;
+var runTests = require('./app/tests.js');
 
 /**
  * Get port from environment and store in Express.
@@ -35,21 +35,21 @@ function broadcast(msg) {
   });
 }
 
-function createFork(userDatabase) {
+function createFork() {
   var fork = cluster.fork();
 
   fork.on('message', function (message) {
-    if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
-      userDatabase.updateUser(JSON.parse(message.body));
-    }
+    // if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
+    //  userDatabase.updateUser(JSON.parse(message.body));
+    // }
 
     if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
       searchIndexer.requestRebuild();
     }
 
-    if(message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
-      userDatabase.requestRefresh();
-    }
+    // if (message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
+    //   userDatabase.requestRefresh();
+    // }
   });
 }
 
@@ -63,11 +63,12 @@ function masterProcess() {
   console.log(`#     # #    #   #   #    # #    # #    # #    #`);
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
-  console.log(`================================================`); 
-  
-  var userDatabase = new DatabusUserDatabase(userTablePath, function (table) {
-    broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
-  });
+  console.log(`================================================`);
+
+
+  // var userDatabase = new DatabusUserDatabase(userTablePath, function (table) {
+  //  broadcast({ id: Constants.DATABUS_USER_CACHE_REFRESH, body: table });
+  // });
 
   searchIndexer = new LookupSearchIndexer(5000);
 
@@ -82,20 +83,21 @@ function masterProcess() {
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);
-      createFork(userDatabase);
-     
+      createFork();
     }
 
     cluster.on('exit', (worker, code, signal) => {
       console.log(`worker ${worker.process.pid} died`);
       console.log("Forking another worker!");
-      createFork(userDatabase);
+      createFork();
     });
 
-
+    // Run tests
+    runTests();
 
   }, function (err) {
     console.log(`Initialization error: \n${err}`);
+    process.exit(err ? 1 : 0)
   });
 
 }
@@ -166,6 +168,10 @@ function onError(error) {
 function initializeExtensions() {
   // add a sparql file loading extension (simply read the file as a string)
   require.extensions['.sparql'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+
+  require.extensions['.sql'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
   };
 

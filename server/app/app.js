@@ -13,14 +13,20 @@ const webdav = require('webdav-server').v2;
 const Constants = require("./common/constants");
 const DatabusUtils = require("../../public/js/utils/databus-utils");
 var config = require("../config.json");
+const DatabusUris = require("../../public/js/utils/databus-uris");
 
 // Creation of the mighty server app
 var app = express();
+
+
+var context = JSON.stringify(require('../app/common/context.json'), null, 3);
 
 app.locals = {
   databus: {
     version: config.version,
     name: process.env.DATABUS_NAME,
+    contextUrl: process.env.DATABUS_CONTEXT_URL,
+    context: context,
     defaultContextUrl: process.env.DATABUS_DEFAULT_CONTEXT_URL,
     resourceBaseUrl: process.env.DATABUS_RESOURCE_BASE_URL
   },

@@ -1,0 +1,1 @@
+DELETE FROM apikeys WHERE apikey="%APIKEY%"
