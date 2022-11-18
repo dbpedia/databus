@@ -14,6 +14,9 @@ const Constants = require("./common/constants");
 const DatabusUtils = require("../../public/js/utils/databus-utils");
 var config = require("../config.json");
 const DatabusUris = require("../../public/js/utils/databus-uris");
+const DatabusMessage = require("./common/databus-message");
+const DatabusWebDAV = require("./webdav");
+var DatabusProtect = require('./common/protect/middleware');
 
 // Creation of the mighty server app
 var app = express();
@@ -41,89 +44,21 @@ app.locals = {
 
 // Create a session memory store (server cache)
 var memoryStore = new session.MemoryStore();
+var protector = new DatabusProtect(memoryStore);
+var webDAVModule = new DatabusWebDAV();
 
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
 
-  // Create and attach the databus protector
-  var DatabusProtect = require('./common/protect/middleware');
-  var protector = new DatabusProtect(memoryStore);
-
-  const userManager = new webdav.SimpleUserManager();
-  const privilegeManager = new webdav.SimplePathPrivilegeManager();
-  var addedUsers = {};
-
-  var options = {
-    httpAuthentication: new webdav.HTTPBasicAuthentication(userManager, 'Default realm'),
-    privilegeManager: privilegeManager,
-    userManager: userManager
-  }
-
-  userManager.getDefaultUser(function (defaultUser) {
-    privilegeManager.setRights(defaultUser, `/`, ['canRead', 'canSource']);
-  });
-
-  const sessionPass = DatabusUtils.uuidv4();
-  const webDAVServer = new webdav.WebDAVServer(options);
-  webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem('/databus/server/dav/'));
-
-  process.on('message', function (msg) {
-    if (msg.id == Constants.DATABUS_USER_CACHE_REFRESH) {
-
-      for (var sub in msg.body) {
-
-        var databusUser = msg.body[sub];
-
-        if (databusUser.keys == null || databusUser.keys.length == 0) {
-          continue;
-        }
-
-        if(addedUsers[databusUser.username] == true) {
-          continue;
-        }
-
-        console.log(`Adding DAV user ${databusUser.username}:${sessionPass}`);
-        const user = userManager.addUser(databusUser.username, sessionPass, false);
-        privilegeManager.setRights(user, `/${databusUser.username}/`, ['all']);
-
-        var folderTree = {};
-        folderTree[databusUser.username] = webdav.ResourceType.Directory;
-        webDAVServer.rootFileSystem().addSubTree(webDAVServer.createExternalContext(), folderTree);
-
-        addedUsers[databusUser.username] = true;
-      }
-    }
-  });
-
-  function davAuth() {
-
-    return async function (req, res, next) {
-      if (req.method == "GET" || req.method == "HEAD") {
-        next("route");
-        return;
-      }
-
-      var auth = ServerUtils.getAuthInfoFromRequest(req);
-
-      if (!auth.authenticated) {
-        res.status(401).send();
-        return;
-      }
-
-      var token = btoa(`${auth.info.accountName}:${sessionPass}`)
-      req.headers['Authorization'] = `Basic ${token}`;
-      next("route");
-    }
-  }
-
-  app.use('/dav', protector.checkSso(), davAuth(), webdav.extensions.express('/', webDAVServer));
+  // Add webDAV
+  app.use('/dav', protector.checkSso(), webDAVModule.davAuth(), 
+    webdav.extensions.express('/', webDAVModule.webDAVServer));
 
   // Fav Icon
   app.use(favicon(path.join(__dirname, '../../public/img', 'favicon.ico')));
 
 
   var router = new express.Router();
-
 
   // Use protection
   app.use(protector.auth());
@@ -196,6 +131,7 @@ async function initialize(app, memoryStore) {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, '../../public')));
 
+  await webDAVModule.initialize();
 
   app.use(logger('dev'));
   // Setup the session memory store

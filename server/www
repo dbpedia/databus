@@ -15,6 +15,7 @@ const LookupSearchIndexer = require('./search-indexer');
 const userTablePath = __dirname + '/users/namespaces.csv';
 var searchIndexer = null;
 var runTests = require('./app/tests.js');
+const DatabusMessage = require('./app/common/databus-message');
 
 /**
  * Get port from environment and store in Express.
@@ -42,6 +43,13 @@ function createFork() {
     // if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
     //  userDatabase.updateUser(JSON.parse(message.body));
     // }
+
+    if(message.id == DatabusMessage.NOTIFY_DATABUS_USER_ADDED) {
+      broadcast({
+        id : DatabusMessage.DATABUS_USER_ADDED,
+        body : message.body
+      });
+    }
 
     if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
       searchIndexer.requestRebuild();

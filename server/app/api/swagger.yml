@@ -504,6 +504,160 @@ paths:
           description: "No Content"
         "403":
           description: "Forbidden"
+  /{account}/{group}/{artifact}:
+    put:
+      summary: "Create / Update Artifact"
+      description: "Creates or updates a Databus Artifact."
+      operationId: "create-artifact"
+      tags:
+        - artifact
+      security:
+        - ApiKeyAuth: []
+      consumes:
+        - "application/ld+json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account name
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group name
+          type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: target artifact name
+          type: string
+          required: true
+          example: "cleaned"
+      requestBody:
+        description: "Artifact data as JSONLD."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: json
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": {
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
+                  "@type": "Group",
+                  "title": "Cleaned Data",
+                  "description": "Various cleaned datasets from DBpedia using AI."
+                }
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Publishing Group.
+                  > 5 triples selected via construct query.
+                  > SHACL validation successful.
+                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
+                  Publishing group finished with code 200.'
+        "403":
+          description: "Forbidden. The account failed to authenticate."
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Forbidden"
+    get:
+      summary: "Get Artifact"
+      description: "Retrieve a Databus Artifact as JSONLD."
+      operationId: "get-artifact"
+      tags:
+        - artifact
+      produces:
+        - "application/json"
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/ld+json:
+              schema:
+                type: json
+                example: '{
+                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
+                  "@type": "dataid:Artifact",
+                  "description": "Cleaned datasets from DBpedia",
+                  "title": "Cleaned Data",
+                  "@context": {
+                    "title": {
+                      "@id": "http://purl.org/dc/terms/title"
+                    },
+                    "description": {
+                      "@id": "http://purl.org/dc/terms/description"
+                    },
+                    "dbo": "http://dbpedia.org/ontology/",
+                    "sec": "https://w3id.org/security#",
+                    "dataid": "http://dataid.dbpedia.org/ns/core#",
+                    "dct": "http://purl.org/dc/terms/",
+                    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#",
+                    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                    "cert": "http://www.w3.org/ns/auth/cert#",
+                    "dcat": "http://www.w3.org/ns/dcat#",
+                    "foaf": "http://xmlns.com/foaf/0.1/"
+                  }
+                }'
+        "404":
+          description: "Not Found."
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      summary: "Delete Artifact"
+      description: "Deletes a Databus Artifact from the Databus. Associated DataIds will stay intact. 
+        **If you intend to delete the whole artifact, query the associated DataIds and delete them first.**"
+      operationId: "delete-artifact"
+      tags:
+        - artifact
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: account
+          in: path
+          description: account namespace
+          type: string
+          required: true
+          example: '%USERNAME%'
+        - name: group
+          in: path
+          description: target group identifier
+          type: string
+          required: true
+          example: "cleaned"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "403":
+          description: "Forbidden"
   /{account}/{group}/{artifact}/{version}:
     put:
       summary: "Create / Update DataId"

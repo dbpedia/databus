@@ -78,7 +78,6 @@ class DatabusUserDatabase {
     });
   }
 
-
   /**
    * Retrieve a sub string by apikey
    * @param {*} apikey 

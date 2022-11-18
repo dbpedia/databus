@@ -77,20 +77,15 @@ function logAccess(user, url) {
   stream.end();
 }
 
-
-
 class DatabusProtect {
 
   constructor(memoryStore) {
 
     this.userdb = new DatabusUserDatabase();
     this.userdb.connect();
-
     this.oidc = oidc;
     this.oidc.debug = (str) => console.log(str);
   }
-
-
 
   isBrowserRequest(req) {
     var agent = req.headers['user-agent'];
@@ -109,7 +104,7 @@ class DatabusProtect {
 
   async addUser(sub, name, username) {
     if (await this.userdb.addUser(sub, name, username)) {
-      process.send({ id: DatabusMessage.DATABUS_USER_ADDED });
+      process.send({ id: DatabusMessage.NOTIFY_DATABUS_USER_ADDED, body : username });
     }
   }
 
