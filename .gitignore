@@ -5,6 +5,7 @@ node_modules
 dependencies
 package-lock.json
 data
+sqlite/users.db
 lookup-app/local-files
 mongodb.log
 search/index
