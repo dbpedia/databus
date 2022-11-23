@@ -7,6 +7,10 @@ const DatabusUtils = require('../../public/js/utils/databus-utils');
 const UriUtils = require('./common/utils/uri-utils');
 const DatabusUserDatabase = require('../userdb');
 
+const { setTimeout } = require("timers/promises");
+const axios = require('axios');
+const jsonld = require('jsonld');
+const { type } = require('os');
 
 async function cacheTests() {
 
@@ -27,6 +31,7 @@ async function cacheTests() {
    result = await cache.get('ga', () => async function() { });
    assert(result.length > 0);
 }
+
 
 async function databaseTests() {
 
@@ -91,7 +96,6 @@ async function utilTests() {
    assert(UriUtils.uriToName('https://example.org/test/my-name#tag') == 'tag');
 
 }
-
 async function sparqlTests() {
 
    var result;
@@ -178,9 +182,72 @@ async function sparqlTests() {
    */
 }
 
+
+async function apiTests() {
+
+
+   const databusURL = process.env.DATABUS_RESOURCE_BASE_URL
+   await setTimeout(3000);
+
+   console.log("=======API TESTS=======")
+   var result=1;
+
+
+
+   // create Account
+
+   let username = 'fabrikat'
+
+   // result = await axios({
+   //    method: "PUT",
+   //    url: databusURL + '/' + username,
+   //    headers: { accept: 'text/plain', 'content-type': 'application/json'},
+   //    data: {
+   //       "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+   //       "@graph": [
+   //         {
+   //           "@id": `http://localhost:3000/${username}`,
+   //           "@type": "foaf:PersonalProfileDocument",
+   //           "maker": `http://localhost:3000/${username}#this`,
+   //           "primaryTopic": `http://localhost:3000/${username}#this`
+   //         },
+   //         {
+   //           "@id": `http://localhost:3000/${username}#this`,
+   //           "@type": [
+   //             "dbo:DBpedian",
+   //             "foaf:Person"
+   //           ],
+   //           "name": username,
+   //           "rdfs:comment": "Hello Databus!",
+   //           "account": `http://localhost:3000/${username}`
+   //         }
+   //       ]
+   //     }
+   //     });
+
+
+   // console.log(result)
+
+   // get Account
+
+   result = await axios({
+      method: "GET",
+      url: databusURL + '/' + username,
+      headers: { 'accept': 'application/ld+json'}
+      })
+
+   console.log(result.data)
+
+   let framed = await jsonld.flatten(result.data);
+
+   console.log("FRAMED: ", framed)
+   assert(result)
+}
+
 module.exports = async function() {
    await databaseTests();
    await cacheTests();
    await utilTests();
    await sparqlTests();
+   await apiTests();
 }
