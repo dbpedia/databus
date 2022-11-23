@@ -12,15 +12,9 @@ const numCPUs = require('os').cpus().length;
 var initialize = require('./init');
 var Constants = require('./app/common/constants');
 const LookupSearchIndexer = require('./search-indexer');
-const userTablePath = __dirname + '/users/namespaces.csv';
 var searchIndexer = null;
 var runTests = require('./app/tests.js');
 const DatabusMessage = require('./app/common/databus-message');
-
-/**
- * Get port from environment and store in Express.
- */
-
 
 initializeExtensions();
 
@@ -36,14 +30,16 @@ function broadcast(msg) {
   });
 }
 
-function createFork() {
+function createFork(onListening) {
   var fork = cluster.fork();
 
-  fork.on('message', function (message) {
-    // if (message.id == Constants.DATABUS_USER_ENTRY_UPDATE) {
-    //  userDatabase.updateUser(JSON.parse(message.body));
-    // }
+  if(onListening != undefined) {
+    fork.on('listening', function(address) {
+      onListening();
+    });
+  }
 
+  fork.on('message', function (message) {
     if(message.id == DatabusMessage.NOTIFY_DATABUS_USER_ADDED) {
       broadcast({
         id : DatabusMessage.DATABUS_USER_ADDED,
@@ -54,10 +50,6 @@ function createFork() {
     if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
       searchIndexer.requestRebuild();
     }
-
-    // if (message.id == Constants.DATABUS_REQUEST_USER_CACHE_REFRESH) {
-    //   userDatabase.requestRefresh();
-    // }
   });
 }
 
@@ -82,16 +74,23 @@ function masterProcess() {
 
   initialize().then(function () {
 
-    // var numCPUs = 1;
-
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
-
     console.log(`================================================`);
+
+    var numStartedWorkers = 0;
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);
-      createFork();
+      createFork(function() {
+        numStartedWorkers++;
+        if(numCPUs == numStartedWorkers) {
+          console.log(`================================================`);
+          console.log(`All workers started. Running tests...`);
+          console.log(`================================================`);
+          runTests();
+        }
+      });
     }
 
     cluster.on('exit', (worker, code, signal) => {
@@ -100,8 +99,6 @@ function masterProcess() {
       createFork();
     });
 
-    // Run tests
-    runTests();
 
   }, function (err) {
     console.log(`Initialization error: \n${err}`);

@@ -2,11 +2,16 @@ var sparql = require('./common/queries/sparql');
 var assert = require('assert');
 
 var DatabusCache = require('./common/cache/databus-cache');
+const path = require('path');
 
 const DatabusUtils = require('../../public/js/utils/databus-utils');
 const UriUtils = require('./common/utils/uri-utils');
 const DatabusUserDatabase = require('../userdb');
-
+const { default: axios } = require('axios');
+const fs = require('fs/promises');
+const rp = require('request-promise');
+const { log } = require('console');
+const DatabusMessage = require('./common/databus-message');
 
 async function cacheTests() {
 
@@ -22,20 +27,72 @@ async function cacheTests() {
    result = await cache.get('ga', () => sparql.pages.getGlobalActivityChartData());
    assert((Date.now().valueOf() - startDate) < 10);
    assert(result.length > 0);
-   
+
    // cached call without promise - should still return the correct result
-   result = await cache.get('ga', () => async function() { });
+   result = await cache.get('ga', () => async function () { });
    assert(result.length > 0);
+}
+
+function timeout(ms) {
+   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function webDAVTests() {
+
+   var params = {
+      SUB: "testerman_ones_sub_token",
+      DISPLAYNAME: "Testerman One",
+      USERNAME: "tester",
+      APIKEY: "000000000000000",
+      KEYNAME: "testkey"
+   }
+
+   const db = new DatabusUserDatabase();
+   db.debug = false;
+
+   var isConnected = await db.connect();
+   assert(isConnected);
+
+   await db.deleteUser(params.SUB);
+   var userAdded = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
+   assert(userAdded);
+
+   var apiKeyAdded = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
+   assert(apiKeyAdded);
+
+
+   var payload = JSON.stringify({ success : true });
+
+   try {
+
+   const options = {
+      uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${params.USERNAME}/upload.json`,
+      body: payload,
+      headers:  {
+         "x-api-key" : params.APIKEY
+      }
+    };
+
+   var response = await rp.put(options)
+
+   assert(response == "");
+
+
+   } catch(err) {
+
+   }
+
+
 }
 
 async function databaseTests() {
 
    var params = {
-      SUB : "testerman_ones_sub_token",
-      DISPLAYNAME : "Testerman One",
-      USERNAME : "one",
-      APIKEY : "000000000000000",
-      KEYNAME : "testkey"
+      SUB: "testerman_ones_sub_token",
+      DISPLAYNAME: "Testerman One",
+      USERNAME: "one",
+      APIKEY: "000000000000000",
+      KEYNAME: "testkey"
    }
 
    const db = new DatabusUserDatabase();
@@ -48,7 +105,7 @@ async function databaseTests() {
 
    result = await db.getUsers();
 
-   if(db.debug) {
+   if (db.debug) {
       console.log(result);
    }
 
@@ -79,18 +136,18 @@ async function databaseTests() {
 async function utilTests() {
 
    // objSize
-   var obj = { one : 1, two : 2 };
+   var obj = { one: 1, two: 2 };
    assert(DatabusUtils.objSize(obj) == 2);
-   assert(DatabusUtils.objSize({}) == 0);  
+   assert(DatabusUtils.objSize({}) == 0);
    assert(DatabusUtils.objSize(null) == 0);
 
    // uniqueList
-   var list = [ 0, 1, 1, 2, 2 ];
+   var list = [0, 1, 1, 2, 2];
    var uniqueList = DatabusUtils.uniqueList(list);
    assert(uniqueList.length == 3);
-   assert(uniqueList[0] == 0);   
-   assert(uniqueList[1] == 1);   
-   assert(uniqueList[2] == 2);   
+   assert(uniqueList[0] == 0);
+   assert(uniqueList[1] == 1);
+   assert(uniqueList[2] == 2);
 
    // uriToName
    assert(UriUtils.uriToName('https://example.org/test/my-name') == 'my-name');
@@ -184,9 +241,19 @@ async function sparqlTests() {
    */
 }
 
-module.exports = async function() {
-   await databaseTests();
-   await cacheTests();
-   await utilTests();
-   await sparqlTests();
+module.exports = async function () {
+   try {
+      await webDAVTests();
+      await databaseTests();
+      await cacheTests();
+      await utilTests();
+      await sparqlTests();
+
+      console.log(`================================================`);
+      console.log('Tests completed successfully.');
+      console.log(`================================================`);
+
+   } catch(err) {
+
+   }
 }

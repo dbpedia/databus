@@ -131,8 +131,6 @@ async function initialize(app, memoryStore) {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, '../../public')));
 
-  await webDAVModule.initialize();
-
   app.use(logger('dev'));
   // Setup the session memory store
   app.use(session({

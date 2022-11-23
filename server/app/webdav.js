@@ -1,9 +1,8 @@
 const webdav = require('webdav-server').v2;
 const ServerUtils = require('./common/utils/server-utils');
 const DatabusUtils = require("../../public/js/utils/databus-utils");
-const DatabusMessage = require("./common/databus-message");
-const DatabusUserDatabase = require("../userdb");
 const path = require('path');
+const fs = require('fs');
 
 /**
  * WebDAV module
@@ -37,15 +36,12 @@ class DatabusWebDAV {
       console.log(`DAV directory: ${davDirectory}`);
     }
 
+    if (!fs.existsSync(davDirectory)) {
+      fs.mkdirSync(davDirectory);
+    }
+
     this.webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem(davDirectory));
 
-    this.userdb = new DatabusUserDatabase();
-
-    process.on('message', async function (msg) {
-      if (msg.id == DatabusMessage.DATABUS_USER_ADDED) {
-        this.addWebDavUser(msg.body);
-      }
-    });
   }
 
   addWebDavUser(username) {
@@ -61,19 +57,22 @@ class DatabusWebDAV {
     this.webDAVServer.rootFileSystem().addSubTree(this.webDAVServer.createExternalContext(), folderTree);
   }
 
-  async initialize() {
-    await this.userdb.connect();
-    var users = await this.userdb.getUsers();
-
-    for (var user of users) {
-      this.addWebDavUser(user.username);
-    }
+  getDavUser(username) {
+    var self = this;
+    return new Promise((resolve, reject) => {
+      self.userManager.getUserByName(username, function(err, user) {
+        if(err != null) {
+          resolve(null);
+        } else {
+          resolve(user);
+        }
+      });
+    });
   }
 
   davAuth() {
 
     var self = this;
-
     return async function (req, res, next) {
       if (req.method == "GET" || req.method == "HEAD") {
         next("route");
@@ -85,6 +84,12 @@ class DatabusWebDAV {
       if (!auth.authenticated) {
         res.status(401).send();
         return;
+      }
+
+      var davUser = await self.getDavUser(auth.info.accountName);
+
+      if(davUser == null) {
+        self.addWebDavUser(auth.info.accountName);
       }
 
       var token = btoa(`${auth.info.accountName}:${self.sessionPass}`)
