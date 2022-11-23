@@ -148,21 +148,16 @@ class DatabusUserDatabase {
   }
 
 
-  sanitize(params) {
-
+  isInputDangerous(params) {
     for (var key in params) {
 
-      console.log(key);
-      console.log( params[key]);
-      var sanitizedValue = params[key].replace("\"", "").replace(";", "");
-
-      if (sanitizedValue != params[key]) {
-        console.log(`UserDatabase: Had to sanitize SQL parameter: changed ${params[key]} to ${sanitizedValue}`);
-        params[key] = sanitizedValue;
+      var value = params[key];
+      if(value.includes("\"") || value.includes(";")) {
+        return true;
       }
     }
 
-    return params;
+    return false;
   }
 
   /**
@@ -174,7 +169,16 @@ class DatabusUserDatabase {
   async run(query, params) {
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return false;
+      }
+
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);
@@ -202,7 +206,16 @@ class DatabusUserDatabase {
 
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return null;
+      }
+
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);
@@ -228,7 +241,16 @@ class DatabusUserDatabase {
   async all(query, params) {
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return null;
+      }
+      
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);

@@ -3,13 +3,16 @@ const ServerUtils = require('./common/utils/server-utils');
 const DatabusUtils = require("../../public/js/utils/databus-utils");
 const DatabusMessage = require("./common/databus-message");
 const DatabusUserDatabase = require("../userdb");
+const path = require('path');
 
 /**
  * WebDAV module
  */
 class DatabusWebDAV {
 
-  constructor() {
+  constructor(debug) {
+
+    this.debug = debug;
     var self = this;
 
     this.userManager = new webdav.SimpleUserManager();
@@ -27,7 +30,14 @@ class DatabusWebDAV {
 
     this.sessionPass = DatabusUtils.uuidv4();
     this.webDAVServer = new webdav.WebDAVServer(options);
-    this.webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem('/databus/server/dav/'));
+
+    var davDirectory = path.resolve('./') + '/dav/';
+
+    if(this.debug) {
+      console.log(`DAV directory: ${davDirectory}`);
+    }
+
+    this.webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem(davDirectory));
 
     this.userdb = new DatabusUserDatabase();
 
@@ -39,7 +49,11 @@ class DatabusWebDAV {
   }
 
   addWebDavUser(username) {
-    console.log(`Adding DAV user ${username}:${this.sessionPass}`);
+
+    if(this.debug) {
+      console.log(`Adding DAV user ${username}:${this.sessionPass}`);
+    }
+
     var user = this.userManager.addUser(username, this.sessionPass, false);
     this.privilegeManager.setRights(user, `/${username}/`, ['all']);
     var folderTree = {};
@@ -58,6 +72,8 @@ class DatabusWebDAV {
 
   davAuth() {
 
+    var self = this;
+
     return async function (req, res, next) {
       if (req.method == "GET" || req.method == "HEAD") {
         next("route");
@@ -71,8 +87,9 @@ class DatabusWebDAV {
         return;
       }
 
-      var token = btoa(`${auth.info.accountName}:${sessionPass}`)
+      var token = btoa(`${auth.info.accountName}:${self.sessionPass}`)
       req.headers['Authorization'] = `Basic ${token}`;
+
       next("route");
     }
   }

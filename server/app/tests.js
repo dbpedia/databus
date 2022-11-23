@@ -39,7 +39,7 @@ async function databaseTests() {
    }
 
    const db = new DatabusUserDatabase();
-   db.debug = true;
+   db.debug = false;
 
    var result = false;
 
@@ -47,7 +47,10 @@ async function databaseTests() {
    assert(result);
 
    result = await db.getUsers();
-   console.log(result);
+
+   if(db.debug) {
+      console.log(result);
+   }
 
    await db.deleteUser(params.SUB);
 
@@ -68,6 +71,9 @@ async function databaseTests() {
 
    result = await db.getSub(params.APIKEY);
    assert(result == null);
+
+   var injectUserAdded = await db.addUser("testerman_ones_sub_token;\"--".SUB, params.DISPLAYNAME, params.USERNAME);
+   assert(!injectUserAdded);
 }
 
 async function utilTests() {
