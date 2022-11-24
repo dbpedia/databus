@@ -25,6 +25,10 @@ This repo develops Databus version 2.0, which is a major upgrade of version 1.3-
 
 **Development setup:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
 
+## Acknowledgements
+
+This work was partially supported by grants from the German Federal Ministry for Economic Affairs and Climate Action (BMWK) to the projects LOD-GEOSS (03EI1005E) and  PLASS (01MD19003D)
+
 ## Requirements
 
 In order to run the Databus on-premise you will need `docker` and `docker-compose` installed on your machine.&#x20;
@@ -123,3 +127,4 @@ When configuring the client at the OIDC provider, you will be most likely asked 
 ### OIDC Providers
 
 Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
+

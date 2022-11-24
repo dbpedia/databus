@@ -13,6 +13,50 @@ const rp = require('request-promise');
 const { log } = require('console');
 const DatabusMessage = require('./common/databus-message');
 
+var params = {
+   SUB: "testerman_ones_sub_token",
+   DISPLAYNAME: "Testerman One",
+   USERNAME: "tester",
+   APIKEY: "000000000000000",
+   KEYNAME: "testkey"
+}
+
+async function createTestUser() {
+   
+   const db = new DatabusUserDatabase();
+   db.debug = false;
+
+   var isConnected = await db.connect();
+   assert(isConnected);
+
+   await db.deleteUser(params.SUB);
+   var userAdded = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
+   assert(userAdded);
+
+   var apiKeyAdded = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
+   assert(apiKeyAdded);
+
+   var user = await db.getUser(params.SUB);
+   assert(user.sub == params.SUB);
+
+   return user;
+}
+
+async function deleteTestUser() {
+   const db = new DatabusUserDatabase();
+   db.debug = false;
+
+   var isConnected = await db.connect();
+   assert(isConnected);
+
+   var isDeleted = await db.deleteUser(params.SUB);
+   assert(isDeleted);
+
+   var user = await db.getUser(params.SUB);
+   assert(user == null);
+
+}
+
 async function cacheTests() {
 
    var cache = new DatabusCache(60);
@@ -39,34 +83,15 @@ function timeout(ms) {
 
 async function webDAVTests() {
 
-   var params = {
-      SUB: "testerman_ones_sub_token",
-      DISPLAYNAME: "Testerman One",
-      USERNAME: "tester",
-      APIKEY: "000000000000000",
-      KEYNAME: "testkey"
-   }
+   var user = await createTestUser();
 
-   const db = new DatabusUserDatabase();
-   db.debug = false;
-
-   var isConnected = await db.connect();
-   assert(isConnected);
-
-   await db.deleteUser(params.SUB);
-   var userAdded = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
-   assert(userAdded);
-
-   var apiKeyAdded = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
-   assert(apiKeyAdded);
-
-
+   assert(user.username == params.USERNAME);
    var payload = JSON.stringify({ success : true });
 
    try {
 
    const options = {
-      uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${params.USERNAME}/upload.json`,
+      uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/upload.json`,
       body: payload,
       headers:  {
          "x-api-key" : params.APIKEY
@@ -76,6 +101,7 @@ async function webDAVTests() {
    var response = await rp.put(options)
 
    assert(response == "");
+   await deleteTestUser();
 
 
    } catch(err) {
