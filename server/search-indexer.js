@@ -23,12 +23,17 @@ class LookupSearchIndexer {
     }
   }
 
+  log(msg) {
+    console.log('\x1b[90m%s\x1b[0m', `[SEARCH INDEXER] ${msg}`);
+  }
+
   requestRebuild() {
-    console.log(`Search index rebuild requested.`);
+    this.log(`Search index rebuild requested.`);
     this.rebuildRequested = true;
   }
 
   promisedRebuild() {
+    var self = this;
     return new Promise((resolve, reject) => {
       var indexingProcess = spawn('java', [ 
         '-jar', '../search/lookup-indexer.jar', 
@@ -39,7 +44,7 @@ class LookupSearchIndexer {
       //  console.log('Index creation out: ' + data);
       //});
       indexingProcess.stderr.on('data', (data) => {
-        console.log('Index creation stderr: ' + data);
+        self.log(`stderr: ${data}`);
       });
       indexingProcess.on('close', (code) => {
         if (code == 0) {
@@ -68,16 +73,16 @@ class LookupSearchIndexer {
 
     try {
       var result = await this.promisedRebuild();
-      console.log('Search Index creation finished with code ' + result);
+      this.log('Search Index creation finished with code ' + result);
     } catch (err) {
-      console.log('Search Index creation failed: ' + err);
+      this.log('Search Index creation failed: ' + err);
     }
 
     try {
       result = await this.promisedRedeploy();
-      console.log('Search Servlet redeploy finished with code ' + result);
+      this.log('Search Servlet redeploy finished with code ' + result);
     } catch (err) {
-      console.log('Search Servlet redeploy failed: ' + err);
+      this.log('Search Servlet redeploy failed: ' + err);
     }
   }
 

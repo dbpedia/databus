@@ -30,17 +30,17 @@ class DatabusWebDAV {
     this.sessionPass = DatabusUtils.uuidv4();
     this.webDAVServer = new webdav.WebDAVServer(options);
 
-    var davDirectory = path.resolve('./') + '/dav/';
+    this.directory = path.resolve('./') + '/dav/';
 
     if(this.debug) {
-      console.log(`DAV directory: ${davDirectory}`);
+      console.log(`DAV directory: ${this.directory}`);
     }
 
-    if (!fs.existsSync(davDirectory)) {
-      fs.mkdirSync(davDirectory);
+    if (!fs.existsSync(this.directory)) {
+      fs.mkdirSync(this.directory);
     }
 
-    this.webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem(davDirectory));
+    this.webDAVServer.setFileSystem('/', new webdav.PhysicalFileSystem(this.directory));
 
   }
 

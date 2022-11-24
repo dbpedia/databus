@@ -8,10 +8,11 @@ const DatabusUtils = require('../../public/js/utils/databus-utils');
 const UriUtils = require('./common/utils/uri-utils');
 const DatabusUserDatabase = require('../userdb');
 const { default: axios } = require('axios');
-const fs = require('fs/promises');
+const fs = require('fs');
 const rp = require('request-promise');
 const { log } = require('console');
 const DatabusMessage = require('./common/databus-message');
+const DatabusWebDAV = require('./webdav');
 
 var params = {
    SUB: "testerman_ones_sub_token",
@@ -21,8 +22,12 @@ var params = {
    KEYNAME: "testkey"
 }
 
+/**
+ * Creates a user database connection, inserts a test user and returns the entry
+ * @returns 
+ */
 async function createTestUser() {
-   
+
    const db = new DatabusUserDatabase();
    db.debug = false;
 
@@ -42,6 +47,9 @@ async function createTestUser() {
    return user;
 }
 
+/**
+ * Creates a user database connection and deletes the test user
+ */
 async function deleteTestUser() {
    const db = new DatabusUserDatabase();
    db.debug = false;
@@ -54,11 +62,15 @@ async function deleteTestUser() {
 
    var user = await db.getUser(params.SUB);
    assert(user == null);
-
 }
 
+/**
+ * Tests for the DatabusCache class
+ */
 async function cacheTests() {
 
+   console.log(`Testing caching.`);
+   
    var cache = new DatabusCache(60);
    var result = {};
 
@@ -77,49 +89,82 @@ async function cacheTests() {
    assert(result.length > 0);
 }
 
-function timeout(ms) {
-   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+/**
+ * Tests for webDAV calls
+ */
 async function webDAVTests() {
-
+   
+   console.log(`Testing webDAV functions.`);
+   
    var user = await createTestUser();
 
    assert(user.username == params.USERNAME);
-   var payload = JSON.stringify({ success : true });
+   var payload = JSON.stringify({ success: true });
+
+   var dav = new DatabusWebDAV();
+
+   const options = {};
+   options.headers = {
+      "x-api-key": params.APIKEY
+   }
+
+   var userDavDirectory = `${dav.directory}${user.username}`;
+
+   if (fs.existsSync(userDavDirectory)) {
+      fs.rmSync(userDavDirectory, { recursive: true, force: true });
+   }
+
+   var isDirDeleted = !fs.existsSync(userDavDirectory);
+
+   assert(isDirDeleted);
 
    try {
 
-   const options = {
-      uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/upload.json`,
-      body: payload,
-      headers:  {
-         "x-api-key" : params.APIKEY
-      }
-    };
+      options.method = "MKCOL"
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/`;
 
-   var response = await rp.put(options)
+      var response = await rp(options);
+      assert(response == "");
 
-   assert(response == "");
-   await deleteTestUser();
+      var davDirectoryExists = fs.existsSync(userDavDirectory);
+      assert(davDirectoryExists);
 
+      options.method = "PUT";
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/upload.json`;
+      options.body = payload;
 
-   } catch(err) {
+      response = await rp(options);
+      assert(response == "");
 
+      var fileExists = fs.existsSync(`${userDavDirectory}/test/upload.json`);
+      assert(fileExists);
+
+      options.method = "DELETE";
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/`;
+      
+      response = await rp(options);
+      assert(response == "");
+
+      await deleteTestUser();
+      fs.rmSync(userDavDirectory, { recursive: true, force: true });
+
+   } catch (err) {
+      console.log(err);
+
+      // Cleanup
+      await deleteTestUser();
+      fs.rmSync(userDavDirectory, { recursive: true, force: true });
+
+      assert(err == null);
    }
-
-
 }
 
-async function databaseTests() {
+/**
+ * Tests the user database
+ */
+async function userDatabaseTests() {
 
-   var params = {
-      SUB: "testerman_ones_sub_token",
-      DISPLAYNAME: "Testerman One",
-      USERNAME: "one",
-      APIKEY: "000000000000000",
-      KEYNAME: "testkey"
-   }
+   console.log(`Testing user database.`);
 
    const db = new DatabusUserDatabase();
    db.debug = false;
@@ -159,7 +204,12 @@ async function databaseTests() {
    assert(!injectUserAdded);
 }
 
+/**
+ * Tests for util functions
+ */
 async function utilTests() {
+
+   console.log(`Testing util functions.`);
 
    // objSize
    var obj = { one: 1, two: 2 };
@@ -178,108 +228,54 @@ async function utilTests() {
    // uriToName
    assert(UriUtils.uriToName('https://example.org/test/my-name') == 'my-name');
    assert(UriUtils.uriToName('https://example.org/test/my-name#tag') == 'tag');
-
 }
 
-async function sparqlTests() {
+/**
+ * Tests for API calls
+ */
+async function apiTests() {
 
-   var result;
+   console.log(`Testing API calls.`);
 
-   // ACCOUNTS
+   var user = await createTestUser();
 
-   /*
-   // currently empty
-   result = await sparql.accounts.getAccount('jan');
-   assert(result == null);
+   const options = {};
+   options.headers = {
+      "x-api-key": params.APIKEY
+   }
 
-   result = await sparql.accounts.getAccountStats('jan');
-   assert(result != null);
-   */
+   // Get Manifest
+   options.method = "GET";
+   options.uri = process.env.DATABUS_RESOURCE_BASE_URL;
+   options.headers['Accept'] = "text/turtle"
 
-   // DATAID 
+   var response = await rp(options);
+   var manifest = require('./../manifest.ttl');
+   assert(response == manifest);
 
-   /*
-   // should not be empty
-   result = await sparql.dataid.getArtifactsByAccount('jan');
-   assert(DatabusUtils.objSize(result) > 0);
-   
-   result = await sparql.dataid.getModsByVersion('dbpedia', 'mappings', 'mappingbased-literals', '2021.03.01');
-   console.log(result);
+   // TODO - test full api!
+   // access username via user.username
 
-   result = await sparql.dataid.getGroupData('dbpedia', 'mappings');
-   console.log(result);
-
-   result = await sparql.dataid.getArtifactVersionsData('dbpedia', 'mappings', 'mappingbased-literals');
-   console.log(result);
-   assert(result.version != null);
-  
-
-   result = await sparql.dataid.getArtifactsByGroup('dbpedia', 'mappings');
-   assert(result[0].artifactUri != null);
-    
-
-   result = await sparql.dataid.getVersionData('dbpedia', 'mappings', 'mappingbased-literals', '2021.03.01');
-   console.log(result);
-   assert(result.version != null);
-
-
-   result = await sparql.dataid.getVersionDropdownData('dbpedia', 'mappings', 'mappingbased-literals', '2021.03.01');
-   console.log(result);
-   assert(result.formats != null);
-
-   result = await sparql.dataid.getVersionsByArtifact('dbpedia', 'mappings', 'mappingbased-literals');
-   console.log(result);
-
-   result = await sparql.dataid.getVersion('dbpedia', 'mappings', 'mappingbased-literals', '2021.03.01');
-   console.log(result); */
-   // PAGES 
-
-   // chart data 
-   /*
-   result = await sparql.pages.getGlobalActivityChartData();
-   assert(result.length > 0);
-
-   result = await sparql.pages.getAccountActivityChartData('jan');
-   assert(result.length > 0);
-
-   result = await sparql.pages.getPublishRankingData();
-   assert(result.length > 0);
-
-   result = await sparql.pages.getRecentUploadsData();
-   assert(result != null);
-
-   result = await sparql.pages.getVersionActions('dbpedia', 'mappings', 'mappingbased-literals', '2021.03.01');
-   assert(result != null);
-   assert(result.codeReference != null);
-
-   result = await sparql.pages.getAccountData('jan');
-   assert(result != null);
-   assert(result.account != null);
-
-   result = await sparql.pages.getGroupsAndArtifactsByAccount('jan');
-   assert(result != null);
-   assert(result.artifacts[0].artifactUri != null);
    
 
-   result = await sparql.pages.getGroupsByAccount('jan');
-   assert(result != null);
-   assert(result[0].id != null);
-   */
+
+
+   await deleteTestUser();
 }
 
 module.exports = async function () {
    try {
+      await userDatabaseTests();
       await webDAVTests();
-      await databaseTests();
       await cacheTests();
       await utilTests();
-      await sparqlTests();
+      await apiTests();
 
       console.log(`================================================`);
       console.log('Tests completed successfully.');
       console.log(`================================================`);
 
-   } catch(err) {
+   } catch (err) {
 
    }
 }
