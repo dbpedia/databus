@@ -70,7 +70,7 @@ async function deleteTestUser() {
 async function cacheTests() {
 
    console.log(`Testing caching.`);
-   
+
    var cache = new DatabusCache(60);
    var result = {};
 
@@ -93,9 +93,9 @@ async function cacheTests() {
  * Tests for webDAV calls
  */
 async function webDAVTests() {
-   
+
    console.log(`Testing webDAV functions.`);
-   
+
    var user = await createTestUser();
 
    assert(user.username == params.USERNAME);
@@ -141,7 +141,7 @@ async function webDAVTests() {
 
       options.method = "DELETE";
       options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/`;
-      
+
       response = await rp(options);
       assert(response == "");
 
@@ -251,12 +251,13 @@ async function apiTests() {
 
    var response = await rp(options);
    var manifest = require('./../manifest.ttl');
+
    assert(response == manifest);
 
    // TODO - test full api!
    // access username via user.username
 
-   
+
 
 
 
@@ -276,6 +277,10 @@ module.exports = async function () {
       console.log(`================================================`);
 
    } catch (err) {
+      console.log(err);
+      console.log(`================================================`);
+      console.log('Tests completed with errors.');
+      console.log(`================================================`);
 
    }
 }
