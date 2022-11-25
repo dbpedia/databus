@@ -268,7 +268,7 @@ class DatabusProtect {
         request.databus.sub = apiTokenUser.sub;
         request.databus.authenticated = true;
         request.databus.accountName = apiTokenUser.username;
-        req.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
+        request.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
 
         return next();
       }

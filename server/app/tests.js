@@ -258,10 +258,69 @@ async function apiTests() {
    // access username via user.username
 
 
-
+   await apiAccountTests(user)
 
 
    await deleteTestUser();
+}
+
+async function apiAccountTests(user) {
+
+   // const options = {};
+
+   // options.headers = {
+   //    "x-api-key": params.APIKEY,
+   //    'Content-Type': 'application/json'
+   // }
+   // options.method = "PUT";
+   // options.uri = process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.username
+   // options.headers['Accept'] = "text/plain"
+   // console.log(options.uri)
+   // var response = await rp(options);
+
+   // console.log(response)
+   // await setTimeout(3000);
+
+   console.log("====BEFORE PUT=======")
+   
+   result = await axios({
+      method: "PUT",
+      url: process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.username,
+      data: {
+         "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+         "@graph": [
+           {
+             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}`,
+             "@type": "foaf:PersonalProfileDocument",
+             "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`,
+             "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`
+           },
+           {
+             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`,
+             "@type": [
+               "dbo:DBpedian",
+               "foaf:Person"
+             ],
+             "name": `${user.username}`,
+             "rdfs:comment": "Hello Databus!",
+             "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}`
+           }
+         ]
+       },
+      headers: { 
+         'Accept': 'text/plain',
+         "x-api-key": params.APIKEY,
+         'Content-Type': 'application/json'
+      }
+      
+      })
+
+   console.log("=======PUT RESULT=========")
+   console.log(result.data)
+
+   // let framed = await jsonld.flatten(result.data);
+
+   // console.log("FRAMED: ", framed)
 }
 
 module.exports = async function () {

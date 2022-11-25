@@ -151,6 +151,8 @@ module.exports = function (router, protector) {
 
     var result = await putOrPatchAccount(req, res, next, accountExists);
 
+    console.log("===REQ===\n", req.oidc)
+
     if (result) {
       await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);
     }
