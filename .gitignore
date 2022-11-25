@@ -5,12 +5,10 @@ node_modules
 dependencies
 package-lock.json
 data
-sqlite/users.db
 lookup-app/local-files
 mongodb.log
 search/index
-server/keypair/private-key.pem
-server/keypair/public-key.pem
+server/keypair/
 server/users/namespaces.csv
 test/data
 redeploy-remote.sh
@@ -19,3 +17,6 @@ start_azure.sh
 examples/example-metadata.jsonld
 model-docu/myold_files
 .idea/
+dav/
+server/manifest.ttl
+server/sqlite/

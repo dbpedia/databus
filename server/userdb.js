@@ -7,8 +7,10 @@ const Constants = require('./app/common/constants');
 
 class DatabusUserDatabase {
 
-  constructor() {
+  constructor(userAddedCallback) {
+    this.userAddedCallback = userAddedCallback;
     this.addUserQuery = require('./app/common/queries/userdb/add-user.sql');
+    this.addUserQueryPrefix = this.addUserQuery.substring(0, 10);
     this.addApiKeyQuery = require('./app/common/queries/userdb/add-api-key.sql');
     this.getUserQuery = require('./app/common/queries/userdb/get-user.sql');
     this.getUsersQuery = require('./app/common/queries/userdb/get-users.sql');
@@ -17,6 +19,12 @@ class DatabusUserDatabase {
     this.deleteUserQuery = require('./app/common/queries/userdb/delete-user.sql');
     this.deleteApiKeyQuery = require('./app/common/queries/userdb/delete-api-key.sql');
     this.getApiKeysQuery = require('./app/common/queries/userdb/get-api-keys.sql');
+  }
+
+  onTrace(query) {
+    if(query.startsWith(this.addUserQueryPrefix)) {
+      console.log(query);
+    }
   }
 
   async connect() {
@@ -30,6 +38,10 @@ class DatabusUserDatabase {
         filename: __dirname + Constants.DATABUS_SQLITE_USER_DATABASE_PATH,
         driver: sqlite3.Database
       });
+
+      if(this.userAddedCallback != undefined) {
+        this.db.on('trace', this.onTrace);
+      }
 
       await this.db.get("PRAGMA foreign_keys = ON");
       await this.db.run(require('./app/common/queries/userdb/create-user-table.sql'));
@@ -148,21 +160,16 @@ class DatabusUserDatabase {
   }
 
 
-  sanitize(params) {
-
+  isInputDangerous(params) {
     for (var key in params) {
 
-      console.log(key);
-      console.log( params[key]);
-      var sanitizedValue = params[key].replace("\"", "").replace(";", "");
-
-      if (sanitizedValue != params[key]) {
-        console.log(`UserDatabase: Had to sanitize SQL parameter: changed ${params[key]} to ${sanitizedValue}`);
-        params[key] = sanitizedValue;
+      var value = params[key];
+      if(value.includes("\"") || value.includes(";")) {
+        return true;
       }
     }
 
-    return params;
+    return false;
   }
 
   /**
@@ -174,7 +181,16 @@ class DatabusUserDatabase {
   async run(query, params) {
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return false;
+      }
+
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);
@@ -202,7 +218,16 @@ class DatabusUserDatabase {
 
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return null;
+      }
+
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);
@@ -228,7 +253,16 @@ class DatabusUserDatabase {
   async all(query, params) {
     try {
 
-      var formattedQuery = ServerUtils.formatQuery(query, this.sanitize(params));
+      if(this.isInputDangerous(params)) {
+
+        if (this.debug) {
+          console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
+        }
+
+        return null;
+      }
+
+      var formattedQuery = ServerUtils.formatQuery(query, params);
 
       if (this.debug) {
         console.log(formattedQuery);

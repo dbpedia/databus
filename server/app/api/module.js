@@ -19,7 +19,7 @@ module.exports = function (router, protector) {
 
   router.get('/', cors(), ServerUtils.NOT_HTML_ACCEPTED, async function(req, res, next) {
     var manifest = require('../../manifest.ttl');
-    res.status(200).send(`${manifest}\n`);
+    res.status(200).send(`${manifest}`);
   });
   
 
