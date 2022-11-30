@@ -1,5 +1,5 @@
 echo "Waiting for database at ${DATABUS_DATABASE_URL}..."
-bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' ${DATABUS_DATABASE_URL})" != "200" ]]; do sleep 5; done'
+bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' ${DATABUS_DATABASE_URL}/sparql)" != "200" ]]; do sleep 5; done'
 
 # Is the proxy server enabled?
 if [ "$DATABUS_PROXY_SERVER_ENABLE" = "true" ]; then

@@ -62,9 +62,6 @@ function masterProcess() {
   console.log(`#     # #    #   #   #    # #    # #    # #    #`);
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
-  console.log(`================================================`);
-
-
 
   searchIndexer = new LookupSearchIndexer(5000);
 
