@@ -14,7 +14,7 @@ class DatabusUserDatabase {
     this.addApiKeyQuery = require('./app/common/queries/userdb/add-api-key.sql');
     this.getUserQuery = require('./app/common/queries/userdb/get-user.sql');
     this.getUsersQuery = require('./app/common/queries/userdb/get-users.sql');
-    this.getUserByUsernameQuery = require('./app/common/queries/userdb/get-user-by-username.sql');
+    this.getUserByAccountNameQuery = require('./app/common/queries/userdb/get-user-by-account-name.sql');
     this.getSubQuery = require('./app/common/queries/userdb/get-sub.sql');
     this.deleteUserQuery = require('./app/common/queries/userdb/delete-user.sql');
     this.deleteApiKeyQuery = require('./app/common/queries/userdb/delete-api-key.sql');
@@ -80,13 +80,13 @@ class DatabusUserDatabase {
   }
 
   /**
-   * Retrieve a user ny username
+   * Retrieve a user ny account name
    * @param {*} sub 
    * @returns 
    */
-  async getUserByUsername(username) {
-    return await this.get(this.getUserByUsernameQuery, {
-      USERNAME: username,
+  async getUserByAccountName(accountName) {
+    return await this.get(this.getUserByAccountNameQuery, {
+      ACCOUNT_NAME: accountName,
     });
   }
 
@@ -137,14 +137,14 @@ class DatabusUserDatabase {
   * Adds a user 
   * @param {*} sub 
   * @param {*} email 
-  * @param {*} username 
+  * @param {*} accountName 
   * @returns 
   */
-  async addUser(sub, displayname, username) {
+  async addUser(sub, displayName, accountName) {
     return await this.run(this.addUserQuery, {
       SUB: sub,
-      DISPLAYNAME: displayname,
-      USERNAME: username
+      DISPLAYNAME: displayName,
+      ACCOUNT_NAME: accountName
     });
   }
 

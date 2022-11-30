@@ -93,8 +93,9 @@ class DatabusProtect {
       agent.includes('Safari'));
   }
 
-  async hasUser(username) {
-    var user = await this.userdb.getUserByUsername(username);
+  async hasUser(accountName) {
+    var user = await this.userdb.getUserByAccountName(accountName);
+    console.log(user);
     return user != null;
   }
 
@@ -102,10 +103,8 @@ class DatabusProtect {
     return await this.userdb.getUser(sub);
   }
 
-  async addUser(sub, name, username) {
-    if (await this.userdb.addUser(sub, name, username)) {
-      process.send({ id: DatabusMessage.NOTIFY_DATABUS_USER_ADDED, body : username });
-    }
+  async addUser(sub, name, accountName) {
+    return await this.userdb.addUser(sub, name, accountName);
   }
 
   async addApiKey(sub, name) {
@@ -191,7 +190,7 @@ class DatabusProtect {
 
       if (user != undefined) {
         req.databus.sub = user.sub;
-        req.databus.accountName = user.username;
+        req.databus.accountName = user.accountName;
         req.databus.apiKeys = await this.userdb.getApiKeys(user.sub);
       }
 
@@ -215,7 +214,7 @@ class DatabusProtect {
           req.databus = {};
           req.databus.sub = apiTokenUser.sub;
           req.databus.authenticated = true;
-          req.databus.accountName = apiTokenUser.username;
+          req.databus.accountName = apiTokenUser.accountName;
           req.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
 
           return next();
@@ -267,7 +266,7 @@ class DatabusProtect {
         request.databus = {};
         request.databus.sub = apiTokenUser.sub;
         request.databus.authenticated = true;
-        request.databus.accountName = apiTokenUser.username;
+        request.databus.accountName = apiTokenUser.accountName;
         request.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
 
         return next();

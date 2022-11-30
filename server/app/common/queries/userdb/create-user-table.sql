@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
     sub VARCHAR(255) NOT NULL PRIMARY KEY,
-    displayname VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL
+    displayName VARCHAR(255) NOT NULL,
+    accountName VARCHAR(255) NOT NULL
 );

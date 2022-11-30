@@ -137,6 +137,8 @@ module.exports = function (router, protector) {
         res.status(403).send(`Forbidden.\n`);
       }
 
+      console.log(req.params.account);
+
       var accountExists = await protector.hasUser(req.params.account);
 
       if(accountExists) {
@@ -150,8 +152,6 @@ module.exports = function (router, protector) {
     }
 
     var result = await putOrPatchAccount(req, res, next, accountExists);
-
-    console.log("===REQ===\n", req.oidc)
 
     if (result) {
       await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);

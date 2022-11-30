@@ -1,0 +1,1 @@
+SELECT * FROM users WHERE accountName="%ACCOUNT_NAME%"

@@ -44,23 +44,23 @@ class DatabusWebDAV {
 
   }
 
-  addWebDavUser(username) {
+  addWebDavUser(accountName) {
 
     if(this.debug) {
-      console.log(`Adding DAV user ${username}:${this.sessionPass}`);
+      console.log(`Adding DAV user ${accountName}:${this.sessionPass}`);
     }
 
-    var user = this.userManager.addUser(username, this.sessionPass, false);
-    this.privilegeManager.setRights(user, `/${username}/`, ['all']);
+    var user = this.userManager.addUser(accountName, this.sessionPass, false);
+    this.privilegeManager.setRights(user, `/${accountName}/`, ['all']);
     var folderTree = {};
-    folderTree[username] = webdav.ResourceType.Directory;
+    folderTree[accountName] = webdav.ResourceType.Directory;
     this.webDAVServer.rootFileSystem().addSubTree(this.webDAVServer.createExternalContext(), folderTree);
   }
 
-  getDavUser(username) {
+  getDavUser(accountName) {
     var self = this;
     return new Promise((resolve, reject) => {
-      self.userManager.getUserByName(username, function(err, user) {
+      self.userManager.getUserByName(accountName, function(err, user) {
         if(err != null) {
           resolve(null);
         } else {

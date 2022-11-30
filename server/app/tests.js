@@ -10,14 +10,13 @@ const DatabusUserDatabase = require('../userdb');
 const { default: axios } = require('axios');
 const fs = require('fs');
 const rp = require('request-promise');
-const { log } = require('console');
-const DatabusMessage = require('./common/databus-message');
 const DatabusWebDAV = require('./webdav');
+const ServerUtils = require('./common/utils/server-utils');
 
 var params = {
    SUB: "testerman_ones_sub_token",
    DISPLAYNAME: "Testerman One",
-   USERNAME: "tester",
+   ACCOUNT_NAME: "tester",
    APIKEY: "000000000000000",
    KEYNAME: "testkey"
 }
@@ -35,13 +34,14 @@ async function createTestUser() {
    assert(isConnected);
 
    await db.deleteUser(params.SUB);
-   var userAdded = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
+   var userAdded = await db.addUser(params.SUB, params.DISPLAYNAME, params.ACCOUNT_NAME);
    assert(userAdded);
 
    var apiKeyAdded = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
    assert(apiKeyAdded);
 
    var user = await db.getUser(params.SUB);
+   console.log(user);
    assert(user.sub == params.SUB);
 
    return user;
@@ -98,7 +98,7 @@ async function webDAVTests() {
 
    var user = await createTestUser();
 
-   assert(user.username == params.USERNAME);
+   assert(user.accountName == params.ACCOUNT_NAME);
    var payload = JSON.stringify({ success: true });
 
    var dav = new DatabusWebDAV();
@@ -108,7 +108,7 @@ async function webDAVTests() {
       "x-api-key": params.APIKEY
    }
 
-   var userDavDirectory = `${dav.directory}${user.username}`;
+   var userDavDirectory = `${dav.directory}${user.accountName}`;
 
    if (fs.existsSync(userDavDirectory)) {
       fs.rmSync(userDavDirectory, { recursive: true, force: true });
@@ -121,7 +121,7 @@ async function webDAVTests() {
    try {
 
       options.method = "MKCOL"
-      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/`;
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.accountName}/test/`;
 
       var response = await rp(options);
       assert(response == "");
@@ -130,7 +130,7 @@ async function webDAVTests() {
       assert(davDirectoryExists);
 
       options.method = "PUT";
-      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/upload.json`;
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.accountName}/test/upload.json`;
       options.body = payload;
 
       response = await rp(options);
@@ -140,7 +140,7 @@ async function webDAVTests() {
       assert(fileExists);
 
       options.method = "DELETE";
-      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.username}/test/`;
+      options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${user.accountName}/test/`;
 
       response = await rp(options);
       assert(response == "");
@@ -185,7 +185,7 @@ async function userDatabaseTests() {
    result = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
    assert(!result);
 
-   result = await db.addUser(params.SUB, params.DISPLAYNAME, params.USERNAME);
+   result = await db.addUser(params.SUB, params.DISPLAYNAME, params.ACCOUNT_NAME);
    assert(result);
 
    result = await db.addApiKey(params.SUB, params.KEYNAME, params.APIKEY);
@@ -200,7 +200,7 @@ async function userDatabaseTests() {
    result = await db.getSub(params.APIKEY);
    assert(result == null);
 
-   var injectUserAdded = await db.addUser("testerman_ones_sub_token;\"--".SUB, params.DISPLAYNAME, params.USERNAME);
+   var injectUserAdded = await db.addUser("testerman_ones_sub_token;\"--".SUB, params.DISPLAYNAME, params.ACCOUNT_NAME);
    assert(!injectUserAdded);
 }
 
@@ -240,11 +240,9 @@ async function apiTests() {
    var user = await createTestUser();
 
    const options = {};
-   options.headers = {
-      "x-api-key": params.APIKEY
-   }
+   options.headers = { "x-api-key": params.APIKEY };
 
-   // Get Manifest
+   // ========= GET Manifest ==========
    options.method = "GET";
    options.uri = process.env.DATABUS_RESOURCE_BASE_URL;
    options.headers['Accept'] = "text/turtle"
@@ -252,13 +250,29 @@ async function apiTests() {
    var response = await rp(options);
    var manifest = require('./../manifest.ttl');
 
-   assert(response == manifest);
+   assert(response == manifest, "Manifest cannot be retrieved.");
+
+   // ========= PUT Account ===========
+   delete options.headers['Accept'];
+   var template = JSON.stringify(require('../../public/templates/json/account.json'));
+
+   options.method = "PUT";
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+   options.json = true;
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL : process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT_NAME: user.accountName
+   }));
+
+   response = await rp(options);
+
+   // ========= GET Account ==========
 
    // TODO - test full api!
-   // access username via user.username
+   // access ACCOUNT_NAME via user.accountName
 
 
-   await apiAccountTests(user)
+   // await apiAccountTests(user)
 
 
    await deleteTestUser();
@@ -273,7 +287,7 @@ async function apiAccountTests(user) {
    //    'Content-Type': 'application/json'
    // }
    // options.method = "PUT";
-   // options.uri = process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.username
+   // options.uri = process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.accountName
    // options.headers['Accept'] = "text/plain"
    // console.log(options.uri)
    // var response = await rp(options);
@@ -281,29 +295,31 @@ async function apiAccountTests(user) {
    // console.log(response)
    // await setTimeout(3000);
 
+
+
    console.log("====BEFORE PUT=======")
    
    result = await axios({
       method: "PUT",
-      url: process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.username,
+      url: process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.accountName,
       data: {
          "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
          "@graph": [
            {
-             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}`,
+             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`,
              "@type": "foaf:PersonalProfileDocument",
-             "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`,
-             "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`
+             "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
+             "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`
            },
            {
-             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}#this`,
+             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
              "@type": [
                "dbo:DBpedian",
                "foaf:Person"
              ],
-             "name": `${user.username}`,
+             "name": `${user.accountName}`,
              "rdfs:comment": "Hello Databus!",
-             "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.username}`
+             "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`
            }
          ]
        },
