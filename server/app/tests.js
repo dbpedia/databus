@@ -259,12 +259,50 @@ async function apiTests() {
    options.method = "PUT";
    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
    options.json = true;
+   options.resolveWithFullResponse = true;
    options.body = JSON.parse(ServerUtils.formatTemplate(template, {
-      DATABUS_RESOURCE_BASE_URL : process.env.DATABUS_RESOURCE_BASE_URL,
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
       ACCOUNT_NAME: user.accountName
    }));
 
    response = await rp(options);
+   assert(response.statusCode == 201, 'Account could not be updated.');
+
+   // ======= INVALID PUT Account =======
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/janfo`;
+
+   try {
+      await rp(options);
+      assert(err.response.statusCode != 200, 'Able to write to janfo account. This should be forbidden');
+   } catch (err) {
+      assert(err.response.statusCode == 403, 'Trying to write to unowned account. 403 expected.');
+   }
+
+   // ======= GET Account ==========
+   options.method = "GET";
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+   options.headers['Accept'] = "application/ld+json"
+   delete options.body;
+   delete options.json;
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Expected 200 when retrieving account.');
+
+   options.method = "DELETE";
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Expected 200 when deleting existing account.');
+
+   response = await rp(options);
+   assert(response.statusCode == 204, 'Expected 204 when deleting deleted account.');
+   
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/janfo`;
+
+   try {
+      await rp(options);
+      assert(err.response.statusCode != 200, 'Deleting unowned account should not be possible');
+   } catch (err) {
+      assert(err.response.statusCode == 403, 'Expected 403 when trying to delete unowned account.');
+   }
 
    // ========= GET Account ==========
 
@@ -298,38 +336,38 @@ async function apiAccountTests(user) {
 
 
    console.log("====BEFORE PUT=======")
-   
+
    result = await axios({
       method: "PUT",
       url: process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.accountName,
       data: {
          "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
          "@graph": [
-           {
-             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`,
-             "@type": "foaf:PersonalProfileDocument",
-             "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
-             "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`
-           },
-           {
-             "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
-             "@type": [
-               "dbo:DBpedian",
-               "foaf:Person"
-             ],
-             "name": `${user.accountName}`,
-             "rdfs:comment": "Hello Databus!",
-             "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`
-           }
+            {
+               "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`,
+               "@type": "foaf:PersonalProfileDocument",
+               "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
+               "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`
+            },
+            {
+               "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
+               "@type": [
+                  "dbo:DBpedian",
+                  "foaf:Person"
+               ],
+               "name": `${user.accountName}`,
+               "rdfs:comment": "Hello Databus!",
+               "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`
+            }
          ]
-       },
-      headers: { 
+      },
+      headers: {
          'Accept': 'text/plain',
          "x-api-key": params.APIKEY,
          'Content-Type': 'application/json'
       }
-      
-      })
+
+   })
 
    console.log("=======PUT RESULT=========")
    console.log(result.data)

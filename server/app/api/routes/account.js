@@ -16,6 +16,7 @@ var defaultContext = require('../../common/context.json');
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const Constants = require('../../common/constants');
 
 module.exports = function (router, protector) {
 
@@ -35,7 +36,7 @@ module.exports = function (router, protector) {
 
       // Check the auth info account and deny access on mismatch
       if (accountName !== req.params.account) {
-        console.log(`AccountName mismatch: ${accountName} != ${req.params.account}\n`);
+        /// console.log(`AccountName mismatch: ${accountName} != ${req.params.account}\n`);
         res.status(403).send(`You cannot edit the account data in a foreign namespace\n`);
         return false;
       }
@@ -97,8 +98,8 @@ module.exports = function (router, protector) {
 
       var targetPath = 'webid.jsonld';
 
-      console.log(`Target path: ${targetPath}`);
-      console.log(JSON.stringify(compactedGraph));
+      // console.log(`Target path: ${targetPath}`);
+      // console.log(JSON.stringify(compactedGraph));
 
       // Save the data using the database manager
       var result = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);
@@ -129,16 +130,23 @@ module.exports = function (router, protector) {
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
 
-    
+
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
     
-      if(req.params.account == `sparql`) {
+      // oidc not set correctly?
+      if(req.oidc.user == undefined) {
         res.status(403).send(`Forbidden.\n`);
+        return;
       }
 
-      console.log(req.params.account);
+      // trying to be that guy?
+      if(req.params.account == `sparql`) {
+        res.status(403).send(`Forbidden.\n`);
+        return;
+      }
 
+      // account taken?
       var accountExists = await protector.hasUser(req.params.account);
 
       if(accountExists) {
@@ -146,15 +154,15 @@ module.exports = function (router, protector) {
         res.status(401).send(`This account name is taken.\n`);
         return;
       } else {
-        // Allow write to the account namespace
+        // allow write to the account namespace
         req.databus.accountName = req.params.account;
+        
+        if((await putOrPatchAccount(req, res, next, accountExists))) {
+          await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);
+        }
       }
-    }
-
-    var result = await putOrPatchAccount(req, res, next, accountExists);
-
-    if (result) {
-      await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);
+    } else {
+      putOrPatchAccount(req, res, next, accountExists);
     }
   });
 
@@ -285,7 +293,7 @@ module.exports = function (router, protector) {
       expandedGraphs.push(policy);
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
       
-      console.log(compactedGraph);
+      // console.log(compactedGraph);
       
       var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
       res.status(200).send('Access granted to account.\n');
@@ -387,6 +395,31 @@ module.exports = function (router, protector) {
     };
 
     request(options).pipe(res);
+  });
+
+   /* GET an account. */
+   router.delete('/:account', protector.protect(), async function (req, res, next) {
+
+     // Requesting a DELETE on an uri outside of one's namespace is rejected
+     if (req.params.account != req.databus.accountName) {
+      res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
+      return;
+    }
+
+    var resource = await GstoreHelper.read(req.params.account, Constants.DATABUS_FILE_WEBID);
+
+    if (resource == null) {
+      res.status(204).send(`The account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
+      return;
+    }
+
+    var result = await GstoreHelper.delete(req.params.account, Constants.DATABUS_FILE_WEBID);
+    var message = result.isSuccess ? 
+      `The account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.` : 
+      `Internal database error. Failed to delete the account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`;
+   
+
+    res.status(result.isSuccess ? 200 : 500).send(message);
   });
 }
 

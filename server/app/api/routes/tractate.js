@@ -16,7 +16,7 @@ module.exports = function (router, protector) {
       // Find context:
       var graph = req.body;
 
-      console.log(graph);
+      // console.log(graph);
 
       // Replace if default context
       if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {

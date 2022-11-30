@@ -50,7 +50,7 @@ class GstoreHelper {
     try {
 
       var uri = `${process.env.DATABUS_DATABASE_URL}/graph/delete?repo=${repo}&path=${path}`;
-      console.log(uri);
+      // console.log(uri);
 
       var res = await rp.delete(uri);
 
@@ -58,7 +58,7 @@ class GstoreHelper {
         id: Constants.DATABUS_SEARCH_INDEX_REBUILD
       });
 
-      console.log(res);
+      //  console.log(res);
       return { isSuccess: true };
     } catch (err) {
       console.log(err);
