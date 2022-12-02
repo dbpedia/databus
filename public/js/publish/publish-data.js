@@ -70,7 +70,7 @@ class PublishData {
       return;
     }
 
-    if (!DatabusUtils.isValidResourceIdentifier(this.artifact.name)) {
+    if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
       this.artifact.errors.push('err_invalid_artifact_name');
       hasErrors = true;
     }

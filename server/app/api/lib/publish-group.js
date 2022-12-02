@@ -75,7 +75,7 @@ module.exports = async function publishGroup(accountName, graph, logger) {
     }
 
     var targetPath = `${groupName}/${Constants.DATABUS_FILE_GROUP}`;
-    logger.info(groupUri, `Saving group <${groupUri}> to ${accountName}:${targetPath}`, compactedGraph);
+    logger.debug(groupUri, `Saving group <${groupUri}> to ${accountName}:${targetPath}`, compactedGraph);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
@@ -86,7 +86,7 @@ module.exports = async function publishGroup(accountName, graph, logger) {
       return 500;
     }
 
-    logger.debug(groupUri, `Saved group <${groupUri}> to ${accountName}:${targetPath}`, null);
+    logger.info(groupUri, `Successfully published group <${groupUri}>.`, compactedGraph);
     return 200;
 
   } catch (err) {

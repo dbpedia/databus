@@ -13,6 +13,7 @@ const LookupSearchIndexer = require('./search-indexer');
 const DatabusMessage = require('./app/common/databus-message');
 var initialize = require('./init');
 var searchIndexer = null;
+var config = require('./config.json')
 var runTests = require('./app/tests.js');
 
 initializeExtensions();
@@ -79,7 +80,7 @@ function masterProcess() {
       console.log(`Forking process number ${i}...`);
       createFork(function() {
         numStartedWorkers++;
-        if(numCPUs == numStartedWorkers) {
+        if(numCPUs == numStartedWorkers && config.runStartupTests) {
           console.log(`================================================`);
           console.log(`All workers started. Running tests...`);
           console.log(`================================================`);

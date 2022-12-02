@@ -834,14 +834,14 @@
                 </div>
               </div>
 
-                <!-- DERIVED FROM -->
-                <div class="row">
-                  <div class="" style="min-width: 240px">Derived From</div>
-                  <div style="flex: 1">
-                    <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
-                      ng-model="version.wasDerivedFrom"></textarea>
-                  </div>
+              <!-- DERIVED FROM -->
+              <div class="row">
+                <div class="" style="min-width: 240px">Derived From</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                    ng-model="version.wasDerivedFrom"></textarea>
                 </div>
+              </div>
             </div>
 
 
@@ -1146,16 +1146,28 @@
             <div class="box-content">
               <div class="row">
 
+                <div style="width: 100%">
+                  <div ng-repeat="entry in result.publishLog" style="margin-bottom: .25em;">
 
-                <div style="width: 100%; font-family: monospace; padding: 1.5em; background-color: #f5f5f5;">
+                    <div style="width: 100%; font-family: monospace; padding: .75em; 
+                  background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
+                      ng-click="entry.expanded = !entry.expanded">
 
-                  <p ng-repeat="entry in result.publishLog">
+                      <databus-icon ng-if="!entry.expanded" shape="'right'" size="16">
+                      </databus-icon>
+                      <databus-icon ng-if="entry.expanded" shape="'down'" size="16">
+                      </databus-icon>
 
-                    <span ng-if="entry.hasError" style="color:red">{{ entry.message }}</span>
-                    <span ng-if="!entry.hasError">{{ entry.message }}</span>
-                  </p>
+                      <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{ entry.msg }}</div>
+                      <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
+                      <databus-icon ng-if="entry.level!='error'" color="'green'" shape="'check'" size="24">
+                      </databus-icon>
+                    </div>
+                    <div ng-if="entry.expanded">
+                      <pre style="width: 100%; border-top: 1px solid #dbdbdb;">{{ entry.payload | json }}</pre>
+                    </div>
+                  </div>
                 </div>
-
 
               </div>
               <div class="row">

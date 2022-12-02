@@ -25,6 +25,11 @@ class DatabusUtils {
     return this.checkField(name, labelRegex, 3, 50);
   }
 
+  static isValidArtifactName(name) {
+    var labelRegex = /[a-zA-Z0-9_\-\.]{3,50}$/;
+    return this.checkField(name, labelRegex, 3, 50);
+  }
+
   static isValidUrl(value) {
     var textRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
     return textRegex.test(value);

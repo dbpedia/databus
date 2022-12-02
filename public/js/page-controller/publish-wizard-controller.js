@@ -491,14 +491,24 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.postDeferred = function (data) {
 
-    var deferred = $q.defer();
+    // var deferred = $q.defer();
 
-    var headers = {
+    var options = {} 
+    options.headers = {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
     }
+    options.body = JSON.stringify(data);
 
-    fetch('/api/publish?verify-parts=true', {
+    $http.post('/api/publish?verify-parts=true&log-level=info', options).then(function (response) {
+      $scope.result.publishLog = response.data.log;
+    }, function (err) {
+      $scope.result.publishLog = err.response.data.log;
+      console.log(err);
+    });
+
+    /*
+    fetch('/api/publish?verify-parts=true&log-level=info', {
       headers: headers,
       credentials: 'include',
       method: 'POST',
@@ -539,6 +549,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     });
 
     return deferred.promise;
+    */
   }
 
 
@@ -549,8 +560,16 @@ function PublishWizardController($scope, $http, focus, $q) {
 
 
     try {
-      await $scope.postDeferred(output.updateData);
+      // await $scope.postDeferred(output.updateData);
 
+      var options = {} 
+      options.headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      }
+  
+      var response = await $http.post('/api/publish?verify-parts=true&log-level=info', output.updateData, options);
+      $scope.result.publishLog = response.data.log;
       $scope.session.isPublishing = false;
       $scope.$apply();
     } catch (err) {

@@ -79,7 +79,7 @@ module.exports = async function publishArtifact(accountName, graph, logger) {
     }
 
     var targetPath = `${groupName}/${artifactName}/${Constants.DATABUS_FILE_ARTIFACT}`;
-    logger.info(artifactUri, `Saving artifact <${artifactUri}> to ${accountName}:${targetPath}`, compactedGraph);
+    logger.debug(artifactUri, `Saving artifact <${artifactUri}> to ${accountName}:${targetPath}`, compactedGraph);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
@@ -90,7 +90,7 @@ module.exports = async function publishArtifact(accountName, graph, logger) {
       return 500;
     }
 
-    logger.debug(artifactUri, `Saved artifact <${artifactUri}> to ${accountName}:${targetPath}`, null);
+    logger.info(artifactUri, `Successfully published artifact <${artifactUri}>.`, compactedGraph);
     return 200;
 
   } catch (err) {

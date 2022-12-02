@@ -272,7 +272,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, datase
     // Create the target path for the gstore
     var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
     var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
-    logger.info(datasetGraphUri, `Saving dataset to ${accountName}:${targetPath}`, compactedGraph);
+    logger.debug(datasetGraphUri, `Saving dataset to ${accountName}:${targetPath}`, compactedGraph);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
@@ -283,6 +283,8 @@ module.exports = async function publishDataid(accountName, expandedGraph, datase
       return 500;
     }
 
+    
+    logger.info(datasetGraphUri, `Successfully published dataset <${datasetGraphUri}>.`, compactedGraph);
     return 200;
 
     /*
