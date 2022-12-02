@@ -204,7 +204,7 @@ paths:
           required: false
           example: "true"
       requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        description: "A SPARQL query."
         required: true
         content:
           application/json:
@@ -289,8 +289,13 @@ paths:
           description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
           required: false
           example: "true"
+        - in: query
+          name: log-level
+          description: "Desired detail of the publish report. Can be set to either 'error', 'info' or 'debug'."
+          required: false
+          example: "info"
       requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        description: "Metadata in JSONLD. May contain any number of groups, artifacts and datasets"
         required: true
         content:
           application/json:
@@ -306,6 +311,12 @@ paths:
                     "description": "Cleaned datasets from DBpedia"
                   },
                   {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
+                    "@type": "Artifact",
+                    "title": "Geonames",
+                    "description": "Geonames data from DBpedia"
+                  },
+                  {
                     "@type": "Dataset",
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
                     "hasVersion": "2022-02-09",
@@ -314,9 +325,7 @@ paths:
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
                       {
-                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
                         "@type": "Part",
-                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
                         "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl"
