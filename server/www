@@ -46,7 +46,7 @@ function createFork(onListening) {
       });
     }
 
-    if (message.id == Constants.DATABUS_SEARCH_INDEX_REBUILD) {
+    if (message.id == DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD) {
       searchIndexer.requestRebuild();
     }
   });
@@ -66,6 +66,8 @@ function masterProcess() {
   searchIndexer = new LookupSearchIndexer(5000);
 
   initialize().then(function () {
+
+    var numCPUs = 1;
 
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);

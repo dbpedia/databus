@@ -191,11 +191,6 @@ instance.getGroupsByAccount = async function (account) {
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
 
   let bindings = await exec.executeSelect(query);
-
-  if (bindings.length === 0) {
-    return null;
-  }
-
   let result = [];
 
   for (let b in bindings) {

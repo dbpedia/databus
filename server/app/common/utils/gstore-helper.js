@@ -1,5 +1,6 @@
 var rp = require('request-promise');
 const Constants = require('../constants');
+const DatabusMessage = require('../databus-message');
 
 
 class GstoreHelper {
@@ -55,7 +56,7 @@ class GstoreHelper {
       var res = await rp.delete(uri);
 
       process.send({
-        id: Constants.DATABUS_SEARCH_INDEX_REBUILD
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
       });
 
       //  console.log(res);

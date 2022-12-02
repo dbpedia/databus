@@ -74,15 +74,20 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
   fileGraph[DatabusUris.JSONLD_ID] = `${baseUri}#${segment}`;
 }
 
-autocompleter.autocomplete = function (expandedGraph) {
+autocompleter.autocomplete = function (expandedGraph, logger) {
+
 
   var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
   var datasetUri = datasetGraph[DatabusUris.JSONLD_ID];
 
   // check path length (has to be four)
-  if (UriUtils.getResourcePathLength(datasetUri) != 4) {
-    return;
-  }
+  // if (UriUtils.getResourcePathLength(datasetUri) != 4) {
+  //  if(debug) {
+  //    notify(`Cancelled due to pathlength of ${datasetUri} being ${UriUtils.getResourcePathLength(datasetUri)}`);
+  //  }
+  //  
+  //  return;
+  // }
 
   // Auto-generate publisher entry
   var publisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
@@ -106,6 +111,15 @@ autocompleter.autocomplete = function (expandedGraph) {
     datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
+  if (datasetGraph[DatabusUris.DCT_ABSTRACT] == undefined 
+    && datasetGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+
+    var description = datasetGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
+    datasetGraph[DatabusUris.DCT_ABSTRACT] = [{}];
+    datasetGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+      DatabusUtils.createAbstractFromDescription(description);
+  }
+
   datasetGraph[DatabusUris.DCT_MODIFIED] = [{}];
   datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
   datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
@@ -124,7 +138,6 @@ autocompleter.autocomplete = function (expandedGraph) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
       fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
     }
-
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
       fileGraph[DatabusUris.DCT_ISSUED] = [{}];
@@ -146,15 +159,13 @@ autocompleter.autocomplete = function (expandedGraph) {
   }
 
   // Auto-complete content variants
-  contentVariantProperties = ArrayUtils.uniqueList(contentVariantProperties)
+  contentVariantProperties = ArrayUtils.uniqueList(contentVariantProperties);
 
   for (var contentVariantProperty of contentVariantProperties) {
 
     var propertyGraph = JsonldUtils.getGraphById(expandedGraph, contentVariantProperty);
 
     if (propertyGraph != undefined) {
-
-      console.log(JSON.stringify(propertyGraph, null, 2));
       continue;
     }
 
@@ -190,8 +201,8 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
 
   var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
   var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
-
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
+  
   expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATAID_GROUP });
 
   if (artifactGraph[DatabusUris.DCT_TITLE] == undefined) {

@@ -39,6 +39,30 @@ class UriUtils {
     return true;
   }
 
+  // Removes all trailing and leading slashes
+  static cleanSegment(path) {
+    while(path.startsWith('/')) {
+      path = path.substr(1);
+    }
+    
+    while(path.endsWith('/')) {
+      path = path.substr(0, path.length - 1);
+    }
+
+    return path;
+  }
+
+  static getPathLength(path) {
+    if(path.startsWith('/')) {
+      path = path.substr(1);
+    }
+    if(path.endsWith('/')) {
+      path = path.substr(0, path.length - 1);
+    }
+
+    return path.split('/').length;
+  }
+
   static getResourcePathLength(uri) {
     var parts = UriUtils.splitResourceUri(uri);
     return parts.length;

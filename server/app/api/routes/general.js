@@ -8,6 +8,11 @@ const publishGroup = require('../lib/publish-group');
 const publishDataId = require('../lib/publish-dataid');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const publishArtifact = require('../lib/publish-artifact');
+const Constants = require('../../common/constants');
+const DatabusLogLevel = require('../../common/databus-log-level');
+const JsonldUtils = require('../../common/utils/jsonld-utils');
+var jsonld = require('jsonld');
+const DatabusLogger = require('../../common/databus-logger');
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
@@ -25,8 +30,8 @@ module.exports = function (router, protector) {
     var query = req.body.query;
     var accept = req.headers['accept']
 
-    if(accept == undefined) {
-       accept = 'application/json';
+    if (accept == undefined) {
+      accept = 'application/json';
     }
 
     var options = {
@@ -42,72 +47,123 @@ module.exports = function (router, protector) {
     request.post(options).pipe(res);
   });
 
-
   router.post('/api/publish', protector.protect(true), async function (req, res, next) {
 
     try {
 
-      // Set return code to accepted
-      res.set('Content-Type', 'text/plain');
-      res.status(202);
-
       // Get the account namespace
       var account = req.databus.accountName;
-
-      // Find graph
+      var verifyParts = req.query['verify-parts'] == "false" ? false : true;
+      var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
-      var debug = req.query['debug'] == "true" ? true : false;
 
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
+        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      }
+
+      // Expand JSONLD!
+      var expandedGraph = await jsonld.flatten(graph);
       
+      // Publish groups
+      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_GROUP);
+      logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
+
+      console.log(groupGraphs);
+      
+      for (var groupGraph of groupGraphs) {
+        var resultCode = await publishGroup(account, groupGraph, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      // Publish artifacts
+      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
+      logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
+      
+      for (var artifactGraph of artifactGraphs) {
+        var resultCode = await publishArtifact(account, artifactGraph, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      // Publish versions
+      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_DATASET);
+      logger.debug(null, `Found ${datasetGraphs.length} dataset graphs.`, null);
+      
+      for (var datasetGraph of datasetGraphs) {
+        var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
+        var resultCode = await publishDataId(account, expandedGraph, datasetGraphUri, verifyParts, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      res.status(200).json(logger.getReport());
+
+
+      /*
       // Replace context if graph uses default context
 
       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
         graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
       }
 
-      res.write(`Publishing Group.\n`);
+      var groupLog = [];
 
-      var groupResult = await publishGroup(account, graph, null, function (message) {
-        res.write(`> ${message}\n`);
-      }, debug);
+      await publishGroup(account, graph, null, function (level, message, payload) {
+        logger(groupLog, level, message, payload);
+      });
 
-      if (groupResult != undefined) {
-        res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${groupResult.code}.\n`)
+      if (groupLog.length > 0) {
+        report.group = {};
+        report.group.log = artifactLog;
       }
 
-      res.write('================================================\n');
+      // report.log.push({ msg: `Publishing Artifact.` });
 
-      res.write(`Publishing Artifact.\n`);
+      var artifactLog = [];
 
-      var artifactResult = await publishArtifact(account, graph, null, function (message) {
-        res.write(`> ${message}\n`);
-      }, debug);
+      await publishArtifact(account, graph, null, function (level, message, payload) {
+        logger(artifactLog, level, message, payload);
+      });
 
-      if (artifactResult != undefined) {
-        res.write(`${MESSAGE_GROUP_PUBLISH_FINISHED}${artifactResult.code}.\n`)
+      if (artifactLog.length > 0) {
+        report.artifact = {};
+        report.artifact.log = artifactLog;
       }
 
-      res.write('================================================\n');
 
       var verifyParts = req.query['verify-parts'] == "false" ? false : true;
-    
-      res.write(`Publishing DataId.\n`);
 
+      // report.log.push({ msg: `Publishing DataId.` });
 
-      var dataIdResult = await publishDataId(account, graph, verifyParts, function (message) {
-        res.write(`> ${message}\n`);
-      }, debug);
+      report.dataid = {};
+      report.dataid.log = [];
+      var resultCode = await publishDataId(account, graph, verifyParts, function (level, message, payload) {
+        logger(report.dataid.log, level, message, payload);
+      });
 
-      if (dataIdResult != undefined) {
-        res.write(`${MESSAGE_DATAID_PUBLISH_FINISHED}${dataIdResult.code}.\n`)
+      if (resultCode != 200) {
+        res.status(resultCode).json(report);
+        return;
       }
 
-
-      res.end();
+      console.log(JSON.stringify(report));
+      res.status(200).json(report);
+      */
 
     } catch (err) {
       console.log(err);
-      res.status(500).end(err);
+      res.status(500).send(err);
     }
   });
 
@@ -117,7 +173,7 @@ module.exports = function (router, protector) {
     var queryString = '';
     var first = true;
 
-    for(var param in req.query) {
+    for (var param in req.query) {
       queryString += `${first ? '?' : '&'}${param}=${req.query[param]}`;
       first = false;
     }

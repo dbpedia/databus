@@ -127,7 +127,6 @@ async function initializeContext() {
 
   // Set file path
   var contextFile = __dirname + '/app/common/context.json';
-
   var contextString = JSON.stringify(context, null, 3);
 
   console.log(``);

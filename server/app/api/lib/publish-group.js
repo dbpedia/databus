@@ -2,122 +2,97 @@ const JsonldUtils = require('../../common/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
-
+const GstoreHelper = require('../../common/utils/gstore-helper');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var shaclTester = require('../../common/shacl/shacl-tester');
-var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('../../../../model/generated/context.json');
-const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+var defaultContext = require('./../../common/context.json');
 var autocompleter = require('./dataid-autocomplete');
 
-module.exports = async function publishGroup(account, data, uri, notify, debug) {
+module.exports = async function publishGroup(accountName, graph, logger) {
 
   try {
 
+    var groupUri = graph[DatabusUris.JSONLD_ID];
+    logger.debug(groupUri, `Processing group <${groupUri}>`, graph);
+
+    // Check for namespace violation
+    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
+    if (!groupUri.startsWith(expectedUriPrefix)) {
+      logger.error(groupUri, `Not allowed to access namespace of group identifier <${groupUri}>.`);
+      return 403;
+    }
+
+    var groupName = UriUtils.cleanSegment(groupUri.replace(expectedUriPrefix, ""));
+
+    if (UriUtils.getPathLength(groupName) != 1) {
+      logger.error(groupUri, `Group uri <${groupUri}> must have exactly 2 path segments relative to the Databus base url <${process.env.DATABUS_RESOURCE_BASE_URL}> (found ${UriUtils.getPathLength(groupName)  + 1})`, null);
+      return 400;
+    }
+
+    if (groupName == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+      logger.error(groupUri, `Cannot create group with name "${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER}" as it is reserved for Databus collections.`);
+      return 400;
+    }
+
     // Get the desired triples from the data via construct query
-    var triples = await constructor.executeConstruct(data, constructGroupQuery);
+    var triples = await constructor.executeConstruct(graph, constructGroupQuery);
     var tripleCount = DatabusUtils.lineCount(triples);
 
     if (tripleCount == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.`);
-      return { code: 100, message: null };
+      logger.info(groupUri, `Construct query did not yield any triples. Nothing to publish.`, graph);
+      return 200;
     }
 
-    notify(`${tripleCount} triples selected via construct query.`);
-
+    logger.debug(groupUri, `${tripleCount} triples selected via construct query.`, triples);
     var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
-    // No data - no publish
-    if (expandedGraphs.length == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.`);
-      return { code: 100, message: null };
-    }
-
-    // More than one group specified - error
-    if (expandedGraphs.length > 1) {
-      return {
-        code: 400, message:
-          `You cannot specify multiple graphs. (${expandedGraphs.length} specified)`
-      };
-    }
-
-    var before = JSON.stringify(expandedGraphs);
+    // Auto-complete
     autocompleter.autocompleteGroup(expandedGraphs);
-    var after = JSON.stringify(expandedGraphs);
-
-    if (before != after) {
-      notify(`Auto-completed the input.`);
-      if (debug) {
-        notify(JSON.stringify(expandedGraphs, null, 3));
-      }
-    }
+    logger.debug(groupUri, `Input has been processed by the auto-completer`, expandedGraphs);
 
 
     // Validate the group RDF with the shacl validation tool
     var shaclResult = await shaclTester.validateGroupRDF(expandedGraphs);
 
-    console.log(shaclResult);
-
-
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
-
-      notify(`SHACL validation error:`);
-
-      for (var message of shaclResult.messages) {
-        notify(`   * ${message}`);
-      }
-
-      return { code: 400, message: null };
+      logger.error(groupUri, `SHACL validation error`, shaclResult);
+      return 400;
     }
 
-    notify(`SHACL validation successful.`);
+    logger.debug(groupUri, `SHACL validation successful`, shaclResult);
 
-    // Get the group graph (enforced by earlier SHACL test)
-    var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
-    var groupUri = groupGraph['@id'];
-
-    if(uri != undefined && uri != groupUri) {
-      notify(`Forbidden: Invalid group identifier "${groupUri}". Expected "${uri}"`);
-      return { code: 403, message: null };
-    }
-
-
-    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${account}`;
-
-    // Check for namespace violation
-    if (!groupUri.startsWith(expectedUriPrefix)) {
-      return { code: 403, message: `Invalid group identifier ${groupUri}.` };
-    }
-
-    var targetPath = UriUtils.getPrunedPath(`${groupUri}/${Constants.DATABUS_FILE_GROUP}`);
-
-    var groupIdentifier = UriUtils.getPrunedPath(groupUri, 1);
-
-    if(groupIdentifier == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
-      notify(`Cannot create group with name ${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER} as it is reserved for Databus Collections`);
-    }
-
-    notify(`Saving to "${groupUri}"`);
 
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
 
-    
+    if(process.env.DATABUS_CONTEXT_URL != null) {
+      compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      logger.debug(groupUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
+    }
+
+    var targetPath = `${groupName}/${Constants.DATABUS_FILE_GROUP}`;
+    logger.info(groupUri, `Saving group <${groupUri}> to ${accountName}:${targetPath}`, compactedGraph);
+
     // Save the RDF with the current path using the database manager
-    var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
+    var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {
-      return { code: 500, message: 'Internal database error.' };
+      logger.error(groupUri, `Internal database error`, null);
+      return 500;
     }
 
-    return { code: 200, message: 'Success.' };
+    logger.debug(groupUri, `Saved group <${groupUri}> to ${accountName}:${targetPath}`, null);
+    return 200;
 
   } catch (err) {
+    console.log(`Unexpected Databus error when processing group data`);
     console.log(err);
-    return { code: 500, message: err };
+    logger.error(null, `Unexpected Databus error when processing group data`, null);
+    return 500;
   }
 }

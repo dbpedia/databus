@@ -3,7 +3,7 @@ const axios = require('axios');
 
 var analyzer = {};
 
-analyzer.analyzeFile = async function (url, notify) {
+analyzer.analyzeFile = async function (url) {
 
   try {
     var hash = shasum.create();
@@ -22,7 +22,7 @@ analyzer.analyzeFile = async function (url, notify) {
       bytesRead += data.length;
       hash = hash.update(data);
 
-      notify('' + bytesRead + '/' + contentLength + '$');
+      // notify('' + bytesRead + '/' + contentLength + '$');
     }
 
     return {

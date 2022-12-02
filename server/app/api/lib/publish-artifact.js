@@ -1,4 +1,3 @@
-const JsonldUtils = require('../../common/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
@@ -12,105 +11,92 @@ var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var autocompleter = require('./dataid-autocomplete');
 
-module.exports = async function publishArtifact(accountName, data, uri, notify, debug) {
+module.exports = async function publishArtifact(accountName, graph, logger) {
+
 
   try {
 
+    var artifactUri = graph[DatabusUris.JSONLD_ID];
+    logger.debug(artifactUri, `Processing artifact <${artifactUri}>`, graph);
+
+    // Check for namespace violation
+    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
+    if (!artifactUri.startsWith(expectedUriPrefix)) {
+      logger.error(artifactUri, `Not allowed to access namespace of artifact identifier <${artifactUri}>.`);
+      return 403;
+    }
+
+    var artifactSegment = UriUtils.cleanSegment(artifactUri.replace(expectedUriPrefix, ""));
+
+    if (UriUtils.getPathLength(artifactSegment) != 2) {
+      logger.error(artifactUri, `Artifact uri <${artifactUri}> must have exactly 3 path segments relative to the Databus base url <${process.env.DATABUS_RESOURCE_BASE_URL}> (found ${UriUtils.getPathLength(artifactSegment) + 1})`, null);
+      return 400;
+    }
+
+    var segments = artifactSegment.split("/");
+    var groupName = segments[0];
+    var artifactName = segments[1];
+
+    if (groupName == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+      logger.error(artifactUri, `Cannot create artifact with group name "${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER}" as it is reserved for Databus collections.`);
+      return 400;
+    }
+
     // Get the desired triples from the data via construct query
-    var triples = await constructor.executeConstruct(data, constructArtifactQuery);
+    var triples = await constructor.executeConstruct(graph, constructArtifactQuery);
     var tripleCount = DatabusUtils.lineCount(triples);
 
     if (tripleCount == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.`);
-      return { code: 100, message: null };
+      logger.info(artifactUri, `Construct query did not yield any triples. Nothing to publish.`, graph);
+      return 200;
     }
 
-    notify(`${tripleCount} triples selected via construct query.`);
-
+    logger.debug(artifactUri, `${tripleCount} triples selected via construct query.`, triples);
     var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
-    // No data - no publish
-    if (expandedGraphs.length == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.`);
-      return { code: 100, message: null };
-    }
-
-    // More than one group specified - error
-    if (expandedGraphs.length > 1) {
-      return {
-        code: 400, message:
-          `You cannot specify multiple graphs. (${expandedGraphs.length} specified)`
-      };
-    }
-
-    var before = JSON.stringify(expandedGraphs);
+    // Auto-complete
     autocompleter.autocompleteArtifact(expandedGraphs);
-    var after = JSON.stringify(expandedGraphs);
+    logger.debug(artifactUri, `Input has been processed by the auto-completer`, expandedGraphs);
 
-    if (before != after) {
-      notify(`Auto-completed the input.`);
-      if (debug) {
-        notify(JSON.stringify(expandedGraphs, null, 3));
-      }
-    }
-
-
-    // Validate the group RDF with the shacl validation tool
+    // Validate the artifact RDF with the shacl validation tool
     var shaclResult = await shaclTester.validateArtifactRDF(expandedGraphs);
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
-
-      notify(`SHACL validation error:`);
-
-      for (var message of shaclResult.messages) {
-        notify(`   * ${message}`);
-      }
-
-      return { code: 400, message: null };
+      logger.error(artifactUri, `SHACL validation error`, shaclResult);
+      return 400;
     }
 
-    notify(`SHACL validation successful.`);
-    // Get the group graph (enforced by earlier SHACL test)
-    var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
-    var artifactUri = artifactGraph['@id'];
+    logger.debug(artifactUri, `SHACL validation successful`, shaclResult);
 
-    if(uri != undefined && uri != artifactUri) {
-      notify(`Forbidden: Invalid artifact identifier "${artifactUri}". Expected "${uri}"`);
-      return { code: 403, message: null };
-    }
-
-    var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-
-    // Check for namespace violation
-    if (!artifactUri.startsWith(expectedUriPrefix)) {
-      return { code: 403, message: `Invalid artifact identifier ${artifactUri}.` };
-    }
-
-    var targetPath = UriUtils.getPrunedPath(`${artifactUri}/${Constants.DATABUS_FILE_ARTIFACT}`);
-    var groupName = UriUtils.getPrunedPath(artifactUri, 2);
-
-    if(groupName == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
-      notify(`Cannot create an artifact in a group with name ${Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER} as it is reserved for Databus Collections`);
-    }
-
-    notify(`Saving to "${artifactUri}"`);
 
     // Compact graph, determine target path
     var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+
+    if (process.env.DATABUS_CONTEXT_URL != null) {
+      compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      logger.debug(artifactUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
+    }
+
+    var targetPath = `${groupName}/${artifactName}/${Constants.DATABUS_FILE_ARTIFACT}`;
+    logger.info(artifactUri, `Saving artifact <${artifactUri}> to ${accountName}:${targetPath}`, compactedGraph);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {
-      return { code: 500, message: 'Internal database error.' };
+      logger.error(artifactUri, `Internal database error`, null);
+      return 500;
     }
 
-    return { code: 200, message: 'Success.' };
+    logger.debug(artifactUri, `Saved artifact <${artifactUri}> to ${accountName}:${targetPath}`, null);
+    return 200;
 
   } catch (err) {
+    console.log(`Unexpected Databus error when processing artifact data`);
     console.log(err);
-    return { code: 500, message: err };
+    logger.error(null, `Unexpected Databus error when processing artifact data`, null);
+    return 500;
   }
 }

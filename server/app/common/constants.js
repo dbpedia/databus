@@ -16,6 +16,10 @@ class Constants {
   static KEY_ACTIONS = 'actions';
   static KEY_MODS = 'mods';
 
+  static DATABUS_LOG_DEBUG = 'log_debug';
+  static DATABUS_LOG_INFO = 'log_info';
+  static DATABUS_LOG_ERROR = 'log_error';
+
 
   static DATABUS_SQLITE_USER_DATABASE_DIR = '/sqlite/';
   static DATABUS_SQLITE_USER_DATABASE_PATH = '/sqlite/users.db';
