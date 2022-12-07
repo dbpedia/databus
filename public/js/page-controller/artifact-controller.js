@@ -49,9 +49,16 @@ function ArtifactPageController($scope, $sce, collectionManager) {
     $( '#add-to-collection-modal' ).removeClass('is-active');
   }
 
-  $scope.latestVersionData = data.versions[0];
-  $scope.versionsData = data.versions;
-  $scope.artifactURI = DatabusUtils.navigateUp($scope.latestVersionData.versionUri);
+  $scope.versions = data.versions;
+  $scope.artifact = data.artifact;
+
+  $scope.artifact.title = DatabusUtils.stringOrFallback($scope.artifact.title, 
+    $scope.artifact.latestVersionTitle);
+  $scope.artifact.abstract = DatabusUtils.stringOrFallback($scope.artifact.abstract, 
+    $scope.artifact.latestVersionAbstract);
+  $scope.artifact.description = DatabusUtils.stringOrFallback($scope.artifact.description, 
+    $scope.artifact.latestVersionDescription);
+
 
   //not in data
   //$scope.artifactData = data.artifact;
@@ -59,7 +66,8 @@ function ArtifactPageController($scope, $sce, collectionManager) {
   //$scope.serviceData = data.services;
   //not in data
 
-  $scope.activeTab = 0;
+  $scope.tabs = {}
+  $scope.tabs.activeTab = 0;
   $scope.authenticated = data.auth.authenticated;
 
   $scope.fileSelector = {};
@@ -70,10 +78,10 @@ function ArtifactPageController($scope, $sce, collectionManager) {
   $scope.fileSelector.config.columns.push({ field : 'format', label : 'Format', width: '12%' });
   $scope.fileSelector.config.columns.push({ field : 'compression', label : 'Compression', width: '12%' });
 
-  $scope.artifactNode = new QueryNode($scope.artifactURI, 'dataid:artifact');
+  $scope.artifactNode = new QueryNode($scope.artifact.uri, 'dataid:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
 
-  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.artifactURI), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.artifact.uri), 'dataid:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};
@@ -141,8 +149,8 @@ function ArtifactPageController($scope, $sce, collectionManager) {
 
     var wrapper = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
     wrapper.addArtifactNode(
-      $scope.artifactURI,
-      $scope.latestVersionData.label,
+      $scope.artifact.uri,
+      $scope.artifact.title,
       $scope.fileSelector.settings);
 
     $scope.collectionManager.saveLocally();

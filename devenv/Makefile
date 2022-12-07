@@ -1,6 +1,8 @@
 DATABUS_RESOURCE_BASE_URL=http://localhost:3000
 DATABUS_DATABASE_URL=http://localhost:3002
 DATABUS_NAME="Just Another Databus"
+DATABUS_ORG_ICON="https://www.dbpedia.org/wp-content/uploads/2020/09/dbpedia-org-logo.png"
+DATABUS_BANNER_COLOR="\#5b798d"
 
 env-clean:
 	sudo rm -r data/; \
@@ -26,6 +28,9 @@ env-start-fuseki:
 env-clean-start: env-clean
 	docker compose up
 
+build-css: 
+	sass ../public/css/website.scss > ../public/css/website.css
+
 srv-install:
 	npm install --prefix ../server; \
 	npm install --prefix ../public
@@ -33,6 +38,8 @@ srv-install:
 srv-start-auth0:
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
 	DATABUS_NAME=${DATABUS_NAME} \
+	DATABUS_ORG_ICON=${DATABUS_ORG_ICON} \
+	DATABUS_BANNER_COLOR=${DATABUS_BANNER_COLOR} \
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com \
 	DATABUS_OIDC_CLIENT_ID=e9eOLS9IkGvuyBl7cBorWUQTNgbqejhc \

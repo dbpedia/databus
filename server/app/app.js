@@ -17,17 +17,24 @@ const DatabusUris = require("../../public/js/utils/databus-uris");
 const DatabusMessage = require("./common/databus-message");
 const DatabusWebDAV = require("./webdav");
 var DatabusProtect = require('./common/protect/middleware');
+const { env } = require("process");
 
 // Creation of the mighty server app
 var app = express();
 
 
 var context = JSON.stringify(require('../app/common/context.json'), null, 3);
+var titleColor = DatabusUtils.stringOrFallback(process.env.DATABUS_TITLE_COLOR, config.defaultColors.title);
+var bannerColor = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR, config.defaultColors.banner);
 
 app.locals = {
   databus: {
     version: config.version,
+    colors: {
+      banner: bannerColor
+    },
     name: process.env.DATABUS_NAME,
+    iconUrl: process.env.DATABUS_ORG_ICON,
     contextUrl: process.env.DATABUS_CONTEXT_URL,
     context: context,
     defaultContextUrl: process.env.DATABUS_DEFAULT_CONTEXT_URL,

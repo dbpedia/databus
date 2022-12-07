@@ -3,13 +3,24 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.group = data.group;
   $scope.artifacts = data.artifacts;
   $scope.services = data.services;
-  $scope.group.name = DatabusUtils.uriToName($scope.group.uri);
+
+  $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title, 
+    DatabusUtils.uriToTitle($scope.group.uri));
+   
+
+
+  for (var artifact of $scope.artifacts) {
+    artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
+    artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
+    artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
+  }
 
   $scope.facetsView = {};
   $scope.facetsView.resourceUri = $scope.group.uri;
   $scope.facetsView.settings = [];
   $scope.facetsView.parentSettings = null;
-  $scope.activeTab = 2;
+  $scope.tabs = {};
+  $scope.tabs.activeTab = 0;
   $scope.authenticated = data.auth.authenticated;
   $scope.selection = [];
 
@@ -57,7 +68,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.collectionManager = collectionManager;
 
   $scope.findArtifact = function (uri) {
-    return $scope.artifacts.find(function (a) { a.artifactUri === uri; });
+    return $scope.artifacts.find(function (a) { a.uri === uri; });
   }
 
   $scope.formatResult = function (result) {
@@ -102,19 +113,19 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
   $scope.select = function (artifact) {
     artifact.isSelected = true;
-    $scope.selection.push(artifact.artifactUri);
+    $scope.selection.push(artifact.uri);
   }
 
   $scope.deselect = function (artifact) {
     artifact.isSelected = false;
     $scope.selection = $scope.selection.filter(function (value, index, arr) {
-      return value !== artifact.artifactUri;
+      return value !== artifact.uri;
     });
   }
 
   $scope.isSelected = function (artifact) {
     for (var s in $scope.selection) {
-      if ($scope.selection[s] === artifact.artifactUri) {
+      if ($scope.selection[s] === artifact.uri) {
         return true;
       }
     }
@@ -168,16 +179,16 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     var wrapper = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
 
     for (var s in $scope.selection) {
-      var artifact = $scope.artifacts.find(function (a) { return a.artifactUri === $scope.selection[s]; });
-      wrapper.addArtifactNode(artifact.artifactUri, artifact.label);
+      var artifact = $scope.artifacts.find(function (a) { return a.uri === $scope.selection[s]; });
+      wrapper.addArtifactNode(artifact.uri, artifact.label);
     }
     $scope.collectionManager.saveLocally();
     $scope.search();
   }
 
   $scope.updateArtifactState = function (wrapper, artifact) {
-    artifact.alreadyAdded = wrapper.hasArtifact(artifact.artifactUri);
-    artifact.isSelected = artifact.alreadyAdded || $scope.selection.includes(artifact.artifactUri);
+    artifact.alreadyAdded = wrapper.hasArtifact(artifact.uri);
+    artifact.isSelected = artifact.alreadyAdded || $scope.selection.includes(artifact.uri);
   }
 
   $scope.search = function () {
@@ -210,7 +221,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
         var artifact = {
           label: result.label[0],
           // desc: result.comment[0],
-          artifactUri: result.resource[0]
+          uri: result.resource[0]
         };
 
         if ($scope.collectionManager.activeCollection != null) {

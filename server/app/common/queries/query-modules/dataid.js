@@ -28,8 +28,9 @@ instance.getGroup = async function (accountName, group) {
   let queryOptions = { GROUP_URI: groupUri };
   let query = exec.formatQuery(require('../sparql/get-group.sparql'), queryOptions);
   let bindings = await exec.executeSelect(query);
+  var group = bindings.length !== 0 ? bindings[0] : null;
 
-  return bindings.length !== 0 ? bindings[0] : null;
+  return group;
 }
 
 /**
@@ -80,6 +81,25 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
     console.log(err);
     return null;
   }
+}
+
+/**
+ * Get information about a databus artifact
+ */
+ instance.getArtifact = async function (accountName, groupName, artifactName) {
+
+  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName ]);
+
+  if (artifactUri == null) {
+    return null; // TODO throw error?
+  }
+
+  // Create the query and insert the account uri
+  let queryOptions = { ARTIFACT_URI: artifactUri };
+  let query = exec.formatQuery(require('../sparql/get-artifact.sparql'), queryOptions);
+  let bindings = await exec.executeSelect(query);
+
+  return bindings.length !== 0 ? bindings[0] : null;
 }
 
 /**

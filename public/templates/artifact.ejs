@@ -1,211 +1,121 @@
 <% include header %>
-<!--Artifact HTML-->
-<div ng-controller="ArtifactPageController">
+  <!--Artifact HTML-->
+  <div ng-controller="ArtifactPageController">
 
-  <!-- Header Section-->
-  <section class="hero is-medium-small databus-banner is-artifact">
-    <div class="hero-body">
-      <div class="container has-text-left">
-        <div style="display: flex; align-items: center;">
-          <svg width="64" height="64" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"
-            xmlns:serif="http://www.serif.com/" fill-rule="evenodd" clip-rule="evenodd">
-            <path class="is-white" serif:id="shape 21" fill="#fff" d="M6,0 L1,6 l5,6 l5,-6 L6,0z" /></svg>
-          <div style="margin-left: 24px;">
-            <h1 class="title is-2 is-marginless">{{ latestVersionData.label }}</h1>
-            <uri-breadcrumbs class="header-breadcrumbs" uri="artifactURI"></uri-breadcrumbs>
+    <style>
+      .resource-page-title {
+        margin-bottom: .2em !important;
+        margin-top: 0em !important;
+      }
+
+      .databus-banner-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .databus-banner-text {
+        margin-left: 24px;
+      }
+
+      .databus-no-content {
+        background-color: #f3f3f3;
+        color: #bebebe;
+        font-size: 28px;
+        width: 100%;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
+
+    <!-- Header Section-->
+    <section class="hero is-medium-small databus-banner is-artifact">
+      <div class="hero-body">
+        <div class="container has-text-left">
+          <div class="databus-banner-content">
+            <svg width="64" height="64" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"
+              xmlns:serif="http://www.serif.com/" fill-rule="evenodd" clip-rule="evenodd">
+              <path class="is-white" serif:id="shape 21" fill="#fff" d="M6,0 L1,6 l5,6 l5,-6 L6,0z" />
+            </svg>
+            <div class="databus-banner-text">
+              <h1 class="title is-2 resource-page-title">{{ artifact.title }}</h1>
+              <uri-breadcrumbs class="header-breadcrumbs" uri="artifact.uri"></uri-breadcrumbs>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--About section with version table-->
+    <div class="collection-editor-header">
+      <div class="container">
+        <!--About text-->
+        <div id="artifact-info" class="topic">
+          <p class="section-label">About</p>
+          <p>{{ artifact.description }}</p>
+        </div>
+        <div ng-if="versions == null || versions.length == 0" style="margin-bottom: 2em">
+        </div>
+        <div ng-if="versions != null && versions.length > 0">
+          <!--Tabs-->
+          <div class="collection-editor-tabs">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }" 
+              ng-click="tabs.activeTab=0;">
+              <div class="section-label">Files</div>
+            </div>
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }" 
+              ng-click="tabs.activeTab=1;">
+              <div class="section-label">Versions</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="open-beta">Open Beta</div>
-  </section>
-
-  <!--About section with version table-->
-  <div class="collection-editor-header">
-    <div class="container">
-      <!--About text-->
-      <div id="artifact-info" class="topic">
-        <p class="section-label">About</p>
-        <p>{{ latestVersionData.comment }}</p>
-      </div>
-
-      <!--Tabs-->
-      <div class="collection-editor-tabs">
-        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
-          <div class="section-label">Files</div>
+    <section class="section">
+      <div class="container" style="min-height: 480px;">
+        <!--Version table-->
+        <div class="topic" ng-if="tabs.activeTab==1">
+          <table class="table is-size-6 is-fullwidth">
+            <col width="40%">
+            <col width="30%">
+            <col width="30%">
+            <tbody>
+              <tr>
+                <th>Version</th>
+                <th>Release Date</th>
+                <th class="is-hidden-touch">License</th>
+              </tr>
+              <tr ng-repeat="version in versions">
+                <td>
+                  <a href="{{ version.versionUri }}">{{ version.version }}</a>
+                </td>
+                <td>{{ formatDate(version.date) }}</td>
+                <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab=1;">
-          <div class="section-label">Versions</div>
+        <div class="topic file-browser" ng-if="tabs.activeTab==0">
+          <div ng-if="versions == null || versions.length == 0">
+            <div class="databus-no-content">
+              <p>There are no datasets associated with this artifact!</p>
+            </div>
+          </div>
+          <div ng-if="versions != null && versions.length > 0">
+            <div class="columns" style="margin-top: 0;">
+              <div class="column is-3">
+                <facets-view node="artifactNode" resource-type="artifact" on-change="onFacetSettingsChanged()">
+                </facets-view>
+              </div>
+              <div class="column">
+                <file-browser node="groupNode" full-query="fileSelector.fullQuery" query="fileSelector.query"
+                  config="fileSelector.config"></file-browser>
+              </div>
+            </div>
+          </div>
         </div>
-<!--        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 2 }" ng-click="activeTab=2;">-->
-<!--          <div class="section-label">Services</div>-->
-<!--        </div>-->
       </div>
-
-    </div>
+    </section>
   </div>
-
-  <!--Services section-->
-  <section class="section">
-    <div class="container" style="min-height: 480px;">
-
-      <!--Version table-->
-      <div class="topic" ng-if="activeTab==1" >
-
-
-        <table class="table is-size-6 is-fullwidth">
-          <col width="40%">
-          <col width="30%">
-          <col width="30%">
-          <tbody>
-            <tr>
-              <th>Version</th>
-              <th>Release Date</th>
-              <th class="is-hidden-touch">License</th>
-            </tr>
-            <tr ng-repeat="version in versionsData">
-              <td>
-                <a href="{{ version.versionUri }}">{{ version.version }}</a>
-              </td>
-              <td>{{ formatDate(version.date) }}</td>
-              <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div ng-if="activeTab==2">
-        <!--Shared services topic-->
-        <div class="topic" ng-if="serviceData.shared.length > 0">
-          <p class="topic-label">
-            Shared Services <a href="https://github.com/dbpedia/databus-content/blob/master/services.ttl#L8"
-              target="_blank">(?)</a>
-          </p>
-          <!--Slick slider with fix-->
-          <div class="sliderboys">
-            <div ng-repeat="data in serviceData.shared" class="carousel-item">
-              <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.description">
-              </entity-card>
-
-              <div ng-if="!$last" class="is-divider"></div>
-            </div>
-          </div>
-        </div>
-        <!--Dedicated services topic-->
-        <div class="topic" ng-if="serviceData.dedicated.length > 0">
-          <p class="topic-label">Dedicated Services</p>
-          <!--Slick slider with fix-->
-          <div class="sliderboys">
-            <div ng-repeat="data in serviceData.dedicated" class="carousel-item">
-              <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.description">
-              </entity-card>
-
-              <div ng-if="!$last" class="is-divider"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="topic file-browser" ng-if="activeTab==0">
-        <div class="columns" style="margin-top: 0;">
-          <div class="column is-3">
-
-            <facets-view node="artifactNode" resource-type="artifact" on-change="onFacetSettingsChanged()">
-            </facets-view>
-        
-          </div>
-          <div class="column">
-              <file-browser node="groupNode" 
-                full-query="fileSelector.fullQuery" query="fileSelector.query" 
-                config="fileSelector.config"></file-browser>
-          </div>
-        </div>
-
-
-        <!-- sucess or fail modal - TODO: clean this ng-if up! -->
-        <div class="modal" ng-class="{ 'is-active' : statusCode > 0 }">
-          <div class="modal-background" ng-click="resetStatus()" style="background-color: rgba(0, 0, 0, 0.4)"></div>
-          <div class="modal-card">
-            <section class="modal-card-body">
-              <div style="display:flex; align-items:center;">
-              <svg class="dashing success" width="64" height="64"  version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2"
-                ng-if="getStatusSuccess()">
-                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-              </svg>
-
-              <svg class="dashing error"  width="64" height="64"  version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2"
-                ng-if="!getStatusSuccess()">
-                <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
-                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
-              </svg>
-
-              <div class="field" style="margin-left:1em">
-                <div>{{ getStatusMessage(statusCode) }}</div>
-              </div>
-            </div>
-            </section>
-          </div>
-        </div>
-
-        <!--
-        <div id="add-to-collection-modal" class="modal">
-          <div class="modal-background" ng-click="hideCollectionModal()" style="background-color: rgba(0, 0, 0, 0.4)">
-          </div>
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title">Add Artifact to Collection</p>
-              <button ng-click="hideCollectionModal()" class="delete" aria-label="close"></button>
-            </header>
-            <section class="modal-card-body">
-              <table class="table is-fullwidth">
-                <col width="40%">
-                <col width="60%">
-                <tr>
-                  <th colspan="2">Summary</th>
-                </tr>
-                <tr>
-                  <td>Files</td>
-                  <td>
-                    <span>{{ fileSelector.numFiles }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Total Size</td>
-                  <td>
-                    <span>{{ formatUploadSize(fileSelector.totalSize / (1024 * 1024)) }} MB</span>
-                  </td>
-                </tr>
-              </table>
-              <div>
-                <div class="title is-6">Add to</div>
-                <div style="max-height:200px; overflow-y:scroll;">
-                  <div ng-click="collectionManager.setActive(collection.id)"
-                    ng-class="{ 'is-active' : collection.id == collectionManager.activeCollection.id }"
-                    ng-repeat="collection in collectionManager.collections" href="#" class="is-list-item is-clickable">
-                    {{ collection.label }} ({{ formatId(collection.id) }})
-                  </div>
-                </div>
-              </div>
-            </section>
-            <footer class="modal-card-foot">
-              <button ng-click="addArtifactNodeToCollection()" class="button is-primary is-active">
-                <span class="icon has-text-primary has-margin-right">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                    <path
-                      d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z" />
-                  </svg>
-                </span>
-                Add to Collection
-              </button>
-              <button ng-click="hideCollectionModal()" class="button">Cancel</button>
-            </footer>
-          </div>
-        </div>-->
-
-      </div>
-    </div>
-  </section>
-</div>
-<% include footer %>
+  <% include footer %>

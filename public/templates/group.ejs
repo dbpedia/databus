@@ -1,160 +1,114 @@
 <% include header %>
+
+
   <div ng-controller="GroupPageController">
+
+    <style>
+      .resource-page-title {
+        margin-bottom: .2em !important;
+        margin-top: 0em !important;
+      }
+
+      .databus-banner-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .databus-banner-text {
+        margin-left: 24px;
+      }
+
+      .databus-no-content {
+        background-color: #f3f3f3;
+        color: #bebebe;
+        font-size: 28px;
+        width: 100%;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
     <section class="hero is-medium-small databus-banner is-group">
       <div class="hero-body">
         <div class="container has-text-left">
-          <div style="display: flex; align-items: center;">
+          <div class="databus-banner-content">
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
               <path class="is-white" fill="#fff"
                 d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z" />
             </svg>
-            <div style="margin-left: 24px;">
-              <h1 class="title is-2 has-text-left is-marginless">{{ groupData.publisher }} {{ group.label }}</h1>
+            <div class="databus-banner-text">
+              <h1 class="resource-page-title title is-2 has-text-left">{{ group.title }}</h1>
               <uri-breadcrumbs class="header-breadcrumbs" uri="group.uri"></uri-breadcrumbs>
             </div>
           </div>
         </div>
       </div>
-      <div class="open-beta">Open Beta</div>
     </section>
-
-
     <div class="collection-editor-header">
-
       <div class="container">
-
         <div class="content">
-
-          <div ng-if="group.comment">
+          <div ng-if="group.abstract">
             <p class="section-label">
               About
             </p>
-            {{ group.comment }}
+            {{ group.description }}
           </div>
-
-          <div ng-if="group.groupdocu">
-            <br />
-            <br />
-            <p class="is-size-6 menu-label">
-              dataid&#8239;:&#8239;groupdocu
-            </p>
-            <div class="content description-markdown">
-              <div class="hyphens description-markdown" ng-bind-html="markdownToHtml(group.groupdocu)"></div>
+        </div>
+        <div ng-if="artifacts == null || artifacts.length == 0" style="margin-bottom: 2em">
+        </div>
+        <div ng-if="artifacts != null && artifacts.length > 0">
+          <!--Tabs-->
+          <div class="collection-editor-tabs">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }" ng-click="tabs.activeTab=0;">
+              <div class="section-label">Files</div>
+            </div>
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }" ng-click="tabs.activeTab=1;">
+              <div class="section-label">Artifacts</div>
             </div>
           </div>
-
         </div>
-
-        <!--Tabs-->
-        <div class="collection-editor-tabs">
-         
-          <!--        <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 1 }" ng-click="activeTab=1;">-->
-          <!--          <div class="section-label">Services</div>-->
-          <!--        </div> -->
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 2 }" ng-click="activeTab=2;">
-            <div class="section-label">Files</div>
-          </div>
-
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : activeTab == 0 }" ng-click="activeTab=0;">
-            <div class="section-label">Artifacts</div>
-          </div>
-        </div>
-
       </div>
     </div>
     <section class="section">
       <div class="container" style="min-height: 480px">
-
-        <div ng-if="activeTab==1">
-
-          <div ng-if="services.shared.length > 0">
-            <p class="section-label">
-              Shared Services <a href="https://github.com/dbpedia/databus-content/blob/master/services.ttl#L8"
-                target="_blank">(?)</a>
-            </p>
-            <br />
-            <div class="sliderboys">
-              <div ng-repeat="data in services.shared" class="carousel-item">
-                <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.description">
-                </entity-card>
-
-                <div ng-if="!$last" class="is-divider"></div>
-              </div>
+        <div ng-if="tabs.activeTab == 0">
+          <div ng-if="artifacts.length == 0">
+            <div class="databus-no-content">
+              <p>There are no datasets associated with this group!</p>
             </div>
           </div>
-
-          <div ng-if="services.dedicated.length > 0">
-            <br />
-            <br />
-            <p class="section-label">
-              Dedicated Services
-            </p>
-            <br />
-            <div class="sliderboys">
-              <div ng-repeat="data in services.dedicated" class="carousel-item">
-                <entity-card label="data.title" image-url="data.icon" uri="data.uri" desc="data.description">
-                </entity-card>
-                <div ng-if="!$last" class="is-divider"></div>
+          <div ng-if="artifacts.length > 0">
+            <div class="columns" style="margin-top: 0;">
+              <div class="column is-3">
+                <facets-view node="groupNode" resource-type="group" on-change="onFacetSettingsChanged()">
+                </facets-view>
+              </div>
+              <div class="column">
+                <file-browser node="groupNode" full-query="fileSelector.fullQuery" query="fileSelector.query"
+                  config="fileSelector.config" on-file-query-result="onFileQueryResult"></file-browser>
               </div>
             </div>
           </div>
         </div>
-
-        <div ng-if="activeTab==0">
-
-
-
+        <div ng-if="tabs.activeTab == 1">
           <div class="field" style="display: flex; line-height: 1;">
-
             <div class="control" style="flex:1;margin-right: 0.5em;">
               <input class="input" type="text" ng-model="$parent.searchInput" ng-change="invokeSearch();"
                 placeholder="Search this group...">
             </div>
-
-
           </div>
-
-
           <br />
-
           <div class="dataset-name" ng-repeat="result in artifacts">
             <div style="display: flex; align-items: center;">
-              <entity-card style="flex: 1;" label="result.label" type="'Artifact'" uri="result.artifactUri"
-                desc="result.desc">
+              <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
+                desc="result.abstract">
               </entity-card>
             </div>
             <div ng-if="!$last" class="is-divider"></div>
           </div>
         </div>
-
-        <div ng-if="activeTab==2">
-
-          <div class="columns" style="margin-top: 0;">
-            <div class="column is-3">
-              <facets-view node="groupNode" resource-type="group" on-change="onFacetSettingsChanged()">
-              </facets-view>
-
-              <!--br />
-            <a class="button is-primary" style="width:100%" ng-click="showCollectionModal()">
-              <span class="icon" style="margin-right: 8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                  <path
-                    d="M11.499 12.03v11.971l-10.5-5.603v-11.835l10.5 5.467zm11.501 6.368l-10.501 5.602v-11.968l10.501-5.404v11.77zm-16.889-15.186l10.609 5.524-4.719 2.428-10.473-5.453 4.583-2.499zm16.362 2.563l-4.664 2.4-10.641-5.54 4.831-2.635 10.474 5.775z" />
-                </svg>
-              </span>
-              <span>
-                Add to Collection
-              </span>
-            </a>-->
-            </div>
-            <div class="column">
-              <file-browser node="groupNode" full-query="fileSelector.fullQuery" query="fileSelector.query"
-                config="fileSelector.config" on-file-query-result="onFileQueryResult"></file-browser>
-            </div>
-          </div>
-        </div>
-
-
       </div>
     </section>
   </div>

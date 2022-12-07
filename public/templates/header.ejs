@@ -30,72 +30,108 @@
   <% if(site.minifyJs){ %>
 
     <script src="/min/databus.min.js"></script>
-  <% } else { %>
-    <script src="/js/utils/databus-uris.js"></script>
-    <script src="/js/page-controller/header-controller.js"></script>
-    <script src="/js/page-controller/account-controller.js"></script>
-    <script src="/js/page-controller/profile-controller.js"></script>
-    <script src="/js/components/databus-search/databus-search.js"></script>
-    <script src="/js/page-controller/collections-editor-controller.js"></script>
-    <script src="/js/page-controller/collection-controller.js"></script>
-    <script src="/js/page-controller/frontpage-controller.js"></script>
-    <script src="/js/page-controller/artifact-controller.js"></script>
-    <script src="/js/page-controller/version-controller.js"></script>
-    <script src="/js/page-controller/group-controller.js"></script>
-    <script src="/js/page-controller/publish-wizard-controller.js"></script>
-    <script src="/js/publish/dataid-creator.js"></script>
-    <script src="/js/publish/publish-data.js"></script>
-    <script src="/js/publish/file-analyzer-client.js"></script>
-    <script src="/js/components/file-browser/file-browser.js"></script>
-    <script src="/js/components/collection-node/collection-node.js"></script>
-    <script src="/js/components/collection-search/collection-search.js"></script>
-    <script src="/js/components/edit-label/edit-label.js"></script>
-    <script src="/js/components/override-checkbox/override-checkbox.js"></script>
-    <script src="/js/components/collection-editor/collection-editor.js"></script>
-    <script src="/js/components/collection-editor-widget/collection-editor-widget.js"></script>
-    <script src="/js/components/collection-hierarchy/collection-hierarchy.js"></script>
-    <script src="/js/components/collection-hierarchy-two/collection-hierarchy.js"></script>
-    <script src="/js/components/collection-statistics/collection-statistics.js"></script>
-    <script src="/js/components/collection-status/collection-status.js"></script>
-    <script src="/js/components/collection-data-table/collection-data-table.js"></script>
-    <script src="/js/components/table-editor/table-editor.js"></script>
-    <script src="/js/components/expandable-arrow/expandable-arrow.js"></script>
-    <script src="/js/components/databus-icon/databus-icon.js"></script>
-    <script src="/js/components/artifact-card/artifact-card.js"></script>
-    <script src="/js/components/uri-breadcrumbs/uri-breadcrumbs.js"></script>
-    <script src="/js/components/yasqe-text/yasqe-text.js"></script>
-    <script src="/js/components/type-tag/type-tag.js"></script>
-    <script src="/js/components/facets-view/facets-view.js"></script>
-    <script src="/js/components/entity-card/entity-card.js"></script>
-    <script src="/js/components/search/search-controller.js"></script>
-    <script src="/js/components/autofill-dropdown/autofill-dropdown.js"></script>
-    <script src="/js/components/multiselect-dropdown/multiselect-dropdown.js"></script>
-    <script src="/js/components/multiselect-artifact-dropdown/multiselect-artifact-dropdown.js"></script>
-    <script src="/js/utils/databus-response.js"></script>
-    <script src="/js/utils/databus-constants.js"></script>
-    <script src="/js/utils/jsonld-context.js"></script>
-    <script src="/js/utils/databus-utils.js"></script>
-    <script src="/js/utils/databus-facets-cache.js"></script>
-    <script src="/js/collections/databus-collection-manager.js"></script>
-    <script src="/js/collections/databus-collection-utils.js"></script>
-    <script src="/js/collections/databus-collection-wrapper.js"></script>
-    <script src="/js/query-builder/query-builder.js"></script>
-    <script src="/js/query-builder/query-node.js"></script>
-    <script src="/js/query-builder/query-templates.js"></script>
-    <script src="/js/angular-application.js"></script>
-  <% } %>
+    <% } else { %>
+      <script src="/js/utils/databus-uris.js"></script>
+      <script src="/js/page-controller/header-controller.js"></script>
+      <script src="/js/page-controller/account-controller.js"></script>
+      <script src="/js/page-controller/profile-controller.js"></script>
+      <script src="/js/components/databus-search/databus-search.js"></script>
+      <script src="/js/page-controller/collections-editor-controller.js"></script>
+      <script src="/js/page-controller/collection-controller.js"></script>
+      <script src="/js/page-controller/frontpage-controller.js"></script>
+      <script src="/js/page-controller/artifact-controller.js"></script>
+      <script src="/js/page-controller/version-controller.js"></script>
+      <script src="/js/page-controller/group-controller.js"></script>
+      <script src="/js/page-controller/publish-wizard-controller.js"></script>
+      <script src="/js/publish/dataid-creator.js"></script>
+      <script src="/js/publish/publish-data.js"></script>
+      <script src="/js/publish/file-analyzer-client.js"></script>
+      <script src="/js/components/file-browser/file-browser.js"></script>
+      <script src="/js/components/collection-node/collection-node.js"></script>
+      <script src="/js/components/collection-search/collection-search.js"></script>
+      <script src="/js/components/edit-label/edit-label.js"></script>
+      <script src="/js/components/override-checkbox/override-checkbox.js"></script>
+      <script src="/js/components/collection-editor/collection-editor.js"></script>
+      <script src="/js/components/collection-editor-widget/collection-editor-widget.js"></script>
+      <script src="/js/components/collection-hierarchy/collection-hierarchy.js"></script>
+      <script src="/js/components/collection-hierarchy-two/collection-hierarchy.js"></script>
+      <script src="/js/components/collection-statistics/collection-statistics.js"></script>
+      <script src="/js/components/collection-status/collection-status.js"></script>
+      <script src="/js/components/collection-data-table/collection-data-table.js"></script>
+      <script src="/js/components/table-editor/table-editor.js"></script>
+      <script src="/js/components/expandable-arrow/expandable-arrow.js"></script>
+      <script src="/js/components/databus-icon/databus-icon.js"></script>
+      <script src="/js/components/artifact-card/artifact-card.js"></script>
+      <script src="/js/components/uri-breadcrumbs/uri-breadcrumbs.js"></script>
+      <script src="/js/components/yasqe-text/yasqe-text.js"></script>
+      <script src="/js/components/type-tag/type-tag.js"></script>
+      <script src="/js/components/facets-view/facets-view.js"></script>
+      <script src="/js/components/entity-card/entity-card.js"></script>
+      <script src="/js/components/search/search-controller.js"></script>
+      <script src="/js/components/autofill-dropdown/autofill-dropdown.js"></script>
+      <script src="/js/components/multiselect-dropdown/multiselect-dropdown.js"></script>
+      <script src="/js/components/multiselect-artifact-dropdown/multiselect-artifact-dropdown.js"></script>
+      <script src="/js/utils/databus-response.js"></script>
+      <script src="/js/utils/databus-constants.js"></script>
+      <script src="/js/utils/jsonld-context.js"></script>
+      <script src="/js/utils/databus-utils.js"></script>
+      <script src="/js/utils/databus-facets-cache.js"></script>
+      <script src="/js/collections/databus-collection-manager.js"></script>
+      <script src="/js/collections/databus-collection-utils.js"></script>
+      <script src="/js/collections/databus-collection-wrapper.js"></script>
+      <script src="/js/query-builder/query-builder.js"></script>
+      <script src="/js/query-builder/query-node.js"></script>
+      <script src="/js/query-builder/query-templates.js"></script>
+      <script src="/js/angular-application.js"></script>
+      <% } %>
 
 
-  
+
 
 </head>
 
 <body ng-app="databusApplication" ng-cloak>
-  <nav ng-controller="HeaderController" id="navbar" class="navbar" style="position: relative; z-index: 2000;">
-    <div ng-if="showCookieDialogue" style="position: fixed; bottom: 30px; left: 30px; 
-      background-color: white; padding: 2em; border-radius: 8px; 
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); max-width: 450px; z-index: 10000;">
-      <h1 style="font-size: 1.1em; font-weight: 700; margin-bottom: 0.75em;">We use cookies</h1>
+
+  <style>
+    .org-icon {
+      max-width: 512px;
+      max-height: 36px;
+      margin-right: 1em;
+    }
+
+    .databus-navbar {
+      position: relative; 
+      z-index: 2000;
+      height: 78px;
+    }
+
+    .cookie-dialogue {
+      position: fixed; 
+      bottom: 30px; 
+      left: 30px; 
+      background-color: white; 
+      padding: 2em; 
+      border-radius: 8px; 
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
+      max-width: 450px; 
+      z-index: 10000;
+    }
+
+    .cookie-dialogue h1 {
+      font-size: 1.1em; 
+      font-weight: 700; 
+      margin-bottom: 0.75em;
+    }
+
+    .databus-home-icon {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+  <nav ng-controller="HeaderController" id="navbar" class="navbar databus-navbar">
+    
+    <div ng-if="showCookieDialogue" class="cookie-dialogue">
+      <h1>We use cookies</h1>
       <div style="margin-bottom: 1em;">By using our site you agree to our use of cookies to deliver a better site
         experience.</div>
       <button class="button is-primary" ng-click="giveCookieConsent()">
@@ -104,17 +140,23 @@
     </div>
     <div class="container">
       <div class="navbar-brand">
-        <a href="/">
-          <svg class="navbar-item" style="margin:10px" xmlns="http://www.w3.org/2000/svg"
-            xmlns:svg="http://www.w3.org/2000/svg" height="15mm" viewBox="0 0 40.326191 46.198502" version="1.1"
-            id="svg5">
-            <defs id="defs2" />
-            <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
-              <path id="path42117"
-                style="fill:#fff;;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
-            </g>
-          </svg>
+        <a class="databus-home-icon" href="/">
+          <% if(databus.iconUrl != null && databus.iconUrl.length > 0){ %>
+            <!-- ORG ICON -->
+            <img class="org-icon" src="<%= databus.iconUrl %>" />
+          <% } else { %>
+            <!-- DATABUS ICON -->
+            <svg class="navbar-item" style="margin:10px" xmlns="http://www.w3.org/2000/svg"
+              xmlns:svg="http://www.w3.org/2000/svg" height="15mm" viewBox="0 0 40.326191 46.198502" version="1.1"
+              id="svg5">
+              <defs id="defs2" />
+              <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
+                <path id="path42117"
+                  style="fill:#fff;;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                  d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
+              </g>
+            </svg>
+          <% } %>
         </a>
       </div>
       <div class="navbar-menu">

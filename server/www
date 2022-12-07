@@ -33,17 +33,17 @@ function broadcast(msg) {
 function createFork(onListening) {
   var fork = cluster.fork();
 
-  if(onListening != undefined) {
-    fork.on('listening', function(address) {
+  if (onListening != undefined) {
+    fork.on('listening', function (address) {
       onListening();
     });
   }
 
   fork.on('message', function (message) {
-    if(message.id == DatabusMessage.NOTIFY_DATABUS_USER_ADDED) {
+    if (message.id == DatabusMessage.NOTIFY_DATABUS_USER_ADDED) {
       broadcast({
-        id : DatabusMessage.DATABUS_USER_ADDED,
-        body : message.body
+        id: DatabusMessage.DATABUS_USER_ADDED,
+        body: message.body
       });
     }
 
@@ -66,21 +66,35 @@ function masterProcess() {
 
   searchIndexer = new LookupSearchIndexer(5000);
 
+  console.log(`================================================`);
+  console.log(``)
+  console.log(`Environment Variables:`)
+  console.log(`------------------------------------------------`);
+  console.log(`DATABUS_RESOURCE_BASE_URL\t${process.env.DATABUS_RESOURCE_BASE_URL}`);
+  console.log(`DATABUS_NAME\t\t\t${process.env.DATABUS_NAME}`);
+  console.log(`DATABUS_ORG_ICON\t\t${process.env.DATABUS_ORG_ICON}`);
+  console.log(`DATABUS_BANNER_COLOR\t\t${process.env.DATABUS_BANNER_COLOR}`);
+  console.log(``)
+  console.log(`================================================`);
+  console.log(``)
+
+  // TODO: Validate startup environment variables
+
   initialize().then(function () {
 
     var numCPUs = 1;
 
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
-    console.log(`================================================`);
 
+    console.log(`================================================`);
     var numStartedWorkers = 0;
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);
-      createFork(function() {
+      createFork(function () {
         numStartedWorkers++;
-        if(numCPUs == numStartedWorkers && config.runStartupTests) {
+        if (numCPUs == numStartedWorkers && config.runStartupTests) {
           console.log(`================================================`);
           console.log(`All workers started. Running tests...`);
           console.log(`================================================`);

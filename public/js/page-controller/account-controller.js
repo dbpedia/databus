@@ -23,7 +23,7 @@ function AccountPageController($scope, $http, $location) {
     minRelevance: 0.01,
     maxResults: 10,
     placeholder: `Search ${$scope.profileData.accountName}'s data...`,
-    resourceTypes: [ 'Group', 'Artifact' ],
+    resourceTypes: ['Group', 'Artifact'],
     filter: `&publisher=${$scope.profileData.accountName}&typeNameWeight=0`
   };
 
@@ -32,7 +32,7 @@ function AccountPageController($scope, $http, $location) {
     minRelevance: 0.01,
     maxResults: 10,
     placeholder: `Search ${$scope.profileData.accountName}'s collections...`,
-    resourceTypes: [ 'Collection' ],
+    resourceTypes: ['Collection'],
     filter: `&publisher=${$scope.profileData.accountName}&publisherWeight=0&typeNameWeight=0`
   };
 
@@ -46,12 +46,18 @@ function AccountPageController($scope, $http, $location) {
       $scope.publishedData.groups = response.data.groups;
       $scope.publishedData.artifacts = response.data.artifacts;
 
-      for(var group of $scope.publishedData.groups) {
-        group.artifacts = $scope.publishedData.artifacts.filter(function(a) {
-          return a.groupUri == group.uri;
+      for (var artifact of $scope.publishedData.artifacts) {
+        artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
+        artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
+        artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
+      }
+
+      for (var group of $scope.publishedData.groups) {
+        group.artifacts = $scope.publishedData.artifacts.filter(function (a) {
+          return a.group == group.uri;
         });
       }
-     
+
       $scope.recentUploads = $scope.publishedData.artifacts.slice(0, 3);
 
       $scope.refreshFeaturedContent();
@@ -128,32 +134,32 @@ function AccountPageController($scope, $http, $location) {
   $scope.tabViewModel.tabs.length = 4;
 
 
- 
 
-  $scope.goToTab = function(value) {
+
+  $scope.goToTab = function (value) {
     $location.hash(value);
   }
 
 
 
-  $scope.$watch("location.hash()", function(newVal, oldVal) {
+  $scope.$watch("location.hash()", function (newVal, oldVal) {
 
-    if(newVal == 'settings') {
+    if (newVal == 'settings') {
       $scope.tabViewModel.activeTab = 4;
     }
-  
-    if(newVal == 'collections') {
+
+    if (newVal == 'collections') {
       $scope.tabViewModel.activeTab = 2;
     }
 
-    if(newVal == 'data') {
+    if (newVal == 'data') {
       $scope.tabViewModel.activeTab = 1;
     }
 
-    if(newVal == '') {
+    if (newVal == '') {
       $scope.tabViewModel.activeTab = 0;
     }
-    
+
   }, true);
 
   var tabKeys = ['', 'data', 'collections', 'profile'];
@@ -208,10 +214,10 @@ function AccountPageController($scope, $http, $location) {
   }
 
   $scope.refreshFeaturedContent = function () {
-    if($scope.profileData.featuredContent == undefined) {
+    if ($scope.profileData.featuredContent == undefined) {
       return;
     }
-    
+
     var featuredContentUris = $scope.profileData.featuredContent.split('\n');
     $scope.featuredContent = [];
 

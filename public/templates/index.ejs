@@ -2,10 +2,27 @@
 
   <script src="/min/d3.min.js"></script>
 
+  <style>
+    .frontpage-banner {
+      background-image: url(../img/banner-background.png);
+      text-align: left; 
+      padding: 100px; 
+      position: relative; 
+      background-repeat: repeat;
+      background-position: center; 
+      background-size: 150px;
+      color: white;
+    }
+
+    .placeholder-medium {
+      min-height: 400px;
+    }
+
+  </style>
+
   <div ng-controller="FrontPageController">
-    <section style="background: #81b8b2; background-image: url(../img/banner-background.png);
-    text-align: left; color: white; padding: 100px; position: relative; background-repeat: repeat;
-    background-position: center; background-size: 150px;">
+
+    <section class="frontpage-banner" style="background-color: <%= databus.colors.banner %>;">
       <div class="container">
         <div style="display: flex; align-items: center;">
           <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
@@ -31,7 +48,7 @@
           <div class="column is-4 stats" style="padding-right: 3em;">
             <p class="section-label">Recent Activity</p>
             <div ng-if="activityChartData.isLoading" style="text-align:center">
-              <div class="loading-rect" style="min-height: 400px;">
+              <div class="loading-rect placeholder-400" style="min-height: 400px;">
                 <div class="lds-ellipsis">
                   <div></div>
                   <div></div>
@@ -41,14 +58,14 @@
               </div>
             </div>
 
-            <activity-chart style="display: flex;" ng-if="!activityChartData.isLoading" data="activityChartData.entries"
+            <activity-chart style="display: flex; margin-bottom: 3.4em;" ng-if="!activityChartData.isLoading" data="activityChartData.entries"
               height="400">
             </activity-chart>
 
             <p class="section-label">Most Active Users</p>
 
             <div style="text-align:center" ng-if="uploadRankingData.isLoading">
-              <div class="loading-rect" style="min-height: 400px;">
+              <div class="loading-rect placeholder-medium">
                 <div class="lds-ellipsis">
                   <div></div>
                   <div></div>

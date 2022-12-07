@@ -1,7 +1,25 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap");
-@import url("https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap");
 @import '../node_modules/codemirror/lib/codemirror.css';
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-Regular.ttf");
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-Bold.ttf");
+  font-weight: bold;
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-Italic.ttf");
+  font-style: italic;
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
 .collection-summary.table {
   background-color: transparent;
 }
@@ -4492,8 +4510,8 @@ a.tag:hover {
 
 .help {
   display: block;
-  font-size: 0.85rem;
-  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 .help.is-white {
   color: #fff;
@@ -5431,7 +5449,6 @@ a.list-item {
   flex-direction: column;
   max-height: calc(100vh - 40px);
   overflow: hidden;
-  overflow-y: visible;
   -ms-overflow-y: visible;
 }
 
@@ -10016,7 +10033,6 @@ body.has-navbar-fixed-top {
   border-top: 1px solid #dbdbdb !important;
 }
 
-/*li {margin: 10px}sfdsdfsdf*/
 @media screen and (max-width: 412px), print {
   html {
     font-size: 14px;
@@ -10208,6 +10224,12 @@ body.has-navbar-fixed-top {
   margin: 0 !important;
 }
 
+.help {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.15rem;
+}
+
 .editable-collection-element .element-content {
   overflow: hidden;
   position: relative;
@@ -10289,7 +10311,7 @@ body.has-navbar-fixed-top {
 .section-label {
   margin-top: 1em;
   margin-bottom: 1em;
-  color: #7a7a7a;
+  color: #999;
   font-size: 1em;
   letter-spacing: 0.1em;
   text-transform: uppercase;

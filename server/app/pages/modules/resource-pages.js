@@ -4,10 +4,11 @@ var request = require('request');
 const DatabusCache = require('../../common/cache/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const Constants = require('../../common/constants');
+const artifact = require('../../api/routes/artifact');
 
 module.exports = function (router, protector) {
 
-  var cache = new DatabusCache(60);
+  var cache = new DatabusCache(10);
 
   router.get('/:account', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -17,7 +18,7 @@ module.exports = function (router, protector) {
 
       if (accountData == null) {
         next('route');
-        return; 
+        return;
       }
 
       res.render('account', {
@@ -47,16 +48,16 @@ module.exports = function (router, protector) {
   router.get('/:account/apps', function (req, res, next) {
     return res.redirect('/' + req.params.account + '#apps');
   });
-  
+
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
-   
+
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
       let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
 
       if (groupData == null) {
         next('route');
-        return; 
+        return;
       }
 
       let artifactData = await sparql.dataid.getArtifactsByGroup(req.params.account, req.params.group);
@@ -99,23 +100,32 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group/:artifact', protector.checkSso(), async function (req, res, next) {
 
-    if(req.params.group == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
+    if (req.params.group == Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER) {
       next('route');
       return;
     }
 
     try {
-      let auth = ServerUtils.getAuthInfoFromRequest(req);
-      let versionsData = await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group, req.params.artifact);
 
-      if (versionsData == null) {
+      let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}`;
+      let data = await cache.get(cacheKey, async () => {
+        return {
+          versions: await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group,
+            req.params.artifact),
+          artifact: await sparql.dataid.getArtifact(req.params.account, req.params.group, req.params.artifact)
+        };
+      });
+
+      if (data.artifact == null) {
         next('route');
         return;
       }
 
+      data.auth = ServerUtils.getAuthInfoFromRequest(req);
+
       res.render('artifact', {
-        title: versionsData[0].label,
-        data: { auth: auth, versions: versionsData }
+        title: data.artifact.title,
+        data: data
       });
 
     } catch (err) {
@@ -136,6 +146,8 @@ module.exports = function (router, protector) {
             req.params.artifact, req.params.version)
         };
       });
+
+    
 
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
       res.render('version', { title: data.version.label, data: data });

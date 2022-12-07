@@ -10,93 +10,9 @@
 
     <link rel="stylesheet" href="/node_modules/bulma-steps/dist/css/bulma-steps.min.css" type="text/css" />
 
-    <script type="text/ng-template" id="file.html">
-      <div class="upload-token distribution">
-        <div class="token-header">
-          <expandable-arrow expanded="fileGroup.expanded"></expandable-arrow>
-          <div style="margin-left: 6px">{{fileGroup.name}}</div>
-          <div ng-if="!fileGroup.expanded" class="content-variant-tag" 
-            ng-repeat="variant in fileGroup.contentVariants">{{ variant }}
-          </div>
-          <div style="flex:1; display:flex; justify-content: flex-end; margin-right: 12px;">
-            <databus-icon shape="'delete'" on-click="removeFile(fileGroup)" size="24"></databus-icon>
-          </div>
-        </div>
-        <div ng-if="fileGroup.expanded" class="token-extension content" >
-          <ul ng-repeat="file in fileGroup.files" style="margin-top: 0.1em;">
-            <li><b>Format</b> {{ file.formatExtension }} / <b>Compression</b> {{ file.compression }}</li>
-          </ul>
-        </div>
-      </div>
-    </script>
 
     <style>
-      .upload-token {
-        margin-top: 4px;
-        background-color: #f9f9f9;
-      }
-
-      .upload-token .token-header {
-        padding: 5px;
-        display: flex;
-        align-items: center;
-        position: relative;
-      }
-
-      .token-header .token-dropdown {
-        position: absolute;
-        right: 0;
-        top: 100%;
-        z-index: 100;
-        background-color: white;
-        border: 1px solid #dbdbdb;
-      }
-
-      .upload-token .token-header .icons {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end;
-        margin-right: 12px;
-      }
-
-      .upload-token.group {
-        border-left: 4px solid #496272;
-      }
-
-      .upload-token.artifact {
-        margin-left: 16px;
-        border-left: 4px solid #7ba0bb;
-      }
-
-      .upload-token.distribution {
-        border-left: 4px solid #bbb;
-      }
-
-      .upload-token .token-extension {
-        margin-top: 0;
-        padding: 5px;
-        border-top: solid 1px #dbdbdb
-      }
-
-      .expandable-arrow {
-        padding: 4px 8px;
-      }
-
-      .upload-token.dataset {
-        background-color: #f3f3f3;
-      }
-
-      .included .upload-token {
-        background-color: #fafbfc;
-      }
-
-      .upload-token.preview {
-        opacity: 0.5;
-      }
-
-      .included .upload-token.dataset {
-        background-color: #ccddcc;
-      }
+      
 
       .content-variant-tag {
         color: #aaa;
@@ -1129,7 +1045,7 @@
                   <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
                     ng-model="agreeCCZero">
                   <label for="check--agree">
-                    <span>I agree to publish this metadata under the <a href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a> license</span>
+                    <span>I hereby agree to publish this metadata under the <a href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a> license</span>
                   </label>
                 </div>
                 <p class="control" style="width: 100%; margin-top: 1em;">
@@ -1140,13 +1056,8 @@
                 </p>
               </div>
             </div>
-
-
           </div>
-
-
         </div>
-
         <div class="content-box" ng-init="artifact=session.data.artifact">
           <div class="box-header">
             <h3>Result</h3>

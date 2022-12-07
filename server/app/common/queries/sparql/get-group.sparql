@@ -5,19 +5,20 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?uri ?title ?abstract ?description ?groupdocu WHERE {
-  GRAPH ?g {
-    <%GROUP_URI%> a dataid:Group .
-    OPTIONAL { <%GROUP_URI%> dct:title ?title . }
-    OPTIONAL { <%GROUP_URI%> dct:abstract ?abstract . }
-    OPTIONAL { <%GROUP_URI%> dct:description ?description . }
-    BIND(<%GROUP_URI%> AS ?uri) 
-    OPTIONAL { 
-      SELECT ?groupdocu WHERE {
-        ?dataset dataid:group <%GROUP_URI%> . 
-        ?dataset dataid:groupdocu ?groupdocu . 
-        ?dataset dct:issued ?date.  
-      } ORDER BY desc(?date) LIMIT 1
+SELECT DISTINCT ?uri ?title ?abstract ?description WHERE {
+
+GRAPH ?g1 {
+    VALUES ?uri {
+      <%GROUP_URI%> 
+    }
+    
+    ?uri a dataid:Group .
+  }
+  OPTIONAL { 
+    GRAPH ?g2 {
+      OPTIONAL {  ?uri dct:title ?title . }
+      OPTIONAL {  ?uri dct:abstract ?abstract . }
+      OPTIONAL {  ?uri dct:description ?description . }
     }
   }
 }

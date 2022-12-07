@@ -37,14 +37,14 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
   var baseUri = UriUtils.navigateUp(datasetUri, 0);
   var artifactName = UriUtils.uriToName(artifactUri);
 
-  for(var property in fileGraph) {
-    if(property.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
-      contentVariants.push({ key: property, value: fileGraph[property][0][DatabusUris.JSONLD_VALUE] });      
+  for (var property in fileGraph) {
+    if (property.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
+      contentVariants.push({ key: property, value: fileGraph[property][0][DatabusUris.JSONLD_VALUE] });
     }
   }
 
   var segment = artifactName;
-  for(var cv of contentVariants) {
+  for (var cv of contentVariants) {
     var facet = UriUtils.uriToName(cv.key);
     var value = cv.value;
     segment += `_${facet}=${value}`;
@@ -52,25 +52,25 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
 
   var format = undefined;
   var compression = undefined;
-  
-  if(fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] != undefined) {
+
+  if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] != undefined) {
     format = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
   }
 
-  if(fileGraph[DatabusUris.DATAID_COMPRESSION] != undefined) {
+  if (fileGraph[DatabusUris.DATAID_COMPRESSION] != undefined) {
     compression = fileGraph[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
   }
 
-  if(format != undefined && format != 'none' && format != '') {
+  if (format != undefined && format != 'none' && format != '') {
     segment += `.${format}`;
   }
 
-  if(compression != undefined && compression != 'none' && compression != '') {
+  if (compression != undefined && compression != 'none' && compression != '') {
     segment += `.${compression}`;
   }
 
   fileGraph[DatabusUris.DATAID_FILE] = [];
-  fileGraph[DatabusUris.DATAID_FILE].push({ '@id' : `${baseUri}/${segment}`});
+  fileGraph[DatabusUris.DATAID_FILE].push({ '@id': `${baseUri}/${segment}` });
   fileGraph[DatabusUris.JSONLD_ID] = `${baseUri}#${segment}`;
 }
 
@@ -111,12 +111,12 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
-  if (datasetGraph[DatabusUris.DCT_ABSTRACT] == undefined 
-    && datasetGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+  if (datasetGraph[DatabusUris.DCT_ABSTRACT] == undefined
+    && datasetGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
 
     var description = datasetGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
     datasetGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    datasetGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+    datasetGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
 
@@ -183,7 +183,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   for (var fileGraph of fileGraphs) {
 
     datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
-      '@id' : fileGraph[DatabusUris.JSONLD_ID]
+      '@id': fileGraph[DatabusUris.JSONLD_ID]
     });
 
     for (var contentVariantProperty of contentVariantProperties) {
@@ -202,20 +202,22 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
   var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
   var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
-  
+
   expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATAID_GROUP });
+  // artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY] = [ {}];
+  // artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
 
   if (artifactGraph[DatabusUris.DCT_TITLE] == undefined) {
     artifactGraph[DatabusUris.DCT_TITLE] = [{}];
     artifactGraph[DatabusUris.DCT_TITLE][0][JSONLD_VALUE] = UriUtils.uriToLabel(artifactUri);
   }
 
-  if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined 
-    && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+  if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined
+    && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
 
     var description = artifactGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
     artifactGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    artifactGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+    artifactGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
 }
@@ -230,12 +232,12 @@ autocompleter.autocompleteGroup = function (expandedGraphs) {
     groupGraph[DatabusUris.DCT_TITLE][0][JSONLD_VALUE] = UriUtils.uriToLabel(groupUri);
   }
 
-  if (groupGraph[DatabusUris.DCT_ABSTRACT] == undefined 
-    && groupGraph[DatabusUris.DCT_DESCRIPTION] != undefined ) {
+  if (groupGraph[DatabusUris.DCT_ABSTRACT] == undefined
+    && groupGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
 
     var description = groupGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
     groupGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    groupGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] = 
+    groupGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
 }

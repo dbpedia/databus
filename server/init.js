@@ -147,7 +147,6 @@ async function initializeUserDatabase() {
 
 module.exports = async function () {
 
-  console.log(`================================================`);
   console.log(`Initializing...`);
   console.log(config);
 

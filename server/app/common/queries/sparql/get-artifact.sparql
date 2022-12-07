@@ -9,34 +9,39 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?
   ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?group 
   ?latestVersionLicense ?latestVersionAttribution WHERE
 {
- GRAPH ?g1 {
-    ?dataset dataid:artifact ?artifact .
-    OPTIONAL { 
-      GRAPH ?g3 {
-        OPTIONAL { ?artifact dct:title ?title . }
-        OPTIONAL { ?artifact dct:abstract ?abstract . }
-        OPTIONAL { ?artifact dct:description ?description . }
-      }
+  GRAPH ?g1 {
+    VALUES ?artifact {
+      <%ARTIFACT_URI%> 
     }
-    ?dataset dct:hasVersion ?latestVersion .
-    ?dataset dct:title ?latestVersionTitle .
-    ?dataset dct:abstract ?latestVersionAbstract .
-    ?dataset dct:description ?latestVersionDescription .
-    ?dataset dct:issued ?latestVersionDate .
-    ?dataset dataid:group ?group .
-    ?dataset dct:license ?latestVersionLicense .
-    OPTIONAL { ?dataset dataid:attribution ?latestVersionAttribution . }
-    {
-      SELECT ?artifact (max(?version) as ?latestVersion) WHERE {
-        GRAPH ?g2 {
-          ?artifact a dataid:Artifact .
-          ?dataset dataid:artifact <%ARTIFACT_URI%> .
-          ?dataset dataid:artifact ?artifact .
-          ?dataset dct:hasVersion ?version .
+    
+    ?artifact a dataid:Artifact .
+  }
+  OPTIONAL { 
+    GRAPH ?g2 {
+      OPTIONAL {  ?artifact dct:title ?title . }
+      OPTIONAL {  ?artifact dct:abstract ?abstract . }
+      OPTIONAL {  ?artifact dct:description ?description . }
+    }
+  }
+  OPTIONAL {
+    GRAPH ?g3 {
+      ?dataset dataid:artifact <%ARTIFACT_URI%> .
+      ?dataset dct:hasVersion ?latestVersion .
+      ?dataset dct:title ?latestVersionTitle .
+      ?dataset dct:abstract ?latestVersionAbstract .
+      ?dataset dct:description ?latestVersionDescription .
+      ?dataset dct:issued ?latestVersionDate .
+      ?dataset dataid:group ?group .
+      ?dataset dct:license ?latestVersionLicense .
+      OPTIONAL { ?dataset dataid:attribution ?latestVersionAttribution . }
+      {
+        SELECT (max(?version) as ?latestVersion) WHERE {
+          GRAPH ?g4 {
+            ?dataset dataid:artifact <%ARTIFACT_URI%> .
+            ?dataset dct:hasVersion ?version .
+          }
         }
-       
       }
-      GROUP BY ?artifact
     }
   } 
-} ORDER BY desc(?latestVersionDate)
+} 

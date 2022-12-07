@@ -1,11 +1,33 @@
 @charset "utf-8";
-@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap');
+
+@font-face {
+  font-family: 'PT Sans';
+  src: url('./../fonts/PTSans-Regular.ttf');
+}
+
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-Bold.ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-Italic.ttf");
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "PT Sans";
+  src: url("./../fonts/PTSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic;
+}
+
 
 @import 'colors';
 @import 'collections';
-@import '../node_modules/codemirror/lib/codemirror.css'; // Editor's Dependency Style
-//@import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import '../node_modules/codemirror/lib/codemirror.css'; 
 @import '../node_modules/bulma/bulma.sass';
 @import 'override-checkbox';
 @import 'checkmarks';
@@ -44,8 +66,6 @@ body.has-navbar-fixed-top {
   border-top: 1px solid $hierarchy-lines !important;
 }
 
-
-/*li {margin: 10px}sfdsdfsdf*/
 
 @media screen and (max-width: 412px), print {
 
@@ -342,7 +362,7 @@ body.has-navbar-fixed-top {
 .section-label {
   margin-top: 1em;
   margin-bottom: 1em;
-  color: #7a7a7a;
+  color: #999;
   font-size: 1em;
   letter-spacing: 0.1em;
   text-transform: uppercase;

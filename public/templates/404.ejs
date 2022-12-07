@@ -1,5 +1,18 @@
 <% include header %>
   <div>
+
+    <style>
+      .databus-no-content {
+        background-color: #f3f3f3;
+        color: #bebebe;
+        font-size: 28px;
+        width: 100%;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
     <section class="hero is-medium-small databus-banner is-none">
       <div class="hero-body">
         <div class="container has-text-left">
@@ -21,11 +34,11 @@
       </div>
     </section>
 
-    <div class="section" ng-if="!authenticated" style="min-height: 500px;">
-      <div class="container">
-        <br /> <br />
-        <p style="text-align: center; font-size: 1.1em">There's nothing here!</p>
-      </div>
+    <div class="databus-no-content">
+      <p>There's nothing here!</p>
     </div>
+
+
+  
   </div>
   <% include footer %>

@@ -1,5 +1,13 @@
 class DatabusUtils {
 
+  static stringOrFallback(value, fallback) {
+    if(value != null && value.length > 0) {
+      return value;
+    }
+
+    return fallback;
+  }
+
   static isValidResourceIdentifier(identifier, min) {
     var identifierRegex = /^[a-z-]+$/;
     return this.checkField(identifier, identifierRegex, min, 50);
@@ -97,6 +105,17 @@ class DatabusUtils {
 
   static tryParseJson(str) {
     return JSON.parse(str);
+  }
+
+  static uriToTitle(uri) {
+    if (uri == null) {
+      return null;
+    }
+
+    var result = uri.substr(uri.lastIndexOf('/') + 1);
+    result = result.substr(result.lastIndexOf('#') + 1);
+
+    return result.charAt(0).toUpperCase() + result.slice(1);
   }
 
   static uriToName(uri) {
