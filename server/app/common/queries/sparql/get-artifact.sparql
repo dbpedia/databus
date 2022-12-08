@@ -5,15 +5,12 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
-SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?latestVersionTitle
-  ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?group 
-  ?latestVersionLicense ?latestVersionAttribution WHERE
+SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description WHERE
 {
+  VALUES ?artifact {
+    <%ARTIFACT_URI%> 
+  }
   GRAPH ?g1 {
-    VALUES ?artifact {
-      <%ARTIFACT_URI%> 
-    }
-    
     ?artifact a dataid:Artifact .
   }
   OPTIONAL { 
@@ -21,27 +18,6 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?
       OPTIONAL {  ?artifact dct:title ?title . }
       OPTIONAL {  ?artifact dct:abstract ?abstract . }
       OPTIONAL {  ?artifact dct:description ?description . }
-    }
-  }
-  OPTIONAL {
-    GRAPH ?g3 {
-      ?dataset dataid:artifact <%ARTIFACT_URI%> .
-      ?dataset dct:hasVersion ?latestVersion .
-      ?dataset dct:title ?latestVersionTitle .
-      ?dataset dct:abstract ?latestVersionAbstract .
-      ?dataset dct:description ?latestVersionDescription .
-      ?dataset dct:issued ?latestVersionDate .
-      ?dataset dataid:group ?group .
-      ?dataset dct:license ?latestVersionLicense .
-      OPTIONAL { ?dataset dataid:attribution ?latestVersionAttribution . }
-      {
-        SELECT (max(?version) as ?latestVersion) WHERE {
-          GRAPH ?g4 {
-            ?dataset dataid:artifact <%ARTIFACT_URI%> .
-            ?dataset dct:hasVersion ?version .
-          }
-        }
-      }
     }
   } 
 } 

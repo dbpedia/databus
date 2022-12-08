@@ -94,12 +94,35 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
     return null; // TODO throw error?
   }
 
-  // Create the query and insert the account uri
   let queryOptions = { ARTIFACT_URI: artifactUri };
+
+  // Create the query and insert the account uri
   let query = exec.formatQuery(require('../sparql/get-artifact.sparql'), queryOptions);
   let bindings = await exec.executeSelect(query);
 
-  return bindings.length !== 0 ? bindings[0] : null;
+  if(bindings.length == 0) {
+    return null;
+  }
+
+  var artifact = bindings[0];
+
+  // Collect latest version information for the artifact
+  query = exec.formatQuery(require('../sparql/get-latest-version-by-artifact.sparql'), queryOptions);
+  bindings = await exec.executeSelect(query);
+
+  if(bindings.length == 0) {
+    return artifact;
+  }
+
+  var latestVersionInfo = bindings[0];
+
+  // Copy latest version info to artifact
+  for(var key in latestVersionInfo) {
+    artifact[key] = latestVersionInfo[key];
+  }
+
+  artifact.group = UriUtils.navigateUp(artifact.uri);
+  return artifact;
 }
 
 /**

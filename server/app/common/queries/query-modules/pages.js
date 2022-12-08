@@ -34,7 +34,6 @@ instance.getRecentUploadsData = async function () {
 
   for (let i in bindings) {
     let binding = bindings[i];
-    binding.publisher = UriUtils.uriToName(binding.publisherUri);
     binding.artifact = UriUtils.uriToName(binding.artifactUri);
     binding.group = UriUtils.uriToName(binding.groupUri);
     result.push(binding);

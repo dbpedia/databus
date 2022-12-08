@@ -1,4 +1,3 @@
-
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -6,28 +5,16 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # latest version of all artifacts -> order by date -> and show infos for the 10 last
-SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?latestVersionTitle
-  ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate ?group 
-  ?latestVersionLicense ?latestVersionAttribution  WHERE {
-
+SELECT DISTINCT ?artifact as ?uri ?latestVersion ?latestVersionTitle
+  ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate WHERE {
  
   GRAPH ?g1 {
     ?dataset dataid:artifact ?artifact.
-    OPTIONAL {
-      GRAPH ?g4 {
-        OPTIONAL { ?artifact dct:title ?title . }
-        OPTIONAL { ?artifact dct:abstract ?abstract . }
-        OPTIONAL { ?artifact dct:description ?description . }
-      }
-    }
     ?dataset dct:hasVersion ?latestVersion .
     ?dataset dct:title ?latestVersionTitle .
     ?dataset dct:abstract ?latestVersionAbstract .
     ?dataset dct:description ?latestVersionDescription .
     ?dataset dct:issued ?latestVersionDate .
-    ?dataset dataid:group ?group .
-    ?dataset dct:license ?latestVersionLicense .
-    OPTIONAL { ?dataset dataid:attribution ?latestVersionAttribution . }
     {
       SELECT ?artifact (max(?version) as ?latestVersion) WHERE {
         GRAPH ?g2 {
@@ -38,7 +25,6 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description ?latestVersion ?
       GROUP BY ?artifact
     }
   }
-  GRAPH ?g3 { ?publisher foaf:account ?publisherUri. }
 }
 ORDER BY desc(?latestVersionDate)
 LIMIT 10
