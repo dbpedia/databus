@@ -127,9 +127,10 @@ class DatabusUserDatabase {
    * @param {*} sub 
    * @returns 
    */
-  async deleteApiKey(apikey) {
+  async deleteApiKey(sub, name) {
     return await this.run(this.deleteApiKeyQuery, {
-      APIKEY: apikey,
+      SUB: sub,
+      NAME: name,
     });
   }
 

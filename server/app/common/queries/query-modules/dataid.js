@@ -84,11 +84,19 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
 }
 
 /**
- * Get information about a databus artifact
+ * Get information about a databus artifact 
  */
  instance.getArtifact = async function (accountName, groupName, artifactName) {
 
   let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName ]);
+  return instance.getArtifactByUri(artifactUri);
+}
+
+
+/**
+ * Get information about a databus artifact by artifact uri
+ */
+ instance.getArtifactByUri = async function (artifactUri) {
 
   if (artifactUri == null) {
     return null; // TODO throw error?
@@ -96,31 +104,36 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
 
   let queryOptions = { ARTIFACT_URI: artifactUri };
 
-  // Create the query and insert the account uri
+  // Query the basic artifact information and check whether the artifact exists
   let query = exec.formatQuery(require('../sparql/get-artifact.sparql'), queryOptions);
   let bindings = await exec.executeSelect(query);
 
+  // Does not exist
   if(bindings.length == 0) {
     return null;
   }
 
+  // Does exist, time to load additional data
   var artifact = bindings[0];
 
   // Collect latest version information for the artifact
   query = exec.formatQuery(require('../sparql/get-latest-version-by-artifact.sparql'), queryOptions);
   bindings = await exec.executeSelect(query);
 
+  // No additional data, return the basic artifact info
   if(bindings.length == 0) {
     return artifact;
   }
 
+  // Get the first (and only) binding
   var latestVersionInfo = bindings[0];
 
-  // Copy latest version info to artifact
+  // Copy latest version info to artifact info
   for(var key in latestVersionInfo) {
     artifact[key] = latestVersionInfo[key];
   }
 
+  // Infer the group from the artifact uri and return artifact
   artifact.group = UriUtils.navigateUp(artifact.uri);
   return artifact;
 }
@@ -146,15 +159,20 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
     // Execute the query to get a list of bindings
     let bindings = await exec.executeSelect(query);
 
-    // Do some post-processing on the bindings to create a result object
-    for (let b in bindings) {
-      let binding = bindings[b];
-      binding.name = UriUtils.uriToName(binding.uri);
-      binding.groupName = UriUtils.uriToName(binding.group);
+    var result = [];
+
+    for (let i in bindings) {
+      let binding = bindings[i];
+      var artifact = await instance.getArtifactByUri(binding.artifact);
+
+      artifact.name = UriUtils.uriToName(artifact.uri);
+      artifact.groupName = UriUtils.uriToName(artifact.group);
+      result.push(artifact);
     }
 
+
     // return the result object
-    return bindings;
+    return result;
   } catch (err) {
     // log an error if there is one and return null;
     console.log(err);
@@ -191,21 +209,26 @@ instance.getArtifactsByGroup = async function (account, group) {
   let query = exec.formatQuery(require('../sparql/get-artifacts-by-group.sparql'), queryOptions);
 
   let bindings = await exec.executeSelect(query);
+  
   // No bindings, return null
   if (bindings == null) {
     return null;
   }
 
-  // Do some post-processing on the bindings
+  var result = [];
+
   for (let i in bindings) {
-    bindings[i].group = group;
-    bindings[i].account = account;
-    bindings[i].artifact = UriUtils.uriToName(bindings[i].artifactUri);
+    let binding = bindings[i];
+    var artifact = await instance.getArtifactByUri(binding.artifact);
+
+    artifact.name = UriUtils.uriToName(artifact.uri);
+    artifact.groupName = UriUtils.uriToName(artifact.group);
+    result.push(artifact);
   }
 
-  console.log(bindings);
+  
   // Return the result!
-  return bindings;
+  return result;
 }
 
 
@@ -214,8 +237,14 @@ instance.getArtifactsByGroup = async function (account, group) {
  */
 instance.getVersion = async function (account, group, artifact, version) {
 
-  let queryOptions = { VERSION_URI: UriUtils.createResourceUri([account, group, artifact, version]) };
-  let query = exec.formatQuery(require('../sparql/get-version-data.sparql'), queryOptions);
+  var versionUri = UriUtils.createResourceUri([account, group, artifact, version]);
+  return await instance.getVersionByUri(versionUri);
+}
+
+instance.getVersionByUri = async function (versionUri) {
+
+  let queryOptions = { VERSION_URI: versionUri };
+  let query = exec.formatQuery(require('../sparql/get-version.sparql'), queryOptions);
 
   // console.log(query);
   let bindings = await exec.executeSelect(query);
@@ -224,13 +253,13 @@ instance.getVersion = async function (account, group, artifact, version) {
     return null;
   }
 
-  bindings[0].artifact = UriUtils.uriToName(bindings[0].artifactUri);
+  // bindings[0].artifactName = UriUtils.uriToName(bindings[0].artifact);
   return bindings[0];
 }
 
 instance.getGroupsByAccount = async function (account) {
 
-  let queryOptions = { PUBLISHER_URI: UriUtils.createResourceUri([account]) };
+  let queryOptions = { ACCOUNT_URI: UriUtils.createResourceUri([account]) };
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
 
   let bindings = await exec.executeSelect(query);

@@ -8,6 +8,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?artifact as ?uri ?latestVersion ?latestVersionTitle
   ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate WHERE {
  
+  {
+      SELECT ?artifact (max(STR(?version)) as ?latestVersion) WHERE {
+        GRAPH ?g2 {
+          ?dataset dataid:artifact ?artifact.
+          ?dataset dct:hasVersion ?version .
+        }
+      }
+      GROUP BY ?artifact
+  }
   GRAPH ?g1 {
     ?dataset dataid:artifact ?artifact.
     ?dataset dct:hasVersion ?latestVersion .
@@ -15,15 +24,6 @@ SELECT DISTINCT ?artifact as ?uri ?latestVersion ?latestVersionTitle
     ?dataset dct:abstract ?latestVersionAbstract .
     ?dataset dct:description ?latestVersionDescription .
     ?dataset dct:issued ?latestVersionDate .
-    {
-      SELECT ?artifact (max(?version) as ?latestVersion) WHERE {
-        GRAPH ?g2 {
-          ?dataset dataid:artifact ?artifact.
-          ?dataset dct:hasVersion ?version .
-        }
-      }
-      GROUP BY ?artifact
-    }
   }
 }
 ORDER BY desc(?latestVersionDate)

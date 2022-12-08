@@ -147,10 +147,17 @@ module.exports = function (router, protector) {
         };
       });
 
+      if (data.version == null) {
+        next('route');
+        return;
+      }
+
+
+      console.log(data);
     
 
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      res.render('version', { title: data.version.label, data: data });
+      res.render('version', { title: data.version.title, data: data });
     } catch (err) {
       console.log(err);
       res.status(404).send('Sorry cant find that!');

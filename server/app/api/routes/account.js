@@ -355,7 +355,13 @@ module.exports = function (router, protector) {
       return;
     }
 
-    var apiKey = protector.addApiKey(req.databus.sub, keyName); 
+    var apiKey = await protector.addApiKey(req.databus.sub, keyName); 
+
+    if(apiKey == null) {
+      res.status(400).send("Failed to create API key. You might already have an API key with that name.");
+      return;
+    }
+
     res.status(200).send(apiKey);
   });
 
@@ -369,10 +375,10 @@ module.exports = function (router, protector) {
       return;
     }
 
-
     var keyName = decodeURIComponent(req.query.name);
-    var found = protector.removeApiKey(req.oidc.user.sub, keyName);
+    var found = await protector.removeApiKey(req.oidc.user.sub, keyName);
 
+    console.log(found);
     if(found) {
       res.status(200).send();
     } else {

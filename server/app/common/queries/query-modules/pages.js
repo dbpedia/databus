@@ -3,6 +3,7 @@ var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL;
 const exec = require('../../execute-query');
 const UriUtils = require('../../utils/uri-utils');
 const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
+var dataidQuery = require('./dataid');
 
 let instance = {};
 
@@ -27,16 +28,14 @@ instance.getPublishRankingData = async function () {
 };
 
 instance.getRecentUploadsData = async function () {
-  let query = require('../sparql/get-recent-uploads.sparql');
+  let query = require('../sparql/get-recent-artifact-versions.sparql');
   let bindings = await exec.executeSelect(query);
 
   let result = [];
 
-  for (let i in bindings) {
-    let binding = bindings[i];
-    binding.artifact = UriUtils.uriToName(binding.artifactUri);
-    binding.group = UriUtils.uriToName(binding.groupUri);
-    result.push(binding);
+  for (var binding of bindings) {
+    var version = await dataidQuery.getVersionByUri(binding.version);
+    result.push(version);
   }
 
   return result;

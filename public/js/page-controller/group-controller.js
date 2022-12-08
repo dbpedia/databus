@@ -4,6 +4,14 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.artifacts = data.artifacts;
   $scope.services = data.services;
 
+  $scope.group.hasData = false;
+
+  for(var artifact of $scope.artifacts) {
+    if(artifact.latestVersionDate != undefined) {
+      $scope.group.hasData = true;
+    }
+  }
+
   $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title, 
     DatabusUtils.uriToTitle($scope.group.uri));
    

@@ -109,7 +109,11 @@ class DatabusProtect {
 
   async addApiKey(sub, name) {
     var apikey = uuidv4();
-    return await this.userdb.addApiKey(sub, name, apikey);
+    if(await this.userdb.addApiKey(sub, name, apikey)) {
+      return { keyname: name, apikey : apikey };
+    }
+
+    return null;
   }
 
   /**
@@ -119,12 +123,16 @@ class DatabusProtect {
    * @returns 
    */
   async removeApiKey(sub, name) {
-
-    return await this.userdb.deleteApiKey(sub, name, apikey);
+    return await this.userdb.deleteApiKey(sub, name);
   }
 
   async getApiKeyUser(req) {
     let apikey = req.headers["x-api-key"];
+
+    if(apikey == undefined) {
+      return null;
+    }
+    
     var entry = await this.userdb.getSub(apikey);
 
     if(entry == null) {

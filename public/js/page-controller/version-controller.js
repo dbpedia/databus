@@ -43,8 +43,8 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.authenticated = data.auth.authenticated;
   $scope.collectionModalVisible = false;
 
-  $scope.versionData.publisherUri = DatabusUtils.navigateUp(DatabusUtils.navigateUp($scope.versionData.artifactUri));
-  $scope.versionData.publisher = DatabusUtils.uriToName($scope.versionData.publisherUri);
+  // $scope.versionData.publisherUri = DatabusUtils.navigateUp(DatabusUtils.navigateUp($scope.versionData.artifactUri));
+  // $scope.versionData.publisher = DatabusUtils.uriToName($scope.versionData.publisherUri);
 
   $scope.modsAmountMinimized = 5;
   $scope.modsMaxAmount = $scope.modsAmountMinimized;
@@ -64,10 +64,10 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '15%' });
 
-  $scope.artifactNode = new QueryNode($scope.versionData.artifactUri, 'dataid:artifact');
-  $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.versionData.version, true);
+  $scope.artifactNode = new QueryNode($scope.versionData.artifact, 'dataid:artifact');
+  $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.versionData.name, true);
 
-  $scope.groupNode = new QueryNode(DatabusCollectionUtils.navigateUp($scope.versionData.uri), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusCollectionUtils.navigateUp($scope.versionData.artifact), 'dataid:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};

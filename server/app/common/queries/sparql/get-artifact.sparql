@@ -5,6 +5,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 
+# Fetches an artifact. Returns a binding if the artifact is declared as an dataid:Artifact somewhere
 SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description WHERE
 {
   VALUES ?artifact {
@@ -15,6 +16,7 @@ SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description WHERE
   }
   OPTIONAL { 
     GRAPH ?g2 {
+      ?artifact a dataid:Artifact .
       OPTIONAL {  ?artifact dct:title ?title . }
       OPTIONAL {  ?artifact dct:abstract ?abstract . }
       OPTIONAL {  ?artifact dct:description ?description . }

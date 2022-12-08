@@ -82,9 +82,9 @@ function ProfileController($scope, $http) {
 
   $scope.removeApiKey = function(key) {
     
-    $http.post(`/api/account/api-key/delete?name=${key}`).then(function (result) {
+    $http.post(`/api/account/api-key/delete?name=${key.keyname}`).then(function (result) {
       $scope.apiKeys = $scope.apiKeys.filter(function (k) {
-        return k.key != key;
+        return k.keyname != key.keyname;
       });
 
     }, function (err) {
@@ -102,7 +102,10 @@ function ProfileController($scope, $http) {
   $scope.addApiKey = function() {
     
     $http.post(`/api/account/api-key/create?name=${encodeURIComponent($scope.createApiKeyName)}`).then(function (result) {
-      $scope.apiKeys.push(result.data);
+      
+      if(result.data != null) {
+        $scope.apiKeys.push(result.data);
+      }
 
     }, function (err) {
       console.log(err);

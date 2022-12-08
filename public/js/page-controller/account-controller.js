@@ -47,6 +47,7 @@ function AccountPageController($scope, $http, $location) {
       $scope.publishedData.artifacts = response.data.artifacts;
 
       for (var artifact of $scope.publishedData.artifacts) {
+        artifact.group = DatabusUtils.navigateUp(artifact.uri, 1);
         artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
         artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
         artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
@@ -58,7 +59,15 @@ function AccountPageController($scope, $http, $location) {
         });
       }
 
-      $scope.recentUploads = $scope.publishedData.artifacts.slice(0, 3);
+      // Order by latest version date
+      $scope.recentUploads = $scope.publishedData.artifacts.filter(function(v) {
+        return v.latestVersionDate != null;
+      });
+      $scope.recentUploads.sort(function(a,b){
+        return new Date(b.latestVersionDate) - new Date(a.latestVersionDate);
+      });
+
+      $scope.recentUploads = $scope.recentUploads.slice(0, 3);
 
       $scope.refreshFeaturedContent();
     }, function (err) {

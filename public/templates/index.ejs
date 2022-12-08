@@ -96,16 +96,15 @@
                 </div>
               </div>
               <br />
-              <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">New
-                Artifacts</p>
+              <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW Datasets</p>
               <br />
               <div ng-repeat="dataset in recentUploadsData.data">
                 <entity-card style="flex: 1;" 
-                  type="'Artifact'"
+                  type="'Version'"
                   uri="dataset.uri"
-                  label="dataset.title != undefined ? dataset.title : dataset.latestVersionTitle"  
-                  desc="dataset.abstract != undefined ? dataset.abstract : dataset.latestVersionAbstract"
-                  date="formatDate(dataset.latestVersionDate)">
+                  label="dataset.title"  
+                  desc="dataset.abstract"
+                  date="formatDate(dataset.date)">
                 </entity-card>
                 <div ng-if="!$last" class="is-divider"></div>
               </div>

@@ -11,6 +11,6 @@ SELECT DISTINCT ?group as ?uri ?title ?abstract ?description WHERE {
     OPTIONAL { ?group dct:title ?title. }
     OPTIONAL { ?group dct:abstract ?abstract. }
     OPTIONAL { ?group dct:description ?description. }
-    FILTER REGEX(?group, "%PUBLISHER_URI%/.*")
+    FILTER(STRSTARTS(STR(?group), "%ACCOUNT_URI%/"))
 }
 ORDER BY ?group

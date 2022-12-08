@@ -1,1 +1,1 @@
-DELETE FROM apikeys WHERE apikey="%APIKEY%"
+DELETE FROM apikeys WHERE keyname="%NAME%" AND sub="%SUB%"
