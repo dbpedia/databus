@@ -23,8 +23,8 @@ services:
       DATABUS_PROXY_SERVER_HOSTNAME: ${DATABUS_PROXY_SERVER_HOSTNAME} # What is the hostname of this machine, when using the proxy server?
     volumes:
       - ./data/dav/:/databus/server/dav/
+      - ./data/sqlite/:/databus/server/sqlite
       - ./data/keypair/:/databus/server/keypair
-      - ./data/users/:/databus/server/users
       - ./data/tls/:/tls:ro # path for TLS (HTTPS) certs when using integrated caddy proxy                                                                                                                 
       - ./data/tls/caddy:/root/.local/share/caddy/ # path for caddy settings esp. automatic TLS certificates
   gstore:
