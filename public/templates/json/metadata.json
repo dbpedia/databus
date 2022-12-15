@@ -1,0 +1,33 @@
+{
+    "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+    "@graph": [
+        {
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+            "@type": "Group",
+            "title": "Cleaned Data",
+            "description": "Cleaned datasets from DBpedia"
+        },
+        {
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
+            "@type": "Artifact",
+            "title": "Geonames",
+            "description": "Geonames data from DBpedia"
+        },
+        {
+            "@type": "Dataset",
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
+            "hasVersion": "2022-02-09",
+            "title": "Cleaned Geonames",
+            "description": "Cleaned version of the geonames dataset from DBpedia",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "distribution": [
+                {
+                    "@type": "Part",
+                    "formatExtension": "ttl",
+                    "compression": "none",
+                    "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                }
+            ]
+        }
+    ]
+}

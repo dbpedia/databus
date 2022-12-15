@@ -1,0 +1,33 @@
+{
+    "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+    "@graph": [
+        {
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%",
+            "@type": "Group",
+            "title": "%GROUP% Data",
+            "description": "%GROUP% datasets from DBpedia"
+        },
+        {
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%",
+            "@type": "Artifact",
+            "title": "%ARTIFACT%",
+            "description": "%ARTIFACT% data from DBpedia"
+        },
+        {
+            "@type": "Dataset",
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
+            "hasVersion": "%VERSION%",
+            "title": "%GROUP% %ARTIFACT%",
+            "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "distribution": [
+                {
+                    "@type": "Part",
+                    "formatExtension": "ttl",
+                    "compression": "none",
+                    "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                }
+            ]
+        }
+    ]
+}
