@@ -19,3 +19,4 @@ model-docu/myold_files
 dav/
 server/manifest.ttl
 server/sqlite/
+server/index
