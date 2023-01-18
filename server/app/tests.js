@@ -239,10 +239,19 @@ async function apiTests() {
 
    var user = await createTestUser();
 
+   await manifestTest();
+
+   await accountTests(user);
+
+   await deleteTestUser();
+}
+
+async function manifestTest() {
+
+   // ========= GET Manifest ==========
    const options = {};
    options.headers = { "x-api-key": params.APIKEY };
 
-   // ========= GET Manifest ==========
    options.method = "GET";
    options.uri = process.env.DATABUS_RESOURCE_BASE_URL;
    options.headers['Accept'] = "text/turtle"
@@ -251,19 +260,28 @@ async function apiTests() {
    var manifest = require('./../manifest.ttl');
 
    assert(response == manifest, "Manifest cannot be retrieved.");
+}
+
+
+async function accountTests(user) {
+
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
 
    // ========= PUT Account ===========
-   delete options.headers['Accept'];
-   var template = JSON.stringify(require('../../public/templates/json/account.json'));
-
-   options.method = "PUT";
    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+   options.method = "PUT";
    options.json = true;
-   options.resolveWithFullResponse = true;
+
+   const template = JSON.stringify(require('../../public/templates/json/account.json'));
+
    options.body = JSON.parse(ServerUtils.formatTemplate(template, {
       DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
       ACCOUNT_NAME: user.accountName
    }));
+
 
    response = await rp(options);
    assert(response.statusCode == 201, 'Account could not be updated.');
@@ -279,22 +297,38 @@ async function apiTests() {
    }
 
    // ======= GET Account ==========
-   options.method = "GET";
-   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
-   options.headers['Accept'] = "application/ld+json"
    delete options.body;
    delete options.json;
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+   options.method = "GET";
+   options.headers['Accept'] = "application/ld+json"
 
    response = await rp(options);
    assert(response.statusCode == 200, 'Expected 200 when retrieving account.');
 
+
+   // ========= EXECUTE OTHER TESTS ==========
+   await apiKeyTests()
+   await webidTests()
+   await tractateTests(user)
+   await publishTest(user)
+   await groupTests(user)
+   await artifactTests(user)
+   await dataidTests(user)
+   await collectionTests(user)
+   // ========= EXECUTE OTHER TESTS ==========
+
+
+   // ========= DELETE Account ==========
    options.method = "DELETE";
+   
    response = await rp(options);
    assert(response.statusCode == 200, 'Expected 200 when deleting existing account.');
 
    response = await rp(options);
    assert(response.statusCode == 204, 'Expected 204 when deleting deleted account.');
-   
+
    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/janfo`;
 
    try {
@@ -303,78 +337,332 @@ async function apiTests() {
    } catch (err) {
       assert(err.response.statusCode == 403, 'Expected 403 when trying to delete unowned account.');
    }
-
-   // ========= GET Account ==========
-
-   // TODO - test full api!
-   // access ACCOUNT_NAME via user.accountName
-
-
-   // await apiAccountTests(user)
-
-
-   await deleteTestUser();
 }
 
-async function apiAccountTests(user) {
+async function apiKeyTests() {
 
-   // const options = {};
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
 
-   // options.headers = {
-   //    "x-api-key": params.APIKEY,
-   //    'Content-Type': 'application/json'
-   // }
-   // options.method = "PUT";
-   // options.uri = process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.accountName
-   // options.headers['Accept'] = "text/plain"
-   // console.log(options.uri)
-   // var response = await rp(options);
+   // ========= Create API Key ===========
+   let keyName = "testkey2"
 
-   // console.log(response)
-   // await setTimeout(3000);
+   options.method = "POST";
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/account/api-key/create?name=${keyName}`;
+
+   console.log(options)
+
+   response = await rp(options);
+
+   assert(response.statusCode == 200, 'API key could not be created.');
+
+   // ========= Delete API Key ===========
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/account/api-key/delete?name=${keyName}`;
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'API key could not be deleted.');
+}
+
+async function webidTests() {
+   
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true,
+      "method": "POST"
+   };
+
+      // ========= POST WebId ===========
+   let webid = encodeURIComponent('https://holycrab13.github.io/webid.ttl')
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/account/webid/add?uri=${webid}`;
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'WebId could not be posted.');
+
+   // ========= Remove WebId ===========
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/account/webid/remove?uri=${webid}`;
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'WebId could not be posted.');
 
 
+}
 
-   console.log("====BEFORE PUT=======")
+async function publishTest(user) {
+   console.log("PUBLISH TESTS")
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
 
-   result = await axios({
-      method: "PUT",
-      url: process.env.DATABUS_RESOURCE_BASE_URL + '/' + user.accountName,
-      data: {
-         "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-         "@graph": [
-            {
-               "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`,
-               "@type": "foaf:PersonalProfileDocument",
-               "maker": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
-               "primaryTopic": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`
-            },
-            {
-               "@id": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}#this`,
-               "@type": [
-                  "dbo:DBpedian",
-                  "foaf:Person"
-               ],
-               "name": `${user.accountName}`,
-               "rdfs:comment": "Hello Databus!",
-               "account": `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`
-            }
-         ]
-      },
-      headers: {
-         'Accept': 'text/plain',
-         "x-api-key": params.APIKEY,
-         'Content-Type': 'application/json'
-      }
+   // ========= Publish ===========
+   let group = "cleaned"
+   let artifact = "geonames"
+   let version = "2022-02-09"
+   var template2 = JSON.stringify(require('../../public/templates/json/publish.json'));
 
-   })
+   options.method = "POST";
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + '/api/publish';
+   options.json = true;
+   options.resolveWithFullResponse = true;
+   options.body = JSON.parse(ServerUtils.formatTemplate(template2, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName,
+      GROUP: group,
+      ARTIFACT: artifact,
+      VERSION: version
+   }));
 
-   console.log("=======PUT RESULT=========")
-   console.log(result.data)
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Metadata could not be published.');
+}
 
-   // let framed = await jsonld.flatten(result.data);
+async function tractateTests(user) {
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
 
-   // console.log("FRAMED: ", framed)
+   // ========= Generate Databus Tractate v1 ===========
+   template = JSON.stringify(require('../../public/templates/json/canonicalize.json'));
+
+   options.method = "POST";
+   options.headers = { 'Accept': 'text/plain' }
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/tractate/v1/canonicalize`;
+   options.json = true;
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName
+   }));
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not generate Databus Tractate v1.');
+
+   // ========= Validate Databus Tractate v1 ===========
+   template = JSON.stringify(require('../../public/templates/json/tractate_v1.json'));
+   
+   delete options.headers['Accept'];
+
+   options.headers = { 'Accept': 'application/json' }
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/tractate/v1/verify`;
+
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName
+   }));
+
+   response = await rp(options);
+
+   assert(response.statusCode == 200 && response.body.success == true, 'Could not verify Databus Tractate v1.');
+
+}
+
+async function groupTests(user) {
+   console.log("GROUPTESTS")
+
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
+
+   const group = "testgroup"
+
+   // ========= Create Group ===========
+   let template = JSON.stringify(require('../../public/templates/json/group.json'));
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/${group}`;
+   options.method = "PUT";
+   options.json = true;
+   
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName,
+      GROUP: group
+   }));
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Group could not be created.');
+
+   // ========= Get Group ===========
+   delete options.headers;
+   delete options.body;
+
+   options.method = "GET";
+   options.headers = { 'Accept': 'application/ld+json' }
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get group.');
+   
+   // ========= Delete Group ===========
+   delete options.headers;
+
+   options.method = "DELETE";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not delete group.');
+}
+
+async function artifactTests(user) {
+   console.log("ARTIFACTTESTS")
+
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
+
+   const group = "testgroup"
+   const artifact = "testartifact"
+
+   // ========= Create Artifact ===========
+   let template = JSON.stringify(require('../../public/templates/json/artifact.json'));
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/${group}/${artifact}`;
+   options.method = "PUT";
+   options.json = true;
+   
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName,
+      GROUP: group,
+      ARTIFACT: artifact
+   }));
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Artifact could not be created.');
+
+   // ========= Get Artifact ===========
+   delete options.headers;
+   delete options.body;
+
+   options.method = "GET";
+   options.headers = { 'Accept': 'application/ld+json' }
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get artifact.');
+   
+   // ========= Delete Artifact ===========
+   delete options.headers;
+
+   options.method = "DELETE";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not delete artifact.');
+}
+
+async function dataidTests(user) {
+   console.log("DATAIdTESTS")
+
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
+
+   const group = "testgroup"
+   const artifact = "testartifact"
+   const version = "2022-02-09"
+
+   // ========= Create DataId ===========
+   let template = JSON.stringify(require('../../public/templates/json/artifact.json'));
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/${group}/${artifact}/${version}`;
+   options.method = "PUT";
+   options.json = true;
+   
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName,
+      GROUP: group,
+      ARTIFACT: artifact,
+      VERSION: version
+   }));
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Artifact could not be created.');
+
+   // ========= Get DataId ===========
+   delete options.headers;
+   delete options.body;
+
+   options.method = "GET";
+   options.headers = { 'Accept': 'application/ld+json' }
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get artifact.');
+
+   // ========= Get File ===========
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/${group}/${artifact}/${version}/geonames.ttl`;
+   delete options.headers;
+
+   options.method = "GET";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get File.');
+   
+   // ========= Delete DataId ===========
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/${group}/${artifact}/${version}`;
+   delete options.headers;
+
+   options.method = "DELETE";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not delete artifact.');
+}
+
+async function collectionTests(user) {
+   console.log("CollectionTESTS")
+
+   const options = {
+      "headers": { "x-api-key": params.APIKEY },
+      "resolveWithFullResponse": true
+   };
+
+   const collection = "testCollection"
+
+   // ========= Create Collection ===========
+   let template = JSON.stringify(require('../../public/templates/json/collection.json'));
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/collections/${collection}`;
+   options.method = "PUT";
+   options.json = true;
+   
+   options.body = JSON.parse(ServerUtils.formatTemplate(template, {
+      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+      ACCOUNT: user.accountName,
+      COLLECTION: collection
+   }));
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Collection could not be created.');
+
+   // ========= Get Collection ===========
+   delete options.headers;
+   delete options.body;
+
+   options.method = "GET";
+   options.headers = { 'Accept': 'application/ld+json' }
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get Collection.');
+
+   // ========= Get MD5Hash ===========
+   let collectionURI = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}/collections/${collection}`
+
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/api/collection/md5hash?uri=${encodeURIComponent(collectionURI)}`;
+   delete options.headers;
+
+   options.method = "GET";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not get MD5 Hash of Collection.');
+   
+   // ========= Delete Collection ===========
+   options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}` + `/${user.accountName}/collections/${collection}`;
+
+   options.method = "DELETE";
+
+   response = await rp(options);
+   assert(response.statusCode == 200, 'Could not delete Collection.');
 }
 
 module.exports = async function () {

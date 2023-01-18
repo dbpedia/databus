@@ -376,7 +376,7 @@ module.exports = function (router, protector) {
     }
 
     var keyName = decodeURIComponent(req.query.name);
-    var found = await protector.removeApiKey(req.oidc.user.sub, keyName);
+    var found = await protector.removeApiKey(req.databus.sub, keyName);
 
     // console.log(found);
     if(found) {
