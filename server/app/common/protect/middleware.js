@@ -95,7 +95,7 @@ class DatabusProtect {
 
   async hasUser(accountName) {
     var user = await this.userdb.getUserByAccountName(accountName);
-    console.log(user);
+    // console.log(user);
     return user != null;
   }
 
@@ -132,7 +132,7 @@ class DatabusProtect {
     if(apikey == undefined) {
       return null;
     }
-    
+
     var entry = await this.userdb.getSub(apikey);
 
     if(entry == null) {
@@ -244,7 +244,7 @@ class DatabusProtect {
         req.accepts('html')
       ) {
         cancelSilentLogin(req, res);
-        console.log('attempting silent login');
+        // console.log('attempting silent login');
         try {
           return res.oidc.silentLogin();
         } catch (e) {
@@ -300,7 +300,6 @@ class DatabusProtect {
         // Get the user agent
         forceLogin(request, response);
         return;
-
       }
 
       if (responseHandler != undefined) {

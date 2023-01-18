@@ -1,13 +1,13 @@
+const { DateTime } = require('asn1js');
 var { spawn } = require('child_process');
 var fs = require('fs');
 
 class LookupSearchIndexer {
 
-  constructor(rebuildMinIntervalMilliseconds) {
-    // this.rebuildAndRedeploy();
-    this.iid = setInterval(this.tick.bind(this), rebuildMinIntervalMilliseconds);
-    this.rebuildRequested = true;   
-    this.configPath = `../search/app-config-index.yml`;
+  constructor(tickRate) {
+    this.tickRate = tickRate;
+    this.rebuildRequested = true;
+    this.configPath = `../search/index-config.yml`;
 
     var content = fs.readFileSync(this.configPath, ['utf8']).toString();
     var regex = new RegExp(`sparqlEndpoint:\\s(.*)`, `g`);
@@ -15,37 +15,68 @@ class LookupSearchIndexer {
     fs.writeFileSync(this.configPath, content, ['utf8']);
   }
 
-  
+  async start() {
+
+    await this.buildIndex();
+
+    this.iid = setInterval(this.tick.bind(this), this.tickRate);
+    var self = this;
+
+    this.servletProcess = spawn('java', [
+      '-jar', '../search/lookup-server.jar',
+      '-c', `../search/servlet-config.yml`
+    ]);
+
+    this.servletProcess.stdout.on('data', (data) => {
+      self.log(`[SERVER] - ${data}`);
+    });
+
+    this.servletProcess.stderr.on('data', (data) => {
+      self.log(`[SERVER ERROR] - ${data}`);
+    });
+  }
+
+
   tick() {
-    if(this.rebuildRequested) {
-      this.rebuildAndRedeploy();   
-      this.rebuildRequested = false;   
+    if (this.rebuildRequested) {
+
+      if (!this.isBuilding) {
+        this.buildIndex();
+      }
     }
   }
 
   log(msg) {
-    console.log('\x1b[90m%s\x1b[0m', `[SEARCH INDEXER] ${msg}`);
+    console.log('\x1b[90m%s\x1b[0m', `[SEARCH] ${msg}`);
   }
 
   requestRebuild() {
-    this.log(`Search index rebuild requested.`);
     this.rebuildRequested = true;
   }
 
-  promisedRebuild() {
-    var self = this;
+  async buildIndex() {
+    this.rebuildRequested = false;
+    this.isBuilding = true;
+    await this.buildIndexPromise();
+    this.isBuilding = false;
+  }
+
+  buildIndexPromise() {
+
     return new Promise((resolve, reject) => {
-      var indexingProcess = spawn('java', [ 
-        '-jar', '../search/lookup-indexer.jar', 
+      var indexingProcess = spawn('java', [
+        '-jar', '../search/lookup-indexer.jar',
         '-conf', this.configPath
       ]);
 
-      //indexingProcess.stdout.on('data', (data) => {
-      //  console.log('Index creation out: ' + data);
-      //});
-      indexingProcess.stderr.on('data', (data) => {
-        self.log(`stderr: ${data}`);
+      indexingProcess.stdout.on('data', (data) => {
+        // self.log(`[INDEXER] - ${data}`);
       });
+
+      indexingProcess.stderr.on('data', (data) => {
+        self.log(`[INDEXER ERROR] - ${data}`);
+      });
+
       indexingProcess.on('close', (code) => {
         if (code == 0) {
           resolve(code);
@@ -57,9 +88,12 @@ class LookupSearchIndexer {
   }
 
   promisedRedeploy() {
+    var self = this;
     return new Promise((resolve, reject) => {
       var touchProcess = spawn('touch', ['/usr/local/tomcat/webapps/lookup-application.war']);
       touchProcess.on('close', (code) => {
+
+        self.lastRebuildTime = new Date();
         if (code == 0) {
           resolve(code);
         } else {
@@ -70,19 +104,11 @@ class LookupSearchIndexer {
   }
 
   async rebuildAndRedeploy() {
-
     try {
       var result = await this.promisedRebuild();
       this.log('Search Index creation finished with code ' + result);
     } catch (err) {
       this.log('Search Index creation failed: ' + err);
-    }
-
-    try {
-      result = await this.promisedRedeploy();
-      this.log('Search Servlet redeploy finished with code ' + result);
-    } catch (err) {
-      this.log('Search Servlet redeploy failed: ' + err);
     }
   }
 

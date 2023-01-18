@@ -179,7 +179,6 @@ module.exports = function (router, protector) {
 
       var splits = UriUtils.splitResourceUri(uri);
 
-      console.log(splits);
       var result = await sparql.dataid.getArtifactsByGroup(splits[0], splits[1]);
       res.status(200).send(result);
 

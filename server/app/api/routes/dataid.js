@@ -20,7 +20,7 @@ module.exports = function (router, protector) {
    router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
     try {
 
-      console.log('Upload request received at ' + req.originalUrl);
+      // console.log('Upload request received at ' + req.originalUrl);
 
       // Requesting a PUT on an uri outside of one's namespace is rejected
       if (req.params.account != req.databus.accountName) {
@@ -39,7 +39,7 @@ module.exports = function (router, protector) {
       var report = `Publishing DataId.\n`;
 
       var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
-        console.log(message);
+        // console.log(message);
         report += `> ${message}\n`;
       }, false);
 

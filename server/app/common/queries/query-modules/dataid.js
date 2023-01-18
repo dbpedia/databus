@@ -325,7 +325,6 @@ instance.getDownloadUrl = async function (account, group, artifact, version, fil
   let queryOptions = { FILE_URI: UriUtils.createResourceUri([account, group, artifact, version, file]) };
   let query = exec.formatQuery(require('../sparql/get-download-url.sparql'), queryOptions);
 
-  console.log(query);
   let bindings = await exec.executeSelect(query);
 
   if (bindings.length === 0) {

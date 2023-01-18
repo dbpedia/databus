@@ -64,12 +64,12 @@ module.exports = function (router, protector) {
 
       // Expand JSONLD!
       var expandedGraph = await jsonld.flatten(graph);
-      
+
       // Publish groups
       var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_GROUP);
       logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
 
-      console.log(groupGraphs);
+      // console.log(groupGraphs);
       
       for (var groupGraph of groupGraphs) {
         var resultCode = await publishGroup(account, groupGraph, logger);
@@ -178,7 +178,7 @@ module.exports = function (router, protector) {
       first = false;
     }
 
-    var search = `http://localhost:8080/lookup-application/api/search${queryString}`;
+    var search = `http://localhost:8082/api/search${queryString}`;
 
     http.get(search, function (response) {
       response.setEncoding('utf8');

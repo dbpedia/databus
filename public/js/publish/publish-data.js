@@ -10,15 +10,41 @@ class PublishData {
     this.artifact = data != undefined ? data.artifact : {};
     this.version = data != undefined ? data.version : {};
     this.signature = data != undefined ? data.signature : undefined;
+
+    if(data == null) {
+      this.group.createNew = true;
+      this.group.generateAbstract = true;
+      this.artifact.createNew = true;
+      this.artifact.generateAbstract = true;
+      this.version.generateAbstract = true;
+      this.version.useArtifactTitle = true;
+      this.signature = this.createSignatureData();
+    }
   }
 
+  createSignatureData() {
+    var signature = {};
+    signature.publisherUris = [];
+
+    signature.publisherUris = this.accountData.publisherUris;
+    signature.defaultPublisherUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountData.accountName}#this`
+    signature.selectedPublisherUri = signature.defaultPublisherUri;
+    signature.autoGenerateSignature = true;
+    signature.autoGenerateSignatureLocked = false;
+    signature.userSignature = '';
+
+    return signature;
+  }
+
+  hasError(error) {
+
+  }
   /**
    * Validates the tree
    */
   validate() {
 
     var hasErrors = false;
-
     this.group.errors = [];
     this.artifact.errors = [];
     this.version.errors = [];
@@ -173,16 +199,7 @@ class PublishData {
       return 0;
     });
 
-    //var fileGroup = this.getOrCreateFileGroup(fileGroupId, nameComponents[0]);
-
-    //for (var j in fileGroup.distributions) {
-    //  if (uri == fileGroup.distributions[j].uri) {
-    //    return;
-    //  }
-    //}
-
     this.version.isConfigDirty = true;
-
   }
 
   addContentVariant(variant) {
@@ -351,7 +368,6 @@ class PublishData {
             + index + ' (' +
             cvHints.join(', ') + ').';
 
-          // TODO UNCOMMENT
           files[f].errors.push({ key: 'err_duplicate_file', message: errorMessage });
         }
       }
@@ -391,7 +407,6 @@ class PublishData {
       this.cvSplit(artifact, buckets[b], cvIndex + 1);
     }
   }
-
 
 
   getOrCreateFileGroup(fileGroupId, name) {

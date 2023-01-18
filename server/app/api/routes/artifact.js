@@ -18,6 +18,54 @@ module.exports = function (router, protector) {
 
     try {
 
+       // Requesting a PUT on an uri outside of one's namespace is rejected
+       if (req.params.account != req.databus.accountName) {
+        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
+        return;
+      }
+
+      var logger = new DatabusLogger(req.query['log-level']);
+      var graph = req.body;
+
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
+        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      }
+
+      // Expand JSONLD!
+      var expandedGraph = await jsonld.flatten(graph);
+
+      // Publish artifacts
+      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
+      logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
+      
+      for (var artifactGraph of artifactGraphs) {
+        var resultCode = await publishArtifact(account, artifactGraph, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      var account = req.databus.accountName;
+
+      for (var groupGraph of groupGraphs) {
+        var resultCode = await publishGroup(account, groupGraph, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      res.status(200).json(logger.getReport());
+
+
+
+      
+
+
       // Requesting a PUT on an uri outside of one's namespace is rejected
       if (req.params.account != req.databus.accountName) {
         res.status(403).send(MESSAGE_WRONG_NAMESPACE);

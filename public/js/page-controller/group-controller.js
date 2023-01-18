@@ -63,7 +63,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     });
   }
 
-  $scope.onFacetSettingsChanged();
+  // $scope.onFacetSettingsChanged();
 
   $scope.collectionWidgetSelectionData = {};
   $scope.collectionWidgetSelectionData.groupNode = $scope.groupNode;

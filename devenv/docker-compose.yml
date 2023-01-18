@@ -1,14 +1,6 @@
 # Starts everything except the databus
 version: "3.0"
 services:
-  lookup-servlet:
-    image: lookup-servlet
-    container_name: devenv_lookup
-    ports:
-      - 8080:8080
-    volumes: 
-      - ../search/app-config-servlet.yml:/root/app-config.yml
-      - ../search/index:/databus/search/index
   gstore:
     image: dbpedia/gstore:dev
     container_name: devenv_gstore

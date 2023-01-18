@@ -35,7 +35,7 @@ class GstoreHelper {
       var res = await rp.post(options);
 
       process.send({
-        id: Constants.DATABUS_SEARCH_INDEX_REBUILD
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
       });
 
       return { isSuccess: true };

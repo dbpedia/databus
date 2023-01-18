@@ -1,0 +1,39 @@
+{
+    "hints": {
+        "files": [
+            "Use the file panel to fetch file URLs from resource pages or single file URLs. Fetching the URL verifies that the file is reachable and detects the file format and compression.",
+            "Files with the same name but different formats will be grouped and displayed as a single entry in the file panel. Use the arrow button to expand the entry in order to display the detected formats."
+        ],
+        "group": [
+            "A Databus Group is a structure to help you organize your data artifacts.",
+            "If you wanted to upload multiple artifacts about a common topic, a Databus Group provides a way to reflect this commonality.",
+            "When uploading artifacts about fish, birds and mammals it would make sense to upload these in a group labelled \"animals\"."
+        ],
+        "artifact": [
+            "A Databus Artifact is a logical dataset on the Databus. It may consist of multiple files in different formats or variants that describe the same thing or topic.",
+            "For example, an Artifact labelled <b>Fish</b> could contain three files in different languages. All files would still contain information about fish.",
+            "You can update new versions of your Databus Artifact anytime you like. The Artifact identifier remains static and allows users to access all released versions of your data"
+        ],
+        "variants": [
+            "All files of a Databus Artifact have to be distinguishable by more than just the file name. Therefore, each file of an Artifact has to differ in at least one content variant dimension.",
+            "For example, if you wanted to upload multiple translations of a text (each in its own file), the Databus would not auto-detect the aspect that makes each file different. You would have to tell the Databus manually that the text files contain the same text in different languages.",
+            "You can add content variants to files by adding a content variant dimension (e.g. \"language\" or \"lang\") and inserting values (e.g. \"en\", \"de\", \"fr\", ...) into the newly created column. "
+        ]
+    },
+    "errors": {
+        "err_invalid_group_description": "The group description is invalid. Please enter at least 25 characters.",
+        "err_invalid_group_label": "The group label is invalid. Please enter at least 3 characters.",
+        "err_invalid_group_name": "The group name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
+        "err_invalid_artifact_name": "The artifact name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
+        "err_invalid_artifact_label": "The artifact label is invalid. Please enter at least 3 characters.",
+        "err_invalid_version_name": "The version name is invalid. Please enter at least 3 characters.",
+        "err_invalid_version_title": "The version title is missing.",
+        "err_invalid_version_abstract": "The version abstract is missing.",
+        "err_invalid_version_description": "The version description is missing.",
+        "err_invalid_version_license": "The license is invalid. Please enter a license URI.",
+        "err_no_files": "You have to upload at least one file.",
+        "err_not_analyzed": "This file has not been analzyed yet.",
+        "warning_group_exists": "A group with this name already exits. Publishing will overwrite its metadata.",
+        "warning_artifact_exists": "An artifact with this name already exits. Publishing will overwrite its metadata."
+    }
+}

@@ -227,6 +227,10 @@ class DatabusCollectionManager {
       return null;
     }
 
+    if(this.local == null) {
+      return null;
+    }
+
     return this.local[this.activeCollectionIdentifier];
   }
 

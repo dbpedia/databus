@@ -53,7 +53,7 @@ function createFork(onListening) {
   });
 }
 
-function masterProcess() {
+async function masterProcess() {
 
   console.log(`######`);
   console.log(`#     #   ##   #####   ##   #####  #    #  ####`);
@@ -64,23 +64,29 @@ function masterProcess() {
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
 
-  searchIndexer = new LookupSearchIndexer(5000);
-
   console.log(`================================================`);
-  console.log(``)
-  console.log(`Environment Variables:`)
+  console.log(``);
+  console.log(`Environment Variables:`);
   console.log(`------------------------------------------------`);
   console.log(`DATABUS_RESOURCE_BASE_URL\t${process.env.DATABUS_RESOURCE_BASE_URL}`);
   console.log(`DATABUS_NAME\t\t\t${process.env.DATABUS_NAME}`);
   console.log(`DATABUS_ORG_ICON\t\t${process.env.DATABUS_ORG_ICON}`);
   console.log(`DATABUS_BANNER_COLOR\t\t${process.env.DATABUS_BANNER_COLOR}`);
-  console.log(``)
+  console.log(``);
   console.log(`================================================`);
-  console.log(``)
+  console.log(``);
 
-  // TODO: Validate startup environment variables
+  try {
 
-  initialize().then(function () {
+    console.log(`Starting search service...`)
+    searchIndexer = new LookupSearchIndexer(5000);
+    await searchIndexer.start();
+    console.log(``);
+    console.log(`================================================`);
+    console.log(``);
+    await initialize();
+
+    // TODO: Validate startup environment variables
 
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
@@ -108,11 +114,10 @@ function masterProcess() {
     });
 
 
-  }, function (err) {
+  } catch (err) {
     console.log(`Initialization error: \n${err}`);
     process.exit(err ? 1 : 0)
-  });
-
+  }
 }
 
 function childProcess() {

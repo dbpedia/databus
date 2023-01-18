@@ -2,6 +2,7 @@ var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
 var rp = require('request-promise');
 const cheerio = require('cheerio');
 var sparql = require("../../common/queries/sparql");
+
 const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {
@@ -15,10 +16,11 @@ module.exports = function (router, protector) {
 
       var dalicc = await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000');
       var publishers = await sparql.accounts.getPublishersByAccount(auth.info.accountName);
+      var texts = require('../publish-wizard-texts.json');
 
       res.render('publish-wizard', {
         title: 'Publish Data',
-        data: { auth: auth, publisherData: publishers, licenseData: JSON.parse(dalicc) }
+        data: { auth: auth, publisherData: publishers, licenseData: JSON.parse(dalicc), texts: texts }
       });
     } catch (err) {
       console.log(err);

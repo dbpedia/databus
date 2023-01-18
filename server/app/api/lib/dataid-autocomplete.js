@@ -204,8 +204,9 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
 
   expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATAID_GROUP });
-  // artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY] = [ {}];
-  // artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
+
+  artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY] = [ {} ];
+  artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
 
   if (artifactGraph[DatabusUris.DCT_TITLE] == undefined) {
     artifactGraph[DatabusUris.DCT_TITLE] = [{}];
@@ -214,7 +215,6 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
 
   if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined
     && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
-
     var description = artifactGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
     artifactGraph[DatabusUris.DCT_ABSTRACT] = [{}];
     artifactGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =

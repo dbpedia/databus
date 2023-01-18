@@ -102,7 +102,7 @@
           <td>Format</td>
           <td>Compression</td>
           <td ng-repeat="cv in $ctrl.model.contentVariants">{{ cv.label }}</td>
-          <td>Status / Actions</td>
+          <td>Status/Actions</td>
           <td></td>
         </tr>
       </thead>
@@ -146,28 +146,13 @@
                 size="24"></databus-icon>
             </div>
           </td>
-          <td ng-style="{ 'width' : $ctrl.progressWidth, 'left' : $ctrl.progressPosition,
-            'opacity' : ($ctrl.analysisProcesses[file.uri] != undefined
-              && !$ctrl.analysisProcesses[file.uri].isDone) ? 1 : 0 }">
+          <td >
 
-            <div style="background-color:rgba(0, 200, 0, 0.2); height: 43px; width: 0%;"
-              ng-style="{ 'width' :  $ctrl.analysisProcesses[file.uri].progress + '%' }"></div>
-
+            
           </td>
+        
         </tr>
 
-        <!--
-      <tr ng-repeat-end  ng-repeat="dist in file.distributions">
-        <td></td>
-        <td style="padding:0.5em;">
-          <div><a ng-href="{{ dist.uri }}">{{ dist.uri.substr(0, 50) }}...</a></div>
-        </td>
-        <td style="padding:0.5em;">{{ dist.format }}</td>
-        <td style="padding:0.5em;">{{ dist.compression }}</td>
-        <td 
-        ng-repeat="cv in $ctrl.model.contentVariants"></td>
-      </tr>
--->
 
 
       </tbody>

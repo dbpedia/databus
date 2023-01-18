@@ -131,15 +131,16 @@ function FacetsViewController($http, $scope) {
     }).then(function (result) {
 
       // Facets data has been loaded
-      ctrl.isLoading = false;
-
       // Fix artifact facet values for groups
       if (ctrl.resourceType == 'group' && result.data["http://dataid.dbpedia.org/ns/core#artifact"] != undefined) {
         for (var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
           var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
           result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
             = DatabusCollectionUtils.uriToName(value);
+
         }
+
+
       }
 
       // Facet setting in this view is
@@ -213,7 +214,7 @@ function FacetsViewController($http, $scope) {
           }
         }
 
-       
+
 
         // If we're a group node, check for artifact nodes and add them as facets
         if (ctrl.resourceType == 'group') {
@@ -225,10 +226,23 @@ function FacetsViewController($http, $scope) {
             visibleFacetSetting.checked = true;
             visibleFacetSetting.isOverride = true;
           }
+
+          if (ctrl.node.childNodes.length == 0) {
+
+            // Add artifact nodes per default
+            for (var v of ctrl.viewModel[DatabusUris.DATAID_ARTIFACT_PROPERTY].visibleFacetSettings) {
+              var childUri = ctrl.node.uri + '/' + v.value;
+              var artifactNode = new QueryNode(childUri, 'dataid:artifact');
+              QueryNode.addChild(ctrl.node, artifactNode);
+            }
+          }
         }
 
+        ctrl.onChange();
         ctrl.onLoaded();
       }
+
+      ctrl.isLoading = false;
     });
   }
 

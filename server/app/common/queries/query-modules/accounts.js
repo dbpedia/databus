@@ -22,7 +22,7 @@ instance.getPublishersByAccount = async function (account) {
 
   var query = exec.formatQuery(require('../sparql/get-publishers-by-account.sparql'), queryOptions);
 
-  console.log(query);
+  // console.log(query);
   var bindings = await exec.executeSelect(query);
   return bindings;
 }
@@ -74,7 +74,7 @@ instance.getAccount = async function (accountName) {
     entry.uri = accountUri;
     entry.webIds = [];
 
-    console.log(entry.authorizedAccounts);
+    // console.log(entry.authorizedAccounts);
 
     if(entry.authorizedAccounts == undefined) {
       entry.authorizedAccounts = [];
@@ -115,7 +115,7 @@ instance.getAccountStats = async function (accountName) {
 
     var query = exec.formatQuery(require('../sparql/get-account-stats.sparql'), queryOptions);
 
-    console.log(query);
+    // console.log(query);
     var bindings = await exec.executeSelect(query);
 
 

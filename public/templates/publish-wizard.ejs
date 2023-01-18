@@ -2,11 +2,13 @@
   <div ng-controller="PublishWizardController" ng-cloak>
 
 
+    <script src="/js/publish/publish-session.js"></script>
     <script src="/js/components/table-editor/table-editor.js"></script>
     <script src="/node_modules/bulma-steps/dist/js/bulma-steps.min.js"></script>
     <script src="/node_modules/stream-file/dist/stream-file.min.js"></script>
     <script src="/node_modules/js-sha256/build/sha256.min.js"></script>
-    <script src="https://databus.dbpedia.org/auth/js/keycloak.js"></script>
+    <!--script src="https://databus.dbpedia.org/auth/js/keycloak.js"></script>-->
+    <script src="/js/publish/wizard-texts.js"></script>
 
     <link rel="stylesheet" href="/node_modules/bulma-steps/dist/css/bulma-steps.min.css" type="text/css" />
 
@@ -242,6 +244,18 @@
         padding-top: 2em;
         padding-bottom: 1em;
       }
+
+      .hover-dropdown.content ul {
+        margin-top: 0; margin-left: 1.5em;
+      }
+
+      .hover-note {
+        margin-left: 1em;
+      }
+
+      .box-separator {
+        height: 30px;
+      }
     </style>
 
 
@@ -284,7 +298,7 @@
     </div>
 
     <!-- Loading Bubbles -->
-    <section class="section placeholder" ng-if="authenticated && hasAccount && !isWizardReady">
+    <section class="section placeholder" ng-if="authenticated && hasAccount && isAccountDataLoading">
       <div class="container">
         <div class="lds-ellipsis">
           <div></div>
@@ -296,10 +310,10 @@
     </section>
 
     <!-- WIZARD -->
-    <section ng-if="authenticated && hasAccount && isWizardReady">
+    <section ng-if="authenticated && hasAccount && !isAccountDataLoading">
       <div class="container">
 
-        <div ng-if="isWizardReady">
+        <div>
 
           <!-- INFO -->
           <div class="wizard-info content">
@@ -313,40 +327,41 @@
           </div>
 
           <!-- GROUP BOX-->
-          <div class="content-box" ng-init="group=session.data.group">
+          <div class="content-box" ng-init="group=session.formData.group">
+
             <div class="box-header">
               <h3>GROUP INFO</h3>
-              <div class="hover-note">
-                <svg ng-if="group.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                  fill-rule="evenodd" clip-rule="evenodd">
-                  <path fill="red"
-                    d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                </svg>
+              <div class="hover-note" ng-if="group.errors.length == 0">
+                <databus-icon shape="'check'" color="'#65bdb2'" size="24">
+                </databus-icon>
+              </div>
+              <div class="hover-note" ng-if="group.errors.length > 0">
+                <databus-icon shape="'error'" color="'red'" size="24">
+                </databus-icon>
                 <div class="hover-dropdown has-error content">
-                  <ul style="margin-top: 0; margin-left: 1.5em;">
+                  <ul>
                     <li ng-repeat="error in group.errors">
-                      {{ errorMessages[error] }}
+                      {{ texts.errors[error] }}
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="hover-note">
-                <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                <databus-icon shape="'info'" size="24">
                 </databus-icon>
                 <div class="hover-dropdown content">
-                  <ul style="margin-top: 0; margin-left: 1.5em;">
-                    <li ng-repeat="hint in hints.group">{{ hint }}</li>
+                  <ul>
+                    <li ng-repeat="hint in texts.hints.group">{{ hint }}</li>
                   </ul>
                 </div>
               </div>
             </div>
-
             <div class="box-content">
               <div class="row">
                 <div class="row-label">Create New Group</div>
                 <div class="field override-checkbox" ng-class="{ 'is-override' : group.createNew }">
                   <input id="check--createnewgroup" name="check--createnewgroup" class="is-checkradio" type="checkbox"
-                    ng-model="group.createNew" ng-change="setCreateNewGroup(group.createNew);">
+                    ng-model="group.createNew" ng-change="session.setCreateNewGroup(group.createNew);">
                   <label for="check--createnewgroup">
                     <span></span>
                   </label>
@@ -367,8 +382,8 @@
                     <div class="dropdown-menu" id="dropdown-menu" role="menu">
                       <div class="dropdown-content">
 
-                        <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in accountData.groups"
-                          ng-click="selectGroup(grp)">
+                        <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData.groups"
+                          ng-click="session.selectGroup(grp)">
                           {{ grp.name }}
                         </div>
                       </div>
@@ -381,9 +396,9 @@
                 <div style="flex: 1">
                   <input class="input" type="text" ng-model="group.name">
                   <span ng-if="hasError(group.errors, 'err_invalid_group_name')" class="help is-danger">{{
-                    errorMessages['err_invalid_group_name'] }}</span>
+                    texts.errors['err_invalid_group_name'] }}</span>
                   <span ng-if="hasError(group.warnings, 'warning_group_exists')" style="color: #3d8d83" class="help">{{
-                    errorMessages['warning_group_exists'] }}</span>
+                    texts.errors['warning_group_exists'] }}</span>
                 </div>
               </div>
               <div class="row" ng-if="group.createNew">
@@ -419,9 +434,9 @@
               </div>
               <div class="row" ng-if="group.createNew">
                 <div class="row-label">Create Without Version</div>
-                <div class="field override-checkbox" ng-class="{ 'is-override' : session.data.group.publishGroupOnly }">
+                <div class="field override-checkbox" ng-class="{ 'is-override' : session.formData.group.publishGroupOnly }">
                   <input id="check--createwithoutversion" name="check--createwithoutversion" class="is-checkradio"
-                    type="checkbox" ng-model="session.data.group.publishGroupOnly">
+                    type="checkbox" ng-model="session.formData.group.publishGroupOnly">
                   <label for="check--createwithoutversion">
                     <span></span>
                   </label>
@@ -431,32 +446,33 @@
           </div>
 
 
-          <div ng-if="!session.data.group.publishGroupOnly">
+          <div ng-if="!session.formData.group.publishGroupOnly">
 
             <!-- ARTIFACT BOX-->
-            <div class="content-box" ng-init="artifact=session.data.artifact">
+            <div class="content-box" ng-init="artifact=session.formData.artifact">
               <div class="box-header">
                 <h3>ARTIFACT INFO</h3>
-                <div class="hover-note">
-                  <svg ng-if="artifact.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                    fill-rule="evenodd" clip-rule="evenodd">
-                    <path fill="red"
-                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                  </svg>
+                <div class="hover-note" ng-if="artifact.errors.length == 0">
+                  <databus-icon shape="'check'" color="'#65bdb2'" size="24">
+                  </databus-icon>
+                </div>
+                <div class="hover-note" ng-if="artifact.errors.length > 0">
+                  <databus-icon shape="'error'" color="'red'" size="24">
+                  </databus-icon>
                   <div class="hover-dropdown has-error content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                    <ul>
                       <li ng-repeat="error in artifact.errors">
-                        {{ errorMessages[error] }}
+                        {{ texts.errors[error] }}
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                  <databus-icon shape="'info'" size="24">
                   </databus-icon>
                   <div class="hover-dropdown content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.artifact">{{ hint }}</li>
+                    <ul>
+                      <li ng-repeat="hint in texts.hints.artifact">{{ hint }}</li>
                     </ul>
                   </div>
                 </div>
@@ -469,8 +485,8 @@
                           && session.accountGroup.artifacts.length != 0 }">
                       <input id="check--createnewartifact" name="check--createnewartifact" class="is-checkradio"
                         type="checkbox" ng-model="artifact.createNew"
-                        ng-change="setCreateNewArtifact(artifact.createNew);"
-                        ng-disabled="group.createNew || session.accountGroup.artifacts.length == 0">
+                        ng-change="session.setCreateNewArtifact(artifact.createNew);"
+                        ng-disabled="group.createNew || !session.currentGroup.hasArtifacts">
                       <label for="check--createnewartifact">
                         <span></span>
                       </label>
@@ -492,7 +508,7 @@
                           <div class="dropdown-content">
 
                             <div class="dropdown-item" style="cursor: pointer;"
-                              ng-repeat="art in session.accountGroup.artifacts" ng-click="selectArtifact(art)">
+                              ng-repeat="art in session.currentGroup.artifacts" ng-click="session.selectArtifact(art)">
                               {{ art.name }}
                             </div>
                           </div>
@@ -505,10 +521,10 @@
                     <div style="flex: 1">
                       <input class="input" type="text" ng-model="artifact.name">
                       <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_name')" class="help is-danger">{{
-                        errorMessages['err_invalid_artifact_name'] }}</span>
+                        texts.errors['err_invalid_artifact_name'] }}</span>
                       <span ng-if="hasError(artifact.warnings, 'warning_artifact_exists')" style="color: #3d8d83"
                         class="help">{{
-                        errorMessages['warning_artifact_exists'] }}</span>
+                        texts.errors['warning_artifact_exists'] }}</span>
                     </div>
                   </div>
                   <div class="row" ng-if="artifact.createNew">
@@ -516,7 +532,7 @@
                     <div style="flex: 1">
                       <input class="input" type="text" ng-model="artifact.title">
                       <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
-                        errorMessages['err_invalid_artifact_label'] }}</span>
+                        texts.errors['err_invalid_artifact_label'] }}</span>
 
                     </div>
                   </div>
@@ -547,7 +563,7 @@
                         ng-model="artifact.description"></textarea>
                       <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_description')"
                         class="help is-danger">{{
-                        errorMessages['err_invalid_group_description'] }}</span>
+                        texts.errors['err_invalid_group_description'] }}</span>
                     </div>
                   </div>
                 </div>
@@ -556,36 +572,36 @@
 
 
             <!-- VERSION BOX-->
-            <div class="content-box" ng-init="version=session.data.version">
+            <div class="content-box" ng-init="version=session.formData.version">
 
               <div class="box-header">
                 <h3>VERSION INFO</h3>
-                <div class="hover-note">
-                  <svg ng-if="version.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                    fill-rule="evenodd" clip-rule="evenodd">
-                    <path fill="red"
-                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                  </svg>
+
+                <div class="hover-note" ng-if="version.errors.length == 0">
+                  <databus-icon shape="'check'" color="'#65bdb2'" size="24">
+                  </databus-icon>
+                </div>
+                <div class="hover-note" ng-if="version.errors.length > 0">
+                  <databus-icon shape="'error'" color="'red'" size="24">
+                  </databus-icon>
                   <div class="hover-dropdown has-error content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
+                    <ul>
                       <li ng-repeat="error in version.errors">
-                        {{ errorMessages[error] }}
+                        {{ texts.errors[error] }}
                       </li>
                     </ul>
                   </div>
                 </div>
-
                 <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' size="24">
+                  <databus-icon shape="'info'"size="24">
                   </databus-icon>
                   <div class="hover-dropdown content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.version">{{ hint }}</li>
+                    <ul>
+                      <li ng-repeat="hint in texts.hints.version">{{ hint }}</li>
                     </ul>
                   </div>
                 </div>
               </div>
-
 
               <!-- VERSION NAME -->
               <div class="row">
@@ -605,10 +621,10 @@
                         </div>
                         <div class="dropdown-menu" id="dropdown-menu" role="menu">
                           <div class="dropdown-content">
-                            <a class="dropdown-item" ng-click="session.data.createVersionName(0)">
+                            <a class="dropdown-item" ng-click="session.formData.createVersionName(0)">
                               Date YYYY-MM-DD
                             </a>
-                            <a class="dropdown-item" ng-click="session.data.createVersionName(1)">
+                            <a class="dropdown-item" ng-click="session.formData.createVersionName(1)">
                               Date YYYY-MM-DDTHH
                             </a>
                           </div>
@@ -617,11 +633,11 @@
                     </div>
                   </div>
                   <span ng-if="hasError(version.errors, 'err_invalid_version_name')" class="help is-danger">{{
-                    errorMessages['err_invalid_version_name'] }}</span>
+                    texts.errors['err_invalid_version_name'] }}</span>
                 </div>
               </div>
 
-              <!-- VERSION TITLE -->
+              <!-- VERSION TITLE 
               <div class="row">
                 <div class="row-label">Title</div>
                 <div style="flex: 1">
@@ -636,10 +652,10 @@
                     </div>
                     <input ng-disabled="version.useArtifactTitle" class="input" type="text" ng-model="version.title">
                     <span ng-if="hasError(version.errors, 'err_invalid_version_title')" class="help is-danger">{{
-                      errorMessages['err_invalid_version_title'] }}</span>
+                      texts.errors['err_invalid_version_title'] }}</span>
                   </div>
                 </div>
-              </div>
+              </div>-->
               <!-- VERSION ABSTRACT -->
               <div class="row">
                 <div class="row-label">Abstract</div>
@@ -657,7 +673,7 @@
                       style="min-height: 120px; resize: vertical;" class="input" type="text"
                       ng-model="version.abstract"></textarea>
                     <span ng-if="hasError(version.errors, 'err_invalid_version_abstract')" class="help is-danger">{{
-                      errorMessages['err_invalid_version_abstract'] }}</span>
+                      texts.errors['err_invalid_version_abstract'] }}</span>
                   </div>
                 </div>
               </div>
@@ -668,39 +684,7 @@
                   <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
                     ng-model="version.description"></textarea>
                   <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
-                    errorMessages['err_invalid_version_description'] }}</span>
-                </div>
-              </div>
-            </div>
-
-
-            <!-- LICENSE BOX-->
-            <div class="content-box" ng-init="version=session.data.version">
-
-              <div class="box-header">
-                <h3>LICENSE INFO</h3>
-                <div class="hover-note">
-                  <svg ng-if="version.errors.length > 0" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
-                    fill-rule="evenodd" clip-rule="evenodd">
-                    <path fill="red"
-                      d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
-                  </svg>
-                  <div class="hover-dropdown has-error content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="error in version.errors">
-                        {{ errorMessages[error] }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown content">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.version">{{ hint }}</li>
-                    </ul>
-                  </div>
+                    texts.errors['err_invalid_version_description'] }}</span>
                 </div>
               </div>
 
@@ -735,7 +719,7 @@
                       </div>
                     </div>
                     <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
-                      errorMessages['err_invalid_version_license'] }}</span>
+                      texts.errors['err_invalid_version_license'] }}</span>
                   </div>
                 </div>
               </div>
@@ -839,12 +823,12 @@
                                 placeholder="Enter a Regex (.* for file name)">
                             </div>
                             <div class="control">
-                              <div class="button" ng-click="session.data.fill(variant)">
+                              <div class="button" ng-click="session.formData.fill(variant)">
                                 Fill
                               </div>
                             </div>
                             <div class="control">
-                              <div class="button" ng-click="session.data.fillByRegex(variant)">
+                              <div class="button" ng-click="session.formData.fillByRegex(variant)">
                                 Fill By Regex
                               </div>
                             </div>
@@ -864,7 +848,7 @@
                         </div>
 
                         <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
-                          on-click="session.data.removeContentVariant(variant)" size="24"></databus-icon>
+                          on-click="session.formData.removeContentVariant(variant)" size="24"></databus-icon>
                       </div>
                     </div>
                   </div>
@@ -876,7 +860,7 @@
                     </div>
                     <div class="control">
                       <a class="button"
-                        ng-click="session.data.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
+                        ng-click="session.formData.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
                         Add Content Variant
                       </a>
                     </div>
@@ -887,7 +871,6 @@
               <br />
               <div>
                 <table-editor ng-if="objSize(version.files) > 0" model="version"
-                  analysis-processes="session.shasumClient.processes" on-analyze-file="analyzeFile(file)"
                   on-remove-file="removeFile(file)">
                 </table-editor>
 
@@ -920,7 +903,7 @@
 
 
             <!-- ARTIFACT INFO BOX-->
-            <div class="content-box" ng-init="artifact=session.data.artifact">
+            <div class="content-box" ng-init="artifact=session.formData.artifact">
               <div class="box-header">
                 <h3>SIGNATURE</h3>
               </div>
@@ -936,7 +919,7 @@
                           <div class="dropdown-trigger">
                             <button style="justify-content: space-between; min-width: 400px;" class="button"
                               aria-haspopup="true" aria-controls="dropdown-menu4">
-                              <span>{{ session.data.signature.selectedPublisherUri}}</span>
+                              <span>{{ session.formData.signature.selectedPublisherUri}}</span>
                               <span class="icon is-small">
                                 <i class="fas fa-angle-down" aria-hidden="true"></i>
                               </span>
@@ -945,7 +928,7 @@
                           <div class="dropdown-menu" id="dropdown-menu" role="menu">
                             <div class="dropdown-content">
                               <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
-                                ng-repeat="uri in session.data.signature.publisherUris">
+                                ng-repeat="uri in session.formData.signature.publisherUris">
                                 {{ uri }}
                               </a>
                             </div>
@@ -962,20 +945,20 @@
                     <div class="field">
                       <div class="control">
                         <label class="checkbox">
-                          <input type="checkbox" ng-disabled="session.data.signature.autoGenerateSignatureLocked"
-                            ng-model="session.data.signature.autoGenerateSignature">
+                          <input type="checkbox" ng-disabled="session.formData.signature.autoGenerateSignatureLocked"
+                            ng-model="session.formData.signature.autoGenerateSignature">
                           Auto-generate Signature
                         </label>
                       </div>
-                      <div class="control" ng-if="!session.data.signature.autoGenerateSignature">
-                        <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.data.signature.tractate}}</pre>
+                      <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
+                        <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
                         <div style="display: flex; margin-bottom: 8px;">
                           <div style="margin-right: 8px;" class="button" ng-click="createTractate(result.versionUpdate)"
                             ng-disabled="creatingTracate">Create
                             Tractate</div>
                           <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
                         </div>
-                        <textarea ng-model="session.data.signature.userSignature" class="textarea"
+                        <textarea ng-model="session.formData.signature.userSignature" class="textarea"
                           style="resize: vertical" placeholder="Signature"></textarea>
                       </div>
                     </div>
@@ -988,52 +971,44 @@
 
 
 
-          <div class="content-box" ng-init="artifact=session.data.artifact">
+          <div class="content-box" ng-init="artifact=session.formData.artifact">
             <div class="box-header">
               <h3>Publish</h3>
             </div>
 
             <div class="box-content">
-
               <div class="row">
-
                 <div class="row-label">Group Metadata</div>
-                <pre ng-if="result.isReadyForUpload"
-                  style="width: 100%;">{{ result.groupUpdate["@graph"] | json }}</pre>
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                <pre ng-if="session.formData.group.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.group["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.group.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the metadata
                 </pre>
               </div>
               <div class="row">
-
                 <div class="row-label">Artifact Metadata</div>
-                <pre ng-if="result.isReadyForUpload"
-                  style="width: 100%;">{{ result.artifactUpdate["@graph"] | json }}</pre>
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                <pre ng-if="session.formData.artifact.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the metadata
                 </pre>
               </div>
               <div class="row">
                 <div class="row-label">Version Metadata</div>
-
-                <pre ng-if="result.isReadyForUpload"
-                  style="width: 100%;">{{ result.versionUpdate["@graph"] | json }}</pre>
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                <pre ng-if="session.formData.version.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.version.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
               </div>
-
               <div class="row">
-
                 <div class="row-label">Full Body</div>
-                <pre ng-if="result.isReadyForUpload && session.showContext"
-                  style="width: 100%; position: relative;"><div ng-click="session.showContext = false" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ result.updateData | json }}</pre>
-                <pre ng-if="result.isReadyForUpload && !session.showContext"
-                  style="width: 100%; position: relative;"><div ng-click="session.showContext = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
-
-
-
-                <pre ng-if="!result.isReadyForUpload" style="width: 100%;">
+                <pre ng-if="session.isReadyForUpload && session.showFullInput"
+                  style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
+                  style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ session.inputs.all | json }}</pre>
+                <pre ng-if="session.isReadyForUpload && !session.showFullInput"
+                  style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
+                <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
               </div>
@@ -1049,8 +1024,8 @@
                   </label>
                 </div>
                 <p class="control" style="width: 100%; margin-top: 1em;">
-                  <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : session.isPublishing }"
-                    ng-disabled="!result.isReadyForUpload || !agreeCCZero" class="button is-primary" ng-click="publish()">
+                  <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                    ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary" ng-click="publish()">
                     <span>Publish</span>
                   </button>
                 </p>
@@ -1058,16 +1033,16 @@
             </div>
           </div>
         </div>
-        <div class="content-box" ng-init="artifact=session.data.artifact">
+        <div class="content-box">
           <div class="box-header">
             <h3>Result</h3>
           </div>
 
           <div class="box-content">
-            <div class="row">
+            <div class="row" ng-if="!isPublishing">
 
               <div style="width: 100%">
-                <div ng-repeat="entry in result.publishLog" style="margin-bottom: .25em;">
+                <div ng-repeat="entry in publishLog" style="margin-bottom: .25em;">
 
                   <div style="width: 100%; font-family: monospace; padding: .75em; 
                   background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
@@ -1081,7 +1056,7 @@
                     <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{
                       entry.msg }}</div>
                     <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
-                    <databus-icon ng-if="entry.level!='error'" color="'green'" shape="'check'" size="24">
+                    <databus-icon ng-if="entry.level!='error'" color="'#65bdb2'" shape="'check'" size="24">
                     </databus-icon>
                   </div>
                   <div ng-if="entry.expanded">
@@ -1092,7 +1067,6 @@
 
             </div>
             <div class="row">
-
               <p class="control" style="width: 100%; margin-top: 1em;">
                 <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
                   <span>Reset Form</span>

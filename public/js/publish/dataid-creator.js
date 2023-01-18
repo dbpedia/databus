@@ -1,14 +1,15 @@
 
 class DataIdCreator {
 
-  constructor(accountName) {
+  constructor(formData, accountName) {
     this.accountName = accountName;
+    this.formData = formData;
   }
 
-  createUpdate(data) {
-    var group = this.createGroupUpdate(data);
-    var artifact = this.createArtifactUpdate(data);
-    var dataid = this.createVersionUpdate(data);
+  createInputs() {
+    var group = this.createGroupUpdate();
+    var artifact = this.createArtifactUpdate();
+    var dataid = this.createVersionUpdate();
 
     var result = {
       "@context": this.getContext(),
@@ -33,7 +34,13 @@ class DataIdCreator {
       }
     }
 
-    return result;
+    return {
+      context: this.getContext(),
+      group: group,
+      artifact: artifact,
+      dataid: dataid,
+      all: result
+    };
   }
 
   getValidString(value) {
@@ -52,7 +59,7 @@ class DataIdCreator {
     return DATABUS_CONTEXT[DatabusUris.JSONLD_CONTEXT];
   }
 
-  createGroupUpdate(data) {
+  createGroupUpdate() {
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
 
@@ -60,17 +67,17 @@ class DataIdCreator {
       "@context": this.getContext(),
       "@graph": [
         {
-          "@id": `${accountUri}/${data.group.name}`,
+          "@id": `${accountUri}/${this.formData.group.name}`,
           "@type": "Group",
-          "title": this.getValidString(data.group.title),
-          "abstract": this.getValidString(data.group.abstract),
-          "description": this.getValidString(data.group.description)
+          "title": this.getValidString(this.formData.group.title),
+          "abstract": this.getValidString(this.formData.group.abstract),
+          "description": this.getValidString(this.formData.group.description)
         }
       ]
     };
   }
 
-  createArtifactUpdate(data) {
+  createArtifactUpdate() {
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
 
@@ -78,32 +85,32 @@ class DataIdCreator {
       "@context": this.getContext(),
       "@graph": [
         {
-          "@id": `${accountUri}/${data.group.name}/${data.artifact.name}`,
+          "@id": `${accountUri}/${this.formData.group.name}/${this.formData.artifact.name}`,
           "@type": "Artifact",
-          "title": this.getValidString(data.artifact.title),
-          "abstract": this.getValidString(data.artifact.abstract),
-          "description": this.getValidString(data.artifact.description)
+          "title": this.getValidString(this.formData.artifact.title),
+          "abstract": this.getValidString(this.formData.artifact.abstract),
+          "description": this.getValidString(this.formData.artifact.description)
         }
       ]
     };
   }
 
-  createVersionUpdate(data) {
+  createVersionUpdate() {
 
-    if (data.group.publishGroupOnly) {
+    if (this.formData.group.publishGroupOnly) {
       return undefined;
     }
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
-    var versionUri = `${accountUri}/${data.group.name}/${data.artifact.name}/${data.version.name}`
+    var versionUri = `${accountUri}/${this.formData.group.name}/${this.formData.artifact.name}/${this.formData.version.name}`
 
-    var artifact = data.artifact;
-    var version = data.version;
+    var artifact = this.formData.artifact;
+    var version = this.formData.version;
 
     var graph = {
       "@type": "Dataset",
       "@id": versionUri + "#Dataset",
-      "publisher": data.signature.selectedPublisherUri,
+      "publisher": this.formData.signature.selectedPublisherUri,
       "hasVersion": version.name,
       "title": version.title,
       "abstract": version.abstract,
@@ -113,14 +120,14 @@ class DataIdCreator {
       "distribution": []
     }
 
-    if (data.signature.selectedPublisherUri == data.signature.defaultPublisherUri) {
+    if (this.formData.signature.selectedPublisherUri == this.formData.signature.defaultPublisherUri) {
       delete graph.publisher;
     }
 
-    if (!data.signature.autoGenerateSignature) {
+    if (!this.formData.signature.autoGenerateSignature) {
       graph["proof"] = {
         '@type': "dataid:DatabusTractateV1",
-        'signature': data.signature.userSignature
+        'signature': this.formData.signature.userSignature
       };
     }
 
@@ -194,8 +201,6 @@ class DataIdCreator {
 
     return result;
   }
-
-  
 }
 
 

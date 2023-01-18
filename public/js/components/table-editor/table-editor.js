@@ -31,11 +31,8 @@ function TableEditorController() {
       ctrl.columns.push({ title: cv.label, width: 120, isReadonly : false });
     }
 
-
-    ctrl.columns.push({ title:'Actions', width: 140, isReadonly : true });
-
+    ctrl.columns.push({ title:'Actions', width: 120, isReadonly : true });
     ctrl.progressWidth = (115 + 200) + 'px';
-
   }
 
   ctrl.toggleGroupMode = function() {

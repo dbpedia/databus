@@ -304,7 +304,7 @@ class QueryBuilder {
         this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
         this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
         this.appendLine('}', indent + 3);
-        this.appendLine('} ORDER BY DESC (?version) LIMIT 1 ', indent + 2);
+        this.appendLine('} ORDER BY DESC (STR(?version)) LIMIT 1 ', indent + 2);
         this.appendLine('}', indent + 1);
         this.appendLine('}', indent);
       }
@@ -336,7 +336,7 @@ class QueryBuilder {
             this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
             this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
             this.appendLine('}', indent + 3);
-            this.appendLine('} ORDER BY DESC (?version) LIMIT 1 ', indent + 2);
+            this.appendLine('} ORDER BY DESC (STR(?version)) LIMIT 1 ', indent + 2);
             this.appendLine('}', indent + 1);
             this.appendLine('}', indent);
           }

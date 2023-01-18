@@ -219,7 +219,7 @@ module.exports = function (router, protector) {
           continue;
         }
 
-        console.log(`Backlink found.`);
+        // console.log(`Backlink found.`);
         canConnect = true;
       }
 
@@ -378,7 +378,7 @@ module.exports = function (router, protector) {
     var keyName = decodeURIComponent(req.query.name);
     var found = await protector.removeApiKey(req.oidc.user.sub, keyName);
 
-    console.log(found);
+    // console.log(found);
     if(found) {
       res.status(200).send();
     } else {

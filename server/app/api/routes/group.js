@@ -6,6 +6,7 @@ const publishGroup = require('../lib/publish-group');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var defaultContext = require('../../../../model/generated/context.json');
 var request = require('request');
+const JsonldUtils = require("../../common/utils/jsonld-utils");
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 
@@ -24,8 +25,44 @@ module.exports = function (router, protector) {
         return;
       }
 
+      var logger = new DatabusLogger(req.query['log-level']);
+      var graph = req.body;
+
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
+        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      }
+
+      // Expand JSONLD!
+      var expandedGraph = await jsonld.flatten(graph);
+
+      // Publish groups
+      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_GROUP);
+      logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
+
+      // console.log(groupGraphs);
+      var expectedGroupUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
+
+      for (var groupGraph of groupGraphs) {
+        if(groupGraph[DatabusUris.JSONLD_ID] != expectedGroupUri) {
+          res.status(400).json(`Wrong group URI specified. Expected ${expectedGroupUri}`);
+          return;
+        }
+      }
+
       var account = req.databus.accountName;
-      var groupUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
+
+      for (var groupGraph of groupGraphs) {
+        var resultCode = await publishGroup(account, groupGraph, logger);
+
+        if (resultCode != 200) {
+          res.status(resultCode).json(logger.getReport());
+          return;
+        }
+      }
+
+      res.status(200).json(logger.getReport());
+      /*
 
       var graph = req.body;
 
@@ -51,6 +88,7 @@ module.exports = function (router, protector) {
 
       report += `${MESSAGE_GROUP_PUBLISH_FINISHED}${returnCode}.\n`;
       res.status(returnCode).send(report);
+      */
 
     } catch (err) {
       console.log(err);
