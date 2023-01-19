@@ -25,7 +25,7 @@ module.exports = function (router, protector) {
 
       var canonicalizedForm = await suite.expandAndCanonicalize(graph);
 
-      console.log(`\x1b[32m${canonicalizedForm}\x1b[0m`);
+      // console.log(`\x1b[32m${canonicalizedForm}\x1b[0m`);
       res.status(200).send(canonicalizedForm);
 
     } catch (err) {
@@ -52,7 +52,7 @@ module.exports = function (router, protector) {
       var proofGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_TRACTATE_V1);
 
       // Create the canonicalized form
-      var canonicalizedForm = suite.canonicalize(expandedGraph);
+      var canonicalizedForm = await suite.expandAndCanonicalize(expandedGraph);
 
       // Verify
       var validationSuccess = await suite.validate(canonicalizedForm, proofGraph);
@@ -67,7 +67,6 @@ module.exports = function (router, protector) {
     } catch (err) {
       res.status(500).send(err);
     }
-
   });
 
 

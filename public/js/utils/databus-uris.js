@@ -7,6 +7,7 @@ class DatabusUris {
   static JSONLD_VALUE = '@value';
   static JSONLD_LANGUAGE = '@language';
   static JSONLD_CONTEXT = '@context';
+  static JSONLD_GRAPH = '@graph';
 
   // DATAID
   static DATAID_DATASET = 'http://dataid.dbpedia.org/ns/core#Dataset';

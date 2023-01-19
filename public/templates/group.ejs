@@ -100,7 +100,8 @@
             </div>
           </div>
           <br />
-          <div class="dataset-name" ng-repeat="result in artifacts">
+
+          <div class="dataset-name" ng-if="searchInput.length > 0" ng-repeat="result in searchResult">
             <div style="display: flex; align-items: center;">
               <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
                 desc="result.abstract">
@@ -108,6 +109,17 @@
             </div>
             <div ng-if="!$last" class="is-divider"></div>
           </div>
+
+          <div ng-if="searchInput.length == 0" class="dataset-name" ng-repeat="result in artifacts">
+            <div style="display: flex; align-items: center;">
+              <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
+                desc="result.abstract">
+              </entity-card>
+            </div>
+            <div ng-if="!$last" class="is-divider"></div>
+          </div>
+
+
         </div>
       </div>
     </section>

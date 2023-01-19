@@ -340,7 +340,7 @@ class PublishData {
         var cvHints = [];
 
         if (artifact.contentVariants.length == 0) {
-          cvHints.push('No content variants have been added yet. Add content variants in the artifact panel in order to tag your files.');
+          cvHints.push('No content variants have been added yet. Add content variants in the files panel in order to tag your files.');
         } else {
           for (var c in artifact.contentVariants) {
             var cv = artifact.contentVariants[c];

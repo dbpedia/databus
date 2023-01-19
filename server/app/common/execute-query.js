@@ -24,7 +24,7 @@ sparql.executeSelect = async function (query) {
          headers: {
             "Content-type": "application/x-www-form-urlencoded",
             "Accept": "application/json"
-          },
+         },
       };
 
       // Await the response
@@ -45,6 +45,31 @@ sparql.executeSelect = async function (query) {
    }
 }
 
+sparql.executeConstruct = async function (query, format) {
+   try {
+
+      // Do a POST request with the passed query
+      var options = {
+         method: 'POST',
+         uri: `${sparqlEndpoint}?timeout=10000`,
+         body: `query=${encodeURIComponent(query)}`,
+         json: true,
+         headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            "Accept": format
+         },
+      };
+
+      // Await the response
+      var response = await rp(options);
+      return response;
+
+   } catch (err) {
+      console.log(err);
+      return null;
+   }
+}
+
 
 /**
  * Uses the request-promise package to send a select query against the sparql endpoint
@@ -52,31 +77,29 @@ sparql.executeSelect = async function (query) {
  * @param  {[type]} query [description]
  * @return {[type]}       [description]
  */
- sparql.executeAsk = async function (query) {
+sparql.executeAsk = async function (query) {
 
-  try {
+   try {
 
+      // Do a POST request with the passed query
+      var options = {
+         method: 'POST',
+         uri: sparqlEndpoint + '?timeout=10000',
+         body: "query=" + encodeURIComponent(query),
+         json: true,
+         headers: {
+            "Content-type": "application/x-www-form-urlencoded"
+         },
+      };
 
-     // Do a POST request with the passed query
-     var options = {
-        method: 'POST',
-        uri: sparqlEndpoint + '?timeout=10000',
-        body: "query=" + encodeURIComponent(query),
-        json: true,
-        headers: {
-           "Content-type": "application/x-www-form-urlencoded"
-        },
-     };
+      // Await the response
+      var response = await rp(options);
+      return response.boolean;
 
-     // Await the response
-     var response = await rp(options);
-
-     return response.boolean;
-
-  } catch (err) {
-     console.log(err);
-     return null;
-  }
+   } catch (err) {
+      console.log(err);
+      return null;
+   }
 }
 
 /**

@@ -4,9 +4,14 @@ const Constants = require("../../common/constants");
 const publishGroup = require('../lib/publish-group');
 
 var GstoreHelper = require('../../common/utils/gstore-helper');
-var defaultContext = require('../../../../model/generated/context.json');
+var defaultContext = require('../../common/context.json');
 var request = require('request');
 const JsonldUtils = require("../../common/utils/jsonld-utils");
+const DatabusLogger = require("../../common/databus-logger");
+const jsonld = require('jsonld');
+const rp = require('request-promise');
+const getLinkedData = require("../../common/get-linked-data");
+
 
 const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
 
@@ -44,7 +49,7 @@ module.exports = function (router, protector) {
       var expectedGroupUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
 
       for (var groupGraph of groupGraphs) {
-        if(groupGraph[DatabusUris.JSONLD_ID] != expectedGroupUri) {
+        if (groupGraph[DatabusUris.JSONLD_ID] != expectedGroupUri) {
           res.status(400).json(`Wrong group URI specified. Expected ${expectedGroupUri}`);
           return;
         }
@@ -98,24 +103,14 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
-    if(req.params.account.length < 4) {
+    if (req.params.account.length < 4) {
       next('route');
       return;
-    } 
-    
-    var repo = req.params.account;
-    var path = `${req.params.group}/${Constants.DATABUS_FILE_GROUP}`;
+    }
 
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
+    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}/${req.params.group}`;
+    var template = require('../../common/queries/constructs/ld/construct-group.sparql');
+    getLinkedData(req, res, next, resourceUri, template);
   });
 
   router.delete('/:account/:group', protector.protect(true), async function (req, res, next) {

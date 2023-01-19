@@ -96,7 +96,7 @@ module.exports = function (router, protector) {
 
       var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
 
-      var targetPath = 'webid.jsonld';
+      var targetPath = Constants.DATABUS_FILE_WEBID;
 
       // console.log(`Target path: ${targetPath}`);
       // console.log(JSON.stringify(compactedGraph));
@@ -172,7 +172,7 @@ module.exports = function (router, protector) {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var webIdUri = decodeURIComponent(req.query.uri);
     
-      var path = `/${auth.info.accountName}/webid.jsonld`;
+      var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
@@ -229,7 +229,7 @@ module.exports = function (router, protector) {
       }
 
       // Add triple to account!
-      var path = `/${auth.info.accountName}/webid.jsonld`;
+      var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
@@ -266,7 +266,7 @@ module.exports = function (router, protector) {
       console.log(`Trying to grant access to ${accountUri} to ${grantUri}.`);
 
       // Add triple to account!
-      var path = `/webid.jsonld`;
+      var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
@@ -313,7 +313,7 @@ module.exports = function (router, protector) {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var revokeUri = decodeURIComponent(req.query.uri);
     
-      var path = `/webid.jsonld`;
+      var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 

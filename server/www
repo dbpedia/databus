@@ -14,7 +14,7 @@ const DatabusMessage = require('./app/common/databus-message');
 var initialize = require('./init');
 var searchIndexer = null;
 var config = require('./config.json')
-var runTests = require('./app/tests.js');
+var runTests = require('./app/test/main.js');
 
 initializeExtensions();
 

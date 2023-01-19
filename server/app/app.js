@@ -96,7 +96,7 @@ initialize(app, memoryStore).then(function () {
   app.use('/', router);
 
   // Handle 404
-  app.use(protector.protect(true), function (req, res, next) {
+  app.use(protector.checkSso(), function (req, res, next) {
     res.status(404);
 
     // respond with html page
@@ -109,12 +109,12 @@ initialize(app, memoryStore).then(function () {
 
     // respond with json
     if (req.accepts('json')) {
-      res.json({ error: 'Not found' });
+      res.json({ error: 'Not found', message: "The requested resource could not be found." });
       return;
     }
 
     // default to plain-text. send()
-    res.type('txt').send('Not found');
+    res.type('txt').send('The requested resource could not be found.\n');
   });
 
 });

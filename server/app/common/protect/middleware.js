@@ -95,7 +95,6 @@ class DatabusProtect {
 
   async hasUser(accountName) {
     var user = await this.userdb.getUserByAccountName(accountName);
-    // console.log(user);
     return user != null;
   }
 
@@ -308,7 +307,7 @@ class DatabusProtect {
       }
 
       // Other requests get denied
-      response.status(401).send();
+      response.status(401).send('Authentication failed.');
 
     }, this.fetchUser()];
   }

@@ -5,7 +5,7 @@
             "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%",
             "@type": "foaf:PersonalProfileDocument",
             "maker": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this",
-            "primaryTopic":"%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this"
+            "primaryTopic": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this"
         },
         {
             "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this",

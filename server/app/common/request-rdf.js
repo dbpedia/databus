@@ -45,7 +45,7 @@ requestRDF.requestQuads = async function(uri) {
   }
 
   console.log(`Content type ${contentType} detected. Parsing...`);
-  var quads = await requestRdf.parseRdf(contentType, response.data);
+  var quads = await requestRDF.parseRdf(contentType, response.data);
 
   return quads;
 }

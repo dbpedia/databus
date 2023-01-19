@@ -3,6 +3,8 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.group = data.group;
   $scope.artifacts = data.artifacts;
   $scope.services = data.services;
+  $scope.group.name = DatabusUtils.uriToName($scope.group.uri);
+  $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
 
   $scope.group.hasData = false;
 
@@ -201,8 +203,11 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
   $scope.search = function () {
 
+    $scope.searchResult = [];
+
+    /** 
     if ($scope.searchInput === '') {
-      $scope.artifacts = data.artifacts;
+      // $scope.artifacts = data.artifacts;
 
       if ($scope.collectionManager.activeCollection == null) {
         return;
@@ -214,30 +219,23 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       }
 
       return;
-    }
+    }*/
 
-    var typeFilters = '&typeName=Artifact&group=' + $scope.group.name + '&minRelevance=0.1';
+    var typeFilters = `&publisher=${$scope.publisherName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
 
     $http({
       method: 'GET',
       url: '/api/search?query=' + $scope.searchInput + typeFilters
     }).then(function successCallback(response) {
-      $scope.artifacts = [];
-
+     
       for (var r in response.data.docs) {
         var result = response.data.docs[r];
-        var artifact = {
-          label: result.label[0],
-          // desc: result.comment[0],
-          uri: result.resource[0]
-        };
 
-        if ($scope.collectionManager.activeCollection != null) {
-          var wrapper = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
-          $scope.updateArtifactState(wrapper, artifact);
+        for(var artifact of $scope.artifacts) {
+          if(result.resource[0] == artifact.uri) {
+            $scope.searchResult.push(artifact);
+          }
         }
-
-        $scope.artifacts.push(artifact);
       }
     }, function errorCallback(response) {
     });

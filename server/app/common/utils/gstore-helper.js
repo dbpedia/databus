@@ -51,15 +51,12 @@ class GstoreHelper {
     try {
 
       var uri = `${process.env.DATABUS_DATABASE_URL}/graph/delete?repo=${repo}&path=${path}`;
-      // console.log(uri);
-
       var res = await rp.delete(uri);
 
       process.send({
         id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
       });
 
-      //  console.log(res);
       return { isSuccess: true };
     } catch (err) {
       console.log(err);

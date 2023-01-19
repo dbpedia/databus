@@ -68,6 +68,25 @@ class ServerUtils {
     return query;
   }
 
+  static formatJsonTemplate(template, placeholderMappings) {
+
+    if (placeholderMappings == undefined) {
+      return template;
+    }
+
+    var resultString = JSON.stringify(template);
+
+    for (var placeholder in placeholderMappings) {
+      var re = new RegExp('%' + placeholder + '%', "g");
+
+      var insert = placeholderMappings[placeholder];
+
+      resultString = resultString.replace(re, insert);
+    }
+
+    return JSON.parse(resultString);
+  }
+
   /**
    * Retrieves user info from the https request and returns it in a
    * more readable form

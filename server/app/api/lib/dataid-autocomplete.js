@@ -76,7 +76,6 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
 
 autocompleter.autocomplete = function (expandedGraph, logger) {
 
-
   var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
   var datasetUri = datasetGraph[DatabusUris.JSONLD_ID];
 
@@ -194,6 +193,8 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
       }
     }
   }
+
+  return expandedGraph;
 }
 
 

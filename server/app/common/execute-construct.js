@@ -18,13 +18,11 @@ self.executeConstruct = async function (jsonld, query) {
 
   try {
 
-    //console.log(`Loading store!`);
     var store = await self.createStore();
     await self.loadJsonld(store, jsonld);
 
     var quads = await self.queryStore(store, query);
     var triples = self.convertToN3(quads);
-    // console.log(triples);
     return triples;
   } catch (err) {
     console.log(err);

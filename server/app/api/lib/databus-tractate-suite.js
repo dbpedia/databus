@@ -129,6 +129,7 @@ signer.validate = async function (canonicalized, proof) {
     var tractateLines = canonicalized.split('\n');
     var publisherUri = tractateLines[1];
 
+
     var isInternalWebId = publisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL);
 
     var quads = [];
@@ -146,6 +147,7 @@ signer.validate = async function (canonicalized, proof) {
       // Get the WebId via HTTP request
       quads = await requestRdf.requestQuads(publisherUri);
     }
+
       
     var keyNodes = getObjectValues(quads, publisherUri, DatabusUris.CERT_KEY);
 
@@ -163,7 +165,7 @@ signer.validate = async function (canonicalized, proof) {
       modulus = modulus[0];
       exponent = exponent[0];
 
-      // console.log(`RSA key found. Creating key with\n ${modulus} / ${exponent}\n`);
+      // console.log(`RSA key found. Creating key with modulus/exponent\n${modulus} / ${exponent}\n`);
 
       var key = new NodeRSA();
       key.importKey({
@@ -171,7 +173,7 @@ signer.validate = async function (canonicalized, proof) {
         e: parseInt(exponent)
       }, 'components-public');
 
-      // console.log(`Verifying Signature:\n\n ${signature} \n\nagainst: \n\n${canonicalized}`);
+      // console.log(`Verifying Signature:\n\n${signature} \n\nagainst: \n\n${canonicalized}`);
       if (key.verify(Buffer.from(canonicalized), Buffer.from(signature, 'base64'))) {
         // console.log(`Verification successful.`);
         return true;
@@ -179,7 +181,6 @@ signer.validate = async function (canonicalized, proof) {
 
     }
 
-    console.log('Failed to verify.');
     return false;
   } catch (err) {
     console.log(err);
@@ -189,12 +190,14 @@ signer.validate = async function (canonicalized, proof) {
 }
 
 signer.sign = function (canonicalized) {
+
+  // console.log(`Signing: \n${canonicalized}`);
   signer.init();
   var data = Buffer.from(canonicalized);
-  // console.log(`Signing with internal private key.`);
-
+  
   var sign = signer.privateKey.sign(data);
   var signature = sign.toString('base64');
+  // console.log(`Result:\n${signature}`);
 
   return signature;
 };
