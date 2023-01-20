@@ -63,6 +63,8 @@ class LookupSearchIndexer {
 
   buildIndexPromise() {
 
+    var self = this;
+
     return new Promise((resolve, reject) => {
       var indexingProcess = spawn('java', [
         '-jar', '../search/lookup-indexer.jar',

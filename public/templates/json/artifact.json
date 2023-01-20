@@ -1,9 +1,0 @@
-{
-    "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-    "@graph": {
-      "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP/%ARTIFACT",
-      "@type": "Group",
-      "title": "Cleaned Data",
-      "description": "Various cleaned datasets from DBpedia using AI."
-    }
-  }

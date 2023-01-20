@@ -20,19 +20,19 @@ const DatabusLogLevel = require('../../common/databus-log-level');
 
 async function verifyDataidParts(dataidGraphs, logger) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_DATASET);
-  var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
   var distributions = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
 
   for (var distribution of distributions) {
 
-    logger.debug(datasetGraphUri, `Analyzing part <${distribution[DatabusUris.JSONLD_ID]}>`, null);
+    logger.debug(versionGraphUri, `Analyzing part <${distribution[DatabusUris.JSONLD_ID]}>`, null);
     var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
 
     var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL);
 
     if (analyzeResult.code != 200) {
-      logger.error(datasetGraphUri, `Error analyzing file`, analyzeResult.data);
+      logger.error(versionGraphUri, `Error analyzing file`, analyzeResult.data);
       return false;
     }
 
@@ -43,7 +43,7 @@ async function verifyDataidParts(dataidGraphs, logger) {
     distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
   }
 
-  logger.debug(datasetGraphUri, `All parts verified`, dataidGraphs);
+  logger.debug(versionGraphUri, `All parts verified`, dataidGraphs);
   return true;
 }
 
@@ -52,23 +52,23 @@ async function verifyDataidParts(dataidGraphs, logger) {
  * @param {*} expandedGraph 
  * @param {*} log 
  */
-async function constructInput(expandedGraph, datasetGraphUri, logger) {
+async function constructInput(expandedGraph, versionGraphUri, logger) {
 
-  var datasetGraph = JsonldUtils.getGraphById(expandedGraph, datasetGraphUri);
+  var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
   var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATAID_CONTENT_VARIANT);
-  logger.debug(datasetGraphUri, `Detected CV-graphs`, cvGraphs);
+  logger.debug(versionGraphUri, `Detected CV-graphs`, cvGraphs);
 
-  var distributionUris = datasetGraph[DatabusUris.DCAT_DISTRIBUTION];
+  var distributionUris = versionGraph[DatabusUris.DCAT_DISTRIBUTION];
 
   var dataIdGraphs = [];
-  dataIdGraphs.push(JSON.parse(JSON.stringify(datasetGraph)));
-  datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+  dataIdGraphs.push(JSON.parse(JSON.stringify(versionGraph)));
+  versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
   var totalTripleCount = 0;
   var step = 100;
 
-  var datasetGraphCopy = JSON.parse(JSON.stringify(datasetGraph));
-  var distributionlessGraphs = [datasetGraphCopy].concat(cvGraphs);
+  var versionGraphCopy = JSON.parse(JSON.stringify(versionGraph));
+  var distributionlessGraphs = [versionGraphCopy].concat(cvGraphs);
 
   // Create sub-dataids with only 100 parts at a time
   // This will avoid long running or failing construct queries for large inputs
@@ -78,15 +78,15 @@ async function constructInput(expandedGraph, datasetGraphUri, logger) {
     var slice = Array.from(distributionlessGraphs);
 
     // Add links from Dataset graph to each entry in the subset
-    datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
+    versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
     for (var j = 0; j < distributionSubset.length; j++) {
-      datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push(distributionSubset[j]);
+      versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push(distributionSubset[j]);
       slice.push(JsonldUtils.getGraphById(expandedGraph, distributionSubset[j][DatabusUris.JSONLD_ID]));
     }
 
     var triples = await constructor.executeConstruct(slice, constructVersionQuery);
     var tripleCount = DatabusUtils.lineCount(triples);
-    logger.debug(datasetGraphUri, `Construct fetched ${tripleCount} triples from subgraph`);
+    logger.debug(versionGraphUri, `Construct fetched ${tripleCount} triples from subgraph`);
 
     totalTripleCount += tripleCount;
 
@@ -98,7 +98,7 @@ async function constructInput(expandedGraph, datasetGraphUri, logger) {
       dataIdGraphs.push(subGraph);
       var distributionGraphEntry = {};
       distributionGraphEntry[DatabusUris.JSONLD_ID] = subGraph[DatabusUris.JSONLD_ID];
-      datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push(distributionGraphEntry);
+      versionGraph[DatabusUris.DCAT_DISTRIBUTION].push(distributionGraphEntry);
     }
   }
 
@@ -106,30 +106,30 @@ async function constructInput(expandedGraph, datasetGraphUri, logger) {
     return null;
   }
 
-  logger.debug(datasetGraphUri, `${tripleCount} triples selected via construct query.`, dataIdGraphs);
+  logger.debug(versionGraphUri, `${tripleCount} triples selected via construct query.`, dataIdGraphs);
   return dataIdGraphs;
 }
 
 function validateDatasetUri(dataidGraphs, accountUri, logger) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_DATASET);
-  var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
 
   // Validate the prefix of the Dataset identifier
-  if (!datasetGraphUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
-    logger.error(datasetGraphUri, `${datasetGraphUri} does not start with the databus base URL ${process.env.DATABUS_RESOURCE_BASE_URL}`, null);
+  if (!versionGraphUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+    logger.error(versionGraphUri, `${versionGraphUri} does not start with the databus base URL ${process.env.DATABUS_RESOURCE_BASE_URL}`, null);
     return 400;
   }
 
-  var datasetGraphPath = UriUtils.cleanSegment(datasetGraphUri.replace(process.env.DATABUS_RESOURCE_BASE_URL, ""));
+  var versionGraphPath = UriUtils.cleanSegment(versionGraphUri.replace(process.env.DATABUS_RESOURCE_BASE_URL, ""));
 
-  if (UriUtils.getPathLength(datasetGraphPath) != 4) {
-    logger.error(datasetGraphUri, `Dataset uri <${datasetGraphUri}> must have exactly 4 path segments relative to the Databus base url <${process.env.DATABUS_RESOURCE_BASE_URL}> (found ${UriUtils.getPathLength(datasetGraphPath)})`, null);
+  if (UriUtils.getPathLength(versionGraphPath) != 4) {
+    logger.error(versionGraphUri, `Dataset uri <${versionGraphUri}> must have exactly 4 path segments relative to the Databus base url <${process.env.DATABUS_RESOURCE_BASE_URL}> (found ${UriUtils.getPathLength(versionGraphPath)})`, null);
     return 400;
   }
 
-  if (!datasetGraphUri.startsWith(accountUri)) {
-    logger.error(datasetGraphUri, `Dataset uri <${datasetGraphUri}> does not start with the account URL <${accountUri}> of the issuer account.`, null);
+  if (!versionGraphUri.startsWith(accountUri)) {
+    logger.error(versionGraphUri, `Dataset uri <${versionGraphUri}> does not start with the account URL <${accountUri}> of the issuer account.`, null);
     return 403;
   }
 
@@ -139,23 +139,23 @@ function validateDatasetUri(dataidGraphs, accountUri, logger) {
 
 async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   // Fetch important uris
-  var datasetGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_DATASET);
-  var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
 
-  var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
-  logger.debug(datasetGraphUri, `Publishing as <${datasetPublisherUri}>.`, null);
+  var datasetPublisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
+  logger.debug(versionGraphUri, `Publishing as <${datasetPublisherUri}>.`, null);
 
   // Validate the publisher and account (<publisherUri<foaf:account<accountUri>)
   var isPublisherConnectedToAccount = await sparql.accounts
     .getPublisherHasAccount(datasetPublisherUri, accountUri);
 
   if (!isPublisherConnectedToAccount) {
-    logger.error(datasetGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer.`, null);
+    logger.error(versionGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer.`, null);
     return 403;
   }
 
   // Fetch the proof graph
-  var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.SEC_PROOF);
+  var proofId = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.SEC_PROOF);
   var proofGraph = JsonldUtils.getGraphById(dataidGraphs, proofId);
   var generatingSignature = false;
 
@@ -163,18 +163,18 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   if (proofGraph == undefined) {
 
     // No proof yet, try to create one
-    logger.debug(datasetGraphUri, `No signature found in the input.`, null);
+    logger.debug(versionGraphUri, `No signature found in the input.`, null);
 
     // Verify if this account is an internal one
     if (!datasetPublisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
-      logger.error(datasetGraphUri, `Uploads using an external account need to provide a signature.`, null);
+      logger.error(versionGraphUri, `Uploads using an external account need to provide a signature.`, null);
       return 400;
     }
 
-    logger.debug(datasetGraphUri, `Generating signature.`, null);
+    logger.debug(versionGraphUri, `Generating signature.`, null);
     generatingSignature = true;
     proofGraph = signer.createProof(dataidGraphs);
-    datasetGraph[DatabusUris.SEC_PROOF] = [proofGraph];
+    versionGraph[DatabusUris.SEC_PROOF] = [proofGraph];
     dataidGraphs = await jsonld.flatten(dataidGraphs);
   }
 
@@ -183,7 +183,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
   // Validate the used proof type
   if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
-    logger.erorr(datasetGraphUri, `Unkown proof type <${proofType}>.`, proofType);
+    logger.erorr(versionGraphUri, `Unkown proof type <${proofType}>.`, proofType);
     return 400;
   }
 
@@ -193,10 +193,10 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   if (!validationSuccess) {
 
     if (generatingSignature) {
-      logger.erorr(datasetGraphUri, `Failed to generate signature. Please contact an administrator.`, null);
+      logger.erorr(versionGraphUri, `Failed to generate signature. Please contact an administrator.`, null);
       return 500;
     } else {
-      logger.erorr(datasetGraphUri, `The provided signature was invalid.`, null);
+      logger.erorr(versionGraphUri, `The provided signature was invalid.`, null);
       return 400;
     }
   }
@@ -204,23 +204,22 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   return 200;
 }
 
-module.exports = async function publishDataid(accountName, expandedGraph, datasetGraphUri, verifyParts, logger) {
+module.exports = async function publishDataid(accountName, expandedGraph, versionGraphUri, verifyParts, logger) {
 
   try {
 
-    var datasetGraph = JsonldUtils.getGraphById(expandedGraph, datasetGraphUri);
-    logger.debug(datasetGraphUri, `Processing dataset <${datasetGraphUri}>`, datasetGraph);
+    var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
+    logger.debug(versionGraphUri, `Processing dataset <${versionGraphUri}>`, versionGraph);
 
 
     // Run construct query
-    var dataidGraphs = await constructInput(expandedGraph, datasetGraphUri, logger);
-    datasetGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_DATASET);
+    var dataidGraphs = await constructInput(expandedGraph, versionGraphUri, logger);
+    versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
   
     if (dataidGraphs == null) {
-      logger.debug(datasetGraphUri, `Construct query did not yield any triples. Nothing to publish.`, null);
+      logger.debug(versionGraphUri, `Construct query did not yield any triples. Nothing to publish.`, null);
       return 200;
     }
-
 
     // Validate Dataset Uri
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
@@ -230,14 +229,12 @@ module.exports = async function publishDataid(accountName, expandedGraph, datase
       return validationCode;
     }
 
-   
-
     // Run auto-completion
-    logger.debug(datasetGraphUri, `Input before auto-completion`, dataidGraphs);
+    logger.debug(versionGraphUri, `Input before auto-completion`, dataidGraphs);
     autocompleter.autocomplete(dataidGraphs, logger);
-    logger.debug(datasetGraphUri, `Input after auto-completion`, dataidGraphs);
+    logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
-    logger.debug(datasetGraphUri, `verify-parts is set to ${verifyParts}`, null);
+    logger.debug(versionGraphUri, `verify-parts is set to ${verifyParts}`, null);
      // Verify parts: SHA256SUM, BYTESIZE, etc
      if (verifyParts && !(await verifyDataidParts(dataidGraphs, logger))) {
       return 400;
@@ -248,219 +245,43 @@ module.exports = async function publishDataid(accountName, expandedGraph, datase
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {
-      logger.error(datasetGraphUri, `SHACL validation failed`, shaclResult);
+      logger.error(versionGraphUri, `SHACL validation failed`, shaclResult);
       return 400;
     }
 
-    logger.debug(datasetGraphUri, `SHACL validation successful`, shaclResult);
+    logger.debug(versionGraphUri, `SHACL validation successful`, shaclResult);
     validationCode = await createOrValidateSignature(dataidGraphs, accountUri, logger);
 
     if (validationCode != 200) {
       return validationCode;
     }
 
-    logger.debug(datasetGraphUri, `Signature validation successful.`, null);
+    logger.debug(versionGraphUri, `Signature validation successful.`, null);
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(dataidGraphs, defaultContext);
 
     if (process.env.DATABUS_CONTEXT_URL != null) {
       compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      logger.debug(datasetGraphUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
+      logger.debug(versionGraphUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
     }
 
     // Create the target path for the gstore
-    var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
-    var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
-    logger.debug(datasetGraphUri, `Saving dataset to ${accountName}:${targetPath}`, compactedGraph);
+    var targetPath = UriUtils.getPrunedPath(`${versionGraphUri}/${Constants.DATABUS_FILE_DATAID}`);
+    logger.debug(versionGraphUri, `Saving dataset to ${accountName}:${targetPath}`, compactedGraph);
 
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
     // Return failure
     if (!publishResult.isSuccess) {
-      logger.error(datasetGraphUri, `Internal database error`, null);
+      logger.error(versionGraphUri, `Internal database error`, null);
       return 500;
     }
 
     
-    logger.info(datasetGraphUri, `Successfully published dataset <${datasetGraphUri}>.`, compactedGraph);
+    logger.info(versionGraphUri, `Successfully published dataset <${versionGraphUri}>.`, compactedGraph);
     return 200;
-
-    /*
-    var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
-    var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATAID_CONTENT_VARIANT);
-
-    if (debug) {
-      notify(`Detected CV-graphs, ${JSON.stringify(cvGraphs)}`);
-    }
-
-    var dataIdGraphs = [];
-    dataIdGraphs.push(datasetGraph);
-
-    datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
-
-    var tripleCount = 0;
-    var step = 100;
-
-    var datasetGraphCopy = JSON.parse(JSON.stringify(datasetGraph));
-    var distributionlessGraphs = [datasetGraphCopy].concat(cvGraphs);
-
-    // Create sub-dataids with only 100 parts at a time
-    // This will avoid long running or failing construct queries for large inputs
-    for (var i = 0; i < distributionGraphs.length; i += step) {
-
-      var distributionSubset = distributionGraphs.slice(i, Math.min(distributionGraphs.length, i + step))
-
-      datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
-
-      for (var j = 0; j < distributionSubset.length; j++) {
-        datasetGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push({
-          '@id': distributionSubset[j][DatabusUris.JSONLD_ID]
-        });
-      }
-
-      var slice = distributionlessGraphs.concat(distributionSubset);
-
-      if (debug) {
-        notify(`${slice}\n`);
-      }
-      var triples = await constructor.executeConstruct(slice, constructVersionQuery);
-      tripleCount += DatabusUtils.lineCount(triples);
-
-      if (debug) {
-        notify(`CONSTRUCT SELECTED TRIPLES: \n\n${triples}\n`);
-      }
-
-      var subGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
-      subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATAID_PART);
-
-      for (var subGraph of subGraphs) {
-        dataIdGraphs.push(subGraph);
-
-        datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
-          '@id': subGraph[DatabusUris.JSONLD_ID]
-        });
-      }
-    }
-
-    // Create multiple datasets by removing distributions
-    // Fetch only relevant triples from the input via construct query
-    // var triples = await constructor.executeConstruct(data, constructVersionQuery);
-    if (tripleCount == 0) {
-      notify(`Construct query did not yield any triples. Nothing to publish.`);
-      return { code: 100, message: null };
-    }
-
-    notify(`${tripleCount} triples selected via construct query.`);
-
-   
-
-
-    // console.log(JSON.stringify(dataIdGraphs, null, 3));
-
-    // Validate the group RDF with the shacl validation tool of the gstore
-
-
-    // Fetch important uris
-    var datasetUri = datasetGraph['@id'];
-    var datasetPublisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
-    var datasetVersionUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY);
-
-    notify(`Publishing as "${datasetPublisherUri}".`);
-
-    // Validate the publisher and account (<publisherUri<foaf:account<accountUri>)
-    var isPublisherConnectedToAccount =
-      await sparql.accounts.getPublisherHasAccount(datasetPublisherUri, accountUri);
-
-    if (!isPublisherConnectedToAccount) {
-      notify(`Forbidden: The specified publisher is not linked to the account of the request issuer.`)
-      return { code: 403, message: null };
-    }
-
-    // Fetch the proof graph
-    var proofId = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.SEC_PROOF);
-    var proofGraph = JsonldUtils.getGraphById(dataIdGraphs, proofId);
-    var generatingSignature = false;
-
-    // Not setting the proof is allowed!
-    if (proofGraph == undefined) {
-
-      // No proof yet, try to create one
-      notify(`No signature found in the input.`);
-
-      // Verify if this account is an internal one
-      if (!datasetPublisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
-        return { code: 400, message: 'Uploads using an external account need to provide a signature' };
-      }
-
-      notify(`Generating signature.`);
-      generatingSignature = true;
-
-      proofGraph = signer.createProof(dataIdGraphs);
-      datasetGraph[DatabusUris.SEC_PROOF] = [proofGraph];
-      dataIdGraphs = await jsonld.flatten(dataIdGraphs);
-
-      console.log(proofGraph);
-    }
-
-    // Get the type of the proof graph
-    var proofType = JsonldUtils.getFirstObject(proofGraph, DatabusUris.JSONLD_TYPE);
-
-    // Validate the used proof type
-    if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
-
-      notify(`Error: Unkown proof type "${proofType}"`);
-      return { code: 400, message: null };
-    }
-
-    // Validate the proof 
-    var validationSuccess = await signer.validate(signer.canonicalize(dataIdGraphs), proofGraph);
-
-    if (!validationSuccess) {
-
-      if (generatingSignature) {
-        notify('Failed to generate signature. Please contact an administrator.');
-        return { code: 500, message: null };
-      } else {
-        notify('The provided signature was invalid.');
-        return { code: 400, message: null };
-      }
-    }
-
-    notify(`Signature validation successful.`);
-
-    // Create compacted graph
-    var compactedGraph = await jsonld.compact(dataIdGraphs, defaultContext);
-
-    // TODO enable this: 
-    compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_DEFAULT_CONTEXT_URL;
-
-
-    // Create the target path for the gstore
-    var targetPath = UriUtils.getPrunedPath(`${datasetVersionUri}/${Constants.DATABUS_FILE_DATAID}`);
-
-    notify(`Saving to "${datasetUri}"`);
-
-
-    // if (!fs.existsSync(__dirname + '/debug-out')) {
-    //  fs.mkdirSync(__dirname + '/debug-out');
-    //}
-
-    // fs.writeFileSync(`${__dirname}/debug-out/${targetPath.replaceAll('/', '-')}`, JSON.stringify(compactedGraph, null, 3), "utf8");
-
-    // console.log(JSON.stringify(compactedGraph, null, 3));
-
-    // Save the RDF with the current path using the database manager
-    var publishResult = await GstoreHelper.save(account, targetPath, compactedGraph);
-
-    // Return failure
-    if (!publishResult.isSuccess) {
-      return { code: 500, message: 'Internal database error' };
-    }
-
-    return { code: 200, message: 'Success.' };
-     */
 
   } catch (err) {
     console.log(`Unexpected Databus error when processing dataid data`);

@@ -108,8 +108,8 @@ class DatabusProtect {
 
   async addApiKey(sub, name) {
     var apikey = uuidv4();
-    if(await this.userdb.addApiKey(sub, name, apikey)) {
-      return { keyname: name, apikey : apikey };
+    if (await this.userdb.addApiKey(sub, name, apikey)) {
+      return { keyname: name, apikey: apikey };
     }
 
     return null;
@@ -128,13 +128,13 @@ class DatabusProtect {
   async getApiKeyUser(req) {
     let apikey = req.headers["x-api-key"];
 
-    if(apikey == undefined) {
+    if (apikey == undefined) {
       return null;
     }
 
     var entry = await this.userdb.getSub(apikey);
 
-    if(entry == null) {
+    if (entry == null) {
       return null;
     }
 
@@ -161,13 +161,31 @@ class DatabusProtect {
     return oidc.auth(oidcConfig);
   }
 
+  checkAccount() {
+
+    return async (req, res, next) => {
+
+      if (req.databus.authenticated == false || req.databus.accountName == null) {
+        response.status(401).send('Authentication failed.');
+        return;
+      }
+
+      if (req.params.account != req.databus.accountName) {
+        res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
+        return;
+      }
+
+      return next();
+    }
+  }
+
   fetchUser() {
 
     return async (req, res, next) => {
 
       // User already fetched and authenticated
       if (req.databus != undefined && req.databus.authenticated) {
-        console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
+        // console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
         return next();
       }
 
@@ -256,6 +274,52 @@ class DatabusProtect {
     }, this.fetchUser()];
   }
 
+  async authenticate(request, response, next, noRedirect, responseHandler) {
+
+    // Consider doing webid tls here 
+    var apiTokenUser = await this.getApiKeyUser(request);
+
+    if (apiTokenUser != null) {
+      // Api token has been found
+      request.databus = {};
+      request.databus.sub = apiTokenUser.sub;
+      request.databus.authenticated = true;
+      request.databus.accountName = apiTokenUser.accountName;
+      request.databus.apiKeys = await this.userdb.getApiKeys(apiTokenUser.sub);
+      return next();
+    }
+
+    // Check the token for permission when a kauth object is present
+    if (request.oidc && request.oidc.isAuthenticated()) {
+      return next();
+    }
+
+    // Do not require authentication for the logout route
+    if (request.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
+      return next();
+    }
+
+    // Do not require authentication for the login route
+    if (request.path == Constants.DATABUS_OIDC_LOGIN_ROUTE) {
+      forceLogin(request, response);
+      return;
+    }
+
+    // Html requests need a redirect
+    if (!noRedirect && this.isBrowserRequest(request)) {
+      forceLogin(request, response);
+      return;
+    }
+
+    if (responseHandler != undefined) {
+      responseHandler(request, response);
+      return;
+    }
+
+    // Other requests get denied
+    response.status(401).send('Authentication failed.');
+  }
+
   protect(noRedirect, responseHandler) {
 
     if (noRedirect == undefined) {
@@ -264,52 +328,20 @@ class DatabusProtect {
 
     var self = this;
     return [async function (request, response, next) {
-
-      // Consider doing webid tls here 
-      var apiTokenUser = await self.getApiKeyUser(request);
-
-      if (apiTokenUser != null) {
-        // Api token has been found
-        request.databus = {};
-        request.databus.sub = apiTokenUser.sub;
-        request.databus.authenticated = true;
-        request.databus.accountName = apiTokenUser.accountName;
-        request.databus.apiKeys = await self.userdb.getApiKeys(apiTokenUser.sub);
-
-        return next();
-      }
-
-      // Check the token for permission when a kauth object is present
-      if (request.oidc && request.oidc.isAuthenticated()) {
-        // console.log(`OIDC token is present - Granting access...`);
-        return next();
-      }
-
-      if (request.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
-        return next();
-      }
-
-      if (request.path == Constants.DATABUS_OIDC_LOGIN_ROUTE) {
-        forceLogin(request, response);
-        return;
-      }
-
-      // Html requests need a redirect
-      if (!noRedirect && self.isBrowserRequest(request)) {
-        // Get the user agent
-        forceLogin(request, response);
-        return;
-      }
-
-      if (responseHandler != undefined) {
-        responseHandler(request, response);
-        return;
-      }
-
-      // Other requests get denied
-      response.status(401).send('Authentication failed.');
-
+      await self.authenticate(request, response, next, noRedirect, responseHandler);
     }, this.fetchUser()];
+  }
+
+  protectAccount(noRedirect) {
+
+    if (noRedirect == undefined) {
+      noRedirect = false;
+    }
+
+    var self = this;
+    return [async function (request, response, next) {
+      await self.authenticate(request, response, next, noRedirect);
+    }, this.fetchUser(), this.checkAccount()];
   }
 }
 

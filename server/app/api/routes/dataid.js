@@ -7,9 +7,12 @@ const publishDataId = require('../lib/publish-dataid');
 var sparql = require('../../common/queries/sparql');
 var request = require('request');
 var GstoreHelper = require('../../common/utils/gstore-helper');
-var defaultContext = require('../../../../model/generated/context.json');
-
-const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
+var defaultContext = require('../../common/context.json');
+const UriUtils = require('../../common/utils/uri-utils.js');
+const getLinkedData = require('../../common/get-linked-data.js');
+const DatabusLogger = require('../../common/databus-logger.js');
+const JsonldUtils = require('../../common/utils/jsonld-utils.js');
+const jsonld = require('jsonld');
 
 module.exports = function (router, protector) {
 
@@ -17,46 +20,38 @@ module.exports = function (router, protector) {
   /**
    * Publishing via PUT request
    */
-   router.put('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
+  router.put('/:account/:group/:artifact/:version', protector.protectAccount(true), async function (req, res, next) {
     try {
 
-      // console.log('Upload request received at ' + req.originalUrl);
+      var versionUri = UriUtils.createResourceUri([
+        req.params.account,
+        req.params.group,
+        req.params.artifact,
+        req.params.version
+      ]);
 
-      // Requesting a PUT on an uri outside of one's namespace is rejected
-      if (req.params.account != req.databus.accountName) {
-        res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
+      var logger = new DatabusLogger(req.query['log-level']);
+      var graph = req.body;
+
+      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
+        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
+        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      }
+
+      // Expand JSONLD!
+      var expandedGraph = await jsonld.flatten(graph);
+      var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionUri);
+
+      if (versionGraph == null) {
+        res.status(400).send(`Graph with id ${versionUri} not found in input.`);
         return;
       }
 
-      var graph = req.body;
+      logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
 
-       // Resolve the context if it is the default context
-       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-      }
-
-      // Call the publishing routine and log to a string
-      var report = `Publishing DataId.\n`;
-
-      var dataIdResult = await publishDataId(req.databus.accountName, graph, false, function (message) {
-        // console.log(message);
-        report += `> ${message}\n`;
-      }, false);
-
-      
-
-      var returnCode = dataIdResult.code;
-
-      if (returnCode < 200) {
-        returnCode = 400;
-      }
-
-      if (dataIdResult != undefined) {
-        report += `${MESSAGE_DATAID_PUBLISH_FINISHED}${returnCode}.\n`;
-      }
-
-      // Return the result with the logging string
-      res.status(returnCode).send(report);
+      var verifyParts = req.query["verify-parts"];
+      var code = await publishDataId(req.params.account, expandedGraph, versionUri, verifyParts, logger);
+      res.status(code).json(logger.getReport());
 
     } catch (err) {
       console.log(err);
@@ -66,19 +61,20 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group/:artifact/:version', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
-    var repo = req.params.account;
-    var path = `${req.params.group}/${req.params.artifact}/${req.params.version}/${Constants.DATABUS_FILE_DATAID}`;
+    if (req.params.account.length < 4) {
+      next('route');
+      return;
+    }
 
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
+    var resourceUri = UriUtils.createResourceUri([
+      req.params.account,
+      req.params.group,
+      req.params.artifact,
+      req.params.version
+    ]);
 
-    request(options).pipe(res);
-    return;
+    var template = require('../../common/queries/constructs/ld/construct-version.sparql');
+    getLinkedData(req, res, next, resourceUri, template);
   });
 
   router.get('/:account/:group/:artifact/:version/:file', async function (req, res, next) {
@@ -118,37 +114,36 @@ module.exports = function (router, protector) {
     };
   });
 
-  router.delete('/:account/:group/:artifact/:version', protector.protect(), async function (req, res, next) {
+  router.delete('/:account/:group/:artifact/:version', protector.protectAccount(true), async function (req, res, next) {
 
-    // Requesting a DELETE on a uri outside of one's namespace is rejected
-    if (req.params.account != req.databus.accountName) {
-      res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
+    var versionUri = UriUtils.createResourceUri([
+      req.params.account,
+      req.params.group,
+      req.params.artifact,
+      req.params.version
+    ]);
+
+    // Check if the artifact exists
+    var exists = await sparql.dataid.hasVersion(
+      req.params.account,
+      req.params.group,
+      req.params.artifact,
+      req.params.version);
+
+    if (!exists) {
+      res.status(204).send(`The verison <${versionUri}> does not exist.`);
       return;
     }
-    var path = `${req.params.group}/${req.params.artifact}/${req.params.version}/${Constants.DATABUS_FILE_DATAID}`;
-    var resource = await GstoreHelper.read(req.params.account, path);
 
-    if (resource == null) {
-      res.status(204).send(`The DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
+    // Delete from gstore and return result
+    var gstorePath = `${req.params.group}/${req.params.artifact}/${req.params.version}/${Constants.DATABUS_FILE_DATAID}`;
+    var result = await GstoreHelper.delete(req.params.account, gstorePath);
+
+    if (!result.isSuccess) {
+      res.status(500).send(`Internal database error. Failed to delete version <${versionUri}>.`);
       return;
     }
 
-    var result = await GstoreHelper.delete(req.params.account, path);
-    var message = '';
-
-    if(result.isSuccess) {
-      message = `The DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
-    } else {
-      message = `Internal database error. Failed to delete the DataId of version "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
-    }
-
-
-    res.status(result.isSuccess ? 200 : 500).send(message);
-
+    res.status(204).send(`The version <${versionUri}> has been deleted.`);
   });
-
-
-
-
-
 }

@@ -18,7 +18,7 @@ module.exports = async function tractateTests() {
 
 
     // Format input data
-    var testMetadata = ServerUtils.formatJsonTemplate(require('../../templates/dataid.json'), {
+    var testMetadata = ServerUtils.formatJsonTemplate(require('../../templates/version.json'), {
         DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
         ACCOUNT: params.ACCOUNT_NAME,
     });

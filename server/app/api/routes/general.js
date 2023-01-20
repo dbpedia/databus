@@ -1,21 +1,14 @@
 var http = require('http');
 var request = require('request');
-
 var cors = require('cors');
-var defaultContext = require('../../../../model/generated/context.json');
-
+var defaultContext = require('../../common/context.json');
 const publishGroup = require('../lib/publish-group');
 const publishDataId = require('../lib/publish-dataid');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const publishArtifact = require('../lib/publish-artifact');
-const Constants = require('../../common/constants');
-const DatabusLogLevel = require('../../common/databus-log-level');
 const JsonldUtils = require('../../common/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const DatabusLogger = require('../../common/databus-logger');
-
-const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing group finished with code ';
-const MESSAGE_DATAID_PUBLISH_FINISHED = 'Publishing DataId finished with code ';
 
 module.exports = function (router, protector) {
 
@@ -70,7 +63,7 @@ module.exports = function (router, protector) {
       logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
 
       // console.log(groupGraphs);
-      
+
       for (var groupGraph of groupGraphs) {
         var resultCode = await publishGroup(account, groupGraph, logger);
 
@@ -83,7 +76,7 @@ module.exports = function (router, protector) {
       // Publish artifacts
       var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
       logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
-      
+
       for (var artifactGraph of artifactGraphs) {
         var resultCode = await publishArtifact(account, artifactGraph, logger);
 
@@ -96,7 +89,7 @@ module.exports = function (router, protector) {
       // Publish versions
       var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_DATASET);
       logger.debug(null, `Found ${datasetGraphs.length} dataset graphs.`, null);
-      
+
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
         var resultCode = await publishDataId(account, expandedGraph, datasetGraphUri, verifyParts, logger);

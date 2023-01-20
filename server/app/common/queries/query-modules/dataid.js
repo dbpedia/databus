@@ -1,4 +1,5 @@
 const baseUrl = process.env.DATABUS_RESOURCE_BASE_URL;
+const DatabusUris = require('../../../../../public/js/utils/databus-uris');
 const exec = require('../../execute-query');
 const UriUtils = require('../../utils/uri-utils');
 
@@ -31,6 +32,17 @@ instance.getGroup = async function (accountName, group) {
   var group = bindings.length !== 0 ? bindings[0] : null;
 
   return group;
+}
+
+/**
+ * ASK whether a group exists
+ * @param {*} accountName 
+ * @param {*} groupName 
+ * @returns 
+ */
+instance.hasGroup = async function(accountName, groupName) {
+  let groupUri = UriUtils.createResourceUri([accountName, groupName]);
+  return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATAID_GROUP}> }`);
 }
 
 /**
@@ -92,6 +104,17 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
   return instance.getArtifactByUri(artifactUri);
 }
 
+/**
+ * ASK whether an artifact exists
+ * @param {*} accountName 
+ * @param {*} groupName 
+ * @param {*} artifactName 
+ * @returns 
+ */
+instance.hasArtifact = async function(accountName, groupName, artifactName) {
+  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
+  return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATAID_ARTIFACT}> }`);
+}
 
 /**
  * Get information about a databus artifact by artifact uri
@@ -190,7 +213,7 @@ instance.getVersionsByArtifact = async function (account, group, artifact) {
 
   let bindings = await exec.executeSelect(query);
 
-  return bindings.length !== 0 ? bindings : null;
+  return bindings;
 }
 
 /**
@@ -239,6 +262,11 @@ instance.getVersion = async function (account, group, artifact, version) {
 
   var versionUri = UriUtils.createResourceUri([account, group, artifact, version]);
   return await instance.getVersionByUri(versionUri);
+}
+
+instance.hasVersion = async function(accountName, groupName, artifactName, versionName) {
+  let versionUri = UriUtils.createResourceUri([accountName, groupName, artifactName, versionName ]);
+  return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATAID_VERSION}> }`);
 }
 
 instance.getVersionByUri = async function (versionUri) {

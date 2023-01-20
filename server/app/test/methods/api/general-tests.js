@@ -35,7 +35,7 @@ async function publishTest() {
     options.resolveWithFullResponse = true;
     options.json = true;
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/api/publish`;
-    options.body = ServerUtils.formatJsonTemplate(require('../../templates/dataid.json'), {
+    options.body = ServerUtils.formatJsonTemplate(require('../../templates/version.json'), {
         DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
         ACCOUNT: params.ACCOUNT_NAME,
         GROUP: params.GROUP_NAME,
@@ -54,6 +54,6 @@ async function publishTest() {
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}/${params.GROUP_NAME}/${params.ARTIFACT_NAME}/${params.VERSION_NAME}`;
 
     response = await rp(options);
-    assert(response.statusCode == 200, 'Could not delete version.');
+    assert(response.statusCode == 204, 'Could not delete version.');
 
 }

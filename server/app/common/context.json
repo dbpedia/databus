@@ -49,6 +49,7 @@
       "attribution": {
          "@id": "dataid:attribution"
       },
+      "Version": "dataid:Version",
       "version": {
          "@id": "dataid:version",
          "@type": "@id"

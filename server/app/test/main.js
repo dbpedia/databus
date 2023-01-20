@@ -6,7 +6,10 @@ const { accountTests, createTestAccount, deleteTestAccount } = require('./method
 const tractateTests = require('./methods/api/tractate-tests');
 const { createTestUser, deleteTestUser } = require('./test-utils');
 const generalTests = require('./methods/api/general-tests');
-const groupTests = require('./methods/api/group-tests');
+const { groupTests } = require('./methods/api/group-tests');
+const { artifactTests } = require('./methods/api/artifact-tests');
+const { versionTests } = require('./methods/api/version-tests');
+
 
 module.exports = async function () {
    try {
@@ -27,6 +30,8 @@ module.exports = async function () {
       // API
       await tractateTests();
       await groupTests();
+      await artifactTests();
+      await versionTests();
       await generalTests();
 
       await deleteTestAccount();

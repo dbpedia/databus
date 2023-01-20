@@ -77,6 +77,7 @@ module.exports = async function publishGroup(accountName, graph, logger) {
     var targetPath = `${groupName}/${Constants.DATABUS_FILE_GROUP}`;
     logger.debug(groupUri, `Saving group <${groupUri}> to ${accountName}:${targetPath}`, compactedGraph);
 
+
     // Save the RDF with the current path using the database manager
     var publishResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 

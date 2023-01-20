@@ -3,6 +3,7 @@ const DatabusUris = require("../../../../public/js/utils/databus-uris");
 class JsonldUtils {
 
   static getTypedGraph(graphs, graphType) {
+
     for (var g in graphs) {
       var graph = graphs[g];
 

@@ -1,0 +1,44 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
+PREFIX sec: <https://w3id.org/security#>
+
+CONSTRUCT
+{
+  ?version ?p ?o .
+  ?distribution ?distributionProperty ?distributionObject .
+  ?contentVariant ?contentVariantProperty ?contentVariantObject .
+  ?proof ?proofProperty ?proofObject .
+}
+WHERE
+{
+  VALUES ?version { <%RESOURCE_URI%> }
+  {
+    ?version ?p ?o .
+  }
+  UNION
+  {
+    ?version dcat:distribution ?distribution .
+    ?distribution ?distributionProperty ?distributionObject .
+  }
+  UNION
+  {
+    ?version dataid:artifact ?artifact .
+    ?artifact a dataid:Artifact .
+  }
+  UNION
+  {
+    ?version sec:proof ?proof .
+    ?proof ?proofProperty ?proofObject .
+  }
+  UNION
+  {
+    ?distribution ?contentVariant ?contentVariantLiteral .
+    ?contentVariant ?contentVariantProperty ?contentVariantObject .
+    ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+  }
+}

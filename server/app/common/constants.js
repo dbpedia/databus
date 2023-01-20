@@ -35,7 +35,7 @@ class Constants {
   static DATABUS_FILE_WEBID = 'webid.jsonld';
   static DATABUS_COLLECTIONS_GROUP_IDENTIFIER = `collections`;
 
-  static MESSAGE_WRONG_NAMESPACE = 'You cannot publish data in a foreign namespace.\n';
+  static MESSAGE_WRONG_NAMESPACE = 'You cannot perform this action in a foreign namespace.\n';
   static MESSGAGE_NOT_FOUND = 'Sorry, can\'t find that!\n';
 
   // Internal message keys for communication from child to master process

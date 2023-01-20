@@ -21,6 +21,7 @@ module.exports = async function publishArtifact(accountName, graph, logger) {
 
     // Check for namespace violation
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
+
     if (!artifactUri.startsWith(expectedUriPrefix)) {
       logger.error(artifactUri, `Not allowed to access namespace of artifact identifier <${artifactUri}>.`);
       return 403;

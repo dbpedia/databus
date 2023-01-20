@@ -46,6 +46,5 @@ else
 	echo "The proxy server is disabled."
 fi
 
-/usr/local/tomcat/bin/catalina.sh start
 cd /databus/server
 npm start

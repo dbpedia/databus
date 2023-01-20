@@ -108,8 +108,8 @@ class DataIdCreator {
     var version = this.formData.version;
 
     var graph = {
-      "@type": "Dataset",
-      "@id": versionUri + "#Dataset",
+      "@type": [ "Version", "Dataset" ],
+      "@id": versionUri,
       "publisher": this.formData.signature.selectedPublisherUri,
       "hasVersion": version.name,
       "title": version.title,

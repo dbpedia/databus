@@ -8,10 +8,10 @@ const { JSONLD_VALUE } = require('../../../../public/js/utils/databus-uris');
 
 var autocompleter = {};
 
-function autocompleteResourceUri(datasetGraph, prop, navUpAmount) {
-  var uri = JsonldUtils.getFirstObjectUri(datasetGraph, prop);
+function autocompleteResourceUri(versionGraph, prop, navUpAmount) {
+  var uri = JsonldUtils.getFirstObjectUri(versionGraph, prop);
   if (uri == null) {
-    datasetGraph[prop] = [{ '@id': UriUtils.navigateUp(datasetGraph['@id'], navUpAmount) }];
+    versionGraph[prop] = [{ '@id': UriUtils.navigateUp(versionGraph['@id'], navUpAmount) }];
   }
 }
 
@@ -22,8 +22,8 @@ function autocompleteResourceEntry(expandedGraph, prop, navUpAmount) {
     return;
   }
 
-  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
-  var resourceUri = UriUtils.navigateUp(datasetGraph['@id'], navUpAmount);
+  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
+  var resourceUri = UriUtils.navigateUp(versionGraph['@id'], navUpAmount);
 
   expandedGraph.push({
     '@id': resourceUri,
@@ -76,55 +76,52 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
 
 autocompleter.autocomplete = function (expandedGraph, logger) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
-  var datasetUri = datasetGraph[DatabusUris.JSONLD_ID];
+  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
 
-  // check path length (has to be four)
-  // if (UriUtils.getResourcePathLength(datasetUri) != 4) {
-  //  if(debug) {
-  //    notify(`Cancelled due to pathlength of ${datasetUri} being ${UriUtils.getResourcePathLength(datasetUri)}`);
-  //  }
-  //  
-  //  return;
-  // }
+  if(versionGraph == null) {
+    return expandedGraph;
+  }
+
+  var datasetUri = versionGraph[DatabusUris.JSONLD_ID];
+  versionGraph[DatabusUris.JSONLD_TYPE] = [ DatabusUris.DATAID_VERSION, DatabusUris.DATAID_DATASET ];
 
   // Auto-generate publisher entry
-  var publisherUri = JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER);
+  var publisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
 
   if (publisherUri == null) {
     var accountUri = UriUtils.navigateUp(datasetUri, 3);
-    datasetGraph[DatabusUris.DCT_PUBLISHER] = [{}];
-    datasetGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}#this`;
+    versionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
+    versionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}#this`;
   }
 
   // Auto-generate resource references
-  autocompleteResourceUri(datasetGraph, DatabusUris.DATAID_GROUP_PROPERTY, 2);
-  autocompleteResourceUri(datasetGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY, 1);
-  autocompleteResourceUri(datasetGraph, DatabusUris.DATAID_VERSION_PROPERTY, 0);
+  autocompleteResourceUri(versionGraph, DatabusUris.DATAID_GROUP_PROPERTY, 2);
+  autocompleteResourceUri(versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY, 1);
+  // autocompleteResourceUri(versionGraph, DatabusUris.DATAID_VERSION_PROPERTY, 0);
 
   var timeString = new Date(Date.now()).toISOString();
 
-  if (datasetGraph[DatabusUris.DCT_ISSUED] == undefined) {
-    datasetGraph[DatabusUris.DCT_ISSUED] = [{}];
-    datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
-    datasetGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
+  if (versionGraph[DatabusUris.DCT_ISSUED] == undefined) {
+    versionGraph[DatabusUris.DCT_ISSUED] = [{}];
+    versionGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+    versionGraph[DatabusUris.DCT_ISSUED][0][DatabusUris.JSONLD_VALUE] = timeString;
   }
 
-  if (datasetGraph[DatabusUris.DCT_ABSTRACT] == undefined
-    && datasetGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
+  if (versionGraph[DatabusUris.DCT_ABSTRACT] == undefined
+    && versionGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
 
-    var description = datasetGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
-    datasetGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    datasetGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
+    var description = versionGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
+    versionGraph[DatabusUris.DCT_ABSTRACT] = [{}];
+    versionGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
 
-  datasetGraph[DatabusUris.DCT_MODIFIED] = [{}];
-  datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
-  datasetGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
+  versionGraph[DatabusUris.DCT_MODIFIED] = [{}];
+  versionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+  versionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
 
   // Auto-generate resource entries
-  autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_VERSION, 0);
+  // autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_VERSION, 0);
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_ARTIFACT, 1);
   autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_GROUP, 2);
 
@@ -135,7 +132,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   // Auto-complete versions
   for (var fileGraph of fileGraphs) {
     if (fileGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
-      fileGraph[DatabusUris.DCT_HAS_VERSION] = datasetGraph[DatabusUris.DCT_HAS_VERSION];
+      fileGraph[DatabusUris.DCT_HAS_VERSION] = versionGraph[DatabusUris.DCT_HAS_VERSION];
     }
 
     if (fileGraph[DatabusUris.DCT_ISSUED] == undefined) {
@@ -177,11 +174,11 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     expandedGraph.push(propertyGraph);
   }
 
-  datasetGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+  versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
   for (var fileGraph of fileGraphs) {
 
-    datasetGraph[DatabusUris.DCAT_DISTRIBUTION].push({
+    versionGraph[DatabusUris.DCAT_DISTRIBUTION].push({
       '@id': fileGraph[DatabusUris.JSONLD_ID]
     });
 

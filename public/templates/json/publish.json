@@ -15,7 +15,7 @@
         },
         {
             "@type": "Dataset",
-            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
             "hasVersion": "%VERSION%",
             "title": "%GROUP% %ARTIFACT%",
             "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",

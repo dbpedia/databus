@@ -43,8 +43,8 @@ $shacl='<#dataset-exists>
 	sh:property [
 		sh:path [ sh:inversePath rdf:type ] ;
 		  sh:nodekind sh:IRI ;
-		sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}#Dataset$" ;
-		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION#Dataset , |USER|>3"@en ;
+		sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}$" ;
+		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
   ] . ';
 
 
@@ -424,48 +424,6 @@ $shacl='<#has-artifact>
 $example='"artifact": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology",';
 
 $context='duplicate';
-
-table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
-?>
-
-
-### version
-
-<?php
-$owl='missing maybe obsolete';
-
-$shacl='<#has-version>
-	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
-	sh:severity sh:Violation ;
-	sh:message "Required property dataid:version MUST occur exactly once AND be of type IRI /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
-	sh:path dataid:version ;
-	sh:minCount 1 ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:IRI  ;
-  sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}$" .
-
-<#is-version-uri-correct>
-	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
-	sh:sparql [
-		sh:message "Dataset URI must contain the version URI of the associated version." ;
-		sh:prefixes dataid: ;
-    sh:select """
-			SELECT $this ?version
-			WHERE {
-				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
-        FILTER(!strstarts(str($this), str(?version)))
-			}
-			""" ;
-	] .';
-
-$example='"version": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",';
-
-$context='"version": {
-      "@id": "dataid:version",
-      "@type": "@id"
-    }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>

@@ -53,11 +53,6 @@
 
 "attribution":	{"@id": "dataid:attribution"},
 
-"version": {
-      "@id": "dataid:version",
-      "@type": "@id"
-    },
-
 "hasVersion": 	{"@id": "dct:hasVersion"},
 
 "distribution": {

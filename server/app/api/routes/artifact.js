@@ -1,13 +1,17 @@
 const ServerUtils = require("../../common/utils/server-utils");
 const DatabusUris = require("../../../../public/js/utils/databus-uris");
 const Constants = require("../../common/constants");
+const GstoreHelper = require('../../common/utils/gstore-helper');
+const JsonldUtils = require("../../common/utils/jsonld-utils");
+const DatabusLogger = require("../../common/databus-logger");
+const UriUtils = require("../../common/utils/uri-utils");
+
 const publishArtifact = require('../lib/publish-artifact');
+const defaultContext = require('../../common/context.json');
+const getLinkedData = require("../../common/get-linked-data");
+const jsonld = require('jsonld');
 
-var GstoreHelper = require('../../common/utils/gstore-helper');
-var defaultContext = require('../../../../model/generated/context.json');
-var request = require('request');
-
-const MESSAGE_GROUP_PUBLISH_FINISHED = 'Publishing artifact finished with code ';
+const sparql = require("../../common/queries/sparql");
 
 module.exports = function (router, protector) {
 
@@ -18,8 +22,15 @@ module.exports = function (router, protector) {
 
     try {
 
-       // Requesting a PUT on an uri outside of one's namespace is rejected
-       if (req.params.account != req.databus.accountName) {
+      var artifactUri = UriUtils.createResourceUri([
+        req.params.account,
+        req.params.group,
+        req.params.artifact
+      ]);
+
+
+      // Requesting a PUT on an uri outside of one's namespace is rejected
+      if (req.params.account != req.databus.accountName) {
         res.status(403).send(MESSAGE_WRONG_NAMESPACE);
         return;
       }
@@ -36,69 +47,18 @@ module.exports = function (router, protector) {
       var expandedGraph = await jsonld.flatten(graph);
 
       // Publish artifacts
-      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
-      logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
-      
-      for (var artifactGraph of artifactGraphs) {
-        var resultCode = await publishArtifact(account, artifactGraph, logger);
+      var artifactGraph = JsonldUtils.getGraphById(expandedGraph, artifactUri);
 
-        if (resultCode != 200) {
-          res.status(resultCode).json(logger.getReport());
-          return;
-        }
-      }
-
-      var account = req.databus.accountName;
-
-      for (var groupGraph of groupGraphs) {
-        var resultCode = await publishGroup(account, groupGraph, logger);
-
-        if (resultCode != 200) {
-          res.status(resultCode).json(logger.getReport());
-          return;
-        }
-      }
-
-      res.status(200).json(logger.getReport());
-
-
-
-      
-
-
-      // Requesting a PUT on an uri outside of one's namespace is rejected
-      if (req.params.account != req.databus.accountName) {
-        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
+      if (artifactGraph == null) {
+        logger.error(null, `No graph ${artifactUri} found in the input.`, null);
+        res.status(400).json(logger.getReport());
         return;
       }
 
-      var account = req.databus.accountName;
-      var artifactUri = process.env.DATABUS_RESOURCE_BASE_URL + req.originalUrl;
+      logger.debug(null, `Found graph ${artifactUri} in the input.`, artifactGraph);
 
-      var graph = req.body;
-
-      // Resolve the context if it is the default context
-      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-      }
-
-      // Call the publishing routine and log to a string
-      var report = `Publishing Artifact.\n`;
-
-      var result = await publishArtifact(account, graph, artifactUri, function (message) {
-        report += `> ${message}\n`;
-      });
-
-      // Return the result with the logging string
-      res.set('Content-Type', 'text/plain');
-      var returnCode = result.code;
-
-      if (returnCode < 200) {
-        returnCode = 400;
-      }
-
-      report += `${MESSAGE_GROUP_PUBLISH_FINISHED}${returnCode}.\n`;
-      res.status(returnCode).send(report);
+      var code = await publishArtifact(req.params.account, artifactGraph, logger);
+      res.status(code).json(logger.getReport());
 
     } catch (err) {
       console.log(err);
@@ -108,52 +68,48 @@ module.exports = function (router, protector) {
 
   router.get('/:account/:group/:artifact', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
-    if(req.params.account.length < 4) {
+    if (req.params.account.length < 4) {
       next('route');
       return;
-    } 
-    
-    var repo = req.params.account;
-    var path = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
+    }
 
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);
-    return;
+    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}/${req.params.group}/${req.params.artifact}`;
+    var template = require('../../common/queries/constructs/ld/construct-artifact.sparql');
+    getLinkedData(req, res, next, resourceUri, template);
   });
 
   router.delete('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
 
-    // Requesting a DELETE on an uri outside of one's namespace is rejected
-    if (req.params.account != req.databus.accountName) {
-      res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
+    var artifactUri = `${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}`;
+
+    // Check if the artifact exists
+    var exists = await sparql.dataid.hasArtifact(req.params.account, req.params.group,
+      req.params.artifact);
+
+    if (!exists) {
+      res.status(204).send(`The artifact  <${artifactUri}> does not exist.`);
       return;
     }
 
-    var path = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
-    var resource = await GstoreHelper.read(req.params.account, path);
+    // Allow deletion only if there are no artifacts (and thus no versions).
+    var versions = await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group,
+      req.params.artifact);
 
-    if (resource == null) {
-      res.status(204).send(`The group "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
+    if (versions.length > 0) {
+      res.status(409).send(`Unable to delete non-empty artifact <${artifactUri}>.`);
       return;
     }
 
-    var result = await GstoreHelper.delete(req.params.account, path);
-    var message = '';
+    // Delete from gstore and return result
+    var gstorePath = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
+    var result = await GstoreHelper.delete(req.params.account, gstorePath);
 
-    if (result.isSuccess) {
-      message = `The artifact "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.`
-    } else {
-      message = `Internal database error. Failed to delete the artifact "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`
+    if (!result.isSuccess) {
+      res.status(500).send(`Internal database error. Failed to delete artifact <${artifactUri}>.`);
+      return;
     }
 
-    res.status(result.isSuccess ? 200 : 500).send(message);
+    res.status(204).send(`The artifact <${artifactUri}> has been deleted.`);
   });
 
 }

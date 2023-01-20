@@ -58,7 +58,7 @@ var webDAVModule = new DatabusWebDAV();
 initialize(app, memoryStore).then(function () {
 
   // Add webDAV
-  app.use('/dav', protector.checkSso(), webDAVModule.davAuth(), 
+  app.use('/dav', protector.checkSso(), webDAVModule.davAuth(),
     webdav.extensions.express('/', webDAVModule.webDAVServer));
 
   // Fav Icon
@@ -70,7 +70,7 @@ initialize(app, memoryStore).then(function () {
   // Use protection
   app.use(protector.auth());
 
-  if (process.env.DATABUS_PRIVATE_MODE) {
+  if (process.env.DATABUS_PRIVATE_MODE == "true") {
     console.log(`Started cluster node in private mode`);
     app.all('*', protector.protect(true, function (req, res) {
       if (protector.isBrowserRequest(req)) {

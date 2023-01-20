@@ -5,6 +5,7 @@ const jsonld = require('jsonld');
 const exec = require('./execute-query');
 const ServerUtils = require('./utils/server-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
+const Constants = require('./constants');
 
 
 module.exports = async function getLinkedData(req, res, next, resourceUri, template) {
@@ -27,7 +28,7 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
   // Do a POST request with the passed query
   var options = {
     method: 'POST',
-    uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/sparql?timeout=10000`,
+    uri: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
     body: `query=${encodeURIComponent(query)}`,
     headers: {
       "Content-type": "application/x-www-form-urlencoded",
