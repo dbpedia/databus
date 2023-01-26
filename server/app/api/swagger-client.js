@@ -3,7 +3,7 @@ var optionsRegex = /options\s=\s(.|\n|\r)*?;/gm;
 var optionsString = window.onload.toString().match(optionsRegex)[0].replace('options = ', '').slice(0, -1);
 
 function onLoad() {
-  init('janni');
+  init(data.auth.info.accountName);
 }
 
 function init(username) {
@@ -53,12 +53,21 @@ function init(username) {
 
   // Custom UI
   var container = document.getElementsByClassName('schemes wrapper')[0];
+   
 
   var input = document.createElement("input");
   input.type = "text";
   input.id = "username";
   input.value = username;
+
+
+  var text = document.createElement("div");
+  text.innerHTML = "Account Name:";
+  text.style.alignSelf = "center";
+  text.style.marginRight = "8px";
+
   container.prepend(input);
+  container.prepend(text);
 
   input.onchange = function() {
     init(input.value);

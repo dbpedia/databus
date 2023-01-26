@@ -962,3 +962,59 @@ a.navbar-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
 }
+
+.org-icon {
+  max-width: 512px;
+  max-height: 36px;
+  margin-right: 1em;
+}
+
+.databus-navbar {
+  position: relative;
+  z-index: 2000;
+  height: 78px;
+}
+
+.navbar-dropdown {
+  min-width: 200px;
+  font-size: 1em;
+}
+
+.cookie-dialogue {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  background-color: white;
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  z-index: 10000;
+}
+
+.cookie-dialogue h1 {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-bottom: 0.75em;
+}
+
+.dropdown-icon {
+  margin-left: -4px;
+}
+
+.databus-home-icon {
+  display: flex;
+  align-items: center;
+}
+
+.click-outside-mask {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+small pre.version {
+  background-color: initial !important;
+}

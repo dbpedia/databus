@@ -17,6 +17,14 @@ function HeaderController($scope, $http, collectionManager) {
     $scope.collectionManager.tryInitialize($scope.auth.info.accountName, loadCollectionsFromServer);
   }
 
+  $scope.hideAccountMenu = function() {
+    $scope.isAccountMenuActive = false;
+  }
+
+  $scope.showAccountMenu = function() {
+    $scope.isAccountMenuActive = true;
+  }
+
   // Finds a display name for the account
   $scope.getAccountName = function () {
     if ($scope.auth.info.accountName) {
@@ -35,6 +43,7 @@ function HeaderController($scope, $http, collectionManager) {
   }
 
   $scope.isMenuActive = false;
+  $scope.isAccountMenuActive = false;
 
   // Coookieees
   $scope.giveCookieConsent = function () {
@@ -49,6 +58,7 @@ function HeaderController($scope, $http, collectionManager) {
 
   // Logout function
   $scope.logout = function () {
+    $scope.hideAccountMenu();
     window.location = '/app/logout?redirectUrl=' + encodeURIComponent(window.location);
   }
 

@@ -1,14 +1,10 @@
 // External includes
-var createError = require('http-errors');
-var path = require('path');
-var logger = require('morgan');
 var fs = require('fs');
 var minifier = require("./app/minifier.js");
 var rp = require('request-promise');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
-const DatabusUris = require('../public/js/utils/databus-uris.js');
 const DatabusUserDatabase = require('./userdb.js');
 
 
@@ -140,6 +136,7 @@ async function initializeContext() {
 }
 
 async function initializeUserDatabase() {
+  console.log(`Connecting to User Databse...`);
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
 }

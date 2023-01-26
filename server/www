@@ -189,6 +189,10 @@ function initializeExtensions() {
     module.exports = fs.readFileSync(filename, 'utf8');
   };
 
+  require.extensions['.ejs'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+
   require.extensions['.sql'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
   };

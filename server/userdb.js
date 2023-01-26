@@ -1,5 +1,4 @@
 var fs = require('fs');
-const DatabusUtils = require('../public/js/utils/databus-utils');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
 const ServerUtils = require('./app/common/utils/server-utils.js');
@@ -47,9 +46,7 @@ class DatabusUserDatabase {
       await this.db.run(require('./app/common/queries/userdb/create-user-table.sql'));
       await this.db.run(require('./app/common/queries/userdb/create-api-key-table.sql'));
 
-      if (this.debug) {
-        console.log(`Connected to user database at ${__dirname + Constants.DATABUS_SQLITE_USER_DATABASE_PATH}.`);
-      }
+      console.log(`Connected to user database at ${__dirname + Constants.DATABUS_SQLITE_USER_DATABASE_PATH}.`);
       return true;
     } catch (err) {
       if (this.debug) {

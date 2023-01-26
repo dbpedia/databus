@@ -6,9 +6,9 @@ var sparql = require('../common/queries/sparql');
 var request = require('request');
 
 
-module.exports = function (router, protector) {
+module.exports = function (router, protector, locals) {
 
-  require('./swagger-page')(router, protector);
+  require('./swagger-page')(router, protector, locals);
   require('./routes/general')(router, protector);
   require('./routes/tractate')(router, protector);
   require('./routes/collection')(router, protector);

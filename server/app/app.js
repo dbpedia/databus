@@ -22,7 +22,6 @@ const { env } = require("process");
 // Creation of the mighty server app
 var app = express();
 
-
 var context = JSON.stringify(require('../app/common/context.json'), null, 3);
 var titleColor = DatabusUtils.stringOrFallback(process.env.DATABUS_TITLE_COLOR, config.defaultColors.title);
 var bannerColor = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR, config.defaultColors.banner);
@@ -88,7 +87,7 @@ initialize(app, memoryStore).then(function () {
 
 
   // Attach modules to router
-  require('./api/module')(router, protector); // API handlers
+  require('./api/module')(router, protector, app.locals); // API handlers
   require('./pages/module')(router, protector);// Web App handlers
 
 
