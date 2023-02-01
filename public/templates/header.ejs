@@ -84,8 +84,127 @@
       <% } %>
 </head>
 
+<style>
+  .databus-navbar {
+    display: flex;
+    background-color: #343a40;
+    align-items: stretch;
+
+  }
+
+  .databus-navbar-container {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media screen and (min-width: 1500px),
+  print {
+    .databus-navbar-container {
+      max-width: 1500px;
+    }
+  }
+
+  .databus-navbar-brand {
+    display: flex;
+    margin-left: 1.5em;
+  }
+
+  .databus-navbar-menu {
+    display: flex !important;
+    flex: 1;
+  }
+
+  .databus-navbar-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .databus-navbar-item.is-light:hover {
+    opacity: .5;
+  }
+
+  a.databus-navbar-item {
+    color: white;
+    margin-right: 1em;
+  }
+
+  .databus-navbar-item.is-light {
+    opacity: 0.7;
+  }
+
+  .databus-navbar-group {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    flex-grow: 10;
+  }
+
+  .databus-navbar-end {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    justify-self: flex-end;
+    margin-right: 1em;
+    align-items: stretch;
+  }
+
+  .databus-navbar-item.account-name {
+    padding-right: 1em;
+    padding-left: 1em;
+    margin-right: .5em;
+    justify-content: stretch;
+    display: flex;
+  }
+
+  .databus-navbar-item.account-name:hover {
+    opacity: 0.8;
+  }
+
+  .databus-navbar-item.has-dropdown {
+    position: relative;
+    cursor: pointer;
+    align-items: stretch;
+  }
+
+  .databus-navbar-item.has-dropdown .databus-navbar-dropdown {
+    display: none;
+  }
+
+  .databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
+    display: block;
+  }
+
+  .databus-navbar-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #343a40;
+    border-top: 2px solid white;
+    padding-bottom: 8px;
+    min-width: 250px;
+  }
+
+  .databus-navbar-dropdown-arrow {
+    margin-left: 8px;
+  }
+
+  .databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
+    opacity: 0.7;
+  }
+
+  @media screen and (max-width: 1024px),
+  print {
+    .databus-navbar-group.is-hidden-for-mobile {
+      display: none;
+    }
+  }
+</style>
+
 <body ng-app="databusApplication" ng-cloak>
-  <nav ng-controller="HeaderController" id="navbar" class="navbar databus-navbar">
+  <nav ng-controller="HeaderController" id="navbar" class="databus-navbar">
     <!-- Cookie dialogue -->
     <div ng-if="showCookieDialogue" class="cookie-dialogue">
       <h1>We use cookies</h1>
@@ -97,41 +216,41 @@
         <span>Got it</span>
       </button>
     </div>
-    <div class="container">
-      <div class="navbar-brand">
+    <div class="databus-navbar-container">
+      <div class="databus-navbar-brand">
         <a class="databus-home-icon" href="/">
-          <% if(databus.iconUrl != null && databus.iconUrl.length> 0){ %>
+          <% if(databus.iconUrl !=null && databus.iconUrl.length> 0){ %>
             <!-- ORG ICON -->
             <img class="org-icon" src="<%= databus.iconUrl %>" />
-          <% } else { %>
-            <!-- DATABUS ICON -->
-            <svg class="navbar-item" style="margin:10px" xmlns="http://www.w3.org/2000/svg"
-              xmlns:svg="http://www.w3.org/2000/svg" height="15mm" viewBox="0 0 40.326191 46.198502" version="1.1"
-              id="svg5">
-              <defs id="defs2" />
-              <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
-                <path id="path42117"
-                  style="fill:#fff;;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                  d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
-              </g>
-            </svg>
-          <% } %>
+            <% } else { %>
+              <!-- DATABUS ICON -->
+              <svg class="navbar-item" style="margin:10px" xmlns="http://www.w3.org/2000/svg"
+                xmlns:svg="http://www.w3.org/2000/svg" height="15mm" viewBox="0 0 40.326191 46.198502" version="1.1"
+                id="svg5">
+                <defs id="defs2" />
+                <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
+                  <path id="path42117"
+                    style="fill:#fff;;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+                    d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
+                </g>
+              </svg>
+              <% } %>
         </a>
       </div>
-      <div class="navbar-menu">
-        <div class="navbar-start">
-          <a target="_blank" class="navbar-item" style="opacity: .7;" href="https://github.com/dbpedia/databus/issues">
+      <div class="databus-navbar-menu">
+        <div class="databus-navbar-group is-hidden-for-mobile">
+          <a class="databus-navbar-item is-light" href="https://github.com/dbpedia/databus/issues" target="_blank">
             <span class="icon has-text-info">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path style="fill: white;"
                   d="M7.074 1.408c0-.778.641-1.408 1.431-1.408.942 0 1.626.883 1.38 1.776-.093.336-.042.695.138.995.401.664 1.084 1.073 1.977 1.078.88-.004 1.572-.408 1.977-1.078.181-.299.23-.658.139-.995-.247-.892.435-1.776 1.379-1.776.79 0 1.431.63 1.431 1.408 0 .675-.482 1.234-1.117 1.375-.322.071-.6.269-.77.548-.613 1.017.193 1.917.931 2.823-1.211.562-2.525.846-3.97.846-1.468 0-2.771-.277-3.975-.84.748-.92 1.555-1.803.935-2.83-.168-.279-.446-.477-.768-.548-.636-.14-1.118-.699-1.118-1.374zm3.926 7.531c-1.709-.135-3.271-.599-4.703-1.435-.217.359-.421.738-.601 1.146-.227.514-.646.552-.941.437l-2.295-.89c-.542-.21-1.153.051-1.367.584-.213.533.053 1.136.594 1.346l2.231.866c.496.192.854.694.773 1.274-.106.758-.683 1.111-1.235 1.111h-2.402c-.582 0-1.054.464-1.054 1.037s.472 1.037 1.054 1.037h2.387c.573 0 1.159.372 1.265 1.057.112.728-.228 1.229-.751 1.462l-2.42 1.078c-.53.236-.766.851-.526 1.373s.865.753 1.395.518l2.561-1.14c.307-.137.688-.106.901.259.922 1.587 2.674 3.361 5.134 3.941v-15.061zm9.559 6.513h2.387c.583 0 1.055-.464 1.055-1.037s-.472-1.037-1.055-1.037h-2.402c-.574 0-1.137-.393-1.227-1.052-.092-.677.286-1.147.766-1.333l2.23-.866c.541-.21.808-.813.594-1.346-.213-.533-.825-.795-1.367-.584l-2.294.891c-.329.127-.734.036-.926-.401-.185-.423-.396-.816-.62-1.188-1.433.829-3.008 1.3-4.699 1.439v15.062c2.406-.567 4.134-2.284 5.072-3.837.262-.432.629-.514.964-.364l2.561 1.14c.528.236 1.154.005 1.395-.518.239-.522.005-1.137-.526-1.373l-2.42-1.078c-.494-.221-.867-.738-.764-1.383.128-.803.717-1.135 1.276-1.135z" />
               </svg>
             </span>
-            <span class="is-hidden-desktop-only">
+            <span>
               Report Issue
             </span>
           </a>
-          <a class="navbar-item" style="opacity: .7;" target="_blank" href="/sparql">
+          <a class="databus-navbar-item is-light" target="_blank" href="/sparql">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="44 0 372 420">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -143,7 +262,7 @@
               SPARQL Endpoint
             </span>
           </a>
-          <a class="navbar-item" style="opacity: .7;" href="/api">
+          <a class="databus-navbar-item is-light" href="/api" target="_blank">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +275,7 @@
             </span>
           </a>
         </div>
-        <div class="navbar-end">
+        <div class="databus-navbar-end">
           <div ng-if="!auth.authenticated" class="navbar-item">
             <button class="button is-consumer is-active" ng-click="login()">
               <span class="icon has-text-primary" style="margin-right: 8px;">
@@ -170,12 +289,13 @@
               </span>
             </button>
           </div>
-          <div ng-if="auth.authenticated" class="navbar-item">
-            <a style="color:#eee" href='/app/account'><span>{{ getAccountName() }}</span></a>
-          </div>
+          <a ng-if="auth.authenticated" class="databus-navbar-item account-name" href='/app/account'>
+            <span>{{ getAccountName() }}</span>
+          </a>
+          <div class="click-outside-mask" ng-if="isAccountMenuActive" ng-click="hideAccountMenu()"></div>
           <div ng-if="auth.authenticated" ng-class="{ 'is-active' : isAccountMenuActive }"
-            class="navbar-item has-dropdown">
-            <a class="navbar-item" ng-click="showAccountMenu()">
+            class="databus-navbar-item has-dropdown">
+            <a class="databus-navbar-item" ng-click="showAccountMenu()">
               <div style="height:48px; width:48px; background-color: white; border-radius: 24px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 -2 24 24"
                   style="border-radius: 22px; margin: 2px">
@@ -184,16 +304,14 @@
                   </path>
                 </svg>
               </div>
-              <svg style="margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+              <svg class="databus-navbar-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                 viewBox="0 0 24 24">
                 <path fill="white" d="M12 21l-12-18h24z" />
               </svg>
             </a>
-            <div class="navbar-dropdown is-right">
-              <div class="click-outside-mask" ng-click="hideAccountMenu()"></div>
+            <div class="databus-navbar-dropdown is-right">
 
               <a class="navbar-item" href="/app/account">
-
                 <span class="icon has-text-info dropdown-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                     <path xmlns="http://www.w3.org/2000/svg"
@@ -258,7 +376,8 @@
                   API Documentation
                 </span>
               </a>
-              <a class="navbar-item" ng-click="hideAccountMenu()" href="https://dbpedia.gitbook.io/databus/overview/readme" target="_blank">
+              <a class="navbar-item" ng-click="hideAccountMenu()"
+                href="https://dbpedia.gitbook.io/databus/overview/readme" target="_blank">
                 <span class="icon has-text-info dropdown-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24 ">
                     <path xmlns="http://www.w3.org/2000/svg"
@@ -271,7 +390,8 @@
                 </span>
               </a>
 
-              <a class="navbar-item" ng-click="hideAccountMenu()" href="https://github.com/dbpedia/databus/issues" target="_blank">
+              <a class="navbar-item" ng-click="hideAccountMenu()" href="https://github.com/dbpedia/databus/issues"
+                target="_blank">
                 <span class="icon has-text-info dropdown-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                     <path style="fill: white;"
