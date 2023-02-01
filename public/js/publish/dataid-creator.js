@@ -112,7 +112,7 @@ class DataIdCreator {
       "@id": versionUri,
       "publisher": this.formData.signature.selectedPublisherUri,
       "hasVersion": version.name,
-      "title": version.title,
+      "title": version.name,
       "abstract": version.abstract,
       "description": version.description,
       "license": version.license,

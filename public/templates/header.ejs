@@ -14,7 +14,8 @@
   <link rel='stylesheet prefetch' href='/node_modules/bulma-checkradio/dist/css/bulma-checkradio.min.css'>
   <link href='/node_modules/yasgui-yasqe/dist/yasqe.min.css' rel='stylesheet' type='text/css' />
   <link href='/node_modules/codemirror/lib/codemirror.css' rel='stylesheet' type='text/css' />
-
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+    integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
   <script src="/node_modules/jquery/dist/jquery.min.js"></script>
   <script src="/node_modules/angular/angular.min.js"></script>
   <script src="/node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
@@ -83,126 +84,6 @@
       <script src="/js/angular-application.js"></script>
       <% } %>
 </head>
-
-<style>
-  .databus-navbar {
-    display: flex;
-    background-color: #343a40;
-    align-items: stretch;
-
-  }
-
-  .databus-navbar-container {
-    display: flex;
-    align-items: stretch;
-    flex: 1;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  @media screen and (min-width: 1500px),
-  print {
-    .databus-navbar-container {
-      max-width: 1500px;
-    }
-  }
-
-  .databus-navbar-brand {
-    display: flex;
-    margin-left: 1.5em;
-  }
-
-  .databus-navbar-menu {
-    display: flex !important;
-    flex: 1;
-  }
-
-  .databus-navbar-item {
-    display: flex;
-    align-items: center;
-  }
-
-  .databus-navbar-item.is-light:hover {
-    opacity: .5;
-  }
-
-  a.databus-navbar-item {
-    color: white;
-    margin-right: 1em;
-  }
-
-  .databus-navbar-item.is-light {
-    opacity: 0.7;
-  }
-
-  .databus-navbar-group {
-    display: flex;
-    align-items: stretch;
-    flex: 1;
-    flex-grow: 10;
-  }
-
-  .databus-navbar-end {
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-    justify-self: flex-end;
-    margin-right: 1em;
-    align-items: stretch;
-  }
-
-  .databus-navbar-item.account-name {
-    padding-right: 1em;
-    padding-left: 1em;
-    margin-right: .5em;
-    justify-content: stretch;
-    display: flex;
-  }
-
-  .databus-navbar-item.account-name:hover {
-    opacity: 0.8;
-  }
-
-  .databus-navbar-item.has-dropdown {
-    position: relative;
-    cursor: pointer;
-    align-items: stretch;
-  }
-
-  .databus-navbar-item.has-dropdown .databus-navbar-dropdown {
-    display: none;
-  }
-
-  .databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
-    display: block;
-  }
-
-  .databus-navbar-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #343a40;
-    border-top: 2px solid white;
-    padding-bottom: 8px;
-    min-width: 250px;
-  }
-
-  .databus-navbar-dropdown-arrow {
-    margin-left: 8px;
-  }
-
-  .databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
-    opacity: 0.7;
-  }
-
-  @media screen and (max-width: 1024px),
-  print {
-    .databus-navbar-group.is-hidden-for-mobile {
-      display: none;
-    }
-  }
-</style>
-
 <body ng-app="databusApplication" ng-cloak>
   <nav ng-controller="HeaderController" id="navbar" class="databus-navbar">
     <!-- Cookie dialogue -->

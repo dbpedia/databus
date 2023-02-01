@@ -73,10 +73,11 @@
               </svg></a>
           </td>
         </tr>
-        <tr ng-repeat-end ng-if="binding.epxanded && binding.preview.value != null">
+        <tr ng-repeat-end ng-if="binding.epxanded">
           <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0;">
             <div>
-              <pre>{{ binding.preview.value }}</pre>
+              <pre ng-if="binding.preview.value != null">{{ binding.preview.value }}</pre>
+              <pre ng-if="binding.preview.value == null">Preview could not be loaded</pre>
             </div>
           </td>
         </tr>

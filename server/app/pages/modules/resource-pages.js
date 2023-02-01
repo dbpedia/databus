@@ -5,6 +5,7 @@ const DatabusCache = require('../../common/cache/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const Constants = require('../../common/constants');
 const artifact = require('../../api/routes/artifact');
+const UriUtils = require('../../common/utils/uri-utils');
 
 module.exports = function (router, protector) {
 
@@ -60,10 +61,11 @@ module.exports = function (router, protector) {
         return;
       }
 
+      var title = groupData.title != null ? groupData.title : UriUtils.uriToLabel(groupData.uri);
       let artifactData = await sparql.dataid.getArtifactsByGroup(req.params.account, req.params.group);
 
       res.render('group', {
-        title: groupData.label,
+        title: title,
         data: { auth: auth, group: groupData, artifacts: artifactData }
       });
 

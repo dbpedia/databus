@@ -5,7 +5,7 @@ PREFIX dataiddebug: <http://dataid.dbpedia.org/ns/debug.ttl#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
 SELECT * WHERE {
-  ?dataset dataid:version <%VERSION_URI%> .
+  VALUES ?dataset { <%VERSION_URI%> } .
   ?dataset dataiddebug:codeReference ?codeReference .
   ?dataset dataiddebug:documentationLocation ?documentationLocation .
   ?dataset dataiddebug:feedbackChannel ?feedbackChannel .

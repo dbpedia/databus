@@ -28,6 +28,8 @@
         align-items: center;
         justify-content: center;
       }
+
+   
     </style>
 
     <section class="hero is-medium-small databus-banner is-group">
@@ -48,12 +50,18 @@
     </section>
     <div class="collection-editor-header">
       <div class="container">
-        <div class="content">
-          <div ng-if="group.abstract">
+        <div class="content" style="margin-bottom: 2.5em">
+          <div ng-if="group.abstract && !group.description">
             <p class="section-label">
-              About
+              DCT:ABSTRACT
             </p>
-            {{ group.description }}
+            <span>{{ group.abstract }}</span>
+          </div>
+          <div ng-if="group.description">
+            <p class="section-label">
+              DCT:DESCRIPTION
+            </p>
+            <span ng-bind-html="markdownToHtml(group.description)"></span>
           </div>
         </div>
         <div ng-if="artifacts == null || artifacts.length == 0" style="margin-bottom: 2em">
@@ -67,12 +75,79 @@
             <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }" ng-click="tabs.activeTab=1;">
               <div class="section-label">Artifacts</div>
             </div>
+            <div style="flex: 1"></div>
+            <div class="collection-editor-tab align-right" ng-if="canEdit" ng-class="{ 'is-active' : tabs.activeTab == 2 }" ng-click="tabs.activeTab=2;">
+             
+              <div class="section-label" style="display: flex;">
+                <databus-icon style="margin-right:12px;" shape="'edit'" size="24">
+                </databus-icon>Edit</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <section class="section">
-      <div class="container" style="min-height: 480px">
+      <div class="container" style="min-height: 680px">
+
+        <div ng-if="tabs.activeTab == 2 && canEdit">
+
+
+          <div class="content-box" ng-init="group=session.formData.group">
+
+            <div class="box-header">
+              <h3>EDIT GROUP INFO</h3>
+            </div>
+            <div class="box-content">
+              <div class="row">
+                <div class="row-label optional">Title</div>
+                <div style="flex: 1">
+                  <input class="input" type="text" ng-model="formData.group.title">
+                </div>
+              </div>
+              <div class="row">
+                <div class="row-label optional">Abstract</div>
+                <div style="flex: 1">
+                  <div>
+                    <div class="field override-checkbox" style="margin-bottom: .25em;"
+                      ng-class="{ 'is-override' : formData.group.generateAbstract }">
+                      <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                        type="checkbox" ng-model="formData.group.generateAbstract">
+                      <label for="check--generate--abstract">
+                        <span>Generate Abstract From Description</span>
+                      </label>
+                    </div>
+                    <textarea wrap="hard" ng-disabled="formData.group.generateAbstract"
+                      style="min-height: 120px; resize: vertical;" class="input" type="text"
+                      ng-model="formData.group.abstract"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="row-label optional">Description</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                    ng-model="formData.group.description"></textarea>
+                </div>
+              </div>
+              <div class="row" style="justify-content: flex-end">
+                <div class="field is-grouped">
+                  <div class="control">
+                    <button class="button is-consumer" ng-click="saveGroup()">Save</button>
+                  </div>
+                  <div class="control">
+                    <button ng-click="resetEdits()" class="button">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          
+          </div>
+          
+
+
+          
+        </div>
         <div ng-if="tabs.activeTab == 0">
           <div ng-if="!group.hasData">
             <div class="databus-no-content">

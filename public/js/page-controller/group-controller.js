@@ -8,21 +8,57 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
   $scope.group.hasData = false;
 
-  for(var artifact of $scope.artifacts) {
-    if(artifact.latestVersionDate != undefined) {
+  for (var artifact of $scope.artifacts) {
+    if (artifact.latestVersionDate != undefined) {
       $scope.group.hasData = true;
     }
   }
 
-  $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title, 
+  $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title,
     DatabusUtils.uriToTitle($scope.group.uri));
-   
+
 
 
   for (var artifact of $scope.artifacts) {
     artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
     artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
     artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
+  }
+
+  $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
+
+  if (data.auth.authenticated && $scope.canEdit) {
+    $scope.formData = {};
+    $scope.formData.group = {};
+    $scope.formData.group.name = $scope.group.name;
+    $scope.formData.group.title = $scope.group.title;
+    $scope.formData.group.abstract = $scope.group.abstract;
+    $scope.formData.group.description = $scope.group.description;
+
+    $scope.dataidCreator = new DataIdCreator($scope.formData, data.auth.info.accountName);
+  }
+
+  $scope.resetEdits = function () {
+    $scope.formData.group.title = $scope.group.title;
+    $scope.formData.group.abstract = $scope.group.abstract;
+    $scope.formData.group.description = $scope.group.description;
+  }
+
+  $scope.saveGroup = async function () {
+
+    if ($scope.dataidCreator == null) {
+      return;
+    }
+
+    var groupUpdate = $scope.dataidCreator.createGroupUpdate();
+
+    var response = await $http.put($scope.group.uri, groupUpdate);
+
+    if (response.status == 200) {
+      $scope.group.title = $scope.formData.group.title;
+      $scope.group.abstract = $scope.formData.group.abstract;
+      $scope.group.description = $scope.formData.group.description;
+    }
   }
 
   $scope.facetsView = {};
@@ -227,12 +263,12 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       method: 'GET',
       url: '/api/search?query=' + $scope.searchInput + typeFilters
     }).then(function successCallback(response) {
-     
+
       for (var r in response.data.docs) {
         var result = response.data.docs[r];
 
-        for(var artifact of $scope.artifacts) {
-          if(result.resource[0] == artifact.uri) {
+        for (var artifact of $scope.artifacts) {
+          if (result.resource[0] == artifact.uri) {
             $scope.searchResult.push(artifact);
           }
         }

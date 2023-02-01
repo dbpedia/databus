@@ -296,9 +296,9 @@ instance.getGroupsByAccount = async function (account) {
   for (let b in bindings) {
     let group = bindings[b];
 
-    if(group.title == undefined) {
-      group.title =  UriUtils.uriToName(group.uri);
-    }
+    //if(group.title == undefined) {
+    //  group.title =  UriUtils.uriToName(group.uri);
+    //}
 
     group.name = UriUtils.uriToName(group.uri);
     result.push(group);

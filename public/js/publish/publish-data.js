@@ -111,11 +111,6 @@ class PublishData {
       hasErrors = true;
     }
 
-    if (!DatabusUtils.isValidResourceText(this.version.title, 1)) {
-      this.version.errors.push('err_invalid_version_title');
-      hasErrors = true;
-    }
-
     if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
       this.version.errors.push('err_invalid_version_abstract');
       hasErrors = true;

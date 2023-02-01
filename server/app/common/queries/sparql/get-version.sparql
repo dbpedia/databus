@@ -7,27 +7,27 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX databus: <https://databus.dbpedia.org/>
 PREFIX dataiddebug: <http://dataid.dbpedia.org/ns/debug.ttl#>
 
-# Get the information of the latest dataset for a specific artifact
-SELECT DISTINCT ?dataset ?uri ?name ?title ?abstract ?description
+# Get the information of the latest version for a specific artifact
+SELECT DISTINCT ?version ?name ?title ?artifactTitle ?abstract ?description
   ?date ?group ?artifact ?publisher ?license ?attribution
   ?codeReference ?documentationLocation ?feedbackChannel ?issueTracker WHERE {
 
   GRAPH ?g {
-    ?dataset dataid:version <%VERSION_URI%> .
-    ?dataset dct:hasVersion ?name.
-    ?dataset dct:title ?title.
-    ?dataset dct:abstract ?abstract.
-    ?dataset dct:description ?description.
-    ?dataset dct:issued ?date.
-    ?dataset dataid:group ?group .
-    ?dataset dataid:artifact ?artifact.
-    ?dataset dct:publisher ?publisher.
-    ?dataset dct:license ?license.
-    OPTIONAL { ?dataset dataid:attribution ?attribution . }
-    OPTIONAL { ?dataset dataiddebug:codeReference ?codeReference . }
-    OPTIONAL { ?dataset dataiddebug:documentationLocation ?documentationLocation . }
-    OPTIONAL { ?dataset dataiddebug:feedbackChannel ?feedbackChannel . }
-    OPTIONAL { ?dataset dataiddebug:issueTracker ?issueTracker . }
-    BIND(<%VERSION_URI%> AS ?uri)
+    VALUES ?version { <%VERSION_URI%> }
+    ?version dct:hasVersion ?name.
+    ?version dct:title ?title.
+    ?version dct:abstract ?abstract.
+    ?version dct:description ?description.
+    ?version dct:issued ?date.
+    ?version dataid:group ?group .
+    ?version dataid:artifact ?artifact.
+    ?version dct:publisher ?publisher.
+    ?version dct:license ?license.
+    OPTIONAL { ?artifact dct:title ?artifactTitle . }
+    OPTIONAL { ?version dataid:attribution ?attribution . }
+    OPTIONAL { ?version dataiddebug:codeReference ?codeReference . }
+    OPTIONAL { ?version dataiddebug:documentationLocation ?documentationLocation . }
+    OPTIONAL { ?version dataiddebug:feedbackChannel ?feedbackChannel . }
+    OPTIONAL { ?version dataiddebug:issueTracker ?issueTracker . }
   }
 }

@@ -72,9 +72,12 @@
             ng-click="tabViewModel.activeTab=3;">
             <div class="section-label">Apps & Services</div>
           </div>-->
+          <div style="flex: 1"></div>
           <div ng-if="profileData.isOwn" class="collection-editor-tab"
             ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="goToTab('settings')">
-            <div class="section-label">Settings</div>
+            <div class="section-label">
+              <databus-icon style="margin-right:12px;" shape="'settings'" size="24">
+              </databus-icon>Settings</div>
           </div>
         </div>
 

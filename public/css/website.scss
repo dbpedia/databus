@@ -359,6 +359,7 @@ body.has-navbar-fixed-top {
 }
 
 .section-label {
+  display: flex;
   margin-top: 1em;
   margin-bottom: 1em;
   color: #999;
@@ -1017,4 +1018,395 @@ a.navbar-item:hover {
 
 small pre.version {
   background-color: initial !important;
+}
+
+.databus-navbar {
+  display: flex;
+  background-color: #343a40;
+  align-items: stretch;
+
+}
+
+.databus-navbar-container {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media screen and (min-width: 1500px),
+print {
+  .databus-navbar-container {
+    max-width: 1500px;
+  }
+}
+
+.databus-navbar-brand {
+  display: flex;
+  margin-left: 1.5em;
+}
+
+.databus-navbar-menu {
+  display: flex !important;
+  flex: 1;
+}
+
+.databus-navbar-item {
+  display: flex;
+  align-items: center;
+}
+
+.databus-navbar-item.is-light:hover {
+  opacity: .5;
+}
+
+a.databus-navbar-item {
+  color: white;
+  margin-right: 1em;
+}
+
+.databus-navbar-item.is-light {
+  opacity: 0.7;
+}
+
+.databus-navbar-group {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  flex-grow: 10;
+}
+
+.databus-navbar-end {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  justify-self: flex-end;
+  margin-right: 1em;
+  align-items: stretch;
+}
+
+.databus-navbar-item.account-name {
+  padding-right: 1em;
+  padding-left: 1em;
+  margin-right: .5em;
+  justify-content: stretch;
+  display: flex;
+}
+
+.databus-navbar-item.account-name:hover {
+  opacity: 0.8;
+}
+
+.databus-navbar-item.has-dropdown {
+  position: relative;
+  cursor: pointer;
+  align-items: stretch;
+}
+
+.databus-navbar-item.has-dropdown .databus-navbar-dropdown {
+  display: none;
+}
+
+.databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
+  display: block;
+}
+
+.databus-navbar-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #343a40;
+  border-top: 2px solid white;
+  padding-bottom: 8px;
+  min-width: 250px;
+}
+
+.databus-navbar-dropdown-arrow {
+  margin-left: 8px;
+}
+
+.databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
+  opacity: 0.7;
+}
+
+@media screen and (max-width: 1024px),
+print {
+  .databus-navbar-group.is-hidden-for-mobile {
+    display: none;
+  }
+}
+
+.frontpage-banner {
+  background-image: url(../img/banner-background.png);
+  text-align: left; 
+  padding: 100px; 
+  position: relative; 
+  background-repeat: repeat;
+  background-position: center; 
+  background-size: 150px;
+  color: white;
+}
+
+.frontpage-banner .databus-name {
+  font-size: 6em; 
+  font-weight: bolder; 
+  margin: 0;
+  line-height: 1em;
+}
+
+.placeholder-medium {
+  min-height: 400px;
+}
+
+
+.content-variant-tag {
+  color: #aaa;
+  margin-left: 5px;
+}
+
+.artifact-icon {
+  margin-left: 20px;
+}
+
+.content-variants-panel {
+  width: 100%;
+}
+
+.content-variants-panel .content-variant {
+  padding: 0.35em 0.75em;
+  border: 1px solid #dbdbdb;
+  margin-bottom: 4px;
+  display: flex;
+}
+
+.token-progress {
+  position: absolute;
+  background-color: rgba(100, 255, 100, 0.2);
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.token-error {
+  position: absolute;
+  background-color: rgba(255, 100, 100, 0.2);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.deselect-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 49;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.focus-content {
+  position: relative;
+  z-index: 50;
+}
+
+.content-header {
+  padding: 2.15rem 2rem 1.75rem 2rem;
+  border-bottom: 1px solid #e1e4e8;
+  background-color: #fafbfc;
+}
+
+.upload-type-container {
+  display: flex;
+  justify-content: center;
+  padding: 2em;
+}
+
+.upload-type-box {
+  border: 1px solid #dbdbdb;
+  text-align: center;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1em;
+  padding: 2em;
+  cursor: pointer;
+  color: #bbb;
+}
+
+.upload-type-box.is-active {
+  color: #2bcbba;
+  border: 1px solid #2bcbba;
+  background-color: #fafbfc;
+}
+
+.upload-type-box.is-active p {
+  color: #2bcbba;
+}
+
+.upload-type-box div {
+  text-align: center;
+}
+
+.upload-type-box h1 {
+  font-size: 1.75em;
+  font-weight: 500;
+  margin: 0.5em;
+}
+
+.upload-type-box p {
+  font-size: 1em;
+  color: #aaa;
+}
+
+.step-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.distributions-box {
+  border: 1px solid #dbdbdb;
+  flex-grow: 0;
+  min-height: 700px;
+  padding: 0.45em 0.75em;
+}
+
+.distributions-box.minimized {
+  min-height: initial;
+  width: 150px;
+  height: 36px;
+  padding: 0.3em 0.75em;
+  margin-right: .75em;
+}
+
+.distributions-box.minimized h3 {
+  margin-bottom: 0em;
+}
+
+.distributions-box h3 {
+  color: #bbb;
+  text-transform: uppercase;
+  margin-bottom: 1em;
+}
+
+.token-type-label {
+  color: #bbb;
+  text-transform: uppercase;
+  margin-right: .5em;
+}
+
+.hint-box {
+  text-align: center;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 2em;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 1.1em;
+
+}
+
+.hover-note {
+  cursor: pointer;
+  display: flex;
+}
+
+.hover-dropdown {
+  display: none;
+}
+
+.hover-note:hover .hover-dropdown {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: block;
+  position: absolute;
+  top: 48px;
+  right: 8px;
+  z-index: 10005;
+  background-color: rgba(255, 255, 255, 1);
+  color: #888;
+  border: 1px solid #dbdbdb;
+  padding: 0.75em;
+  min-width: 600px;
+  width: 600px;
+  max-width: 600px;
+  white-space: initial;
+}
+
+.hover-dropdown.has-error {
+  background-color: rgba(255, 245, 245, 1) !important;
+  color: red !important;
+}
+
+.content-box {
+  border: 1px solid #e1e4e8;
+  padding: 0.5em;
+  position: relative;
+  margin-bottom: 1.5em;
+}
+
+.content-box h3 {
+  color: #aaa;
+  text-transform: uppercase;
+  margin-bottom: 1.8em;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  flex: 1;
+}
+
+.content-box .box-content {
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+  padding-bottom: 0.6em;
+}
+
+.content-box .box-header {
+  margin: 0.08em 0.3em;
+  display: flex;
+}
+
+.content-box .row {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.content-box .row:last-child {
+  margin-bottom: 0em;
+}
+
+.content-box .row .row-label {
+  min-width: 240px;
+  padding-top: .3em;
+  display: flex;
+}
+
+.placeholder {
+  min-height: 600px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.wizard-info {
+  padding-top: 2em;
+  padding-bottom: 1em;
+}
+
+.hover-dropdown.content ul {
+  margin-top: 0; margin-left: 1.5em;
+}
+
+.hover-note {
+  margin-left: 1em;
+}
+
+.box-separator {
+  height: 30px;
 }

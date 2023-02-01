@@ -6,9 +6,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?version WHERE {
   GRAPH ?g2 {
-    ?dataset a dataid:Dataset .
-    ?dataset dataid:version ?version .
-    ?dataset dct:issued ?latestVersionDate .
+    ?version a dataid:Version .
+    ?version dct:issued ?latestVersionDate .
   }
 }
 ORDER BY desc(?latestVersionDate)
