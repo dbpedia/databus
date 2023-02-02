@@ -26,6 +26,7 @@ class DatabusUris {
   static DATAID_COLLECTION = 'http://dataid.dbpedia.org/ns/core#Collection';
   static DATAID_FILE = 'http://dataid.dbpedia.org/ns/core#file';
   static DATAID_COMPRESSION = 'http://dataid.dbpedia.org/ns/core#compression';
+  static DATAID_ATTRIBUTION = 'http://dataid.dbpedia.org/ns/core#attribution';
 
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';
@@ -39,6 +40,7 @@ class DatabusUris {
   static DCT_TITLE = 'http://purl.org/dc/terms/title'
   static DCT_ABSTRACT = 'http://purl.org/dc/terms/abstract'
   static DCT_DESCRIPTION = 'http://purl.org/dc/terms/description'
+  static DCT_LICENSE = 'http://purl.org/dc/terms/license';
 
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';
@@ -62,6 +64,7 @@ class DatabusUris {
   // XSD
   static XSD_DATE_TIME = 'http://www.w3.org/2001/XMLSchema#dateTime';
   static XSD_DECIMAL = 'http://www.w3.org/2001/XMLSchema#decimal';
+  static XSD_STRING = 'http://www.w3.org/2001/XMLSchema#string';
 
   // SHACL
   static SHACL_VALIDATION_REPORT = 'http://www.w3.org/ns/shacl#ValidationReport';

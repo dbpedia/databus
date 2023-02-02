@@ -11,7 +11,7 @@ var defaultContext = require('../../common/context.json');
 const UriUtils = require('../../common/utils/uri-utils.js');
 const getLinkedData = require('../../common/get-linked-data.js');
 const DatabusLogger = require('../../common/databus-logger.js');
-const JsonldUtils = require('../../common/utils/jsonld-utils.js');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const jsonld = require('jsonld');
 
 module.exports = function (router, protector) {
@@ -50,6 +50,11 @@ module.exports = function (router, protector) {
       logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
 
       var verifyParts = req.query["verify-parts"];
+
+      if(verifyParts == undefined) {
+        verifyParts = true;
+      }
+      
       var code = await publishDataId(req.params.account, expandedGraph, versionUri, verifyParts, logger);
       res.status(code).json(logger.getReport());
 

@@ -1,4 +1,4 @@
-const JsonldUtils = require('../../common/utils/jsonld-utils');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const ServerUtils = require('../../common/utils/server-utils');
 const Constants = require('../../common/constants.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');

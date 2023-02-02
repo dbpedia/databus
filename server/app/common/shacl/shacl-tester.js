@@ -9,7 +9,7 @@ const fs = require('fs');
 var rp = require('request-promise');
 const path = require("path");
 var jsonld = require('jsonld');
-const JsonldUtils = require('../utils/jsonld-utils');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 
 var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;

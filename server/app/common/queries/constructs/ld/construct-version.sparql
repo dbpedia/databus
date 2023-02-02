@@ -27,11 +27,6 @@ WHERE
   }
   UNION
   {
-    ?version dataid:artifact ?artifact .
-    ?artifact a dataid:Artifact .
-  }
-  UNION
-  {
     ?version sec:proof ?proof .
     ?proof ?proofProperty ?proofObject .
   }

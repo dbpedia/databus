@@ -2,6 +2,7 @@
   <!--Artifact HTML-->
   <div ng-controller="ArtifactPageController">
 
+    <databus-alert></databus-alert>
     <style>
       .resource-page-title {
         margin-bottom: .2em !important;
@@ -64,6 +65,12 @@
             </p>
             <span ng-bind-html="markdownToHtml(artifact.description)"></span>
           </div>
+          <div ng-if="!artifact.description && artifact.latestVersionDescription">
+            <p class="section-label">
+              DCT:DESCRIPTION OF LATEST VERSION
+            </p>
+            <span ng-bind-html="markdownToHtml(artifact.latestVersionDescription)"></span>
+          </div>
         </div>
         <div ng-if="versions == null || versions.length == 0" style="margin-bottom: 2em">
         </div>
@@ -95,7 +102,6 @@
       <div class="container" style="min-height: 680px;">
 
         <div ng-if="tabs.activeTab == 2 && canEdit">
-
 
           <div class="content-box">
 
@@ -130,8 +136,8 @@
               <div class="row">
                 <div class="row-label optional">Description</div>
                 <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
-                    ng-model="formData.artifact.description"></textarea>
+                  <textarea id="description-text" wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                    ng-model="formData.artifact.description" ng-change="onDescriptionChanged()"></textarea>
                 </div>
               </div>
               <div class="row" style="justify-content: flex-end">
@@ -168,7 +174,7 @@
               </tr>
               <tr ng-repeat="version in versions">
                 <td>
-                  <a href="{{ version.versionUri }}">{{ version.version }}</a>
+                  <a ng-href="{{ version.version }}">{{ version.version }}</a>
                 </td>
                 <td>{{ formatDate(version.date) }}</td>
                 <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>

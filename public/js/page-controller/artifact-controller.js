@@ -65,17 +65,35 @@ function ArtifactPageController($scope, $http, $sce, collectionManager) {
 
   if (data.auth.authenticated && $scope.canEdit) {
     $scope.formData = {};
-   
+
+
     $scope.formData.group = {};
     $scope.formData.group.name = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri));
-   
+
     $scope.formData.artifact = {};
+
+    var abstract = DatabusUtils.createAbstractFromDescription($scope.artifact.description);
+
+    $scope.formData.artifact.generateAbstract = abstract == $scope.artifact.abstract;
     $scope.formData.artifact.name = $scope.artifact.name;
     $scope.formData.artifact.title = $scope.artifact.title;
     $scope.formData.artifact.abstract = $scope.artifact.abstract;
     $scope.formData.artifact.description = $scope.artifact.description;
 
     $scope.dataidCreator = new DataIdCreator($scope.formData, data.auth.info.accountName);
+  }
+
+  $scope.onDescriptionChanged = function () {
+    if ($scope.formData == null) {
+      return;
+    }
+
+    if (!$scope.formData.artifact.generateAbstract) {
+      return;
+    }
+
+    $scope.formData.artifact.abstract =
+      DatabusUtils.createAbstractFromDescription($scope.formData.artifact.description);
   }
 
   $scope.resetEdits = function () {
@@ -98,6 +116,8 @@ function ArtifactPageController($scope, $http, $sce, collectionManager) {
       $scope.artifact.title = $scope.formData.artifact.title;
       $scope.artifact.abstract = $scope.formData.artifact.abstract;
       $scope.artifact.description = $scope.formData.artifact.description;
+
+      DatabusAlert.alert($scope, true, "Artifact Saved!");
       $scope.$apply();
     }
   }
@@ -174,7 +194,7 @@ function ArtifactPageController($scope, $http, $sce, collectionManager) {
     return $sce.trustAsHtml(converter.render(markdown));
   };
 
-  
+
   $scope.onFileSelectionChanged = function (numFiles, totalSize) {
     $scope.fileSelector.numFiles = numFiles;
     $scope.fileSelector.totalSize = totalSize;

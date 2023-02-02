@@ -5,8 +5,6 @@ const jsonld = require('jsonld');
 const exec = require('./execute-query');
 const ServerUtils = require('./utils/server-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
-const Constants = require('./constants');
-
 
 module.exports = async function getLinkedData(req, res, next, resourceUri, template) {
 

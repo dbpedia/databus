@@ -68,11 +68,13 @@
       <script src="/js/components/entity-card/entity-card.js"></script>
       <script src="/js/components/search/search-controller.js"></script>
       <script src="/js/components/autofill-dropdown/autofill-dropdown.js"></script>
+      <script src="/js/components/databus-alert/databus-alert.js"></script>
       <script src="/js/components/multiselect-dropdown/multiselect-dropdown.js"></script>
       <script src="/js/components/multiselect-artifact-dropdown/multiselect-artifact-dropdown.js"></script>
       <script src="/js/utils/databus-response.js"></script>
       <script src="/js/utils/databus-constants.js"></script>
       <script src="/js/utils/jsonld-context.js"></script>
+      <script src="/js/utils/jsonld-utils.js"></script>
       <script src="/js/utils/databus-utils.js"></script>
       <script src="/js/utils/databus-facets-cache.js"></script>
       <script src="/js/collections/databus-collection-manager.js"></script>
@@ -300,6 +302,7 @@
       </div>
     </div>
     </div>
+
     <script>
       var data = <%- JSON.stringify(data) %>;
       var DATABUS_RESOURCE_BASE_URL = "<%= databus.resourceBaseUrl %>";

@@ -15,7 +15,7 @@ RUN apt-get install -y debian-keyring debian-archive-keyring apt-transport-https
     apt-get update && \
     apt-get install caddy
 
-RUN apt-get -y install ca-certificates-java
+RUN apt-get -y install ca-certificates-java 
 RUN apt-get -y install openjdk-17-jdk openjdk-17-jre
 RUN java -version
 

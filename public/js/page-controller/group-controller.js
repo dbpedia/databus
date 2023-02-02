@@ -28,14 +28,31 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
 
   if (data.auth.authenticated && $scope.canEdit) {
+
+    var abstract = DatabusUtils.createAbstractFromDescription($scope.group.description);
+
     $scope.formData = {};
     $scope.formData.group = {};
+    $scope.formData.group.generateAbstract = abstract == $scope.group.abstract;
     $scope.formData.group.name = $scope.group.name;
     $scope.formData.group.title = $scope.group.title;
     $scope.formData.group.abstract = $scope.group.abstract;
     $scope.formData.group.description = $scope.group.description;
 
     $scope.dataidCreator = new DataIdCreator($scope.formData, data.auth.info.accountName);
+  }
+
+  $scope.onDescriptionChanged = function () {
+    if ($scope.formData == null) {
+      return;
+    }
+
+    if (!$scope.formData.group.generateAbstract) {
+      return;
+    }
+
+    $scope.formData.group.abstract =
+      DatabusUtils.createAbstractFromDescription($scope.formData.group.description);
   }
 
   $scope.resetEdits = function () {
@@ -58,6 +75,8 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       $scope.group.title = $scope.formData.group.title;
       $scope.group.abstract = $scope.formData.group.abstract;
       $scope.group.description = $scope.formData.group.description;
+      DatabusAlert.alert($scope, true, "Group Saved!");
+      $scope.$apply();
     }
   }
 

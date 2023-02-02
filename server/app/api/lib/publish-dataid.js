@@ -1,4 +1,4 @@
-const JsonldUtils = require('../../common/utils/jsonld-utils');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
@@ -234,6 +234,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     autocompleter.autocomplete(dataidGraphs, logger);
     logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
+   
     logger.debug(versionGraphUri, `verify-parts is set to ${verifyParts}`, null);
      // Verify parts: SHA256SUM, BYTESIZE, etc
      if (verifyParts && !(await verifyDataidParts(dataidGraphs, logger))) {

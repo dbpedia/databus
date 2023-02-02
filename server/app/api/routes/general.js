@@ -6,7 +6,7 @@ const publishGroup = require('../lib/publish-group');
 const publishDataId = require('../lib/publish-dataid');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const publishArtifact = require('../lib/publish-artifact');
-const JsonldUtils = require('../../common/utils/jsonld-utils');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const DatabusLogger = require('../../common/databus-logger');
 

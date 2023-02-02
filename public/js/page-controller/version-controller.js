@@ -1,5 +1,5 @@
 
-function VersionPageController($scope, $sce, collectionManager) {
+function VersionPageController($scope, $http, $sce, collectionManager) {
 
   // TODO: Change this hacky BS!
   setTimeout(function () {
@@ -33,9 +33,23 @@ function VersionPageController($scope, $sce, collectionManager) {
     });
   });*/
 
+  $scope.tabs = {};
+  $scope.tabs.activeTab = 0;
+
   $scope.collectionManager = collectionManager;
   $scope.actions = data.actions;
-  $scope.versionData = data.version;
+  $scope.versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION); 
+
+  $scope.version = {};
+  $scope.version.uri = $scope.versionGraph[DatabusUris.JSONLD_ID];
+  $scope.version.title = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_TITLE);
+  $scope.version.abstract = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ABSTRACT);
+  $scope.version.description = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_DESCRIPTION);
+  $scope.version.artifact = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
+  $scope.version.license = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_LICENSE);
+  $scope.version.issued = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ISSUED);
+  $scope.version.name = DatabusUtils.uriToName($scope.version.uri);
+  
   $scope.serviceData = data.services;
   $scope.modsData = data.mods;
   $scope.queryResult = {};
@@ -43,8 +57,75 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.authenticated = data.auth.authenticated;
   $scope.collectionModalVisible = false;
 
-  // $scope.versionData.publisherUri = DatabusUtils.navigateUp(DatabusUtils.navigateUp($scope.versionData.artifactUri));
-  // $scope.versionData.publisher = DatabusUtils.uriToName($scope.versionData.publisherUri);
+  $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.version.uri, 3));
+  $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
+
+  if (data.auth.authenticated && $scope.canEdit) {
+    $scope.formData = {};
+
+    $scope.formData.group = {};
+    $scope.formData.group.name = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.version.uri, 2));
+
+    $scope.formData.artifact = {};
+    $scope.formData.artifact.name = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.version.uri, 1));
+
+    var abstract = DatabusUtils.createAbstractFromDescription($scope.version.description);
+
+    $scope.formData.version = {};
+    $scope.formData.version.generateAbstract = abstract == $scope.version.abstract;
+    $scope.formData.version.name = $scope.version.name;
+    $scope.formData.version.title = $scope.version.title;
+    $scope.formData.version.abstract = $scope.version.abstract;
+    $scope.formData.version.description = $scope.version.description;
+    $scope.formData.version.license = $scope.version.license;
+    $scope.formData.version.attribution = $scope.version.attribution;
+
+    $scope.formData.signature = {};
+    $scope.formData.signature.autoGenerateSignature = true;
+    $scope.formData.signature.selectedPublisherUri = $scope.version.publisher;
+
+    $scope.dataidCreator = new DataIdCreator($scope.formData, data.auth.info.accountName);
+  }
+
+  $scope.onDescriptionChanged = function () {
+    if ($scope.formData == null) {
+      return;
+    }
+
+    if (!$scope.formData.version.generateAbstract) {
+      return;
+    }
+
+    $scope.formData.version.abstract =
+      DatabusUtils.createAbstractFromDescription($scope.formData.version.description);
+  }
+
+  $scope.resetEdits = function () {
+    $scope.formData.version.title = $scope.version.title;
+    $scope.formData.version.abstract = $scope.version.abstract;
+    $scope.formData.version.description = $scope.version.description;
+  }
+
+  $scope.saveVersion = async function () {
+
+    if ($scope.dataidCreator == null) {
+      return;
+    }
+
+    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING, 
+      $scope.formData.version.title);
+
+    var response = await $http.put($scope.version.uri, data.version);
+
+    if (response.status == 200) {
+      $scope.version.title = $scope.formData.version.title;
+      $scope.version.abstract = $scope.formData.version.abstract;
+      $scope.version.description = $scope.formData.version.description;
+
+      DatabusAlert.alert($scope, true, "Version Saved!");
+      $scope.$apply();
+    }
+  }
 
   $scope.modsAmountMinimized = 5;
   $scope.modsMaxAmount = $scope.modsAmountMinimized;
@@ -64,10 +145,10 @@ function VersionPageController($scope, $sce, collectionManager) {
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '15%' });
 
-  $scope.artifactNode = new QueryNode($scope.versionData.artifact, 'dataid:artifact');
-  $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.versionData.name, true);
+  $scope.artifactNode = new QueryNode($scope.version.artifact, 'dataid:artifact');
+  $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.version.name, true);
 
-  $scope.groupNode = new QueryNode(DatabusCollectionUtils.navigateUp($scope.versionData.artifact), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusCollectionUtils.navigateUp($scope.version.artifact), 'dataid:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};

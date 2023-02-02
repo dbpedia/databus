@@ -1,6 +1,6 @@
 const ServerUtils = require('../../common/utils/server-utils');
 const DatabusCache = require('../../common/cache/databus-cache');
-const JsonldUtils = require('../../common/utils/jsonld-utils');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
 var GstoreHelper = require('../../common/utils/gstore-helper');

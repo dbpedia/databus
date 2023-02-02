@@ -1,7 +1,7 @@
 
 var suite = require('../lib/databus-tractate-suite');
 var jsonld = require('jsonld');
-var JsonldUtils = require('../../common/utils/jsonld-utils');
+var JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const Constants = require('../../common/constants');
 var defaultContext = require('../../common/context.json');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');

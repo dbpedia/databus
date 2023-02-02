@@ -21,7 +21,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
   .controller("ProfileController", ["$scope", "$http", ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
-  .controller("VersionPageController", ["$scope", "$sce", "collectionManager", VersionPageController])
+  .controller("VersionPageController", ["$scope", "$http", "$sce", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
     return {
       restrict: 'E',
@@ -55,6 +55,12 @@ databusApplication.component('overrideCheckbox', {
     isOverride: '<',
     onChange: '&'
   }
+});
+
+// Components
+databusApplication.component('databusAlert', {
+  templateUrl: '/js/components/databus-alert/databus-alert.html',
+  controller: [ '$scope', '$timeout', DatabusAlertController ],
 });
 
 databusApplication.component('entityCard', {

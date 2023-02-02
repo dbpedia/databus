@@ -1,7 +1,10 @@
-const baseUrl = process.env.DATABUS_RESOURCE_BASE_URL;
 const DatabusUris = require('../../../../../public/js/utils/databus-uris');
 const exec = require('../../execute-query');
+const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
+const jsonld = require('jsonld');
+const rp = require('request-promise');
+const defaultContext = require('../../context.json');
 
 let instance = {};
 
@@ -40,7 +43,7 @@ instance.getGroup = async function (accountName, group) {
  * @param {*} groupName 
  * @returns 
  */
-instance.hasGroup = async function(accountName, groupName) {
+instance.hasGroup = async function (accountName, groupName) {
   let groupUri = UriUtils.createResourceUri([accountName, groupName]);
   return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATAID_GROUP}> }`);
 }
@@ -98,9 +101,9 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
 /**
  * Get information about a databus artifact 
  */
- instance.getArtifact = async function (accountName, groupName, artifactName) {
+instance.getArtifact = async function (accountName, groupName, artifactName) {
 
-  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName ]);
+  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
   return instance.getArtifactByUri(artifactUri);
 }
 
@@ -111,7 +114,7 @@ instance.getGroupsAndArtifactsByAccount = async function (accountName) {
  * @param {*} artifactName 
  * @returns 
  */
-instance.hasArtifact = async function(accountName, groupName, artifactName) {
+instance.hasArtifact = async function (accountName, groupName, artifactName) {
   let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
   return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATAID_ARTIFACT}> }`);
 }
@@ -119,7 +122,7 @@ instance.hasArtifact = async function(accountName, groupName, artifactName) {
 /**
  * Get information about a databus artifact by artifact uri
  */
- instance.getArtifactByUri = async function (artifactUri) {
+instance.getArtifactByUri = async function (artifactUri) {
 
   if (artifactUri == null) {
     return null; // TODO throw error?
@@ -132,7 +135,7 @@ instance.hasArtifact = async function(accountName, groupName, artifactName) {
   let bindings = await exec.executeSelect(query);
 
   // Does not exist
-  if(bindings.length == 0) {
+  if (bindings.length == 0) {
     return null;
   }
 
@@ -144,7 +147,7 @@ instance.hasArtifact = async function(accountName, groupName, artifactName) {
   bindings = await exec.executeSelect(query);
 
   // No additional data, return the basic artifact info
-  if(bindings.length == 0) {
+  if (bindings.length == 0) {
     return artifact;
   }
 
@@ -152,7 +155,7 @@ instance.hasArtifact = async function(accountName, groupName, artifactName) {
   var latestVersionInfo = bindings[0];
 
   // Copy latest version info to artifact info
-  for(var key in latestVersionInfo) {
+  for (var key in latestVersionInfo) {
     artifact[key] = latestVersionInfo[key];
   }
 
@@ -165,11 +168,11 @@ instance.hasArtifact = async function(accountName, groupName, artifactName) {
  * Retrieves all artifacts by account name
  * @param {*} accountName 
  */
- instance.getArtifactsByAccount = async function (accountName) {
+instance.getArtifactsByAccount = async function (accountName) {
   try {
     // Get a sanitized account uri
     let accountUri = UriUtils.createResourceUri([accountName]);
-    
+
     if (accountUri == null) {
       return null; // TODO throw error?
     }
@@ -232,7 +235,7 @@ instance.getArtifactsByGroup = async function (account, group) {
   let query = exec.formatQuery(require('../sparql/get-artifacts-by-group.sparql'), queryOptions);
 
   let bindings = await exec.executeSelect(query);
-  
+
   // No bindings, return null
   if (bindings == null) {
     return null;
@@ -249,23 +252,50 @@ instance.getArtifactsByGroup = async function (account, group) {
     result.push(artifact);
   }
 
-  
+
   // Return the result!
   return result;
 }
 
 
-/**
- * Returns a promise finally yielding information about a version
- */
 instance.getVersion = async function (account, group, artifact, version) {
 
-  var versionUri = UriUtils.createResourceUri([account, group, artifact, version]);
-  return await instance.getVersionByUri(versionUri);
+  var resourceUri = UriUtils.createResourceUri([account, group, artifact, version]);
+  var exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
+
+  if (!exists) {
+    return null;
+  }
+
+  var template = require('../constructs/ld/construct-version.sparql');
+  var query = ServerUtils.formatQuery(template, {
+    RESOURCE_URI: resourceUri
+  });
+
+  // Do a POST request with the passed query
+  var options = {
+    method: 'POST',
+    uri: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
+    body: `query=${encodeURIComponent(query)}`,
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      "Accept": "application/ld+json"
+    },
+  };
+
+  try {
+
+    var result = JSON.parse(await rp(options));
+    return await jsonld.expand(result);
+
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
-instance.hasVersion = async function(accountName, groupName, artifactName, versionName) {
-  let versionUri = UriUtils.createResourceUri([accountName, groupName, artifactName, versionName ]);
+instance.hasVersion = async function (accountName, groupName, artifactName, versionName) {
+  let versionUri = UriUtils.createResourceUri([accountName, groupName, artifactName, versionName]);
   return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATAID_VERSION}> }`);
 }
 

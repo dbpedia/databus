@@ -3,6 +3,7 @@
 
   <div ng-controller="GroupPageController">
 
+    <databus-alert></databus-alert>
     <style>
       .resource-page-title {
         margin-bottom: .2em !important;
@@ -126,7 +127,7 @@
                 <div class="row-label optional">Description</div>
                 <div style="flex: 1">
                   <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
-                    ng-model="formData.group.description"></textarea>
+                    ng-model="formData.group.description" ng-change="onDescriptionChanged()"></textarea>
                 </div>
               </div>
               <div class="row" style="justify-content: flex-end">
