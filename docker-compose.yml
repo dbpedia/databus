@@ -4,7 +4,6 @@ services:
     image: "dbpedia/databus"
     ports:
       - 3000:3000 # HTTP:  Databus web UI
-      - 127.0.0.1:3001:8080 # HTTP:  Databus search API
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
 #      - 443:4000    # ** uncomment if proxy enabled only** HTTPS: Databus web UI via caddy proxy     
     environment:
