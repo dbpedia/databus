@@ -6,6 +6,21 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.location = $location;
   $scope.baseUrl = DATABUS_RESOURCE_BASE_URL;
 
+  $scope.onDescriptionChanged = function () {
+    if ($scope.formData == null) {
+      return;
+    }
+
+    if (!$scope.formData.version.generateAbstract) {
+      return;
+    }
+
+    $scope.formData.version.abstract =
+      DatabusUtils.createAbstractFromDescription($scope.formData.version.description);
+  }
+
+  
+
   $scope.$watch("location.hash()", function (newVal, oldVal) {
 
     if ($scope.session == undefined) {

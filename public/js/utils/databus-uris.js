@@ -85,6 +85,9 @@ class DatabusUris {
   static CERT_MODULUS = 'http://www.w3.org/ns/auth/cert#modulus';
   static CERT_EXPONENT = 'http://www.w3.org/ns/auth/cert#exponent';
 
+  // PROV
+  static PROV_WAS_DERIVED_FROM = 'http://www.w3.org/ns/prov-o#wasDerivedFrom';
+
 }
 
 if(typeof module === "object" && module && module.exports)

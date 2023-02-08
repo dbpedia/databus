@@ -23,6 +23,7 @@ self.executeConstruct = async function (jsonld, query) {
 
     var quads = await self.queryStore(store, query);
     var triples = self.convertToN3(quads);
+
     return triples;
   } catch (err) {
     console.log(err);

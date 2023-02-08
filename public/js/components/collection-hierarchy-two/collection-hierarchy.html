@@ -208,7 +208,7 @@
 
     <div class="field has-addons" style="margin-right: .5em">
       <p class="control">
-        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 300px;" input="searchInput"
+        <input class="input" placeholder="Enter Databus Resource URI..." style="min-width: 400px;" input="searchInput"
           ng-model="$ctrl.databusUriToAdd" filters="searchFilters">
       </p>
       <p class="control">
@@ -399,7 +399,7 @@
           </div>
 
 
-          <div ng-if="groupView.facets" ng-repeat="(uri, setting) in groupNode.facetSettings">
+          <div ng-if="groupView.facets" style="display: flex;" ng-repeat="(uri, setting) in groupNode.facetSettings">
             <div ng-if="setting.length > 0" class="mini-filter-view">
               <div>{{ groupView.facets[uri].label}}</div>
               <div>
@@ -554,7 +554,7 @@
               </div>
             </div>
 
-            <div ng-if="artifactView.facets">
+            <div ng-if="artifactView.facets" style="display: flex;">
 
 
               <div ng-if="setting.length > 0" class="mini-filter-view">

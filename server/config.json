@@ -1,8 +1,8 @@
 {
-    "version" : "2.0.8",
-    "minifyJs" : false,
+    "version" : "2.0.9",
+    "minifyJs" : true,
     "loadExternalJsonldContext" : true,
-    "runStartupTests": true,
+    "runStartupTests": false,
     "defaultColors":  {
         "banner": "#81b8b2"
     }

@@ -175,7 +175,7 @@
           }
 
 
-          
+
 
           .ce-action-bar {
             background-color: #4c5259;
@@ -422,6 +422,77 @@
               </div>
               <div ng-if="session.activeTab == 1">
 
+                <div class="content-box">
+                  <div class="box-header">
+                    <h3>EDIT COLLECTION INFO</h3>
+                  </div>
+                  <div class="box-content">
+
+                    <div class="row" ng-if="!collectionManager.activeCollection.isDraft">
+                      <div class="row-label optional">Collection URI</div>
+                      <div style="flex: 1">
+                        <a ng-href="{{ collectionManager.activeCollection.uri }}">{{
+                          collectionManager.activeCollection.uri
+                          }}</a>
+                      </div>
+                    </div>
+
+                    <div class="row" ng-if="collectionManager.activeCollection.isDraft">
+                      <div class="row-label optional">Collection Identifier</div>
+                      <div style="flex: 1">
+                        <input type="text" class="input" ng-model="form.identifier.value" />
+                        <div>Collection will be accessible at <span style="color:#3867d6">{{ baseUrl
+                            }}/{{username}}/collections/{{form.identifier.value.length
+                            > 0 ? form.identifier.value : '...'}}</span></div>
+                        <div class="has-text-danger" ng-if="form.identifier.error">{{
+                          getStatusMessage(form.identifier.error) }}</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="row-label optional">Title</div>
+                      <div style="flex: 1">
+                        <input class="input" type="text" ng-model="collectionManager.activeCollection.label">
+                        <div class="has-text-danger" ng-if="form.label.error">{{ getStatusMessage(form.label.error) }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="row-label optional">Abstract</div>
+                      <div style="flex: 1">
+                        <div>
+                          <div class="field override-checkbox" style="margin-bottom: .25em;"
+                            ng-class="{ 'is-override' : form.generateAbstract }">
+                            <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                              type="checkbox" ng-model="form.generateAbstract">
+                            <label for="check--generate--abstract">
+                              <span>Generate Abstract From Description</span>
+                            </label>
+                          </div>
+                          <textarea wrap="hard" ng-disabled="form.generateAbstract"
+                            style="min-height: 120px; resize: vertical;" class="input" type="text" ng-change=""
+                            ng-model="collectionManager.activeCollection.abstract"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="row-label optional">Description</div>
+                      <div style="flex: 1">
+                        <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                          ng-model="collectionManager.activeCollection.description"
+                          ng-change="onDescriptionChanged()"></textarea>
+                        <div class="has-text-danger" ng-if="form.description.error">{{
+                          getStatusMessage(form.description.error) }}</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+                <!--
+
                 <div class="ce-content-body">
                   <table class="collection-summary table is-size-6 is-fullwidth">
                     <colgroup>
@@ -457,6 +528,8 @@
                           </div>
                         </td>
                       </tr>
+
+
                       <tr>
                         <td>Description (Markdown)</td>
                         <td>
@@ -471,7 +544,7 @@
                   </table>
 
 
-                </div>
+                </div>-->
 
 
 

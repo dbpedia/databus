@@ -62,7 +62,15 @@
                     </tr>
                     <tr>
                       <td>License</td>
-                      <td><a class="hyphens" href="{{ version.license }}">{{ version.license }}</a></td>
+                      <td><a class="hyphens" ng-href="{{ version.license }}">{{ version.license }}</a></td>
+                    </tr>
+                    <tr ng-if="version.attribution">
+                      <td>Attribution</td>
+                      <td>{{ version.attribution }}</td>
+                    </tr>
+                    <tr ng-if="version.wasDerivedFrom">
+                      <td>Was Derived From</td>
+                      <td><a class="hyphens" ng-href="{{ version.wasDerivedFrom }}">{{ version.wasDerivedFrom }}</a></td>
                     </tr>
                   </tbody>
                 </table>
@@ -151,6 +159,61 @@
                     ng-model="formData.version.description" ng-change="onDescriptionChanged()"></textarea>
                 </div>
               </div>
+               <!-- LICENSE URI -->
+               <div class="row">
+                <div class="row-label">License URI</div>
+                <div style="flex: 1">
+                  <div style="width: 100%;">
+                    <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                      <input class="control input" type="text" ng-model="formData.version.license">
+                      <div class="control">
+                        <div class="dropdown is-hoverable" style="position: relative;">
+                          <div class="dropdown-trigger">
+                            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                              <span>Select License</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </a>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
+                            <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
+                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
+                                ng-change="filterLicenses(licenseQuery)" />
+                              <div ng-repeat="license in filteredLicenseList | limitTo: 25"
+                                style="padding: 0.5em 0.25em;" ng-click="formData.version.license=license.id.value">
+                                {{ license.title.value }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
+                      texts.errors['err_invalid_version_license'] }}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- LICENSE ATTRIBUTION -->
+              <div class="row">
+                <div class="" style="min-width: 240px">Attribution</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                    ng-model="formData.version.attribution"></textarea>
+                </div>
+              </div>
+
+              <!-- DERIVED FROM -->
+              <div class="row">
+                <div class="" style="min-width: 240px">Derived From</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                    ng-model="formData.version.wasDerivedFrom"></textarea>
+                </div>
+              </div>
+
               <div class="row" style="justify-content: flex-end">
                 <div class="field is-grouped">
                   <div class="control">

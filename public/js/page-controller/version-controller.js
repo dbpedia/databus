@@ -21,6 +21,8 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
     });
   }, 500);
 
+
+
   /*
   angular.element(function () {
     $('.sliderboy').slick({
@@ -38,7 +40,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
 
   $scope.collectionManager = collectionManager;
   $scope.actions = data.actions;
-  $scope.versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION); 
+  $scope.versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
 
   $scope.version = {};
   $scope.version.uri = $scope.versionGraph[DatabusUris.JSONLD_ID];
@@ -47,9 +49,12 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   $scope.version.description = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_DESCRIPTION);
   $scope.version.artifact = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
   $scope.version.license = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_LICENSE);
+  $scope.version.attribution = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ATTRIBUTION);
+  $scope.version.wasDerivedFrom = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
+
   $scope.version.issued = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ISSUED);
   $scope.version.name = DatabusUtils.uriToName($scope.version.uri);
-  
+
   $scope.serviceData = data.services;
   $scope.modsData = data.mods;
   $scope.queryResult = {};
@@ -61,6 +66,24 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
 
   if (data.auth.authenticated && $scope.canEdit) {
+
+    $scope.licenseQuery = "";
+    $scope.filterLicenses = function (licenseQuery) {
+      // billo-suche mit lowercase und tokenization 
+      var tokens = licenseQuery.toLowerCase().split(' ');
+      $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {
+        for (var token of tokens) {
+          if (!l.title.value.toLowerCase().includes(token)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    }
+
+    $scope.filterLicenses("");
+
     $scope.formData = {};
 
     $scope.formData.group = {};
@@ -79,6 +102,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
     $scope.formData.version.description = $scope.version.description;
     $scope.formData.version.license = $scope.version.license;
     $scope.formData.version.attribution = $scope.version.attribution;
+    $scope.formData.version.wasDerivedFrom = $scope.version.wasDerivedFrom;
 
     $scope.formData.signature = {};
     $scope.formData.signature.autoGenerateSignature = true;
@@ -112,8 +136,22 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
       return;
     }
 
-    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING, 
+    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING,
       $scope.formData.version.title);
+    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_ABSTRACT, DatabusUris.XSD_STRING,
+      $scope.formData.version.abstract);
+    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
+      $scope.formData.version.description);
+
+    JsonldUtils.setLink($scope.versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
+
+    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
+      $scope.formData.version.attribution);
+
+    if ($scope.formData.version.wasDerivedFrom) {
+      JsonldUtils.setLink($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM,
+        $scope.formData.version.wasDerivedFrom);
+    }
 
     var response = await $http.put($scope.version.uri, data.version);
 
@@ -121,6 +159,9 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
       $scope.version.title = $scope.formData.version.title;
       $scope.version.abstract = $scope.formData.version.abstract;
       $scope.version.description = $scope.formData.version.description;
+      $scope.version.license = $scope.formData.version.license;
+      $scope.version.attribution = $scope.formData.version.attribution;
+      $scope.version.wasDerivedFrom = $scope.formData.version.wasDerivedFrom;
 
       DatabusAlert.alert($scope, true, "Version Saved!");
       $scope.$apply();
@@ -154,7 +195,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   $scope.collectionWidgetSelectionData = {};
   $scope.collectionWidgetSelectionData.groupNode = $scope.groupNode;
 
-  $scope.onFacetSettingsChanged = function() {
+  $scope.onFacetSettingsChanged = function () {
     $scope.fileSelector.query = QueryBuilder.build({
       node: $scope.artifactNode,
       template: QueryTemplates.DEFAULT_FILE_TEMPLATE,

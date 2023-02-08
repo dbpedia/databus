@@ -73,13 +73,15 @@ module.exports = function (router, protector) {
         return;
       }
 
+      console.log(req.body);
+
       // Construct
       var triples = await constructor.executeConstruct(req.body, constructCollection);
       var expandedGraphs = await jsonld.expand(await jsonld.fromRDF(triples));
 
-
       var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
     
+      console.log(collectionGraph);
       // Possible TODO: validate instead of replace
       collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
       collectionGraph['http://purl.org/dc/terms/publisher'] = [ 

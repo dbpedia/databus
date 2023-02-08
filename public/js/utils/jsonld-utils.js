@@ -31,6 +31,15 @@ class JsonldUtils {
     graph[property].push(entry);
   }
 
+  static setLink(graph, property, uri) {
+    graph[property] = [];
+
+    var entry = {};
+    entry[JsonldUris.JSONLD_ID] = uri;
+
+    graph[property].push(entry);
+  }
+
   static getProperty(graph, property) {
     if (graph[property] == undefined) {
       return null;
