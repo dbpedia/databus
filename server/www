@@ -8,7 +8,6 @@ const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const cluster = require('cluster');
 const http = require('http');
-const Constants = require('./app/common/constants');
 const LookupSearchIndexer = require('./search-indexer');
 const DatabusMessage = require('./app/common/databus-message');
 var initialize = require('./init');

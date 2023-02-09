@@ -102,58 +102,6 @@ module.exports = function (router, protector) {
 
       res.status(200).json(logger.getReport());
 
-
-      /*
-      // Replace context if graph uses default context
-
-      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-      }
-
-      var groupLog = [];
-
-      await publishGroup(account, graph, null, function (level, message, payload) {
-        logger(groupLog, level, message, payload);
-      });
-
-      if (groupLog.length > 0) {
-        report.group = {};
-        report.group.log = artifactLog;
-      }
-
-      // report.log.push({ msg: `Publishing Artifact.` });
-
-      var artifactLog = [];
-
-      await publishArtifact(account, graph, null, function (level, message, payload) {
-        logger(artifactLog, level, message, payload);
-      });
-
-      if (artifactLog.length > 0) {
-        report.artifact = {};
-        report.artifact.log = artifactLog;
-      }
-
-
-      var verifyParts = req.query['verify-parts'] == "false" ? false : true;
-
-      // report.log.push({ msg: `Publishing DataId.` });
-
-      report.dataid = {};
-      report.dataid.log = [];
-      var resultCode = await publishDataId(account, graph, verifyParts, function (level, message, payload) {
-        logger(report.dataid.log, level, message, payload);
-      });
-
-      if (resultCode != 200) {
-        res.status(resultCode).json(report);
-        return;
-      }
-
-      console.log(JSON.stringify(report));
-      res.status(200).json(report);
-      */
-
     } catch (err) {
       console.log(err);
       res.status(500).send(err);

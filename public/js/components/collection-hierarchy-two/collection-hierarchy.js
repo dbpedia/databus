@@ -322,7 +322,7 @@ SELECT ?file WHERE {
         }
 
       }, function errorCallback(response) {
-        console.err(response);
+        console.log(response);
       });
     } catch (err) {
 

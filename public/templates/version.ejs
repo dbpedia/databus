@@ -1,6 +1,16 @@
 <% include header %>
   <div ng-controller="VersionPageController">
 
+    <style>
+
+.resource-header-section:first-child {
+  margin-top: 1.5em;
+}
+      .resource-header-section {
+        margin-bottom: 3em;
+      }
+    </style>
+
     <databus-alert></databus-alert>
     <section class="hero is-medium-small databus-banner is-version">
       <div class="hero-body">
@@ -25,7 +35,21 @@
       <div class="container">
         <div class="content" style="margin-bottom: 3em">
 
-          <div style="margin: 1em 0em 3em 0em">
+          <div ng-if="version.abstract && !version.description" class="resource-header-section">
+            <p class="section-label">
+              DCT:ABSTRACT
+            </p>
+            <span>{{ version.abstract }}</span>
+          </div>
+
+          <div ng-if="version.description"  class="resource-header-section">
+            <p class="section-label">
+              DCT:DESCRIPTION
+            </p>
+            <span ng-bind-html="markdownToHtml(version.description)"></span>
+          </div>
+
+          <div  class="resource-header-section">
 
             <p class="section-label">
               Version Info
@@ -81,18 +105,8 @@
 
 
 
-          <div ng-if="version.abstract && !version.description">
-            <p class="section-label">
-              DCT:ABSTRACT
-            </p>
-            <span>{{ version.abstract }}</span>
-          </div>
-          <div ng-if="version.description">
-            <p class="section-label">
-              DCT:DESCRIPTION
-            </p>
-            <span ng-bind-html="markdownToHtml(version.description)"></span>
-          </div>
+        
+          
         </div>
 
         <!--Tabs-->
