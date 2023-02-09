@@ -289,19 +289,14 @@
             <search search-input="collectionSearchInput" settings="collectionSearchSettings">
           </search>
           </p>
-          <p class="control">
-            <a href="/app/collection-editor" class="button is-primary">
-              Manage Collections
-            </a>
-          </p>
         </div>
 
         <div ng-if="collectionSearchInput == ''" class="hierarchy" ng-repeat="collection in collectionsData.collections">
 
 
 
-          <div class="node" style="margin-top: 24px; margin-bottom: 24px;">
-            <entity-card label="collection.label" uri="collection.uri" type="'Collection'" desc="collection.description">
+          <div style="margin-top: 24px; margin-bottom: 24px;">
+            <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract">
             </entity-card>
           </div>
           <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>

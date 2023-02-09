@@ -11,12 +11,7 @@
 
 <div ng-if="!$ctrl.isLoading">
 
-  <div ng-if="$ctrl.statistics.fileCount==undefined">
-    <span style="font-size: large; color: #da4c4c;">Please add data to your collection, to get its crucial information
-      shown here!</span>
-  </div>
-
-  <div ng-if="$ctrl.statistics.fileCount!==undefined">
+  <div>
     <table class="table is-fullwidth">
       <col width="30%">
       <col width="70%">
@@ -27,11 +22,12 @@
       <tr>
         <td>URI</td>
         <td ng-if="$ctrl.collection.uri"><a ng-href="{{$ctrl.collection.uri}}">{{ $ctrl.collection.uri }}</a></td>
-        <td ng-if="!$ctrl.collection.uri"><span style="color: #999">[Collection has not been published yet]</span></td>
+        <td ng-if="!$ctrl.collection.uri"><i style="color: #999">Not published yet</i></td>
       </tr>
       <tr>
         <td>Files</td>
-        <td>{{ $ctrl.statistics.fileCount }}</td>
+        <td ng-if="$ctrl.statistics == null">0</td>
+        <td ng-if="$ctrl.statistics != null">{{ $ctrl.statistics.fileCount }}</td>
       </tr>
       <tr>
         <td>Size</td>
@@ -40,6 +36,9 @@
       <tr>
         <td>License(s)</td>
         <td>
+          <div ng-if="$ctrl.statistics == null || $ctrl.statistics.licenses.length == 0">
+            <i style="color: #999">None</i>
+          </div>
           <div ng-repeat="license in $ctrl.statistics.licenses">
             <a ng-href="{{license}}">{{ license }}</a>
           </div>

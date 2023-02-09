@@ -7,19 +7,19 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.baseUrl = DATABUS_RESOURCE_BASE_URL;
 
   $scope.onDescriptionChanged = function () {
-    if ($scope.formData == null) {
+    if ($scope.form == null) {
       return;
     }
 
-    if (!$scope.formData.version.generateAbstract) {
-      return;
+    if ($scope.form.generateAbstract) {
+      $scope.collectionManager.activeCollection.abstract =
+        DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
     }
 
-    $scope.formData.version.abstract =
-      DatabusUtils.createAbstractFromDescription($scope.formData.version.description);
+    $scope.onActiveCollectionChanged();
   }
 
-  
+
 
   $scope.$watch("location.hash()", function (newVal, oldVal) {
 
@@ -125,12 +125,14 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.form.identifier = {};
   $scope.form.description = {};
   $scope.form.collectionPublishTag = '';
+  $scope.form.generateAbstract =  $scope.collectionManager.activeCollection.abstract ==
+    DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
 
   $scope.artifactData = {};
   $scope.username = data.auth.info.accountName;
   $scope.modalTime = 1000;
 
-  $scope.onAddContent = function(source) {
+  $scope.onAddContent = function (source) {
     $scope.session.targetDatabusUrl = source;
     $scope.goToTab('add');
   }
@@ -209,7 +211,7 @@ SELECT DISTINCT ?file WHERE {\n\
 
   $scope.addDatabusToCollection = function () {
 
-   
+
 
     // check for valid Databus
 
@@ -261,52 +263,13 @@ SELECT DISTINCT ?file WHERE {\n\
   $scope.createNewCollection = function () {
     $scope.collectionManager.createNew('New Collection', 'Replace this description with a description of your choice.',
       function (success) {
-        $scope.statusCode = success ? 2006 : 916;
-
-        if (success) {
-          $scope.isCreateNewModalVisible = false;
-        }
+        DatabusAlert.alert($scope, true, "A new collection has been created.");
       });
   }
 
   $scope.editCopy = function () {
     var copy = $scope.collectionManager.createCopy($scope.collectionManager.activeCollection);
     $scope.collectionManager.setActive(copy.uuid);
-  }
-
-  $scope.createCollection = function () {
-
-    if (!$scope.collectionManager.isInitialized) {
-      return;
-    }
-
-    var invalidIdentifier = false;
-
-    if (!DatabusCollectionUtils.checkIdentifier($scope.form.identifier.value)) {
-      $scope.form.identifier.error = DatabusResponse.COLLECTION_INVALID_ID;
-      invalidIdentifier = true;
-    }
-
-    if (!DatabusCollectionUtils.checkCollectionForm($scope.form, $scope.collectionManager.activeCollection)
-      || invalidIdentifier) {
-      return;
-    }
-
-    $scope.isSaving = true;
-
-    $scope.collectionManager.commitCollection($scope.username, $scope.form.identifier.value)
-      .then(function (response) {
-        $scope.statusCode = response.code;
-        $scope.isSaving = false;
-        $scope.$apply();
-        $scope.updateStatistics($scope.collectionManager.activeCollection);
-        $timeout($scope.resetStatus, $scope.modalTime);
-      }).catch(function (err) {
-        $scope.statusCode = err.code;
-        $scope.isSaving = false;
-        $scope.$apply();
-        $timeout($scope.resetStatus, $scope.modalTime);
-      });
   }
 
   $scope.saveCollection = function () {
@@ -336,16 +299,15 @@ SELECT DISTINCT ?file WHERE {\n\
 
     $scope.isSaving = true;
     $scope.collectionManager.updateCollection($scope.username, identifier).then(function (response) {
-      $scope.statusCode = DatabusResponse.COLLECTION_UPDATED;
+      DatabusAlert.alert($scope, true, "Collection saved successfully.");
       $scope.isSaving = false;
       $scope.$apply();
       $scope.updateStatistics($scope.collectionManager.activeCollection);
       $timeout($scope.resetStatus, $scope.modalTime);
     }).catch(function (err) {
-      $scope.statusCode = err.code;
+      DatabusAlert.alert($scope, false, err);
       $scope.isSaving = false;
       $scope.$apply();
-      $timeout($scope.resetStatus, $scope.modalTime);
     });
   }
 

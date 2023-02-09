@@ -194,6 +194,10 @@ class DatabusCollectionUtils {
 
   static async getCollectionFiles($http, collection) {
 
+    if(!collection.hasContent) {
+      return [];
+    }
+    
     let query = QueryBuilder.build({
       node : collection.content.root,
       resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,

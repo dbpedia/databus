@@ -24,14 +24,15 @@
     <th>Format</th>
     <th>License</th>
   </tr>
+
+  <tr ng-if="$ctrl.files.length == 0"><td colspan="5"><i style="color: #999">None</i></td></tr>
   <tr ng-repeat-start="file in $ctrl.groupedFiles" style="position:relative;">
   </tr>
 
   <tr style="position:relative;" ng-repeat-start="download in file.downloads">
 
     <td ng-if="$first" rowspan="{{ $ctrl.getRowspan(file) }}">
-      <span ng-if="$first">{{file.label}} (<a ng-href="{{file.uri}}">{{ file.version }}</a>)</span></td-->
-
+      <span ng-if="$first">{{file.title}} (<a target="_blank" ng-href="{{file.uri}}">{{ file.version }}</a>)</span></td-->
     <td>
 
       <div style="display: flex; justify-content: space-between; align-items: center;">

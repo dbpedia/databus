@@ -18,6 +18,11 @@
     .databus-alert.is-success {
       border: 1px solid rgba(105, 144, 105, 0.5);
     }
+
+    .databus-alert.is-error {
+      border: 1px solid #d27c7c;
+      background-color: #ffbfbf;
+    }
   </style>
 
   <div ng-if="$ctrl.isSuccess" class="databus-alert is-success">
@@ -33,18 +38,17 @@
     </div>
   </div>
 
-  <div ng-if="!$ctrl.isSuccess" class="ce-alert"
-    style="background-color: #ffa1a1; border-color: #df8a8a">
+  <div ng-if="!$ctrl.isSuccess" class="databus-alert is-error">
     <svg class="dashing" width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 130.2 130.2">
-      <circle class="path circle" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-miterlimit="10"
+      <circle class="path circle" fill="none" stroke="#b86363" stroke-width="5" stroke-miterlimit="10"
         cx="65.1" cy="65.1" r="62.1" />
-      <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
+      <line class="path line" fill="none" stroke="#b86363" stroke-width="5" stroke-linecap="round"
         stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
-      <line class="path line" fill="none" stroke="rgb(202, 71, 71)" stroke-width="5" stroke-linecap="round"
+      <line class="path line" fill="none" stroke="#b86363" stroke-width="5" stroke-linecap="round"
         stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
     </svg>
-    <div class="field" style="margin-left:1em; color: rgb(202, 71, 71)">
+    <div class="field" style="margin-left:1em; color: #b86363">
       <div>{{ $ctrl.message }}</div>
     </div>
   </div>

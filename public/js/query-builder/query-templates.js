@@ -39,7 +39,7 @@
   static COLLECTION_FILES_TEMPLATE = {
     prefixes: QueryTemplates.DEFAULT_PREFIXES,
     indent: 1,
-    select: `SELECT DISTINCT ?versionUri ?dataset ?distribution ?title ?description (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?files) ?license ?size ?version ?format (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
+    select: `SELECT DISTINCT ?version ?dataset ?distribution ?title ?description (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?files) ?license ?size ?format (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
     body: [
       `GRAPH ?g`,
       `{`,
@@ -51,13 +51,12 @@
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
       `\tOPTIONAL { ?distribution dataid:preview ?preview . }`,
       `\t?dataset dcat:distribution ?distribution .`,
-      `\t?dataset dataid:version ?versionUri .`,
       `\t?dataset dct:hasVersion ?version .`,
       `\t?dataset dct:title ?title .`,
       `\t?dataset dct:description ?description.`,
       `}`
     ],
-    aggregate: `GROUP BY ?versionUri ?dataset ?distribution ?title ?description ?license ?size ?version ?format ?preview`
+    aggregate: `GROUP BY ?version ?dataset ?distribution ?title ?description ?license ?size ?format ?preview`
   };
 
   /**

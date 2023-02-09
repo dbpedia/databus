@@ -51,8 +51,8 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
       if(result[keyVal] == undefined) {
         result[keyVal] = {}
         result[keyVal].value = keyVal;
-        result[keyVal].label = element.label;
-        result[keyVal].uri = element.versionUri;
+        result[keyVal].title = element.title;
+        result[keyVal].uri = element.dataset;
         result[keyVal].version = element.version;
         result[keyVal].downloads = [];
         result[keyVal].licenses = [];

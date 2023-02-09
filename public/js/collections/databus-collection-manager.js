@@ -27,7 +27,7 @@ class DatabusCollectionManager {
 
     this.sessionInfo = JSON.parse(window.sessionStorage.getItem(`${this.storageKeyPrefix}_session`));
 
-    if(this.sessionInfo == undefined) {
+    if (this.sessionInfo == undefined) {
       this.sessionInfo = {};
     }
 
@@ -70,6 +70,7 @@ class DatabusCollectionManager {
     // Remote collections that are pulled to the local browser storage will
     // also be given such an identifier
     // this.local = this.loadCollectionsFromLocalStorage();
+
     // This map will keep track of all local entries that already claim to have a remote counterpart
     let localPublished = {};
 
@@ -227,7 +228,7 @@ class DatabusCollectionManager {
       return null;
     }
 
-    if(this.local == null) {
+    if (this.local == null) {
       return null;
     }
 
@@ -442,6 +443,7 @@ class DatabusCollectionManager {
     let collection = DatabusCollectionWrapper.createNew();
     collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
     collection.label = `Copy of ${source.label}`;
+    collection.abstract = source.abstract;
     collection.description = source.description;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
@@ -490,21 +492,16 @@ class DatabusCollectionManager {
   }
 
 
-  async changeCollection(username, collectionTag, method, issued = false) {
+  async changeCollection(username, collectionUri) {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
-      // // Don't push this way if the collection is already pushed (use update)
-      // if (!this.activeCollection.isDraft) {
-      //   throw { code: DatabusResponse.COLLECTION_INVALID_ARGUMENT };
-      // }
 
       this.saveLocally();
 
       // Keep the identifier of the collection we want to push
       var pushIdentifier = this.activeCollection.uuid;
 
-      var targetUri = `/${username}/collections/${collectionTag}`;
       var publisherUri = `${DATABUS_RESOURCE_BASE_URL}/${username}#this`;
 
       var ignoreKeys = [
@@ -526,10 +523,11 @@ class DatabusCollectionManager {
         "@context": JSONLD_CONTEXT,
         "@graph": [
           {
-            "@id": DATABUS_RESOURCE_BASE_URL + targetUri,
+            "@id": collectionUri,
             "@type": "dataid:Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.label,
+            "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
             "dataid:content": contentString
           }
@@ -538,17 +536,15 @@ class DatabusCollectionManager {
 
       if (this.activeCollection.issued != undefined) {
         collectionJsonLd["@graph"][0].issued = this.activeCollection.issued;
-      }
-
-      if (issued) {
-        collectionJsonLd["@graph"][0].issued = new Date().toISOString();
+      } else {
+        collectionJsonLd["@graph"][0].issued = Date.now().toString();
       }
 
       var response = null;
 
       try {
 
-        response = await this.http.put(targetUri, collectionJsonLd);
+        response = await this.http.put(collectionUri, collectionJsonLd);
 
       } catch (errResponse) {
         console.log(errResponse);
@@ -579,6 +575,8 @@ class DatabusCollectionManager {
       return response.data;
 
     } catch (err) {
+
+      console.log(err);
       throw {
         code: err.data !== undefined && err.data.code !== undefined ? err.data.code :
           DatabusResponse.COLLECTION_UPDATE_ERROR
@@ -586,25 +584,32 @@ class DatabusCollectionManager {
     }
   }
 
-  /**
-   * Publish the collection under the specified username and collection id
-   * @param  {[type]}   username     [description]
-   * @param  {[type]}   collectionTag [description]
-   * @return {[type]}                [description]
-   */
-  async commitCollection(username, collectionTag) {
-    return await this.changeCollection(username, collectionTag, "put");
-  }
 
   async updateCollection(username, collectionTag) {
-    return await this.changeCollection(username, collectionTag, "patch");
+
+    if (this.activeCollection.uri != null) {
+      return await this.changeCollection(username, this.activeCollection.uri);
+    } else {
+      var collectionUri = `${DATABUS_RESOURCE_BASE_URL}/${username}/collections/${collectionTag}`;
+
+      for (var uuid in this.local) {
+        if (this.local[uuid].uri == collectionUri) {
+          throw "A collection with the specifed URI already exists.";
+        }
+      }
+      
+      return await this.changeCollection(username, collectionUri);
+    }
+    
+
   }
 
   async unHideCollection(username, collectionTag) {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
-      var updateResponse = await this.changeCollection(username, collectionTag, "patch", true);
+      var collectionUri = `${DATABUS_RESOURCE_BASE_URL}/${username}/collections/${collectionTag}`;
+      var updateResponse = await this.changeCollection(username, collectionUri, null, true);
       var updatedCollection = this.getCollectionByUri(updateResponse.data[0]['@id']);
 
       this.remote[updatedCollection.uuid].issued = updateResponse.data[0]['http://purl.org/dc/terms/issued'][0]['@value'];
@@ -624,7 +629,8 @@ class DatabusCollectionManager {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
-      var updateResponse = await this.changeCollection(username, collectionTag, "patch");
+      var collectionUri = `${DATABUS_RESOURCE_BASE_URL}/${username}/collections/${collectionTag}`;
+      var updateResponse = await this.changeCollection(username, collectionUri);
       var updatedCollection = this.getCollectionByUri(updateResponse.data[0]['@id']);
 
       delete this.remote[updatedCollection.uuid].issued;

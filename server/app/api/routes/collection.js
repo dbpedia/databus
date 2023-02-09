@@ -48,6 +48,7 @@ module.exports = function (router, protector) {
 
     try {
       if (req.params.account != req.databus.accountName) {
+
         res.status(403).send({
           success : false,
           message: 'You cannot edit collections in a foreign namespace.'
@@ -72,8 +73,6 @@ module.exports = function (router, protector) {
         });
         return;
       }
-
-      console.log(req.body);
 
       // Construct
       var triples = await constructor.executeConstruct(req.body, constructCollection);

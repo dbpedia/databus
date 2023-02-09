@@ -39,6 +39,21 @@ class DatabusCollectionWrapper {
     return this.uri === undefined;
   }
 
+  get hasContent() {
+
+    if(this.content.root.childNodes.length == 0) {
+      return false;
+    }
+
+    for(var childNode of this.content.root.childNodes) {
+      if(childNode.childNodes.length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   fireEvent(name) {
     if(this.eventListeners[name] == undefined) {
       return;
@@ -52,12 +67,11 @@ class DatabusCollectionWrapper {
 
 
   static createNew(label, description, source) {
-
     var data = {};
     data.uuid = DatabusCollectionUtils.uuidv4();
     data.label = label;
     data.description = description;
-    data.content = {};
+    data.abstract = description;
     data.content = {};
     data.content.root = new QueryNode(null, null);
     data.content.root.addChild(new QueryNode(source, null));
