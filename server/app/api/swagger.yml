@@ -1,17 +1,17 @@
-openapi: "3.0.1"
+openapi: "3.0.3"
+
 info:
   description: "This is the Databus API documentation."
   version: "2.0.0-rc.1"
   title: "Databus API"
-basePath: "/"
-schemes:
-  - "http"
+
 components:
   securitySchemes:
     ApiKeyAuth:        
       type: apiKey
       in: header       
       name: X-API-KEY  
+      
 paths:
   /:
     get:
@@ -22,8 +22,6 @@ paths:
         - general
       security:
         - ApiKeyAuth: []
-      produces:
-        - "text/html"
       responses:
         "200":
           description: "Accepted"
@@ -48,91 +46,6 @@ paths:
                 type: string
                 example: "Error: Forbidden"
   /sparql:
-    get:
-      summary: "Send SPARQL Query"
-      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
-      operationId: "sparql-get"
-      tags:
-        - general
-      security:
-        - ApiKeyAuth: []
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
-      parameters:
-        - in: query
-          name: verify-parts
-          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
-          required: false
-          example: "true"
-      requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
-        required: true
-        content:
-          application/json:
-            schema:
-              type: json
-              example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": [
-                  {
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
-                    "@type": "Group",
-                    "title": "Cleaned Data",
-                    "description": "Cleaned datasets from DBpedia"
-                  },
-                  {
-                    "@type": "Dataset",
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
-                    "hasVersion": "2022-02-09",
-                    "title": "Cleaned Geonames",
-                    "description": "Cleaned version of the geonames dataset from DBpedia",
-                    "license": "http://creativecommons.org/licenses/by/4.0/",
-                    "distribution": [
-                      {
-                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
-                        "@type": "Part",
-                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "formatExtension": "ttl",
-                        "compression": "none",
-                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
-                      }
-                    ]
-                  }
-                ]
-              }'
-      responses:
-        "202":
-          description: "Accepted"
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: 'Publishing Group.
-                  > 5 triples selected via construct query.
-                  > SHACL validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
-                  Publishing group finished with code 200.
-                  ================================================
-                  Publishing DataId.
-                  > 13 triples selected via construct query.
-                  > Auto-completed the input.
-                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
-                  > SHACL validation successful.
-                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
-                  > No signature found in the input.
-                  > Generating signature.
-                  > Signature validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
-                  Publishing DataId finished with code 200.'
-        "403":
-          description: "Forbidden. The account failed to authenticate."
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Error: Forbidden"
     post:
       summary: "Send SPARQL Query"
       description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
@@ -141,23 +54,13 @@ paths:
         - general
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
-      parameters:
-        - in: query
-          name: verify-parts
-          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
-          required: false
-          example: "true"
       requestBody:
         description: "A SPARQL query."
         required: true
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -227,18 +130,18 @@ paths:
         - general
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
       parameters:
-        - in: query
-          name: verify-parts
+        - name: verify-parts
+          in: query
+          schema:
+            type: boolean
           description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
           required: false
           example: "true"
-        - in: query
-          name: log-level
+        - name: log-level
+          in: query
+          schema:
+            type: string
           description: "Desired detail of the publish report. Can be set to either 'error', 'info' or 'debug'."
           required: false
           example: "info"
@@ -248,7 +151,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -322,21 +225,19 @@ paths:
         - group
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/ld+json"
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
+          schema:
+            type: string
           description: account namespace
-          type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
       requestBody:
@@ -345,7 +246,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": {
@@ -380,19 +281,19 @@ paths:
       operationId: "get-group"
       tags:
         - group
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
       responses:
@@ -401,7 +302,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
@@ -445,13 +346,15 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
       responses:
@@ -470,27 +373,26 @@ paths:
         - artifact
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/ld+json"
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account name
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group name
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
           description: target artifact name
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
       requestBody:
@@ -499,7 +401,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": {
@@ -534,19 +436,26 @@ paths:
       operationId: "get-artifact"
       tags:
         - artifact
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: artifact identifier
+          schema:
+            type: string
           required: true
           example: "cleaned"
       responses:
@@ -555,7 +464,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames",
                   "@type": "dataid:Artifact",
@@ -599,13 +508,22 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
+          required: true
+          example: "cleaned"
+        - name: artifact
+          in: path
+          description: artifact identifier
+          schema:
+            type: string
           required: true
           example: "cleaned"
       responses:
@@ -624,31 +542,33 @@ paths:
         - dataid
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/ld+json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
           description: target artifact identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "geonames"
         - name: version
           in: path
           description: target version identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "2022-02-09"
       requestBody:
@@ -657,7 +577,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": {
@@ -711,31 +631,33 @@ paths:
         - dataid
       description: "Retrieve a DataId as JSONLD"
       operationId: "get-dataid"
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
           description: target artifact identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "geonames"
         - name: version
           in: path
           description: target version identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "2022-02-09"
       responses:
@@ -744,7 +666,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "@graph": [
                     {
@@ -804,25 +726,29 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
           description: target artifact identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "geonames"
         - name: version
           in: path
           description: target version identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "2022-02-09"
       responses:
@@ -843,31 +769,36 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
           description: target group identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
           description: target artifact identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "geonames"
         - name: version
           in: path
           description: target version identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "2022-02-09"
         - name: file
           in: path
           description: target file identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "geonames.ttl"
       responses:
@@ -886,17 +817,13 @@ paths:
       operationId: "tractate-canonicalize"
       tags:
         - tractate
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
       requestBody:
         description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
         required: true
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -947,17 +874,13 @@ paths:
       operationId: "tractate-verify"
       tags:
         - tractate
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
       requestBody:
         description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
         required: true
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -1016,7 +939,7 @@ paths:
           content:
             application/json:
               schema:
-                type: json
+                type: object
                 example: '{
                     "success": true,
                     "message": "Verification successful.\n"
@@ -1028,13 +951,12 @@ paths:
       operationId: "search"
       tags:
         - general
-      consumes:
-        - "application/json"
       parameters:
         - name: query
           in: query
           description: search query
-          type: string
+          schema:
+            type: string
           required: true
           example: 'geonames'
         - name: typeName
@@ -1044,19 +966,22 @@ paths:
             * Artifact
             * Collection
             * PersonalProfileDocument
-          type: string
+          schema:
+            type: string
           required: false
           example: 'Artifact'
         - name: part
           in: query
           description: A query for one or multiple parta of the entity uri (white space separated list).
-          type: string
+          schema:
+            type: string
           required: false
           example: '%USERNAME% cleaned'
         - name: partRequired
           in: query
           description: If set to true, results without a match on the part field are omitted. 
-          type: boolean
+          schema:
+            type: boolean
           required: false
           example: 'true'
       responses:
@@ -1065,7 +990,7 @@ paths:
           content:
             application/json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "docs": [
                     {
@@ -1103,13 +1028,15 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: id
           in: path
           description: The collection identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned-geonames"
       requestBody:
@@ -1118,7 +1045,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -1138,7 +1065,7 @@ paths:
           content:
             application/json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "success": true,
                   "message": "Collection saved successfully.",
@@ -1184,19 +1111,19 @@ paths:
       operationId: "get-collection"
       tags:
         - collection
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: id
           in: path
           description: the collection identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned-geonames"
       responses:
@@ -1230,7 +1157,7 @@ paths:
                   }"
             application/ld+json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
@@ -1273,13 +1200,15 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
         - name: id
           in: path
           description: the collection identifier
-          type: string
+          schema:
+            type: string
           required: true
           example: "cleaned-geonames"
       responses:
@@ -1294,24 +1223,23 @@ paths:
       operationId: "collection-md5"
       tags:
         - collection
-      consumes:
-        - "application/json"
-      produces:
-        - "text/html"
       parameters:
         - name: uri
           in: query
           description: collection uri
-          type: string
+          schema:
+            type: string
           required: true
           example: '%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/collections/cleaned-geonames'
       responses:
         "200":
           description: "OK"
-          schema:
-            type: string
-            format: binary
-            example: '37dac6d1e315917bceba4f38564dc529'
+          content:
+            string:
+              schema:
+                type: string
+                format: binary
+                example: '37dac6d1e315917bceba4f38564dc529'
   /{account}:
     put:
       summary: "Create / Update Account"
@@ -1325,7 +1253,8 @@ paths:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
       requestBody:
@@ -1334,7 +1263,7 @@ paths:
         content:
           application/json:
             schema:
-              type: json
+              type: object
               example: '{
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
@@ -1377,13 +1306,12 @@ paths:
       operationId: "get-account"
       tags:
         - account
-      produces:
-        - "application/json"
       parameters:
         - name: account
           in: path
           description: account namespace
-          type: string
+          schema:
+            type: string
           required: true
           example: '%USERNAME%'
       responses:
@@ -1392,7 +1320,7 @@ paths:
           content:
             application/ld+json:
               schema:
-                type: json
+                type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
                   "@type": "dataid:Group",
@@ -1436,15 +1364,13 @@ paths:
         - name: uri
           in: query
           description: the WebId uri to link
-          type: string
+          schema:
+            type: string
           required: true
           example: 'https://holycrab13.github.io/webid.ttl'
       responses:
         "200":
           description: "OK"
-          schema:
-            type: string
-            example: ''
   /api/account/webid/remove:
     post:
       summary: "Remove WebId"
@@ -1458,15 +1384,13 @@ paths:
         - name: uri
           in: query
           description: the WebId uri to remove
-          type: string
+          schema:
+            type: string
           required: true
           example: 'https://holycrab13.github.io/webid.ttl'
       responses:
         "200":
           description: "OK"
-          schema:
-            type: string
-            example: ''
   /api/account/api-key/create:
     post:
       summary: "Create API key"
@@ -1480,18 +1404,21 @@ paths:
         - name: name
           in: query
           description: the desired name of the api key
-          type: string
+          schema:
+            type: string
           required: true
           example: 'default'
       responses:
         "200":
           description: "OK"
-          schema:
-            type: json
-            example: '{
-                "name": "default",
-                "key": "2df02a7f-32c4-46cd-9c6e-bd80c72e6e48"
-              }'
+          content:
+            application/json:
+              schema:
+                type: object
+                example: '{
+                    "name": "default",
+                    "key": "2df02a7f-32c4-46cd-9c6e-bd80c72e6e48"
+                  }'
   /api/account/api-key/delete:
     post:
       summary: "Delete API key"
@@ -1505,37 +1432,10 @@ paths:
         - name: name
           in: query
           description: the name of the api key to delete
-          type: string
+          schema:
+            type: string
           required: true
           example: 'default'
       responses:
         "200":
           description: "OK"
-          schema:
-            type: json
-            example: ''
-definitions:
-  ValidationResult:
-    properties:
-      success:
-        type: boolean
-      message:
-        type: "string"
-    required:
-      - success
-      - message
-  OperationSuccess:
-    properties:
-      graphid:
-        type: "string"
-      commit_hash:
-        type: "string"
-    required:
-      - graphid
-      - commit_hash
-  OperationFailure:
-    properties:
-      message:
-        type: "string"
-    required:
-      - message
