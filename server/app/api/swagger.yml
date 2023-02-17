@@ -22,76 +22,24 @@ paths:
         - general
       security:
         - ApiKeyAuth: []
-      consumes:
-        - "application/json"
       produces:
         - "text/html"
-      parameters:
-        - in: query
-          name: verify-parts
-          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
-          required: false
-          example: "true"
-      requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
-        required: true
-        content:
-          application/json:
-            schema:
-              type: json
-              example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": [
-                  {
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
-                    "@type": "Group",
-                    "title": "Cleaned Data",
-                    "description": "Cleaned datasets from DBpedia"
-                  },
-                  {
-                    "@type": "Dataset",
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
-                    "hasVersion": "2022-02-09",
-                    "title": "Cleaned Geonames",
-                    "description": "Cleaned version of the geonames dataset from DBpedia",
-                    "license": "http://creativecommons.org/licenses/by/4.0/",
-                    "distribution": [
-                      {
-                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
-                        "@type": "Part",
-                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "formatExtension": "ttl",
-                        "compression": "none",
-                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
-                      }
-                    ]
-                  }
-                ]
-              }'
       responses:
-        "202":
+        "200":
           description: "Accepted"
           content:
             text/plain:
               schema:
                 type: string
-                example: 'Publishing Group.
-                  > 5 triples selected via construct query.
-                  > SHACL validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
-                  Publishing group finished with code 200.
-                  ================================================
-                  Publishing DataId.
-                  > 13 triples selected via construct query.
-                  > Auto-completed the input.
-                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
-                  > SHACL validation successful.
-                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
-                  > No signature found in the input.
-                  > Generating signature.
-                  > Signature validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
-                  Publishing DataId finished with code 200.'
+                example: '
+                  @base <http://localhost:3000> .
+                  @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+                  @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                  @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+                  @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+                  @prefix dcat:  <http://www.w3.org/ns/dcat#> .
+                  @prefix dct:   <http://purl.org/dc/terms/> .
+                  <> a dataid:Databus '
         "403":
           description: "Forbidden. The account failed to authenticate."
           content:
@@ -387,7 +335,7 @@ paths:
           example: '%USERNAME%'
         - name: group
           in: path
-          description: target group identifier
+          description: group identifier
           type: string
           required: true
           example: "cleaned"

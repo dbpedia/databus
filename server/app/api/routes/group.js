@@ -82,7 +82,7 @@ module.exports = function (router, protector) {
     var exists = await sparql.dataid.hasGroup(req.params.account, req.params.group);
 
     if (!exists) {
-      res.status(204).send(`The group  <${groupUri}> does not exist.`);
+      res.status(404).send(`The group  <${groupUri}> does not exist.`);
       return;
     }
 
