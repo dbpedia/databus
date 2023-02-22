@@ -12,11 +12,16 @@
     <link rel="stylesheet" href="/node_modules/bulma-steps/dist/css/bulma-steps.min.css" type="text/css" />
 
 
-    <style>
-      
+    <div style="display: flex; align-items: flex-end; justify-content: flex-end;">
 
-    </style>
+      <div class="field override-checkbox" style="margin: .5em 1em;" ng-class="{ 'is-override' : nerdMode.enabled }">
+        <input id="check--nerdMode" name="check--nerdMode" class="is-checkradio" type="checkbox" ng-model="nerdMode.enabled">
+        <label for="check--nerdMode">
+          <span>Nerd Mode</span>
+        </label>
+      </div>
 
+    </div>
 
 
 
@@ -70,10 +75,59 @@
 
     <!-- WIZARD -->
     <section ng-if="authenticated && hasAccount && !isAccountDataLoading">
+
+
       <div class="container">
-        <div>
+        <div ng-if="nerdMode.enabled">
+          <div class="wizard-info content" style="padding-top: 0;">
+            <h1 class="title">Publish Wizard</h1>
+            <p>Nerd mode. You know what to do.</p>
+          </div>
+
+          <div class="content-box" ng-init="artifact=session.formData.artifact">
+            <div class="box-header">
+              <h3>Publish</h3>
+            </div>
+
+            <div class="box-content">
+
+            <div class="row">
+                <div class="row-label optional">JSON Body</div>
+                <div style="flex: 1">
+                  <textarea wrap="hard" style="min-height: 540px; resize: vertical;" class="input" type="text"
+                    ng-model="nerdMode.customJson"></textarea>
+                </div>
+              </div>
+              
+
+              <div class="row">
+                <div style="width: 100%; margin-top: 2em">
+                  <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
+                    <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
+                      ng-model="agreeCCZero">
+                    <label for="check--agree">
+                      <span>I hereby agree to publish this metadata under the <a
+                          href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
+                        license</span>
+                    </label>
+                  </div>
+                  <p class="control" style="width: 100%; margin-top: 1em;">
+                    <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                      ng-disabled="isPublishing || !agreeCCZero" class="button is-primary"
+                      ng-click="customPublish()">
+                      <span>Publish</span>
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+
+        </div>
+        <div ng-if="!nerdMode.enabled">
           <!-- INFO -->
-          <div class="wizard-info content">
+          <div class="wizard-info content" style="padding-top: 0;">
             <h1 class="title">Publish Wizard</h1>
             <p>This form will help you set up a DataId. A DataId is a metadata document containing
               important information about your files. This metadata document will make your data more understandable and
@@ -139,8 +193,8 @@
                     <div class="dropdown-menu" id="dropdown-menu" role="menu">
                       <div class="dropdown-content">
 
-                        <div class="dropdown-item" style="cursor: pointer;" ng-repeat="grp in session.accountData.groups"
-                          ng-click="session.selectGroup(grp)">
+                        <div class="dropdown-item" style="cursor: pointer;"
+                          ng-repeat="grp in session.accountData.groups" ng-click="session.selectGroup(grp)">
                           {{ grp.name }}
                         </div>
                       </div>
@@ -191,7 +245,8 @@
               </div>
               <div class="row" ng-if="group.createNew">
                 <div class="row-label">Create Without Version</div>
-                <div class="field override-checkbox" ng-class="{ 'is-override' : session.formData.group.publishGroupOnly }">
+                <div class="field override-checkbox"
+                  ng-class="{ 'is-override' : session.formData.group.publishGroupOnly }">
                   <input id="check--createwithoutversion" name="check--createwithoutversion" class="is-checkradio"
                     type="checkbox" ng-model="session.formData.group.publishGroupOnly">
                   <label for="check--createwithoutversion">
@@ -350,7 +405,7 @@
                   </div>
                 </div>
                 <div class="hover-note">
-                  <databus-icon shape="'info'"size="24">
+                  <databus-icon shape="'info'" size="24">
                   </databus-icon>
                   <div class="hover-dropdown content">
                     <ul>
@@ -627,8 +682,7 @@
 
               <br />
               <div>
-                <table-editor ng-if="objSize(version.files) > 0" model="version"
-                  on-remove-file="removeFile(file)">
+                <table-editor ng-if="objSize(version.files) > 0" model="version" on-remove-file="removeFile(file)">
                 </table-editor>
 
 
@@ -773,70 +827,76 @@
 
               <div class="row">
                 <div style="width: 100%; margin-top: 2em">
-                <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
-                  <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
-                    ng-model="agreeCCZero">
-                  <label for="check--agree">
-                    <span>I hereby agree to publish this metadata under the <a href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a> license</span>
-                  </label>
+                  <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
+                    <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
+                      ng-model="agreeCCZero">
+                    <label for="check--agree">
+                      <span>I hereby agree to publish this metadata under the <a
+                          href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
+                        license</span>
+                    </label>
+                  </div>
+                  <p class="control" style="width: 100%; margin-top: 1em;">
+                    <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                      ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary"
+                      ng-click="publish()">
+                      <span>Publish</span>
+                    </button>
+                  </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="content-box">
+            <div class="box-header">
+              <h3>Result</h3>
+            </div>
+
+            <div class="box-content">
+              <div class="row" ng-if="!isPublishing">
+
+                <div style="width: 100%">
+                  <div ng-repeat="entry in publishLog" style="margin-bottom: .25em;">
+
+                    <div style="width: 100%; font-family: monospace; padding: .75em; 
+                  background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
+                      ng-click="entry.expanded = !entry.expanded">
+
+                      <databus-icon ng-if="!entry.expanded" shape="'right'" size="16">
+                      </databus-icon>
+                      <databus-icon ng-if="entry.expanded" shape="'down'" size="16">
+                      </databus-icon>
+
+                      <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{
+                        entry.msg }}</div>
+                      <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
+                      <databus-icon ng-if="entry.level!='error'" color="'#65bdb2'" shape="'check'" size="24">
+                      </databus-icon>
+                    </div>
+                    <div ng-if="entry.expanded">
+                      <pre style="width: 100%; border-top: 1px solid #dbdbdb;">{{ entry.payload | json }}</pre>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
                 <p class="control" style="width: 100%; margin-top: 1em;">
-                  <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
-                    ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary" ng-click="publish()">
-                    <span>Publish</span>
+                  <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
+                    <span>Reset Form</span>
                   </button>
                 </p>
               </div>
             </div>
           </div>
-        </div>
-        <div class="content-box">
-          <div class="box-header">
-            <h3>Result</h3>
-          </div>
 
-          <div class="box-content">
-            <div class="row" ng-if="!isPublishing">
-
-              <div style="width: 100%">
-                <div ng-repeat="entry in publishLog" style="margin-bottom: .25em;">
-
-                  <div style="width: 100%; font-family: monospace; padding: .75em; 
-                  background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
-                    ng-click="entry.expanded = !entry.expanded">
-
-                    <databus-icon ng-if="!entry.expanded" shape="'right'" size="16">
-                    </databus-icon>
-                    <databus-icon ng-if="entry.expanded" shape="'down'" size="16">
-                    </databus-icon>
-
-                    <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{
-                      entry.msg }}</div>
-                    <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
-                    <databus-icon ng-if="entry.level!='error'" color="'#65bdb2'" shape="'check'" size="24">
-                    </databus-icon>
-                  </div>
-                  <div ng-if="entry.expanded">
-                    <pre style="width: 100%; border-top: 1px solid #dbdbdb;">{{ entry.payload | json }}</pre>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div class="row">
-              <p class="control" style="width: 100%; margin-top: 1em;">
-                <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
-                  <span>Reset Form</span>
-                </button>
-              </p>
-            </div>
-          </div>
         </div>
 
       </div>
-
-  </div>
-  </section>
+    </section>
 
   </div>
   <% include footer %>

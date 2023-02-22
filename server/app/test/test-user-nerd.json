@@ -1,0 +1,10 @@
+{
+    "SUB": "testerman_twos_sub_token",
+    "DISPLAYNAME": "Testerman Two",
+    "ACCOUNT_NAME": "tester_two",
+    "APIKEY": "000000000000001",
+    "KEYNAME": "testkey",
+    "GROUP_NAME": "testgroup_two",
+    "ARTIFACT_NAME": "artifact-with_underscore",
+    "VERSION_NAME": "2.1.0-5"
+}

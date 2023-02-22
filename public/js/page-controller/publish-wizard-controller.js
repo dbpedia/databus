@@ -22,6 +22,10 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.loadRequestCount = 0;
   $scope.texts = data.texts;
 
+  $scope.nerdMode = {};
+  $scope.nerdMode.enabled = false;
+  $scope.nerdMode.customJson = "";
+
   // controller does not work without authentication
   if (!$scope.authenticated) {
     return;
@@ -161,6 +165,26 @@ function PublishWizardController($scope, $http, focus, $q) {
       console.log(err);
     });
   }
+
+  $scope.customPublish = async function() {
+    var options = {}
+    options.headers = {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    }
+
+    $scope.isPublishing = true;
+    $http.post('/api/publish?verify-parts=true&log-level=info', $scope.nerdMode.customJson, options)
+      .then(function (response) {
+        $scope.publishLog = response.data.log;
+        $scope.isPublishing = false;
+      }, function (err) {
+        $scope.publishLog = err.data.log;
+        $scope.isPublishing = false;
+        console.log(err);
+      });
+  }
+
 
   $scope.publish = async function () {
     var options = {}
