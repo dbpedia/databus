@@ -22,7 +22,18 @@ indexFields:
     query: >
       SELECT DISTINCT ?resource ?label WHERE {
         GRAPH ?g1 {
-          ?dataset <http://dataid.dbpedia.org/ns/core#group> ?resource .
+          ?resource a <http://dataid.dbpedia.org/ns/core#Group>.
+        }
+        GRAPH ?g2 {
+          ?resource <http://purl.org/dc/terms/title> ?label.
+        }
+      }
+  - fieldName: label
+    resourceName: resource
+    query: >
+      SELECT DISTINCT ?resource ?label WHERE {
+        GRAPH ?g1 {
+          ?resource a <http://dataid.dbpedia.org/ns/core#Artifact>.
         }
         GRAPH ?g2 {
           ?resource <http://purl.org/dc/terms/title> ?label.
@@ -56,13 +67,6 @@ indexFields:
           ?person <http://xmlns.com/foaf/0.1/name> ?label.
         }
       }
-  #- fieldName: comment
-  #  resourceName: resource
-  #  query: >
-  #    SELECT DISTINCT ?resource ?comment WHERE {
-  #      ?dataset <http://dataid.dbpedia.org/ns/core#group> ?resource .
-  #      ?resource <http://www.w3.org/2000/01/rdf-schema#comment> ?comment.
-  #    }
   - fieldName: part
     resourceName: artifact
     query: >
@@ -71,7 +75,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
             }
           }
         }
@@ -84,7 +88,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
             }
           }
         }
@@ -97,7 +101,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
             }
           }
         }
@@ -110,7 +114,7 @@ indexFields:
         {
           SELECT DISTINCT ?group WHERE {
             GRAPH ?g {
-              ?dataset <http://dataid.dbpedia.org/ns/core#group> ?group.
+              ?group a <http://dataid.dbpedia.org/ns/core#Group>.
             }
           }
         }
@@ -123,7 +127,7 @@ indexFields:
         {
           SELECT DISTINCT ?group WHERE {
             GRAPH ?g {
-              ?dataset <http://dataid.dbpedia.org/ns/core#group> ?group.
+              ?group a <http://dataid.dbpedia.org/ns/core#Group>.
             }
           }
         }

@@ -257,7 +257,7 @@
           <div style="display: flex; align-items: center; margin-top: 1em; margin-bottom: 1em;">
             <div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>
             <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-            <entity-card label="group.title" uri="group.uri" type="'Group'">
+            <entity-card label="group.title" uri="group.uri" type="'Group'" >
             </entity-card>
           </div>
 
@@ -268,7 +268,7 @@
 
               <div class="node">
                 <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'"
-                  desc="artifact.description">
+                  desc="artifact.abstract">
                 </entity-card>
               </div>
 
@@ -292,9 +292,6 @@
         </div>
 
         <div ng-if="collectionSearchInput == ''" class="hierarchy" ng-repeat="collection in collectionsData.collections">
-
-
-
           <div style="margin-top: 24px; margin-bottom: 24px;">
             <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract">
             </entity-card>
