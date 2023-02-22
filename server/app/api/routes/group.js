@@ -5,7 +5,6 @@ const GstoreHelper = require('../../common/utils/gstore-helper');
 const JsonldUtils = require("../../../../public/js/utils/jsonld-utils");
 const DatabusLogger = require("../../common/databus-logger");
 const UriUtils = require("../../common/utils/uri-utils");
-
 const publishGroup = require('../lib/publish-group');
 const jsonld = require('jsonld');
 const getLinkedData = require("../../common/get-linked-data");

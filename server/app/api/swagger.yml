@@ -189,7 +189,7 @@ paths:
         "202":
           description: "Accepted"
           content:
-            text/plain:
+            application/json:
               schema:
                 type: string
                 example: 'Publishing Group.
@@ -244,34 +244,62 @@ paths:
         description: "Group data as JSONLD."
         required: true
         content:
+          application/ld+json:
+            schema:
+              type: object
+              example: '{
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "description": "Various cleaned datasets from DBpedia using AI."
+                  }
+                }'
           application/json:
             schema:
               type: object
               example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": {
-                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
-                  "@type": "Group",
-                  "title": "Cleaned Data",
-                  "description": "Various cleaned datasets from DBpedia using AI."
-                }
-              }'
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
+                    "@type": "Group",
+                    "title": "Cleaned Data",
+                    "description": "Various cleaned datasets from DBpedia using AI."
+                  }
+                }'
       responses:
         "200":
           description: "OK"
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: 'Publishing Group.
-                  > 5 triples selected via construct query.
-                  > SHACL validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
-                  Publishing group finished with code 200.'
+                type: object
+                example: '{
+                    "logLevel": "error",
+                    "log": []
+                  }'
+        "400":
+          description: "Bad input data"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: '{
+                    "logLevel": "error",
+                    "log": [
+                      {
+                        "resource": null,
+                        "msg": "No graph http://localhost:3000/janni/cleaned found in the input.",
+                        "payload": null,
+                        "level": "error"
+                      }
+                    ]
+                  }'
         "403":
           description: "Forbidden. The account failed to authenticate."
           content:
-            text/plain:
+            application/json:
               schema:
                 type: string
                 example: "Error: Forbidden"

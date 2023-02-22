@@ -133,7 +133,6 @@ module.exports = function (router, protector) {
         return;
       }
 
-
       var deleteResult = await GstoreHelper.delete(req.params.account, targetPath);
 
       // Return failure

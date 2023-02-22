@@ -53,6 +53,8 @@ var webDAVModule = new DatabusWebDAV();
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
 
+
+
   // Add webDAV
   app.use('/dav', protector.checkSso(), webDAVModule.davAuth(),
     webdav.extensions.express('/', webDAVModule.webDAVServer));
@@ -123,7 +125,7 @@ async function initialize(app, memoryStore) {
 
   app.set('trust proxy', 'loopback');
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.json({ limit: '50mb', type: [ 'application/json', 'application/ld+json' ]}));
 
   // view engine setup
   app.set('views', path.join(__dirname, '../../public/templates'));
