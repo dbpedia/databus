@@ -87,8 +87,8 @@ module.exports = function (router, protector) {
       }
 
       // Publish versions
-      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_DATASET);
-      logger.debug(null, `Found ${datasetGraphs.length} dataset graphs.`, null);
+      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_VERSION);
+      logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
 
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];

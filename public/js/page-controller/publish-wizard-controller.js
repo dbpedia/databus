@@ -25,6 +25,8 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.nerdMode = {};
   $scope.nerdMode.enabled = false;
   $scope.nerdMode.customJson = "";
+  $scope.nerdMode.logLevelOptions = [ 'error', 'info', 'debug' ];
+  $scope.nerdMode.logLevel = 'error';
 
   // controller does not work without authentication
   if (!$scope.authenticated) {
@@ -173,8 +175,9 @@ function PublishWizardController($scope, $http, focus, $q) {
       'Content-Type': 'application/json',
     }
 
+
     $scope.isPublishing = true;
-    $http.post('/api/publish?verify-parts=true&log-level=info', $scope.nerdMode.customJson, options)
+    $http.post(`/api/publish?verify-parts=true&log-level=${$scope.nerdMode.logLevel}`, $scope.nerdMode.customJson, options)
       .then(function (response) {
         $scope.publishLog = response.data.log;
         $scope.isPublishing = false;

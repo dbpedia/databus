@@ -117,7 +117,7 @@ class JsonldUtils {
         continue;
       }
 
-      for (var property of graph[Uris.RDFS_SUB_PROPERTY_OF]) {
+      for (var property of graph[JsonldUris.RDFS_SUB_PROPERTY_OF]) {
         if (property[JsonldUris.JSONLD_ID] == propertyUri) {
           result.push(graph);
         }
