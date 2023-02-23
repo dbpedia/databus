@@ -158,7 +158,7 @@ module.exports = function (router, protector) {
         req.databus.accountName = req.params.account;
         
         if((await putOrPatchAccount(req, res, next, accountExists))) {
-          await protector.addUser(req.oidc.user.sub, req.oidc.user.name, req.params.account);
+          await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
         }
       }
     } else {
