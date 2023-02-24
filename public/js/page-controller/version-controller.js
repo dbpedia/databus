@@ -53,7 +53,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   $scope.version.wasDerivedFrom = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
 
   $scope.version.issued = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ISSUED);
-  $scope.version.name = DatabusUtils.uriToName($scope.version.uri);
+  $scope.version.name = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_HAS_VERSION);
 
   $scope.serviceData = data.services;
   $scope.modsData = data.mods;
