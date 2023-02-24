@@ -117,6 +117,7 @@ class DataIdCreator {
       "description": version.description,
       "license": version.license,
       "attribution": version.attribution,
+      "wasDerivedFrom": version.wasDerivedFrom,
       "distribution": []
     }
 
