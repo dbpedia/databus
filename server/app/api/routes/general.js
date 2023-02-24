@@ -50,6 +50,8 @@ module.exports = function (router, protector) {
       var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
 
+      var processedResources = 0;
+
       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
         graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
         logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
@@ -61,7 +63,7 @@ module.exports = function (router, protector) {
       // Publish groups
       var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_GROUP);
       logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
-
+      processedResources += groupGraphs.length;
       // console.log(groupGraphs);
 
       for (var groupGraph of groupGraphs) {
@@ -76,6 +78,7 @@ module.exports = function (router, protector) {
       // Publish artifacts
       var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
       logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
+      processedResources += artifactGraphs.length;
 
       for (var artifactGraph of artifactGraphs) {
         var resultCode = await publishArtifact(account, artifactGraph, logger);
@@ -89,6 +92,7 @@ module.exports = function (router, protector) {
       // Publish versions
       var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_VERSION);
       logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
+      processedResources += datasetGraphs.length;
 
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
@@ -98,6 +102,12 @@ module.exports = function (router, protector) {
           res.status(resultCode).json(logger.getReport());
           return;
         }
+      }
+
+      if(processedResources == 0) {
+        logger.error(null, `No processable graphs found in the input.`, req.body);
+        res.status(400).json(logger.getReport());
+        return;
       }
 
       res.status(200).json(logger.getReport());
