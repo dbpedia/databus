@@ -26,18 +26,19 @@ paths:
         "200":
           description: "Accepted"
           content:
-            text/plain:
+            text/turtle:
               schema:
                 type: string
                 example: '
-                  @base <http://localhost:3000> .
+                  @base <%DATABUS_RESOURCE_BASE_URL%> .
                   @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
                   @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                   @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
                   @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
                   @prefix dcat:  <http://www.w3.org/ns/dcat#> .
                   @prefix dct:   <http://purl.org/dc/terms/> .
-                  <> a dataid:Databus '
+                  <> a dataid:Databus .
+                  <> dct:hasVersion "<2.1.0-rc.1>" .'
         "403":
           description: "Forbidden. The account failed to authenticate."
           content:
@@ -58,37 +59,11 @@ paths:
         description: "A SPARQL query."
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
-              type: object
+              type: string
               example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": [
-                  {
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
-                    "@type": "Group",
-                    "title": "Cleaned Data",
-                    "description": "Cleaned datasets from DBpedia"
-                  },
-                  {
-                    "@type": "Dataset",
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset",
-                    "hasVersion": "2022-02-09",
-                    "title": "Cleaned Geonames",
-                    "description": "Cleaned version of the geonames dataset from DBpedia",
-                    "license": "http://creativecommons.org/licenses/by/4.0/",
-                    "distribution": [
-                      {
-                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl",
-                        "@type": "Part",
-                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09/geonames.ttl",
-                        "formatExtension": "ttl",
-                        "compression": "none",
-                        "downloadURL": "https://holycrab13.github.io/webid.ttl"
-                      }
-                    ]
-                  }
-                ]
+                  select distinct * where {?a ?b ?c} LIMIT 100
               }'
       responses:
         "202":
@@ -97,23 +72,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: 'Publishing Group.
-                  > 5 triples selected via construct query.
-                  > SHACL validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned"
-                  Publishing group finished with code 200.
-                  ================================================
-                  Publishing DataId.
-                  > 13 triples selected via construct query.
-                  > Auto-completed the input.
-                  > Analyzing part "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#geonames.ttl"
-                  > SHACL validation successful.
-                  > Publishing as "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this".
-                  > No signature found in the input.
-                  > Generating signature.
-                  > Signature validation successful.
-                  > Saving to "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset"
-                  Publishing DataId finished with code 200.'
+                example: 'TODO'
         "403":
           description: "Forbidden. The account failed to authenticate."
           content:
@@ -149,7 +108,7 @@ paths:
         description: "Metadata in JSONLD. May contain any number of groups, artifacts and datasets"
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -189,7 +148,7 @@ paths:
         "202":
           description: "Accepted"
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
                 example: 'Publishing Group.
@@ -216,6 +175,78 @@ paths:
               schema:
                 type: string
                 example: "Error: Forbidden"
+  /api/search:
+    get:
+      summary: "Search"
+      description: "Search the index of the Databus. For a full list of the search syntax please refer to the [Lookup Documentation](https://github.com/dbpedia/dbpedia-lookup)"
+      operationId: "search"
+      tags:
+        - general
+      parameters:
+        - name: query
+          in: query
+          description: search query
+          schema:
+            type: string
+          required: true
+          example: 'geonames'
+        - name: typeName
+          in: query
+          description: The type of entities to return. White space separated list of one or multiples of
+            * Group
+            * Artifact
+            * Collection
+            * PersonalProfileDocument
+          schema:
+            type: string
+          required: false
+          example: 'Artifact'
+        - name: part
+          in: query
+          description: A query for one or multiple parta of the entity uri (white space separated list).
+          schema:
+            type: string
+          required: false
+          example: ''
+        - name: partRequired
+          in: query
+          description: If set to true, results without a match on the part field are omitted. 
+          schema:
+            type: boolean
+          required: false
+          example: 'true'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: '{
+                  "docs": [
+                    {
+                      "typeName": [
+                        "Artifact"
+                      ],
+                      "score": [
+                        "337.63354"
+                      ],
+                      "label": [
+                        "Cleaned Geonames"
+                      ],
+                      "resource": [
+                        "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames"
+                      ],
+                      "part": [
+                        "%USERNAME%",
+                        "cleaned",
+                        "geonames"
+                      ]
+                    }
+                  ],
+                  "query": "geonames"
+                  
+                }'
   /{account}/{group}:
     put:
       summary: "Create / Update Group"
@@ -245,18 +276,6 @@ paths:
         required: true
         content:
           application/ld+json:
-            schema:
-              type: object
-              example: '{
-                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                  "@graph": {
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned",
-                    "@type": "Group",
-                    "title": "Cleaned Data",
-                    "description": "Various cleaned datasets from DBpedia using AI."
-                  }
-                }'
-          application/json:
             schema:
               type: object
               example: '{
@@ -422,12 +441,12 @@ paths:
           schema:
             type: string
           required: true
-          example: "cleaned"
+          example: "geonames"
       requestBody:
         description: "Artifact data as JSONLD."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -474,7 +493,7 @@ paths:
           example: '%USERNAME%'
         - name: group
           in: path
-          description: target group identifier
+          description: group identifier
           schema:
             type: string
           required: true
@@ -485,7 +504,7 @@ paths:
           schema:
             type: string
           required: true
-          example: "cleaned"
+          example: "geonames"
       responses:
         "200":
           description: "OK"
@@ -553,7 +572,7 @@ paths:
           schema:
             type: string
           required: true
-          example: "cleaned"
+          example: "geonames"
       responses:
         "200":
           description: "OK"
@@ -603,7 +622,7 @@ paths:
         description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -636,16 +655,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: 'Publishing DataId.
-                  > 15 triples selected via construct query.
-                  > Auto-completed the input.
-                  > SHACL validation successful.
-                  > Publishing as %DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this.
-                  > No signature found in the input.
-                  > Generating signature.
-                  > Signature validation successful.
-                  > Saving to %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames/2022-02-09#Dataset
-                  Publishing DataId finished with code 200.'
+                example: 'TODO'
         "403":
           description: "Forbidden. The account failed to authenticate."
           content:
@@ -669,21 +679,21 @@ paths:
           example: '%USERNAME%'
         - name: group
           in: path
-          description: target group identifier
+          description: group identifier
           schema:
             type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
-          description: target artifact identifier
+          description: artifact identifier
           schema:
             type: string
           required: true
           example: "geonames"
         - name: version
           in: path
-          description: target version identifier
+          description: version identifier
           schema:
             type: string
           required: true
@@ -760,21 +770,21 @@ paths:
           example: '%USERNAME%'
         - name: group
           in: path
-          description: target group identifier
+          description: group identifier
           schema:
             type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
-          description: target artifact identifier
+          description: artifact identifier
           schema:
             type: string
           required: true
           example: "geonames"
         - name: version
           in: path
-          description: target version identifier
+          description: version identifier
           schema:
             type: string
           required: true
@@ -796,35 +806,35 @@ paths:
       parameters:
         - name: account
           in: path
-          description: account namespace
+          description: account name
           schema:
             type: string
           required: true
           example: '%USERNAME%'
         - name: group
           in: path
-          description: target group identifier
+          description: group identifier
           schema:
             type: string
           required: true
           example: "cleaned"
         - name: artifact
           in: path
-          description: target artifact identifier
+          description: artifact identifier
           schema:
             type: string
           required: true
           example: "geonames"
         - name: version
           in: path
-          description: target version identifier
+          description: version identifier
           schema:
             type: string
           required: true
           example: "2022-02-09"
         - name: file
           in: path
-          description: target file identifier
+          description: file identifier
           schema:
             type: string
           required: true
@@ -849,7 +859,7 @@ paths:
         description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -906,7 +916,7 @@ paths:
         description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -972,77 +982,6 @@ paths:
                     "success": true,
                     "message": "Verification successful.\n"
                   }'
-  /api/search:
-    get:
-      summary: "Search"
-      description: "Search the index of the Databus. For a full list of the search syntax please refer to the [Lookup Documentation](https://github.com/dbpedia/dbpedia-lookup)"
-      operationId: "search"
-      tags:
-        - general
-      parameters:
-        - name: query
-          in: query
-          description: search query
-          schema:
-            type: string
-          required: true
-          example: 'geonames'
-        - name: typeName
-          in: query
-          description: The type of entities to return. White space separated list of one or multiples of
-            * Group
-            * Artifact
-            * Collection
-            * PersonalProfileDocument
-          schema:
-            type: string
-          required: false
-          example: 'Artifact'
-        - name: part
-          in: query
-          description: A query for one or multiple parta of the entity uri (white space separated list).
-          schema:
-            type: string
-          required: false
-          example: '%USERNAME% cleaned'
-        - name: partRequired
-          in: query
-          description: If set to true, results without a match on the part field are omitted. 
-          schema:
-            type: boolean
-          required: false
-          example: 'true'
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                example: '{
-                  "docs": [
-                    {
-                      "typeName": [
-                        "Artifact"
-                      ],
-                      "score": [
-                        "337.63354"
-                      ],
-                      "label": [
-                        "Cleaned Geonames"
-                      ],
-                      "resource": [
-                        "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames"
-                      ],
-                      "part": [
-                        "%USERNAME%",
-                        "cleaned",
-                        "geonames"
-                      ]
-                    }
-                  ],
-                  "query": "geonames"
-                }'
   /{account}/collections/{id}:
     put:
       summary: "Create / Update Collection"
@@ -1071,7 +1010,7 @@ paths:
         description: "Collection data as JSONLD."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
@@ -1153,7 +1092,7 @@ paths:
           schema:
             type: string
           required: true
-          example: "cleaned-geonames"
+          example: "yourCollection"
       responses:
         "200":
           description: "OK"
@@ -1161,27 +1100,27 @@ paths:
             text/sparql:
               schema:
                 type: string
-                example: "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-                  PREFIX dct:    <http://purl.org/dc/terms/>
-                  PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+                example: "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
                   PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                  PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+                  PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+                  PREFIX dct:    <http://purl.org/dc/terms/>
+                  PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
+                  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
                   SELECT ?file WHERE
                   {
-                    {
-                      GRAPH ?g
-                      {
-                        ?dataset dcat:distribution ?distribution .
-                        ?distribution dataid:file ?file .
-                        {
-                          ?dataset dataid:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned> .
-                          {
-                            ?dataset dataid:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/cleaned/geonames> .
-                            { ?distribution <http://purl.org/dc/terms/hasVersion> '2022-02-09' . }
-                          }
-                        }
-                      }
-                    }
+                  	{
+                  		GRAPH ?g
+                  		{
+                  			{
+                  				?dataset dataid:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection> .
+                  				{
+                  					?dataset dataid:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection/first> .
+                  				}
+                  			}
+                  			?dataset dcat:distribution ?distribution .
+                  			?distribution dataid:file ?file .
+                  		}
+                  	}
                   }"
             application/ld+json:
               schema:
@@ -1289,7 +1228,7 @@ paths:
         description: "Account data as JSONLD."
         required: true
         content:
-          application/json:
+          application/ld+json:
             schema:
               type: object
               example: '{
