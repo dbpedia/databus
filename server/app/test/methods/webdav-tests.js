@@ -11,7 +11,7 @@ const { createTestUser, deleteTestUser } = require("../test-utils");
 module.exports = async function webDAVTests() {
 
     console.log(`Testing webDAV functions.`);
-    var user = await createTestUser();
+    var user = await createTestUser(params);
  
     assert(user.accountName == params.ACCOUNT_NAME);
     var payload = JSON.stringify({ success: true });
@@ -60,14 +60,14 @@ module.exports = async function webDAVTests() {
        response = await rp(options);
        assert(response == "");
  
-       await deleteTestUser();
+       await deleteTestUser(params);
        fs.rmSync(userDavDirectory, { recursive: true, force: true });
  
     } catch (err) {
        console.log(err);
  
        // Cleanup
-       await deleteTestUser();
+       await deleteTestUser(params);
        fs.rmSync(userDavDirectory, { recursive: true, force: true });
  
        assert(err == null);

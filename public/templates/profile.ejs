@@ -174,19 +174,20 @@
     <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
     <h3>Create New API Key</h3>
     <p>Enter a name for your API key and click <i>Create</i> to create a new API key.</p>
-    <div class="field has-addons" style="margin-bottom: 1.5em;">
-      <p class="control">
+    <div class="field has-addons" style="margin-bottom: 0;">
+      <p class="control" style="margin-bottom: 0;">
         <input class="input" placeholder="Enter key name..." style="min-width: 500px;" input="searchInput"
-          ng-model="createApiKeyName" filters="searchFilters">
+          ng-model="createApiKeyName" ng-change="onCreateApiKeyNameChanged()" filters="searchFilters">
       </p>
       <p class="control">
-        <a ng-click="addApiKey()" class="button is-consumer">
+        <a ng-click="addApiKey()" ng-disabled="createApiKeyError || !createApiKeyName" class="button is-consumer">
           Create
         </a>
       </p>
     </div>
+    <span ng-if="createApiKeyError" class="help is-danger">{{ createApiKeyError }}</span>
 
-    <div ng-if="apiKeys != undefined && apiKeys.length > 0">
+    <div ng-if="apiKeys != undefined && apiKeys.length > 0" style="margin-top: 2em">
       <h3>API Keys</h3>
       <div ng-repeat="key in apiKeys">
         <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;

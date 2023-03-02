@@ -10,6 +10,8 @@ const { groupTests } = require('./methods/api/group-tests');
 const { artifactTests } = require('./methods/api/artifact-tests');
 const { versionTests } = require('./methods/api/version-tests');
 
+const testUserParams = require('./test-user.json');
+const nerdUserParams = require('./test-user-nerd.json');
 
 module.exports = async function () {
    try {
@@ -24,18 +26,25 @@ module.exports = async function () {
       await accountTests();
 
       // Create user and account for API tests
-      await createTestUser();
-      await createTestAccount();
+      await createTestUser(testUserParams);
+      await createTestAccount(testUserParams);
 
       // API
       await tractateTests();
       await groupTests();
       await artifactTests();
       await versionTests();
+
+
+      await createTestUser(nerdUserParams);
+      await createTestAccount(nerdUserParams);
+
       await generalTests();
 
-      await deleteTestAccount();
-      await deleteTestUser();
+      await deleteTestAccount(testUserParams);
+      await deleteTestUser(testUserParams); 
+      await deleteTestAccount(nerdUserParams);
+      await deleteTestUser(nerdUserParams);
 
       console.log(`================================================`);
       console.log('Tests completed successfully.');

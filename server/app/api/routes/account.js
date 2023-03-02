@@ -339,14 +339,14 @@ module.exports = function (router, protector) {
     var auth = ServerUtils.getAuthInfoFromRequest(req);
 
     if (auth.info.accountName == undefined) {
-      res.status(403).send('Account name is missing.');
+      res.status(403).send('Account name is missing. Please claim an account name first.');
       return;
     }
 
     var keyName = decodeURIComponent(req.query.name);
 
     if(!DatabusUtils.isValidResourceLabel(keyName, 3, 20)) {
-      res.status(403).send('Invalid API key name.');
+      res.status(403).send('Invalid API key name. API key name should match [A-Za-z0-9\\s_()\\.\\,\\-]{3,20}');
       return;
     }
 

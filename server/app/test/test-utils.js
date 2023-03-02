@@ -1,5 +1,4 @@
 const DatabusUserDatabase = require("../../userdb");
-const params = require('./test-user.json');
 const assert = require('assert');
 
 var utils = {};
@@ -8,7 +7,7 @@ var utils = {};
  * Creates a user database connection, inserts a test user and returns the entry
  * @returns 
  */
-utils.createTestUser = async function() {
+utils.createTestUser = async function(params) {
 
     const db = new DatabusUserDatabase();
     db.debug = false;
@@ -29,10 +28,12 @@ utils.createTestUser = async function() {
     return user;
 }
 
+
 /**
  * Deletes the test user from the user database
  */
-utils.deleteTestUser = async function() {
+utils.deleteTestUser = async function(params) {
+
    const db = new DatabusUserDatabase();
    db.debug = false;
 

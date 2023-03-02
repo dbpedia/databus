@@ -12,7 +12,7 @@ var accountTests = {};
  */
 accountTests.accountTests = async function() {
 
-    await createTestUser();
+    await createTestUser(params);
 
     const options = {};
     options.headers = { "x-api-key": params.APIKEY };
@@ -90,7 +90,7 @@ accountTests.accountTests = async function() {
         assert(err.response.statusCode == 403, 'Expected 403 when trying to delete unowned account.');
     }
 
-    await deleteTestUser();
+    await deleteTestUser(params);
 }
 
 
@@ -151,7 +151,7 @@ async function webidTests() {
     assert(response.statusCode == 200, 'WebId could not be removed.');
 }
 
-accountTests.createTestAccount = async function() {
+accountTests.createTestAccount = async function(params) {
 
     var webid = ServerUtils.formatJsonTemplate(require('../../templates/account.json'), {
         DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
@@ -170,7 +170,7 @@ accountTests.createTestAccount = async function() {
     assert(response.statusCode == 201, 'Account could not be created.');
 }
 
-accountTests.deleteTestAccount = async function() {
+accountTests.deleteTestAccount = async function(params) {
 
     const options = {};
     options.headers = { "x-api-key": params.APIKEY };

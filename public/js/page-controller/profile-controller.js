@@ -95,6 +95,11 @@ function ProfileController($scope, $http) {
     
   }
 
+  $scope.onCreateApiKeyNameChanged = function() {
+    var hasError = !DatabusUtils.isValidResourceLabel($scope.createApiKeyName, 3, 20);
+    $scope.createApiKeyError = hasError ? " API key name must have between 3 and 20 characters and match [A-Za-z0-9\\s_()\\.\\,\\-]*" : "";
+  }
+
   $scope.copyToClipboard = function(key) {
     DatabusUtils.copyStringToClipboard(key);
   }
