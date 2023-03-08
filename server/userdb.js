@@ -106,11 +106,13 @@ class DatabusUserDatabase {
    * @returns 
    */
   async addApiKey(sub, name, apikey) {
-    return await this.run(this.addApiKeyQuery, {
+    var result = await this.run(this.addApiKeyQuery, {
       SUB: sub,
       KEYNAME: name,
       APIKEY: apikey
     });
+
+    return result != null && result.changes != 0;
   }
 
   async getApiKeys(sub) {
@@ -125,10 +127,12 @@ class DatabusUserDatabase {
    * @returns 
    */
   async deleteApiKey(sub, name) {
-    return await this.run(this.deleteApiKeyQuery, {
+    var result = await this.run(this.deleteApiKeyQuery, {
       SUB: sub,
       NAME: name,
     });
+
+    return result != null && result.changes != 0;
   }
 
   /**
@@ -139,11 +143,13 @@ class DatabusUserDatabase {
   * @returns 
   */
   async addUser(sub, displayName, accountName) {
-    return await this.run(this.addUserQuery, {
+    var result = await this.run(this.addUserQuery, {
       SUB: sub,
       DISPLAYNAME: displayName,
       ACCOUNT_NAME: accountName
     });
+
+    return result != null && result.changes != 0;
   }
 
   /**
@@ -152,9 +158,11 @@ class DatabusUserDatabase {
    * @returns 
    */
   async deleteUser(sub) {
-    return await this.run(this.deleteUserQuery, {
+    var result = await this.run(this.deleteUserQuery, {
       SUB: sub,
     });
+
+    return result != null && result.changes != 0;
   }
 
 
@@ -185,7 +193,7 @@ class DatabusUserDatabase {
           console.log(`USERDB: Dangerous database input detected: ${JSON.stringify(params)}`);
         }
 
-        return false;
+        return null;
       }
 
       var formattedQuery = ServerUtils.formatQuery(query, params);
@@ -194,15 +202,14 @@ class DatabusUserDatabase {
         console.log(formattedQuery);
       }
 
-      await this.db.run(formattedQuery);
-      return true;
+      return await this.db.run(formattedQuery);
     } catch (err) {
 
       if (this.debug) {
         console.log(err);
       }
 
-      return false;
+      return null;
     }
   }
 

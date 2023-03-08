@@ -119,6 +119,11 @@ async function apiKeyTests() {
 
     response = await rp(options);
     assert(response.statusCode == 200, 'API key could not be deleted.');
+
+    // ========= Delete Non-Existing API Key ===========
+
+    response = await rp(options);
+    assert(response.statusCode == 204, 'API key does not exist. Expected return code 204.');
 }
 
 /**

@@ -91,8 +91,6 @@ function ProfileController($scope, $http) {
       console.log(err);
       $scope.createApiKeyError = err.data;
     });
-
-    
   }
 
   $scope.onCreateApiKeyNameChanged = function() {
