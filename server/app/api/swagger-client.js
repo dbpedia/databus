@@ -15,6 +15,7 @@ function init(username) {
     url = window.location.origin;
   }
 
+  //var options = JSON.parse(optionsString.replace(/%USERNAME%/g, username).replace(/%GROUP%/g, "test_group"));
   var options = JSON.parse(optionsString.replace(/%USERNAME%/g, username).replace(/%GROUP%/g, "test_group").replace(/%ARTIFACT%/g, "test_artifact").replace(/%VERSION%/g, "2022-02-09"));
 
   url = options.swaggerUrl || url

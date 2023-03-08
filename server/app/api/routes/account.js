@@ -12,6 +12,7 @@ var defaultContext = require('../../../../model/generated/context.json');
 const pem2jwk = require('pem-jwk').pem2jwk;
 const requestRDF = require('../../common/request-rdf');
 var defaultContext = require('../../common/context.json');
+const getLinkedData = require("../../common/get-linked-data");
 
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
@@ -40,7 +41,7 @@ module.exports = function (router, protector) {
         res.status(403).send(`You cannot edit the account data in a foreign namespace\n`);
         return false;
       }
-     
+
       // Validate the group RDF with the shacl validation tool
       var shaclResult = await shaclTester.validateWebIdRDF(req.body);
 
@@ -57,8 +58,8 @@ module.exports = function (router, protector) {
 
       var triples = await constructor.executeConstruct(req.body, constructAccountQuery);
       var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
-    
-      if(expandedGraphs.length == 0) {
+
+      if (expandedGraphs.length == 0) {
         res.status(400).send(`The following construct query did not yield any triples:\n\n${constructAccountQuery}\n`);
         return;
       }
@@ -69,7 +70,7 @@ module.exports = function (router, protector) {
 
       // Compare the specified id to the actual person uri
       var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/Person');
-     
+
       // Mismatch gives error
       if (personGraph['@id'] != personUri) {
         res.status(400).send(`The specified uri of the foaf:Person does not match the expected value. (specified: ${personGraph['@id']}, expected: ${personUri})\n`);
@@ -78,7 +79,7 @@ module.exports = function (router, protector) {
 
       // Compare the specified id to the actual person uri
       var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/PersonalProfileDocument');
-     
+
       // Mismatch gives error
       if (profileGraph['@id'] != accountUri) {
         res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${accountUri})\n`);
@@ -109,9 +110,9 @@ module.exports = function (router, protector) {
         res.status(500).send('Internal database error.\n');
         return false;
       }
-      
+
       // return success
-      if(!hasAccount) {
+      if (!hasAccount) {
         res.status(201).send('Account created successfully.\n');
       } else {
         res.status(200).send('Account saved successfully.\n');
@@ -133,15 +134,15 @@ module.exports = function (router, protector) {
 
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
-    
+
       // oidc not set correctly?
-      if(req.oidc.user == undefined) {
+      if (req.oidc.user == undefined) {
         res.status(403).send(`Forbidden.\n`);
         return;
       }
 
       // trying to be that guy?
-      if(req.params.account == `sparql`) {
+      if (req.params.account == `sparql`) {
         res.status(403).send(`Forbidden.\n`);
         return;
       }
@@ -149,15 +150,15 @@ module.exports = function (router, protector) {
       // account taken?
       var accountExists = await protector.hasUser(req.params.account);
 
-      if(accountExists) {
+      if (accountExists) {
         // deny, this account name is taken
         res.status(401).send(`This account name is taken.\n`);
         return;
       } else {
         // allow write to the account namespace
         req.databus.accountName = req.params.account;
-        
-        if((await putOrPatchAccount(req, res, next, accountExists))) {
+
+        if ((await putOrPatchAccount(req, res, next, accountExists))) {
           await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
         }
       }
@@ -166,18 +167,18 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.post('/api/account/webid/remove', protector.protect(), async function(req, res, next) {
+  router.post('/api/account/webid/remove', protector.protect(), async function (req, res, next) {
     try {
 
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var webIdUri = decodeURIComponent(req.query.uri);
-    
+
       var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
-      expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
-          return value['@id'] != webIdUri;
+      expandedGraphs = expandedGraphs.filter(function (value, index, arr) {
+        return value['@id'] != webIdUri;
       });
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
@@ -187,12 +188,12 @@ module.exports = function (router, protector) {
       return;
 
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(err.message);
     }
   });
 
-  router.post('/api/account/webid/add', protector.protect(), async function(req, res, next) {
+  router.post('/api/account/webid/add', protector.protect(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -205,17 +206,17 @@ module.exports = function (router, protector) {
       var quads = await requestRDF.requestQuads(webIdUri);
       var canConnect = false;
 
-      for(var quad of quads) {
+      for (var quad of quads) {
 
-        if(quad.subject.id != webIdUri) {
+        if (quad.subject.id != webIdUri) {
           continue;
         }
 
-        if(quad.predicate.id != foafAccountPredicate) {
+        if (quad.predicate.id != foafAccountPredicate) {
           continue;
         }
 
-        if(quad.object.id != accountUri) {
+        if (quad.object.id != accountUri) {
           continue;
         }
 
@@ -223,7 +224,7 @@ module.exports = function (router, protector) {
         canConnect = true;
       }
 
-      if(!canConnect) {
+      if (!canConnect) {
         res.status(403).send('Unable to find valid backlink in WebId document.');
         return;
       }
@@ -233,8 +234,8 @@ module.exports = function (router, protector) {
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
-      for(var graph of expandedGraphs) {
-        if(graph['@id'] == webIdUri) {
+      for (var graph of expandedGraphs) {
+        if (graph['@id'] == webIdUri) {
           res.status(403).send('WebId document already linked to this account.');
           return;
         }
@@ -242,7 +243,7 @@ module.exports = function (router, protector) {
 
       var addon = {};
       addon['@id'] = webIdUri;
-      addon[foafAccountPredicate] = { '@id' : accountUri, '@type' : '@id' };
+      addon[foafAccountPredicate] = { '@id': accountUri, '@type': '@id' };
       expandedGraphs.push(addon);
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
@@ -251,12 +252,12 @@ module.exports = function (router, protector) {
       res.status(200).send('WebId linked to account.\n');
       return;
 
-    } catch(err) {
+    } catch (err) {
       res.status(400).send(err.message);
     }
   });
 
-  router.post('/api/account/access/grant', protector.protect(), async function(req, res, next) {
+  router.post('/api/account/access/grant', protector.protect(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -272,34 +273,34 @@ module.exports = function (router, protector) {
 
       var policyGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.S4AC_ACCESS_POLICY);
 
-      for(var policyGraph of policyGraphs) {
+      for (var policyGraph of policyGraphs) {
 
-        if(policyGraph[DatabusUris.DCT_SUBJECT] == undefined) {
+        if (policyGraph[DatabusUris.DCT_SUBJECT] == undefined) {
           continue;
         }
 
-        if(policyGraph[DatabusUris.DCT_SUBJECT]['@id'] == grantUri) {
+        if (policyGraph[DatabusUris.DCT_SUBJECT]['@id'] == grantUri) {
           res.status(403).send('This account has already been granted access.');
           return;
         }
       }
 
       var policy = {};
-      policy['@type'] = [ DatabusUris.S4AC_ACCESS_POLICY ];
-      policy[DatabusUris.S4AC_HAS_ACCESS_PRIVILEGE] = [ DatabusUris.S4AC_ACCESS_CREATE ];
-      policy[DatabusUris.DCT_CREATOR] = { '@id' : accountUri };
-      policy[DatabusUris.DCT_SUBJECT] = { '@id' : grantUri };
+      policy['@type'] = [DatabusUris.S4AC_ACCESS_POLICY];
+      policy[DatabusUris.S4AC_HAS_ACCESS_PRIVILEGE] = [DatabusUris.S4AC_ACCESS_CREATE];
+      policy[DatabusUris.DCT_CREATOR] = { '@id': accountUri };
+      policy[DatabusUris.DCT_SUBJECT] = { '@id': grantUri };
 
       expandedGraphs.push(policy);
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-      
+
       // console.log(compactedGraph);
-      
+
       var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
       res.status(200).send('Access granted to account.\n');
       return;
 
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       res.status(400).send(err.message);
     }
@@ -307,18 +308,18 @@ module.exports = function (router, protector) {
 
 
 
-  router.post('/api/account/access/revoke', protector.protect(), async function(req, res, next) {
+  router.post('/api/account/access/revoke', protector.protect(), async function (req, res, next) {
     try {
 
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var revokeUri = decodeURIComponent(req.query.uri);
-    
+
       var path = Constants.DATABUS_FILE_WEBID;
       var accountJson = await GstoreHelper.read(auth.info.accountName, path);
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
-      expandedGraphs = expandedGraphs.filter(function(value, index, arr) { 
-          return value['@id'] != webIdUri;
+      expandedGraphs = expandedGraphs.filter(function (value, index, arr) {
+        return value['@id'] != webIdUri;
       });
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
@@ -328,7 +329,7 @@ module.exports = function (router, protector) {
       return;
 
 
-    } catch(err) {
+    } catch (err) {
       res.status(500).send(err.message);
     }
   });
@@ -345,19 +346,19 @@ module.exports = function (router, protector) {
 
     var keyName = decodeURIComponent(req.query.name);
 
-    if(!DatabusUtils.isValidResourceLabel(keyName, 3, 20)) {
+    if (!DatabusUtils.isValidResourceLabel(keyName, 3, 20)) {
       res.status(403).send('Invalid API key name. API key name should match [A-Za-z0-9\\s_()\\.\\,\\-]{3,20}');
       return;
     }
 
-    if(auth.info.apiKeys != null && auth.info.apiKeys.length >= 10) {
+    if (auth.info.apiKeys != null && auth.info.apiKeys.length >= 10) {
       res.status(403).send('API key limit reached.');
       return;
     }
 
-    var apiKey = await protector.addApiKey(req.databus.sub, keyName); 
+    var apiKey = await protector.addApiKey(req.databus.sub, keyName);
 
-    if(apiKey == null) {
+    if (apiKey == null) {
       res.status(400).send("Failed to create API key. You might already have an API key with that name.");
       return;
     }
@@ -378,7 +379,7 @@ module.exports = function (router, protector) {
     var keyName = decodeURIComponent(req.query.name);
     var found = await protector.removeApiKey(req.databus.sub, keyName);
 
-    if(found) {
+    if (found) {
       res.status(200).send();
     } else {
       res.status(204).send('API key with that name does not exist.');
@@ -388,6 +389,16 @@ module.exports = function (router, protector) {
   /* GET an account. */
   router.get('/:account', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
 
+    if (req.params.account.length < 4) {
+      next('route');
+      return;
+    }
+
+    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}`;
+    var template = require('../../common/queries/constructs/ld/construct-account.sparql');
+    getLinkedData(req, res, next, resourceUri, template);
+
+    /*
     var repo = req.params.account;
     var path = `webid.jsonld`;
 
@@ -399,14 +410,14 @@ module.exports = function (router, protector) {
       json: true
     };
 
-    request(options).pipe(res);
+    request(options).pipe(res);*/
   });
 
-   /* GET an account. */
-   router.delete('/:account', protector.protect(), async function (req, res, next) {
+  /* GET an account. */
+  router.delete('/:account', protector.protect(), async function (req, res, next) {
 
-     // Requesting a DELETE on an uri outside of one's namespace is rejected
-     if (req.params.account != req.databus.accountName) {
+    // Requesting a DELETE on an uri outside of one's namespace is rejected
+    if (req.params.account != req.databus.accountName) {
       res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
       return;
     }
@@ -419,10 +430,10 @@ module.exports = function (router, protector) {
     }
 
     var result = await GstoreHelper.delete(req.params.account, Constants.DATABUS_FILE_WEBID);
-    var message = result.isSuccess ? 
-      `The account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.` : 
+    var message = result.isSuccess ?
+      `The account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" has been deleted.` :
       `Internal database error. Failed to delete the account "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}".`;
-   
+
 
     res.status(result.isSuccess ? 200 : 500).send(message);
   });

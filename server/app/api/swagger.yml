@@ -944,9 +944,6 @@ paths:
           description: "No Content"
         "403":
           description: "Forbidden"
-          schema: 
-            type: string
-            example: "You cannot perform this action in a foreign namespace."
   /{account}/{group}/{artifact}/{version}/{file}:
     get:
       summary: "Get File"
@@ -1601,7 +1598,7 @@ paths:
                     "name": "default",
                     "key": "2df02a7f-32c4-46cd-9c6e-bd80c72e6e48"
                   }'
-        "400"
+        "400":
           description: "Error. Bad Request"
           content:
             text/plain:

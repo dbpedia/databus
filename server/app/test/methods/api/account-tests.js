@@ -29,9 +29,13 @@ accountTests.accountTests = async function() {
     options.method = "GET";
     options.headers['Accept'] = "application/ld+json"
 
-    // TODO: UNCOMMENT
-    //response = await rp(options);
-    //assert(response.statusCode == 404, 'Expected 404 when retrieving account.');
+
+    try {
+        await rp(options);
+        assert(false, 'Account does not exist, request should return 404.');
+    } catch (err) {
+        assert(err.response.statusCode == 404, 'Expected 404 when retrieving account.');
+    }
 
     // ========= PUT Account ===========
 
@@ -123,7 +127,7 @@ async function apiKeyTests() {
     // ========= Delete Non-Existing API Key ===========
 
     response = await rp(options);
-    assert(response.statusCode == 204, 'API key does not exist. Expected return code 204.');
+    assert(response.statusCode == 204, 'API key does not exist. Expected return code 204.');    
 }
 
 /**

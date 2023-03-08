@@ -15,15 +15,15 @@ env-build:
 	docker build -t lookup-servlet ../search; \
 
 env-start:
-	docker-compose up
+	docker compose up
 
 env-restart:
-	docker-compose restart
+	docker compose restart
 
 env-start-fuseki: 
 	sudo rm -f data/fuseki/databases/ds/tdb.lock
 	sudo rm -f data/fuseki/system/tdb.lock
-	docker-compose up
+	docker compose up
 
 env-clean-start: env-clean
 	docker compose up

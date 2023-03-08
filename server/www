@@ -95,6 +95,7 @@ async function masterProcess() {
 
     for (let i = 0; i < numCPUs; i++) {
       console.log(`Forking process number ${i}...`);
+
       createFork(function () {
         numStartedWorkers++;
         if (numCPUs == numStartedWorkers && config.runStartupTests) {
@@ -120,18 +121,22 @@ async function masterProcess() {
 }
 
 function childProcess() {
-  console.log(`Worker ${process.pid} started...`);
+  try {
+    console.log(`Worker ${process.pid} started...`);
 
-  var app = require('./app/app');
-  var port = normalizePort(process.env.PORT || '3000');
-  app.set('port', port);
+    var app = require('./app/app');
+    var port = normalizePort(process.env.PORT || '3000');
+    app.set('port', port);
 
-  var server = http.createServer(app);
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', function () {
-    console.log(`Worker ${process.pid} listening on port ${port}`);
-  });
+    var server = http.createServer(app);
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', function () {
+      console.log(`Worker ${process.pid} listening on port ${port}`);
+    });
+  } catch(err) {
+    console.log(err);
+  }
 }
 
 /**

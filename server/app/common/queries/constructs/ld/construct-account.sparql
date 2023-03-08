@@ -1,0 +1,31 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# Creates a collection
+CONSTRUCT
+{
+  ?person a foaf:Person .
+  ?person a <http://dbpedia.org/ontology/DBpedian> .
+  ?person foaf:name ?name .
+  ?person foaf:account ?account .
+  ?person foaf:img ?image .
+  ?person rdfs:comment ?comment .
+  ?account a foaf:PersonalProfileDocument .
+  ?account foaf:maker ?person . 
+  ?account foaf:primaryTopic ?person .
+  ?webid foaf:account ?account .
+}
+WHERE
+{
+  VALUES ?account { <%RESOURCE_URI%> }
+  ?account a foaf:PersonalProfileDocument .
+  ?account foaf:maker ?person . 
+  ?account foaf:primaryTopic ?person .
+
+  ?person a foaf:Person .
+  ?person foaf:name ?name .
+  ?person foaf:account ?account .
+  OPTIONAL { ?person foaf:img ?image . }
+  OPTIONAL { ?person rdfs:comment ?comment . }
+  OPTIONAL { ?webid foaf:account ?account . }
+}
