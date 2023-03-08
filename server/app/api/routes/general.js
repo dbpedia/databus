@@ -22,7 +22,7 @@ module.exports = function (router, protector) {
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var query = req.body.query;
     var accept = req.headers['accept']
-
+    console.log(req.body)
     if (accept == undefined) {
       accept = 'application/json';
     }
@@ -37,6 +37,8 @@ module.exports = function (router, protector) {
       },
     };
 
+    console.log(options)
+
     request.post(options).pipe(res);
   });
 
@@ -49,6 +51,8 @@ module.exports = function (router, protector) {
       var verifyParts = req.query['verify-parts'] == "false" ? false : true;
       var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
+
+      console.log(graph)
 
       var processedResources = 0;
 
