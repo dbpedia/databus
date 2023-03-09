@@ -27,6 +27,8 @@ sudo apt-get install docker docker-compose
 sudo apt install php-cli
 ```
 
+* `java`
+
 ## Clone Repository & Prepare for Development
 
 ```
