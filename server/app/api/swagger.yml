@@ -739,37 +739,40 @@ paths:
           application/ld+json:
             schema:
               type: object
-              example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": {
-                  "@type": "Dataset",
-                  "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
-                  "hasVersion": "%VERSION%",
-                  "title": "%GROUP% %ARTIFACT%",
-                  "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
-                  "license": "http://creativecommons.org/licenses/by/4.0/",
-                  "distribution": [
-                    {
-                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
-                      "@type": "Part",
-                      "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%/%ARTIFACT%.ttl",
-                      "formatExtension": "ttl",
-                      "compression": "none",
-                      "downloadURL": "https://holycrab13.github.io/webid.ttl",
-                      "byteSize": 2730,
-                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
-                    }
-                  ]
+              example: |
+                {
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@type": [ "Version", "Dataset" ],
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
+                    "hasVersion": "%VERSION%",
+                    "title": "Test Version",
+                    "description": "Data for testing purposes.",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@type": "Part",
+                        "formatExtension": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                        "byteSize": 2730,
+                        "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                      }
+                    ]
+                  }
                 }
-              }'
       responses:
         "200":
           description: "OK"
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: 'TODO'
+                type: object
+                example: |
+                  {
+                    "logLevel": "error",
+                    "log": []
+                  }
         "400":
           description: "Error. Bad Request."
           content:

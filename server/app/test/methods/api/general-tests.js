@@ -4,6 +4,7 @@ const rp = require('request-promise');
 const assert = require('assert');
 const ServerUtils = require('../../../common/utils/server-utils');
 const jsonld = require('jsonld');
+const manifest = require('./../../../../manifest.ttl');
 
 module.exports = async function generalTests() {
 
@@ -22,7 +23,6 @@ async function manifestTest() {
     options.headers['Accept'] = "text/turtle"
 
     var response = await rp(options);
-    var manifest = require('./../../../../manifest.ttl');
 
     assert(response == manifest, "Manifest cannot be retrieved.");
 }
