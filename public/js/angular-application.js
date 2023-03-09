@@ -2,7 +2,7 @@
 
 var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
-  .factory('collectionManager', ["$http", function ($http) { return new DatabusCollectionManager($http, 'databus_collections'); }])
+  .factory('collectionManager', [ "$interval", "$http", function ($interval, $http) { return new DatabusCollectionManager($http, $interval, 'databus_collections'); }])
   .factory('focus', ["$timeout", "$window", function ($timeout, $window) {
     return function (id) {
       $timeout(function () {
@@ -165,7 +165,7 @@ databusApplication.component('collectionHierarchy', {
 
 databusApplication.component('collectionHierarchyTwo', {
   templateUrl: '/js/components/collection-hierarchy-two/collection-hierarchy.html',
-  controller: ['$http', '$location', '$sce', '$scope', CollectionHierarchyControllerTwo],
+  controller: ['$http', '$location', '$sce', '$scope', 'collectionManager', CollectionHierarchyControllerTwo],
   bindings: {
     collection: '=',
     onChange: '&',

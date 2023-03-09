@@ -1,5 +1,5 @@
 // hinzufügen eines Controllers zum Modul
-function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
+function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collectionManager) {
 
   var ctrl = this;
 
@@ -7,6 +7,10 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope) {
   ctrl.$http = $http;
   ctrl.$scope = $scope;
   ctrl.facets = new DatabusFacetsCache($http);
+
+  collectionManager.onCollectionChangedInDifferentTab = function () {
+    ctrl.previousCollectionId = null;
+  }
 
   ctrl.defaultQuery = `PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
@@ -132,7 +136,7 @@ SELECT ?file WHERE {
       ctrl.addGroup(databusNode, uri);
     }
 
-    if(diff == 3) {
+    if (diff == 3) {
       ctrl.addDatabus(databusUri);
       let databusNode = QueryNode.findChildByUri(ctrl.root, databusUri);
       let groupUri = DatabusUtils.navigateUp(uri);
@@ -373,13 +377,16 @@ SELECT ?file WHERE {
 
         if (DatabusUtils.isValidHttpUrl(groupNode.uri)) {
 
-
-
           ctrl.facets.get(groupNode.uri).then(function (res) {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
             ctrl.view.groups[res.uri].facets = res.facets;
-            ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-            $scope.$apply();
+
+            if (ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'] != null) {
+
+
+              ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+              $scope.$apply();
+            }
           });
 
           ctrl.query(groupNode);

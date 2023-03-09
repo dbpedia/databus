@@ -6,6 +6,10 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.location = $location;
   $scope.baseUrl = DATABUS_RESOURCE_BASE_URL;
 
+  /**
+   * Generates an abstract from the description. Triggered when the description field gets changed.
+   * @returns 
+   */
   $scope.onDescriptionChanged = function () {
     if ($scope.form == null) {
       return;
@@ -19,8 +23,9 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     $scope.onActiveCollectionChanged();
   }
 
-
-
+  /**
+   * Watch for the current location hash to navigate betweem tabs
+   */
   $scope.$watch("location.hash()", function (newVal, oldVal) {
 
     if ($scope.session == undefined) {
@@ -56,6 +61,10 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
 
   }, true);
 
+  /**
+   * Change the tab - set location hash and scroll up
+   * @param {*} value 
+   */
   $scope.goToTab = function (value) {
     $location.hash(value);
     window.scrollTo(0, 0);
@@ -68,7 +77,6 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.createAccount = function () {
     window.location = '/app/account';
   }
-
 
   if (!$scope.authenticated) {
     return;
@@ -92,7 +100,8 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.collectionQuery = new DatabusCollectionWrapper($scope.collectionManager.activeCollection).createQuery();
   $scope.collectionJson = $scope.getCollectionJson();
 
-  $scope.session = JSON.parse(window.sessionStorage.getItem(`databus_collection_editor_session_${data.auth.info.accountName}`));
+  var storageKeySession = `databus_collection_editor_session_${data.auth.info.accountName}`;
+  $scope.session = JSON.parse(window.sessionStorage.getItem(storageKeySession));
 
   if ($scope.session == undefined) {
     $scope.session = {};
@@ -100,6 +109,12 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     $scope.session.showDescription = true;
     $scope.session.showGroups = true;
   }
+
+  $scope.$watch('session', function (newVal, oldVal) {
+    window.sessionStorage.setItem(storageKeySession, JSON.stringify($scope.session));
+  }, true);
+
+  /**
 
   $scope.$watch('statusCode', function (newVal, oldVal) {
 
@@ -113,36 +128,30 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       }, 2000);
     }
 
-  }, true);
+  }, true); */
 
-
-  $scope.$watch('session', function (newVal, oldVal) {
-    window.sessionStorage.setItem('databus_collection_editor_session', JSON.stringify($scope.session));
-  }, true);
-
+  /**
+   * Form data object for input errors, etc
+   */
   $scope.form = {};
   $scope.form.label = {};
   $scope.form.identifier = {};
   $scope.form.description = {};
   $scope.form.collectionPublishTag = '';
-  $scope.form.generateAbstract =  $scope.collectionManager.activeCollection.abstract ==
+  $scope.form.generateAbstract = $scope.collectionManager.activeCollection.abstract ==
     DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
 
-  $scope.artifactData = {};
+  
   $scope.username = data.auth.info.accountName;
-  $scope.modalTime = 1000;
 
-  $scope.onAddContent = function (source) {
-    $scope.session.targetDatabusUrl = source;
-    $scope.goToTab('add');
-  }
-
+  /** 
   $scope.updateStatistics = function (collection) {
     if (collection.uri === undefined) {
       $scope.statistics = null;
       $scope.files = null;
       return;
     }
+
     /*
     $http.get('/system/collections/collection-statistics', { params: { uri: collection.uri } }).then(function (result) {
       for (let i in result.data.files) {
@@ -157,7 +166,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     }).catch(function (err) {
       $scope.statistics = null;
       $scope.files = null;
-    });*/
+    });
   }
 
   $scope.removeCustomNode = function (node) {
@@ -186,9 +195,12 @@ SELECT DISTINCT ?file WHERE {\n\
     $scope.onActiveCollectionChanged();
   }
 
+*/
 
+  /**
+   * Collection clicked in the collection list view
+   */
   $scope.onCollectionClicked = function (collection) {
-    // if already active
     if (collection.uuid == $scope.collectionManager.activeCollection.uuid && $scope.session.activeTab == 0) {
       $scope.goToTab('docu');
     }
@@ -196,32 +208,25 @@ SELECT DISTINCT ?file WHERE {\n\
     $scope.setActiveCollection(collection);
   }
 
+
   $scope.setActiveCollection = function (collection) {
-
-
-
     if (collection.uuid != $scope.collectionManager.activeCollection.uuid) {
       $scope.collectionManager.setActive(collection.uuid);
-      $scope.updateStatistics(collection);
       $scope.form.identifier.value = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri)
-
     }
-
   }
 
-  $scope.addDatabusToCollection = function () {
-
-
-
-    // check for valid Databus
-
-    //rootNode.addChild(new QueryNode($scope.session.databusUriToAdd, null));
+  $scope.collectionManager.onCollectionChangedInDifferentTab = function() {
+    
   }
+
+
 
   $scope.doStuffWhenInitialized = function () {
     if ($scope.collectionManager.activeCollection == null) {
       $scope.collectionManager.selectFirstOrCreate();
     }
+
     $scope.setActiveCollection($scope.collectionManager.activeCollection);
   }
 
@@ -337,9 +342,6 @@ SELECT DISTINCT ?file WHERE {\n\
     }
 
     $scope.deleteModalVisible = false;
-
-
-
 
     $scope.collectionManager.deleteCollection($scope.username, $scope.form.identifier.value).then(function (response) {
       $scope.statusCode = response.code;

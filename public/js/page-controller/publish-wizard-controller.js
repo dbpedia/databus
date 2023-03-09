@@ -202,7 +202,7 @@ function PublishWizardController($scope, $http, focus, $q) {
         $scope.publishLog = response.data.log;
         $scope.isPublishing = false;
       }, function (err) {
-        $scope.publishLog = err.response.data.log;
+        $scope.publishLog = err.data.log;
         $scope.isPublishing = false;
         console.log(err);
       });

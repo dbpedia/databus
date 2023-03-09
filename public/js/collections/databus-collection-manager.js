@@ -20,7 +20,7 @@ class DatabusCollectionManager {
   //          Ja? -> Lade async, uberschreibe remote entry
   //          Nein? -> Lade async, setze remote und local entry
 
-  constructor($http, storageKey) {
+  constructor($http, $interval, storageKey) {
 
     this.storageKeyPrefix = `${storageKey}_${encodeURI(DATABUS_RESOURCE_BASE_URL)}`;
     // window.sessionStorage.removeItem(`${this.storageKeyPrefix}_session`);
@@ -32,6 +32,8 @@ class DatabusCollectionManager {
     }
 
     this.http = $http;
+    this.interval = $interval;
+
   }
 
   get accountName() {
@@ -48,6 +50,7 @@ class DatabusCollectionManager {
     this.local = this.loadCollectionsFromStorage(true);
     this.findActive();
 
+
     if (loadFromServer) {
       try {
         var res = await this.http.get(`/app/account/collections?account=${accountName}`);
@@ -58,6 +61,21 @@ class DatabusCollectionManager {
         console.log(e);
       }
     }
+
+    var self = this;
+
+    this.interval(function() {
+      var storageHash = window.localStorage.getItem(`${self.storageKey}_hash`);
+
+      if(storageHash != self.currentHash) {
+        self.local = JSON.parse(window.localStorage.getItem(self.storageKey));
+        self.currentHash = storageHash;
+
+        if (self.onCollectionChangedInDifferentTab != null) {
+          self.onCollectionChangedInDifferentTab();
+        }
+      }
+    }, 300);
   }
 
   // Setze das remote array und update local array
@@ -152,7 +170,11 @@ class DatabusCollectionManager {
     if (this.initialized !== undefined) {
       this.initialized();
     }
+
+    
   }
+
+
 
   findActive() {
     if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized1.";
@@ -334,6 +356,11 @@ class DatabusCollectionManager {
       this.activeCollection.hasLocalChanges = this.hasLocalChanges(this.activeCollection);
     }
 
+    var hash = DatabusCollectionUtils.cyrb53Hash(DatabusCollectionUtils.serialize(this.local));
+    this.currentHash = hash;
+
+    window.localStorage.setItem(`${this.storageKey}_hash`, hash);
+
     try {
       //write local collections to local storage
       window.localStorage.setItem(this.storageKey, DatabusCollectionUtils.serialize(this.local));
@@ -389,8 +416,8 @@ class DatabusCollectionManager {
     this.current.addElement(elementQuery);
     this.saveLocally();
 
-    if (this.onactiveCollectionChanged != null) {
-      this.onactiveCollectionChanged(this.current);
+    if (this.onActiveCollectionChanged != null) {
+      this.onActiveCollectionChanged(this.current);
     }
   }
 
@@ -398,8 +425,8 @@ class DatabusCollectionManager {
     this.current.removeElement(elementGuid);
     this.saveLocally();
 
-    if (this.onactiveCollectionChanged != null) {
-      this.onactiveCollectionChanged(this.current);
+    if (this.onActiveCollectionChanged != null) {
+      this.onActiveCollectionChanged(this.current);
     }
   }
 
