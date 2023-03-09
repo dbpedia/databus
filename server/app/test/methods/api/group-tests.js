@@ -30,7 +30,7 @@ groupTests.groupTests = async function() {
 
     response = await rp(options);
     assert(response.statusCode == 200, 'Group could not be created.');
-
+    
     // ========= Get Group ===========
     await groupTests.getTestGroup(200);
 
@@ -44,6 +44,19 @@ groupTests.groupTests = async function() {
 
     // ========= Get Group ===========
     await groupTests.getTestGroup(404);
+
+    // ========= invalid create Group =======
+    options.method = "PUT";
+    options.uri = UriUtils.createResourceUri([
+        params.ACCOUNT_NAME,
+        "wrongGroup"
+    ]);
+    try{
+        response = await rp(options);
+    } catch(err){
+
+        assert(err.response.statusCode == 400, 'Group should not be possible to create.');
+    }
 }
 
 groupTests.getTestGroup = async function(expectedCode) {

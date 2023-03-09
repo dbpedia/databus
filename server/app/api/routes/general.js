@@ -22,7 +22,8 @@ module.exports = function (router, protector) {
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var query = req.body.query;
     var accept = req.headers['accept']
-    console.log(req.body)
+    
+
     if (accept == undefined) {
       accept = 'application/json';
     }
@@ -36,8 +37,6 @@ module.exports = function (router, protector) {
         "Content-type": "application/x-www-form-urlencoded"
       },
     };
-
-    console.log(options)
 
     request.post(options).pipe(res);
   });

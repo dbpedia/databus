@@ -17,29 +17,33 @@ module.exports = async function () {
    try {
 
       // Base
+      console.log("===== Base Tests =====")
       await userDatabaseTests();
       await utilTests();
       await webdavTests();
       await cacheTests();
 
+      
       // Account
+      console.log("===== Account Tests =====")
       await accountTests();
 
+      
+      // API
+      console.log("===== API Tests =====")
       // Create user and account for API tests
       await createTestUser(testUserParams);
       await createTestAccount(testUserParams);
+      await createTestUser(nerdUserParams);
+      await createTestAccount(nerdUserParams);
 
-      // API
+      console.log("===== Tractate Tests =====")
+      await generalTests();
       await tractateTests();
       await groupTests();
       await artifactTests();
       await versionTests();
 
-
-      await createTestUser(nerdUserParams);
-      await createTestAccount(nerdUserParams);
-
-      await generalTests();
 
       await deleteTestAccount(testUserParams);
       await deleteTestUser(testUserParams); 

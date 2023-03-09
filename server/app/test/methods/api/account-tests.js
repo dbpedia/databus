@@ -23,13 +23,18 @@ accountTests.accountTests = async function() {
         ACCOUNT_NAME: params.ACCOUNT_NAME
     });
 
-    // ======= GET Account ==========
+    // delete account from preexisting tests
+    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}`;
+    options.method = "DELETE";
+    await rp(options);
+
+    // ======= GET non-existing Account ==========
 
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}`;
     options.method = "GET";
     options.headers['Accept'] = "application/ld+json"
 
-
+    // should return 404 because account doesn't exist yet
     try {
         await rp(options);
         assert(false, 'Account does not exist, request should return 404.');
@@ -37,7 +42,7 @@ accountTests.accountTests = async function() {
         assert(err.response.statusCode == 404, 'Expected 404 when retrieving account.');
     }
 
-    // ========= PUT Account ===========
+    // ========= PUT Account - valid ===========
 
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}`;
     options.method = "PUT";
@@ -47,7 +52,7 @@ accountTests.accountTests = async function() {
     var response = await rp(options);
     assert(response.statusCode == 201, 'Account could not be created.');
 
-    // ======= INVALID PUT Account =======
+    // ======= PUT Account - invalid =======
 
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/janfo`;
 
@@ -58,7 +63,7 @@ accountTests.accountTests = async function() {
         assert(err.response.statusCode == 403, 'Trying to write to unowned account. 403 expected.');
     }
 
-    // ======= GET Account ==========
+    // ======= GET existing Account ==========
 
     delete options.body;
     delete options.json;
@@ -116,6 +121,14 @@ async function apiKeyTests() {
 
     response = await rp(options);
     assert(response.statusCode == 200, 'API key could not be created.');
+
+    // ======== Create already existing API Key =========
+    try{
+        response = await rp(options);
+        assert(false, 'creating already existing API key shouldnt be possible.')
+    } catch(err) {
+        assert(err.response.statusCode == 400, 'API key could be created. Shouldnt have been possible, because it already exists.');
+    }
 
     // ========= Delete API Key ===========
 
