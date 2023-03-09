@@ -3,10 +3,7 @@ const params_nerd = require('../../test-user-nerd.json');
 const rp = require('request-promise');
 const assert = require('assert');
 const ServerUtils = require('../../../common/utils/server-utils');
-const jsonld = require('jsonld');
 const { version } = require('../../../../config.json');
-const { workerData } = require('worker_threads');
-const { response } = require('express');
 
 module.exports = async function generalTests() {
 
