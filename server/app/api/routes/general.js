@@ -22,7 +22,7 @@ module.exports = function (router, protector) {
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var query = req.body.query;
     var accept = req.headers['accept']
-    console.log(req.body)
+    // console.log(req.body)
     if (accept == undefined) {
       accept = 'application/json';
     }

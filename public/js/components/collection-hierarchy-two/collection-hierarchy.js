@@ -24,6 +24,7 @@ SELECT ?file WHERE {
 } LIMIT 0`;
   const DATAID_ARTIFACT_PROPERTY = 'dataid:artifact';
   const DATAID_GROUP_PROPERTY = 'dataid:group';
+  const KEY_LATEST_VERSION = "$latest";
 
 
   ctrl.$onInit = function () {
@@ -381,10 +382,10 @@ SELECT ?file WHERE {
             delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
             ctrl.view.groups[res.uri].facets = res.facets;
 
-            if (ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'] != null) {
+            var hasVersionFacets = ctrl.view.groups[res.uri].facets[DatabusUris.DCT_HAS_VERSION];
 
-
-              ctrl.view.groups[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
+            if (hasVersionFacets != null && !hasVersionFacets.values.includes(KEY_LATEST_VERSION)) {
+              hasVersionFacets.values.unshift(KEY_LATEST_VERSION);
               $scope.$apply();
             }
           });
@@ -401,8 +402,13 @@ SELECT ?file WHERE {
 
             ctrl.facets.get(artifactNode.uri).then(function (res) {
               ctrl.view.artifacts[res.uri].facets = res.facets;
-              ctrl.view.artifacts[res.uri].facets['http://purl.org/dc/terms/hasVersion'].values.unshift("$latest");
-              $scope.$apply();
+
+              var hasVersionFacets = ctrl.view.artifacts[res.uri].facets[DatabusUris.DCT_HAS_VERSION];
+
+              if (hasVersionFacets != null && !hasVersionFacets.values.includes(KEY_LATEST_VERSION)) {
+                hasVersionFacets.values.unshift(KEY_LATEST_VERSION);
+                $scope.$apply();
+              }
               //var groupUri = DatabusUtils.navigateUp(artifactNode.uri);
               //ctrl.view.artifacts[artifactNode.uri].facets = result.data;
               //ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);

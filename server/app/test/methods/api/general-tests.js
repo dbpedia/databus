@@ -3,7 +3,6 @@ const params_nerd = require('../../test-user-nerd.json');
 const rp = require('request-promise');
 const assert = require('assert');
 const ServerUtils = require('../../../common/utils/server-utils');
-const jsonld = require('jsonld');
 
 module.exports = async function generalTests() {
 
