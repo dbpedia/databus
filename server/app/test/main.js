@@ -12,8 +12,10 @@ const { versionTests } = require('./methods/api/version-tests');
 
 const testUserParams = require('./test-user.json');
 const nerdUserParams = require('./test-user-nerd.json');
+const databus = require('../../www');
 
 module.exports = async function () {
+
    try {
 
       // Base
@@ -52,13 +54,18 @@ module.exports = async function () {
 
       console.log(`================================================`);
       console.log('Tests completed successfully.');
+      console.log('Databus ready to start.');
+      console.log('Use the command "make srv-start-auth0".');
       console.log(`================================================`);
+      
+      process.exit(0)
 
    } catch (err) {
       console.log(err);
       console.log(`================================================`);
       console.log('Tests completed with errors.');
       console.log(`================================================`);
+
 
    }
 }

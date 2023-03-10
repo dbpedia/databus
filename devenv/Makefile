@@ -35,6 +35,7 @@ srv-install:
 	npm install --prefix ../server; \
 	npm install --prefix ../public
 
+
 srv-start-auth0:
 	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
 	DATABUS_NAME=${DATABUS_NAME} \
@@ -66,3 +67,15 @@ srv-start-dbpedia-keycloak:
 	DATABUS_DEFAULT_CONTEXT_URL=https://downloads.dbpedia.org/databus/context.jsonld \
 	DATABUS_OIDC_SECRET=e266406c-08c1-4baf-88c5-6137c8c57f3e \
 	npm start --prefix ../server
+
+
+srv-test:
+	DATABUS_RESOURCE_BASE_URL=${DATABUS_RESOURCE_BASE_URL} \
+	DATABUS_NAME=${DATABUS_NAME} \
+	DATABUS_ORG_ICON=${DATABUS_ORG_ICON} \
+	DATABUS_BANNER_COLOR=${DATABUS_BANNER_COLOR} \
+	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
+	DATABUS_OIDC_ISSUER_BASE_URL=https://kilt.eu.auth0.com \
+	DATABUS_OIDC_CLIENT_ID=e9eOLS9IkGvuyBl7cBorWUQTNgbqejhc \
+	DATABUS_OIDC_SECRET=0RVo9jMnbhPnkR6Ttz0aXQRTcRuSz5DpqyUEjbbcbgRuGA4rbwCjnHM2cOlTrv9q \
+	npm run test --prefix ./../server

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./www"
+    "start": "node ./www",
+    "test": "DATABUS_TEST=true node ./www"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.0",
