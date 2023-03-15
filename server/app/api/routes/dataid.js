@@ -49,7 +49,7 @@ module.exports = function (router, protector) {
 
       logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
 
-      var verifyParts = req.query["verify-parts"];
+      var verifyParts = req.query["fetch-file-properties"];
 
       if(verifyParts == undefined) {
         verifyParts = true;

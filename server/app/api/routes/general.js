@@ -47,7 +47,7 @@ module.exports = function (router, protector, webdav) {
 
       // Get the account namespace
       var account = req.databus.accountName;
-      var verifyParts = req.query['verify-parts'] == "false" ? false : true;
+      var verifyParts = req.query['fetch-file-properties'] == "false" ? false : true;
       var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
 

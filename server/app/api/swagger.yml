@@ -123,7 +123,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: verify-parts
+        - name: fetch-file-properties
           in: query
           schema:
             type: boolean

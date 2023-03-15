@@ -250,7 +250,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
    
-    logger.debug(versionGraphUri, `verify-parts is set to ${verifyParts}`, null);
+    logger.debug(versionGraphUri, `fetch-file-properties is set to ${verifyParts}`, null);
      // Verify parts: SHA256SUM, BYTESIZE, etc
      if (verifyParts && !(await verifyDataidParts(dataidGraphs, logger))) {
       return 400;

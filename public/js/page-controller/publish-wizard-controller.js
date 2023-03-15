@@ -177,7 +177,7 @@ function PublishWizardController($scope, $http, focus, $q) {
 
 
     $scope.isPublishing = true;
-    $http.post(`/api/publish?verify-parts=true&log-level=${$scope.nerdMode.logLevel}`, $scope.nerdMode.customJson, options)
+    $http.post(`/api/publish?fetch-file-properties=true&log-level=${$scope.nerdMode.logLevel}`, $scope.nerdMode.customJson, options)
       .then(function (response) {
         $scope.publishLog = response.data.log;
         $scope.isPublishing = false;
@@ -197,7 +197,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     $scope.isPublishing = true;
-    $http.post('/api/publish?verify-parts=true&log-level=info', $scope.session.inputs.all, options)
+    $http.post('/api/publish?fetch-file-properties=true&log-level=info', $scope.session.inputs.all, options)
       .then(function (response) {
         $scope.publishLog = response.data.log;
         $scope.isPublishing = false;
