@@ -14,7 +14,6 @@ var requestRdf = require('../../common/request-rdf');
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0',
   publisherProperty: 'http://purl.org/dc/terms/publisher',
-  versionProperty: 'http://dataid.dbpedia.org/ns/core#version',
   licenseProperty: 'http://purl.org/dc/terms/license',
   distributionProperty: 'http://www.w3.org/ns/dcat#distribution',
   sha256sumProperty: 'http://dataid.dbpedia.org/ns/core#sha256sum',
@@ -69,12 +68,12 @@ signer.expandAndCanonicalize = async function (graph) {
 
 signer.canonicalize = function (expandedGraph) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_DATASET);
+  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
 
   var tractate = '';
   tractate += `${tractateConfig.header}\n`;
+  tractate += `${datasetGraph[DatabusUris.JSONLD_ID]}\n`;
   tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.publisherProperty)}\n`;
-  tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.versionProperty)}\n`;
   tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.licenseProperty)}\n`;
 
   var shasums = [];
