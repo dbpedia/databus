@@ -41,18 +41,18 @@ If the Databus should NOT infer a certain metadatum (for example not auto-genera
 
 #### Property Description
 
+This gives a quick overview on what to put in for the different keys. In which exact triples the data will result can be seen in the [JSON-LD context](https://downloads.dbpedia.org/databus/context.jsonld).
 
-
-| Key          | Value                                                                                                                                                                                                                                              | RDF property        |
-|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| @type        | The type of the graph. For the databus the types `Group`, `Artifact`, `Version`, `Dataset` and `Part` are permitted.                                                                                                                               | rdf:type            |
-| @id          | This represents the `id` (subject) of the triples. In the case of a `Dataset` this is the identifier consists of `${DATABUS_BASE_URL}/user/group/artifact/version`. What those are exactly can be see at the [model documentation](/docs/model.md) | ------              |
-| title        | This is a short title for the Dataset                                                                                                                                                                                                              | dct:title           |
-| description  | A longer description for the content of the dataset. Markdown syntax is supported.                                                                                                                                                                 | dct:description     |
-| license      | The license of the dataset. Currently only one license as a URI is supported                                                                                                                                                                       | dct:license         |
-| distribution | Contains a list of `Part`,  each representing a registered file.                                                                                                                                                                                   | dataid:distribution |
-| downloadURL  | The location URL of the registered file.                                                                                                                                                                                                           | dataid:file         |
-| dcv:key      | Set a value for a given key to individually identify a file and notate properties of a file. Example `"dcv:type": "rawdata"`                                                                                                                       | dcv:key             |
+| Key          | Value                                                                                                                                                                                                                                              | 
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| @type        | The type of the graph. For the databus the types `Group`, `Artifact`, `Version`, `Dataset` and `Part` are permitted.                                                                                                                               |
+| @id          | This represents the `id` (subject) of the triples. In the case of a `Dataset` this is the identifier consists of `${DATABUS_BASE_URL}/user/group/artifact/version`. What those are exactly can be see at the [model documentation](/docs/model.md) |
+| title        | This is a short title for the Dataset                                                                                                                                                                                                              |
+| description  | A longer description for the content of the dataset. Markdown syntax is supported.                                                                                                                                                                 |
+| license      | The license of the dataset. Currently only one license as a URI is supported                                                                                                                                                                       |
+| distribution | Contains a list of `Part`,  each representing a registered file.                                                                                                                                                                                   |
+| downloadURL  | The location URL of the registered file.                                                                                                                                                                                                           |
+| dcv:key      | Set a value for a given key to individually identify a file and notate properties of a file. Example `"dcv:type": "rawdata"`                                                                                                                       |
 
 ### SPARQL Queries
 
