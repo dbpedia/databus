@@ -14,6 +14,7 @@ The following table shows a list of inferrable properties that can optionally be
 | dataid:group | @id of dataid:Version |
 | dataid:artifact | @id of dataid:Version |
 | dct:hasVersion | @id of dataid:Version |
+| dct:abstract | First line of dct:description |
 | dct:issued | *current time* |
 | dct:modified | *current time (always set by server)* |
 
