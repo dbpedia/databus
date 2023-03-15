@@ -31,9 +31,15 @@ module.exports = function (router, protector) {
 
   var putOrPatchAccount = async function (req, res, next, hasAccount) {
     try {
+      
       // Get the accountName from the protected request
       var authInfo = ServerUtils.getAuthInfoFromRequest(req);
       var accountName = authInfo.info.accountName;
+
+      if(accountName.length < 4) {
+        res.status(403).send(`Account name is too short. An account name should contain at least 4 characters.\n`);
+        return false;
+      }
 
       // Check the auth info account and deny access on mismatch
       if (accountName !== req.params.account) {
@@ -131,6 +137,7 @@ module.exports = function (router, protector) {
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
 
+   
 
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
