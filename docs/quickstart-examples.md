@@ -1,12 +1,15 @@
 # Quickstart Examples
 
-Some examples to copy and adapt. Example SPARQL queries.
+This site describes the minimal required metadata for publishing a dataset (metadata) on the Databus and a few SPARQL queries for the first retrieving it. You can generate your own example inputs by using the publish wizard available at `${DATABUS_BASE_URL}/app/publish-wizard`. 
 
 ## Dataset Version Example
 
 ### Minimal Example in JSON-LD
 
-For a minimal submission the Databus requires only a few triples, while the rest is inferred:
+> **Note**
+> For a minimal submission to `${DATABUS_BASE_URL}/api/publish` the Databus requires only a few triples, while the rest is inferred. 
+
+
 
 ```json
 {
@@ -18,15 +21,12 @@ For a minimal submission the Databus requires only a few triples, while the rest
         "Dataset"
       ],
       "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14",
-      "hasVersion": "2023-03-14",
       "title": "DBpedia Ontology",
       "description": "Registered a version of the DBpedia Ontology into my account. \n\nUsing markdown:\n1. This is the version used in [project x](http://example.org) as a stable snapshot dependency \n2. License was checked -> CC-BY",
       "license": "http://creativecommons.org/licenses/by/4.0/",
       "distribution": [
         {
           "@type": "Part",
-          "formatExtension": "nt",
-          "compression": "none",
           "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt",
           "dcv:type": "parsed",
           "dcv:sorted": "true"
@@ -37,108 +37,22 @@ For a minimal submission the Databus requires only a few triples, while the rest
 }
 ```
 
-After the submission the Databus tries to infer the rest of the Metadata. Additionally, the Databus creates the superordinate identifier (group and artifact) if they are not yet existent. So the Databus expands the minimal metdata to :
+If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abtract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria). For a full list of inferrable properties check out the [autocompletion page](/docs/auto-completion.md)
 
-#### Group
+#### Property Description
 
-```json
-{
-  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-  "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
-  "@type": "Group",
-  "title": "onto_dep_projectx"
-}
-```
 
-#### Artifact
 
-```json
-{
-  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-  "@graph": [
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology",
-      "@type": "Artifact",
-      "group": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
-      "title": "DBpedia Ontology"
-    },
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
-      "@type": "Group"
-    }
-  ]
-}
-```
-
-#### Version/Dataset
-
-```json
-{
-  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-  "@graph": [
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14",
-      "@type": [
-        "dataid:Version",
-        "Dataset"
-      ],
-      "artifact": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology",
-      "group": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
-      "abstract": "Registered a version of the DBpedia Ontology into my account.",
-      "description": "Registered a version of the DBpedia Ontology into my account. \n\nUsing markdown:\n1. This is the version used in [project x](http://example.org) as a stable snapshot dependency \n2. License was checked -> CC-BY",
-      "hasVersion": "2023-03-14",
-      "issued": "2023-03-14T15:35:55.754Z",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "modified": "2023-03-14T15:35:55.754Z",
-      "publisher": "https://dev.databus.dbpedia.org/denis#this",
-      "title": "DBpedia Ontology",
-      "distribution": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14#dbpedia-ontology_sorted=true_type=parsed.nt",
-      "proof": {
-        "@type": "dataid:DatabusTractateV1",
-        "signature": {
-          "@type": "xsd:string",
-          "@value": "ptOX3+BRbjM4zNPFpaOt04pCCmR2MeWbrOsjssMWgYovEX6CZv4hnbqRt6H46I+ShVafL6gv9y0cRfcf5OlLIu63NKaLSvOoSchTjuh3Y12XWKwtThB9HLCHRNZWlPQZpsGH0ZNpgycrd64SpvUTViJPx9Wv5YLXDBrphxFr3Wzf4G4//XYF0E8EeBnMUqiTh8PazMX64lqotcLz8lFSvYI4M2fxZ3HNfxr22FYU6votpl689AGbOMht0a4abZuca8nVx0ztxwG9fKIl9680gJ1bXB5vnBubpJAFzhzbqBwJ3/D+brZkKXXKtDGV+f8m5gUMCzPE55m5vBK4EiQI+g=="
-        }
-      }
-    },
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14#dbpedia-ontology_sorted=true_type=parsed.nt",
-      "@type": "Part",
-      "compression": "none",
-      "file": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14/dbpedia-ontology_sorted=true_type=parsed.nt",
-      "formatExtension": "nt",
-      "sha256sum": "b3aa40e4a832e69ebb97680421fbeff968305931dafdb069a8317ac120af0380",
-      "dcv:sorted": "true",
-      "dcv:type": "parsed",
-      "hasVersion": "2023-03-14",
-      "issued": "2023-03-14T15:35:55.754Z",
-      "modified": "2023-03-14T15:35:55.754Z",
-      "byteSize": 4439722,
-      "downloadURL": "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology--DEV/2021.07.09-070001/ontology--DEV_type=parsed_sorted.nt"
-    },
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology",
-      "@type": "Artifact"
-    },
-    {
-      "@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
-      "@type": "Group"
-    },
-    {
-      "@id": "dcv:sorted",
-      "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-      "subPropertyOf": "dataid:contentVariant"
-    },
-    {
-      "@id": "dcv:type",
-      "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
-      "subPropertyOf": "dataid:contentVariant"
-    }
-  ]
-}
-```
-
-If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abtract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria).
+| Key          | Value                                                                                                                                                                                                                                              | RDF property        |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| @type        | The type of the graph. For the databus the types `Group`, `Artifact`, `Version`, `Dataset` and `Part` are permitted.                                                                                                                               | rdf:type            |
+| @id          | This represents the `id` (subject) of the triples. In the case of a `Dataset` this is the identifier consists of `${DATABUS_BASE_URL}/user/group/artifact/version`. What those are exactly can be see at the [model documentation](/docs/model.md) | ------              |
+| title        | This is a short title for the Dataset                                                                                                                                                                                                              | dct:title           |
+| description  | A longer description for the content of the dataset. Markdown syntax is supported.                                                                                                                                                                 | dct:description     |
+| license      | The license of the dataset. Currently only one license as a URI is supported                                                                                                                                                                       | dct:license         |
+| distribution | Contains a list of `Part`,  each representing a registered file.                                                                                                                                                                                   | dataid:distribution |
+| downloadURL  | The location URL of the registered file.                                                                                                                                                                                                           | dataid:file         |
+| dcv:key      | Set a value for a given key to individually identify a file and notate properties of a file. Example `"dcv:type": "rawdata"`                                                                                                                       | dcv:key             |
 
 ### SPARQL Queries
 
@@ -195,7 +109,7 @@ In the minimal example metadata for the group is missing and the artifact is ini
 
 ### Group
 
-```json
+```javascript
 {
 	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
 	"@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
