@@ -15,6 +15,7 @@ var searchIndexer = null;
 var config = require('./config.json')
 var runTests = require('./app/test/main.js');
 
+
 initializeExtensions();
 
 if (cluster.isMaster) {
@@ -98,14 +99,18 @@ async function masterProcess() {
 
       createFork(function () {
         numStartedWorkers++;
-        if (numCPUs == numStartedWorkers && config.runStartupTests) {
+        if (numCPUs == numStartedWorkers) {
           console.log(`================================================`);
-          console.log(`All workers started. Running tests...`);
+          console.log(`All workers started.`);
+          if ( process.env.DATABUS_TEST ){
+            console.log('Running tests...');
+            runTests();
+          }
           console.log(`================================================`);
-          runTests();
         }
       });
     }
+
 
     cluster.on('exit', (worker, code, signal) => {
       console.log(`worker ${worker.process.pid} died`);

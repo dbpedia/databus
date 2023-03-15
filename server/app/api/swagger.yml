@@ -1635,3 +1635,5 @@ paths:
       responses:
         "200":
           description: "OK"
+        "204":
+          description: "Api-Key didn't exist"
