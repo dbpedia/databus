@@ -126,7 +126,7 @@ signer.validate = async function (canonicalized, proof) {
   try {
     var signature = proof[DatabusUris.SEC_SIGNATURE][0][DatabusUris.JSONLD_VALUE];
     var tractateLines = canonicalized.split('\n');
-    var publisherUri = tractateLines[1];
+    var publisherUri = tractateLines[2];
 
 
     var isInternalWebId = publisherUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL);
@@ -140,6 +140,7 @@ signer.validate = async function (canonicalized, proof) {
       var repo = webIdURL.pathname.substring(1);
       // Read the WebId directly from the Gstore to avoid access problems in private mode
       var content = JSON.stringify(await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID));
+
       quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, content)
 
     } else {
@@ -147,7 +148,6 @@ signer.validate = async function (canonicalized, proof) {
       quads = await requestRdf.requestQuads(publisherUri);
     }
 
-      
     var keyNodes = getObjectValues(quads, publisherUri, DatabusUris.CERT_KEY);
 
     for (var k in keyNodes) {
