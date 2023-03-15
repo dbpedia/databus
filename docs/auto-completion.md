@@ -4,8 +4,10 @@ When trying to publish data on the Databus, the HTTP API accepts not only fully 
 
 ## Properties
 
+
 The following table shows a list of inferrable properties that can optionally be omitted in the input.
 
+### Version
 | Property   | Value inferred from |
 |------------|---------------|
 | dataid:publisher | @id of dataid:Version |
@@ -14,12 +16,16 @@ The following table shows a list of inferrable properties that can optionally be
 | dct:hasVersion | @id of dataid:Version |
 | dct:issued | *current time* |
 | dct:modified | *current time (always set by server)* |
+
+### Part
+| Property   | Value inferred from |
+|------------|---------------|
 | dataid:formatExtension | content-disposition header of file specified with dcat:downloadURL (if present). *Alternatively:* String value of dcat:downloadURL |
 | dataid:compression | content-disposition header of file specified with dcat:downloadURL (if present). *Alternatively:* String value of dcat:downloadURL |
 | dataid:shasum | sha256sum of the file specified with dcat:downloadURL |
 | dataid:byteSize | size of the file specified with dcat:downloadURL |
 | @id of any dataid:Part | @id of dataid:Version, dataid:formatExtension, dataid:compression and content variants (i.e. properties with prefix *http://dataid.dbpedia.org/ns/cv#*)
-| dct:hasVersion *of dataid:Part* | dct:hasVersion *of dataid:Version* |
+| dct:hasVersion | dct:hasVersion of associated dataid:Version |
 | properties with prefix *http://dataid.dbpedia.org/ns/cv#* | Only set if the property is used in any other dataid:Part of the dataid:Version. Value is set to empty string. |
 
 
