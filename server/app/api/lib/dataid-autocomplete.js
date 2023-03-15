@@ -99,6 +99,8 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   autocompleteResourceUri(versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY, 1);
   // autocompleteResourceUri(versionGraph, DatabusUris.DATAID_VERSION_PROPERTY, 0);
 
+
+
   var timeString = new Date(Date.now()).toISOString();
 
   if (versionGraph[DatabusUris.DCT_ISSUED] == undefined) {
@@ -115,6 +117,13 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     versionGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
+
+  if (versionGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
+    versionGraph[DatabusUris.DCT_HAS_VERSION] = [{}];
+    versionGraph[DatabusUris.DCT_HAS_VERSION][0][DatabusUris.JSONLD_VALUE] = 
+      UriUtils.uriToName(datasetUri);
+  }
+
 
   versionGraph[DatabusUris.DCT_MODIFIED] = [{}];
   versionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
