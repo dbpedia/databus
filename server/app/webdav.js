@@ -32,7 +32,7 @@ class DatabusWebDAV {
 
     this.directory = path.resolve('./') + '/dav/';
 
-    if(this.debug) {
+    if (this.debug) {
       console.log(`DAV directory: ${this.directory}`);
     }
 
@@ -46,7 +46,7 @@ class DatabusWebDAV {
 
   addWebDavUser(accountName) {
 
-    if(this.debug) {
+    if (this.debug) {
       console.log(`Adding DAV user ${accountName}:${this.sessionPass}`);
     }
 
@@ -60,14 +60,40 @@ class DatabusWebDAV {
   getDavUser(accountName) {
     var self = this;
     return new Promise((resolve, reject) => {
-      self.userManager.getUserByName(accountName, function(err, user) {
-        if(err != null) {
+      self.userManager.getUserByName(accountName, function (err, user) {
+        if (err != null) {
           resolve(null);
         } else {
           resolve(user);
         }
       });
     });
+  }
+
+  getBasicAuthToken(accountName) {
+    var token = btoa(`${accountName}:${this.sessionPass}`);
+    return `Basic ${token}`
+  }
+
+  getAccountNameFromHeader(authHeader) {
+    if(!authHeader.startsWith("Basic")) {
+      return null;
+    }
+
+    var headerTokens = authHeader.split(" ");
+
+    if(headerTokens.length != 2) {
+      return null;
+    }
+
+    var auth = atob(headerTokens[1]);
+    var authTokens = auth.split(":");
+
+    if(authTokens.length != 2) {
+      return null;
+    }
+
+    return authTokens[0];
   }
 
   davAuth() {
@@ -79,6 +105,29 @@ class DatabusWebDAV {
         return;
       }
 
+      /*
+      if (req.headers['authorization'] != undefined) {
+
+        var accountName = self.getAccountNameFromHeader(req.headers['authorization']);
+
+        if(accountName == null) {
+          res.status(401).send();
+          return;
+        }
+
+        console.log(accountName);
+        var davUser = await self.getDavUser(accountName);
+
+        if (davUser == null) {
+          self.addWebDavUser(accountName);
+        }
+
+        console.log(`Auth header already set: ${req.headers['authorization']} for ${accountName}`);
+        next("route");
+        return;
+      }
+
+      */ 
       var auth = ServerUtils.getAuthInfoFromRequest(req);
 
       if (!auth.authenticated) {
@@ -88,7 +137,7 @@ class DatabusWebDAV {
 
       var davUser = await self.getDavUser(auth.info.accountName);
 
-      if(davUser == null) {
+      if (davUser == null) {
         self.addWebDavUser(auth.info.accountName);
       }
 

@@ -1,9 +1,9 @@
 const ServerUtils = require('../common/utils/server-utils.js');
 var cors = require('cors');
 
-module.exports = function (router, protector, locals) {
+module.exports = function (router, protector, locals, webdav) {
 
-  require('./routes/general')(router, protector);
+  require('./routes/general')(router, protector, webdav);
   require('./routes/tractate')(router, protector);
   require('./routes/collection')(router, protector);
   require('./routes/account')(router, protector);

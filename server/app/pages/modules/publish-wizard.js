@@ -97,7 +97,6 @@ module.exports = function (router, protector) {
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
       console.log(filename);
-      // console.log("USING FILENAME OF CONTENT DISPOSITION: " + filename);
       parseFormatAndCompression(result, filename);
 
       return result;

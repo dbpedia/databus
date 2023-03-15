@@ -10,7 +10,7 @@ const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const DatabusLogger = require('../../common/databus-logger');
 
-module.exports = function (router, protector) {
+module.exports = function (router, protector, webdav) {
 
   router.get('/sparql', cors(), function (req, res) {
     var url = `${process.env.DATABUS_DATABASE_URL}${req.originalUrl.replace('/system', '')}`;

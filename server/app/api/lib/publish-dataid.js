@@ -26,14 +26,27 @@ async function verifyDataidParts(dataidGraphs, logger) {
 
   for (var distribution of distributions) {
 
-    logger.debug(versionGraphUri, `Analyzing part <${distribution[DatabusUris.JSONLD_ID]}>`, null);
     var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
-
     var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL);
 
     if (analyzeResult.code != 200) {
       logger.error(versionGraphUri, `Error analyzing file`, analyzeResult.data);
       return false;
+    }
+
+    logger.debug(versionGraphUri, `Analyzed part <${distribution[DatabusUris.JSONLD_ID]}>`, analyzeResult.data);
+    
+
+    if(distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
+      distribution[DatabusUris.DATAID_FORMAT_EXTENSION] = [{}];
+      distribution[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE] 
+        = analyzeResult.data.formatExtension;
+    }
+
+    if(distribution[DatabusUris.DATAID_COMPRESSION] == undefined) {
+      distribution[DatabusUris.DATAID_COMPRESSION] = [{}];
+      distribution[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE] 
+        = analyzeResult.data.compression;
     }
 
     distribution[DatabusUris.DATAID_SHASUM] = [{}];
@@ -138,6 +151,8 @@ function validateDatasetUri(dataidGraphs, accountUri, logger) {
 }
 
 async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
+
+  dataidGraphs = await jsonld.flatten(dataidGraphs);
   // Fetch important uris
   var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
@@ -183,7 +198,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
   // Validate the used proof type
   if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
-    logger.erorr(versionGraphUri, `Unkown proof type <${proofType}>.`, proofType);
+    logger.error(versionGraphUri, `Unkown proof type <${proofType}>.`, proofType);
     return 400;
   }
 
@@ -193,10 +208,10 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   if (!validationSuccess) {
 
     if (generatingSignature) {
-      logger.erorr(versionGraphUri, `Failed to generate signature. Please contact an administrator.`, null);
+      logger.error(versionGraphUri, `Failed to generate signature. Please contact an administrator.`, null);
       return 500;
     } else {
-      logger.erorr(versionGraphUri, `The provided signature was invalid.`, null);
+      logger.error(versionGraphUri, `The provided signature was invalid.`, null);
       return 400;
     }
   }
@@ -238,6 +253,26 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     logger.debug(versionGraphUri, `verify-parts is set to ${verifyParts}`, null);
      // Verify parts: SHA256SUM, BYTESIZE, etc
      if (verifyParts && !(await verifyDataidParts(dataidGraphs, logger))) {
+      return 400;
+    } 
+
+    // Run CV validator to validate content variant setup
+    var distributionGraphs = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
+    var cvGraphs = JsonldUtils.getSubPropertyGraphs(dataidGraphs, DatabusUris.DATAID_CONTENT_VARIANT);
+
+    var contentVariantUris = [];
+
+    contentVariantUris.push(DatabusUris.DATAID_FORMAT_EXTENSION);
+    contentVariantUris.push(DatabusUris.DATAID_COMPRESSION);
+
+    for(var cvGraph of cvGraphs) {
+      contentVariantUris.push(cvGraph[DatabusUris.JSONLD_ID]);
+    }
+
+    var contentVariantErrors = DatabusUtils.cvSplit(distributionGraphs, contentVariantUris, 0);
+
+    if(contentVariantErrors.length > 0) {
+      logger.error(versionGraphUri, `Invalid content variant setup. Two or more files are not distinguishable by either dataid:formatExtension, dataid:compression or any custom content variant.`, contentVariantErrors);
       return 400;
     }
 

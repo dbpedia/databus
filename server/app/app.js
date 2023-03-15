@@ -53,8 +53,6 @@ var webDAVModule = new DatabusWebDAV();
 // Initialize the express app
 initialize(app, memoryStore).then(function () {
 
-
-
   // Add webDAV
   app.use('/dav', protector.checkSso(), webDAVModule.davAuth(),
     webdav.extensions.express('/', webDAVModule.webDAVServer));

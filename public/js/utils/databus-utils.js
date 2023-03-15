@@ -1,7 +1,15 @@
+var JsonldUris = undefined;
+
+if (typeof module === "object" && module && module.exports) {
+  JsonldUris = require("./databus-uris");
+} else {
+  JsonldUris = DatabusUris;
+}
+
 class DatabusUtils {
 
   static stringOrFallback(value, fallback) {
-    if(value != null && value.length > 0) {
+    if (value != null && value.length > 0) {
       return value;
     }
 
@@ -340,10 +348,91 @@ class DatabusUtils {
 
       return result;
 
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       return undefined;
     }
+  }
+
+  /**
+   * Find groups files that are not distinguishable
+   * @param {Array of file URIs} files 
+   * @param {Array of content variant names} contentVariants 
+   * @param {Index in the array of content variants} index 
+   * @returns 
+   */
+  static cvSplit(distributionGraphs, contentVariantUris, contentVariantIndex) {
+
+    var errorList = [];
+
+    if (distributionGraphs.length <= 1) {
+      return errorList;
+    }
+
+    if (contentVariantIndex >= contentVariantUris.length) {
+
+      // Check buckets for double entries if (files.length > 1) {
+      if (distributionGraphs.length > 1) {
+
+        var error = {};
+        error.downloadURLs = [];
+
+        for (var distribution of distributionGraphs) {
+
+          error.downloadURLs.push(distribution[JsonldUris.DCAT_DOWNLOAD_URL][0][JsonldUris.JSONLD_ID]);
+        }
+
+        error[JsonldUris.DATAID_FORMAT_EXTENSION] =
+          distributionGraphs[0][JsonldUris.DATAID_FORMAT_EXTENSION][0][JsonldUris.JSONLD_VALUE];
+
+        error[JsonldUris.DATAID_COMPRESSION] =
+          distributionGraphs[0][JsonldUris.DATAID_COMPRESSION][0][JsonldUris.JSONLD_VALUE];
+
+        for (var contentVariantUri of contentVariantUris) {
+          error[contentVariantUri] = distributionGraphs[0][contentVariantUri] != null ?
+            distributionGraphs[0][contentVariantUri][0][JsonldUris.JSONLD_VALUE] : 'none'
+        }
+
+        errorList.push(error);
+      }
+    } else {
+
+      var contentVariantUri = contentVariantUris[contentVariantIndex];
+
+      // else create buckets and sort files into buckets
+      var buckets = {};
+
+      for (var distribution of distributionGraphs) {
+
+        var variantValue = distribution[contentVariantUri];
+
+        if (variantValue != undefined) {
+          variantValue = variantValue[0]['@value'];
+        }
+
+        if (variantValue == undefined || variantValue == '') {
+          variantValue = '$_none$';
+        }
+
+        if (buckets[variantValue] == undefined) {
+          buckets[variantValue] = [];
+        }
+
+        buckets[variantValue].push(distribution);
+      }
+
+
+      // iterate buckets and call recursively
+      for (var b in buckets) {
+
+        for (var error of DatabusUtils.cvSplit(buckets[b],
+          contentVariantUris, contentVariantIndex + 1, errorList)) {
+          errorList.push(error);
+        }
+      }
+    }
+
+    return errorList;
   }
 
 }
