@@ -51,8 +51,6 @@ module.exports = function (router, protector, webdav) {
       var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
 
-      console.log(graph)
-
       var processedResources = 0;
 
       if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {

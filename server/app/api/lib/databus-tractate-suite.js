@@ -182,7 +182,6 @@ signer.validate = async function (canonicalized, proof) {
 
     return false;
   } catch (err) {
-    console.log(err);
     console.log('Failed to verify:' + err);
     return false;
   }

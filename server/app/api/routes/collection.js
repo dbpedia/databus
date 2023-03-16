@@ -80,7 +80,7 @@ module.exports = function (router, protector) {
 
       var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
     
-      console.log(collectionGraph);
+      // console.log(collectionGraph);
       // Possible TODO: validate instead of replace
       collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
       collectionGraph['http://purl.org/dc/terms/publisher'] = [ 

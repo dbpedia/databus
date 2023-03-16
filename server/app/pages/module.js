@@ -60,7 +60,6 @@ module.exports = function (router, protector) {
     // Pages login and logout
     router.get('/page-login', protector.protect(), function (req, res, next) {
   
-      console.log("HIER");
       var redirectUrl = decodeURIComponent(req.query.redirectUrl);
       res.redirect(redirectUrl);
     });*/

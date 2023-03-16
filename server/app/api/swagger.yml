@@ -694,6 +694,7 @@ paths:
               schema:
                 type: string
                 example: "You cannot perform this action in a foreign namespace."
+
   /{account}/{group}/{artifact}/{version}:
     put:
       summary: "Create / Update DataId"
@@ -999,6 +1000,7 @@ paths:
             text/plain:
               schema:
                 type: string
+
   /api/tractate/v1/canonicalize:
     post:
       summary: "Canonicalize DataId"
@@ -1013,27 +1015,19 @@ paths:
           application/ld+json:
             schema:
               type: object
-              example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": [
-                  {
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
-                    "@type": "Group",
-                    "title": "%GROUP% Data",
-                    "description": "%GROUP% datasets from DBpedia"
-                  },
-                  {
-                    "@type": "Dataset",
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
+              example: |
+                {
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@type": [ "Version", "Dataset" ],
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
                     "hasVersion": "%VERSION%",
-                    "title": "%GROUP% %ARTIFACT%",
-                    "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
+                    "title": "Test Version",
+                    "description": "Data for testing purposes.",
                     "license": "http://creativecommons.org/licenses/by/4.0/",
                     "distribution": [
                       {
-                        "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
                         "@type": "Part",
-                        "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%/%ARTIFACT%.ttl",
                         "formatExtension": "ttl",
                         "compression": "none",
                         "downloadURL": "https://holycrab13.github.io/webid.ttl",
@@ -1042,8 +1036,7 @@ paths:
                       }
                     ]
                   }
-                ]
-              }'
+                }
       responses:
         "200":
           description: "OK"
@@ -1133,6 +1126,7 @@ paths:
                     "success": true,
                     "message": "Verification successful.\n"
                   }'
+
   /{account}/collections/{id}:
     put:
       summary: "Create / Update Collection"
@@ -1358,6 +1352,7 @@ paths:
                 type: string
                 format: binary
                 example: '37dac6d1e315917bceba4f38564dc529'
+
   /{account}:
     put:
       summary: "Create / Update Account"
@@ -1519,7 +1514,6 @@ paths:
             text/plain:
               schema:
                 type: string
-
   /api/account/webid/add:
     post:
       summary: "Add WebId"
@@ -1547,7 +1541,6 @@ paths:
               schema:
                 type: string
                 example: "Unable to find valid backlink in WebId document."
-
   /api/account/webid/remove:
     post:
       summary: "Remove WebId"
