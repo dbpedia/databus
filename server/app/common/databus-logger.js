@@ -48,6 +48,8 @@ class DatabusLogger {
   }
 
   debug(resource, message, payload) {
+
+    console.log(message);
     if (this.level != DatabusLogLevel.DEBUG) {
       return;
     }

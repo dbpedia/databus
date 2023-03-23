@@ -177,7 +177,6 @@ signer.validate = async function (canonicalized, proof) {
         // console.log(`Verification successful.`);
         return true;
       }
-
     }
 
     return false;

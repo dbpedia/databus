@@ -18,13 +18,26 @@ const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 const DatabusLogLevel = require('../../common/databus-log-level');
 
 
-async function verifyDataidParts(dataidGraphs, logger) {
+async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
 
   var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
   var distributions = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
 
   for (var distribution of distributions) {
+
+    
+    // Only fetch when there is something missing!
+    if(!alwaysFetch) {
+      var needsFetching = false;
+
+      needsFetching |= distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == null;
+      needsFetching |= distribution[DatabusUris.DATAID_COMPRESSION] == null;
+      needsFetching |= distribution[DatabusUris.DATAID_SHASUM] == null;
+      needsFetching |= distribution[DatabusUris.DCAT_BYTESIZE] == null;
+      logger.debug(versionGraphUri, `File properties for part <${distribution[DatabusUris.JSONLD_ID]}> are already specified.`, distribution);
+      continue;
+    }
 
     var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
     var analyzeResult = await fileAnalyzer.analyzeFile(downloadURL);
@@ -220,7 +233,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   return 200;
 }
 
-module.exports = async function publishDataid(accountName, expandedGraph, versionGraphUri, verifyParts, logger) {
+module.exports = async function publishDataid(accountName, expandedGraph, versionGraphUri, fetchFileProperties, logger) {
 
   try {
 
@@ -251,11 +264,16 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
    
-    logger.debug(versionGraphUri, `fetch-file-properties is set to ${verifyParts}`, null);
+    logger.debug(versionGraphUri, `fetch-file-properties is set to ${fetchFileProperties}`, null);
      // Verify parts: SHA256SUM, BYTESIZE, etc
-     if (verifyParts && !(await verifyDataidParts(dataidGraphs, logger))) {
-      return 400;
-    } 
+
+     if(fetchFileProperties == true || fetchFileProperties == null) {
+
+      if (!(await verifyDataidParts(dataidGraphs, fetchFileProperties == true, logger))) {
+        return 400;
+      } 
+     }
+    
 
     // Run CV validator to validate content variant setup
     var distributionGraphs = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);

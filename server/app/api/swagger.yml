@@ -353,7 +353,7 @@ paths:
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
                     "@type": "Group",
                     "title": "%GROUP% Data",
-                    "description": "Various %GROUP% datasets from DBpedia using AI."
+                    "description": "Various %GROUP% datasets extracted from DBpedia using AI."
                   }
                 }'
       responses:
@@ -378,7 +378,7 @@ paths:
                     "log": [
                       {
                         "resource": null,
-                        "msg": "No graph %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP% found in the input.",
+                        "msg": "No graph with id <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%>  found in the input.",
                         "payload": null,
                         "level": "error"
                       }
@@ -462,12 +462,14 @@ paths:
         "204":
           description: "No Content"
         "403":
-          description: "Error: Forbidden"
+          description: "Forbidden"
           content:
             text/plain:
               schema:
                 type: string
                 example: "You cannot perform this action in a foreign namespace."
+        "409":
+          description: "Conflict - There are still versions or artifacts associated with this group."
   /{account}/{group}/{artifact}:
     put:
       summary: "Create / Update Artifact"
