@@ -66,6 +66,7 @@ module.exports = async function () {
       console.log('Tests completed with errors.');
       console.log(`================================================`);
 
+      process.exit(1)
 
    }
 }

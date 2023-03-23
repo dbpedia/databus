@@ -21,6 +21,9 @@ module.exports = async function tractateTests() {
     var testMetadata = ServerUtils.formatJsonTemplate(require('../../templates/version.json'), {
         DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
         ACCOUNT: params.ACCOUNT_NAME,
+        GROUP: params.GROUP_NAME,
+        ARTIFACT: params.ARTIFACT_NAME,
+        VERSION: params.VERSION_NAME
     });
 
     // ========= Generate Databus Tractate v1 ===========
@@ -30,9 +33,10 @@ module.exports = async function tractateTests() {
     options.body = testMetadata;
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/api/tractate/v1/canonicalize`;
 
-    response = await rp(options);
+    let response = await rp(options);
     assert(response.statusCode == 200, 'Could not generate Databus Tractate v1.');
-
+    let results = response.body.split('\n');
+    assert(results[1] == `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}/${params.GROUP_NAME}/${params.ARTIFACT_NAME}/${params.VERSION_NAME}`, 'Version in Tractate is wrong');
 
     // Expand graph, autocomplete, create proof
     var expandedData = autocomplete(await jsonld.flatten(await jsonld.expand(testMetadata)));
