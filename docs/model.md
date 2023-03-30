@@ -19,11 +19,11 @@ Similar to maven, URI identifiers of metadata entries are a composite of names c
 
 The Databus allows users with an account to publish metadata in a certain hierarchical structure. The hierarchy has the following levels:
 
-1. Account
-2. [Group](/docs/group.md)
-3. [Artifact](/docs/artifact.md)
-4. [Version](/docs/version.md)
-5. [Distribution](/docs/distribution.md)
+* Account
+	* [Group](/docs/group.md)
+		* [Artifact](/docs/artifact.md)
+			* [Version](/docs/version.md)
+				* [Distribution](/docs/distribution.md)
 
 Thus, the identifiers of your metadata entries on the Databus are a composite of
 
