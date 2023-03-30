@@ -49,10 +49,10 @@ The full example identifiers would look like this:
 ### Best Practices
 
 The metadata publisher has complete control over the names of the Databus identifiers. Though, there are a few best practices to be considered:
-1. **The username**
-  * in this case its pretty obvious, but the best way here is to use your personal (nick)name or the name of your institution/company
-2. **The group**
-  * the group combines multiple artifacts into one indentifier, so generally it is good to create *one group for one project*. If a project is contains many very different datasets it could be divided into multiple groups.
+1. **The account name**
+  * The account name can be chosen on account creation. It is advised to use your personal (nick)name or the name of your institution/company
+2. **The group name**
+  * A group can be understood as folder for multiple related artifacts. Generally, it is recommended to create *one group for one project* - the same way you would create a folder on-disk for a certain project. However, if a project requires a large amount of datasets (and thus, artifacts) it can be a good idea to use multiple groups. 
 3. **The artifact**
   * an artifact consists of multiple versions of different files, but all the files should somehow be related, so an artifact should represent *data of one certain topic*.    
 5. **The version**:
