@@ -68,11 +68,6 @@ function ProfileController($scope, $http) {
       }
 
       var name = accountName;
-
-      if($scope.auth.info.oidc_name) {
-        name = $scope.auth.info.oidc_name;
-      }
-
       $scope.showAccountNameHints = false;
       $scope.putProfile(accountName, name, '');
     }
