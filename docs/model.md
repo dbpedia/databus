@@ -25,7 +25,7 @@ The Databus allows users with an account to publish metadata in a certain hierar
 			* [Version](/docs/version.md)
 				* [Distribution](/docs/distribution.md)
 
-Thus, the identifiers of your metadata entries on the Databus are a composite of
+Thus, the identifiers of your metadata entries on the Databus are a composite of two or more of the following:
 
 1. The Databus **base URI** *(e.g. https://databus.dbpedia.org)*
 2. Your **account name** for that Databus *(e.g. janfo)*
