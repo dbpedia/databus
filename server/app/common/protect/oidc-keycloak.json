@@ -1,8 +1,6 @@
 {
   "issuerBaseURL": "https://databus.dbpedia.org/auth/realms/databus",
   "baseURL": "http://localhost:3000/",
-  "clientID": "website",
-  "secret": "f3de81dd-ad95-4c72-970e-8178f4f1cb65",
   "idpLogout": true,
   "authRequired": false
 }

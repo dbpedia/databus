@@ -47,6 +47,7 @@ class Constants {
   static DATABUS_OIDC_LOGIN_ROUTE = `/app/login`;
   static DATABUS_OIDC_LOGOUT_ROUTE = `/app/logout`;
   static DATABUS_OIDC_CALLBACK_ROUTE = `/app/callback`;
+  static AUTH0_LOGOUT_CHECK_SEQUENCE = "auth0";
 
   static HTTP_CONTENT_TYPE_JSONLD = 'application/ld+json';
   static HTTP_CONTENT_TYPE_TURTLE =  'text/turtle';

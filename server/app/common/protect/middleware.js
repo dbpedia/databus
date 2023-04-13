@@ -154,6 +154,10 @@ class DatabusProtect {
       "logout": false
     };
 
+    if(oidcConfig.issuerBaseURL.includes(Constants.AUTH0_LOGOUT_CHECK_SEQUENCE)) {
+      oidcConfig.auth0Logout = true;
+    }
+
     oidcConfig.session = {
       rollingDuration: 60 * 24,
     };
