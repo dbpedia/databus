@@ -78,6 +78,10 @@ class DataIdCreator {
   }
 
   createArtifactUpdate() {
+    
+    if (this.formData.group.publishGroupOnly) {
+      return undefined;
+    }
 
     var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountName}`;
 
