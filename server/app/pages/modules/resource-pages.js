@@ -160,6 +160,10 @@ module.exports = function (router, protector) {
       var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
       data.version = [ versionGraph ];
 
+      data.licenseData = await licenseCache.get('dalicc', async () => {
+        return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
+      });
+
       if (data.version == null) {
         next('route');
         return;

@@ -67,25 +67,11 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
 
   if (data.auth.authenticated && $scope.canEdit) {
 
-    // Load license data here
     $scope.licenseQuery = "";
-
-    $http.get('https://api.dalicc.net/licenselibrary/list?limit=10000').then(function (result) {
-      $scope.licenseData = JSON.parse(result);
-
-    }, function (err) {
-      console.log("Failed to load license data from dalicc.net: " + err);
-    });
-
-   
     $scope.filterLicenses = function (licenseQuery) {
-
-      if($scope.licenseData == undefined) {
-        return;
-      }
       // billo-suche mit lowercase und tokenization 
       var tokens = licenseQuery.toLowerCase().split(' ');
-      $scope.filteredLicenseList = $scope.licenseData.results.bindings.filter(function (l) {
+      $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {
         for (var token of tokens) {
           if (!l.title.value.toLowerCase().includes(token)) {
             return false;
