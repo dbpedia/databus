@@ -37,6 +37,11 @@ function ArtifactPageController($scope, $http, $sce, collectionManager) {
     });
   }
 
+  $scope.getPathname = function(uri) {
+    var url = new URL(uri);
+    return url.pathname;
+  }
+
   $scope.formatResult = function (result) {
     return $sce.trustAsHtml(result);
   }

@@ -147,9 +147,9 @@ module.exports = function (router, protector) {
       let data = await cache.get(cacheKey, async () => {
         return {
           version: await sparql.dataid.getVersion(req.params.account, req.params.group,
-            req.params.artifact, req.params.version),
-          mods: await sparql.pages.getModsByVersion(req.params.account, req.params.group,
             req.params.artifact, req.params.version)
+          //mods: await sparql.pages.getModsByVersion(req.params.account, req.params.group,
+          //  req.params.artifact, req.params.version)
         };
       });
 
@@ -157,10 +157,6 @@ module.exports = function (router, protector) {
         next('route');
         return;
       }
-
-      data.licenseData = await licenseCache.get('dalicc', async () => {
-        return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
-      });
 
       data.auth = ServerUtils.getAuthInfoFromRequest(req);
       res.render('version', { title: data.version.title, data: data });

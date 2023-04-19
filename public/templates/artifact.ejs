@@ -174,7 +174,7 @@
               </tr>
               <tr ng-repeat="version in versions">
                 <td>
-                  <a ng-href="{{ version.version }}">{{ version.version }}</a>
+                  <a ng-href="{{ getPathname(version.version) }}">{{ version.version }}</a>
                 </td>
                 <td>{{ formatDate(version.date) }}</td>
                 <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
