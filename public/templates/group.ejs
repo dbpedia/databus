@@ -180,7 +180,7 @@
           <div ng-if="group.hasData">
             <div class="field" style="display: flex; line-height: 1;">
               <div class="control has-icons-left" style="flex:1;margin-right: 0.5em;">
-                <input class="input" type="text" ng-model="$parent.searchInput" ng-change="invokeSearch();"
+                <input class="input" type="text" ng-model="input.search" ng-change="invokeSearch();"
                   placeholder="Search this group...">
                 <span class="icon is-left">
                   <i class="fas fa-search"></i>
@@ -189,7 +189,7 @@
             </div>
             <br />
 
-            <div class="dataset-name" ng-if="searchInput.length > 0" ng-repeat="result in searchResult">
+            <div class="dataset-name" ng-if="input.search.length > 0" ng-repeat="result in searchResult">
               <div style="display: flex; align-items: center;">
                 <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
                   desc="result.abstract">
@@ -198,7 +198,7 @@
               <div ng-if="!$last" class="is-divider"></div>
             </div>
 
-            <div ng-if="searchInput.length == 0" class="dataset-name" ng-repeat="result in artifacts">
+            <div ng-if="input.search.length == 0" class="dataset-name" ng-repeat="result in artifacts">
               <div style="display: flex; align-items: center;">
                 <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
                   desc="result.abstract">

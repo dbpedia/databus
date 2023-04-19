@@ -3,7 +3,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.group = data.group;
   $scope.artifacts = data.artifacts;
   $scope.services = data.services;
-  $scope.group.name = DatabusUtils.uriToName($scope.group.uri);
+  $scope.group.name = DatabusUtils.uriToResourceName($scope.group.uri);
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
 
   $scope.group.hasData = false;
@@ -89,7 +89,8 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.authenticated = data.auth.authenticated;
   $scope.selection = [];
 
-  $scope.searchInput = '';
+  $scope.input = {};
+  $scope.input.search = '';
   $scope.searchCooldown = 500;
   $scope.searchChanged = true;
   $scope.searchReady = true;
@@ -280,7 +281,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
     $http({
       method: 'GET',
-      url: '/api/search?query=' + $scope.searchInput + typeFilters
+      url: '/api/search?query=' + $scope.input.search + typeFilters
     }).then(function successCallback(response) {
 
       for (var r in response.data.docs) {

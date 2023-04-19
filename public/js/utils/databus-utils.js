@@ -141,6 +141,17 @@ class DatabusUtils {
     return result;
   }
 
+  static uriToResourceName(uri) {
+    if (uri == null) {
+      return null;
+    }
+
+    var result = uri.substr(uri.lastIndexOf('/') + 1);
+    result = result.substr(result.lastIndexOf('#') + 1);
+
+    return result;
+  }
+
   static isValidHttpUrl(string) {
     let url;
 
