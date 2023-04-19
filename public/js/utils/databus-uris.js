@@ -27,6 +27,7 @@ class DatabusUris {
   static DATAID_FILE = 'http://dataid.dbpedia.org/ns/core#file';
   static DATAID_COMPRESSION = 'http://dataid.dbpedia.org/ns/core#compression';
   static DATAID_ATTRIBUTION = 'http://dataid.dbpedia.org/ns/core#attribution';
+  static DATAID_PREVIEW = 'http://dataid.dbpedia.org/ns/core#preview';
 
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';

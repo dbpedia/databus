@@ -16,16 +16,12 @@ module.exports = function (router, protector) {
       // Find context:
       var graph = req.body;
 
-      // console.log(graph);
-
       // Replace if default context
       if (graph['@context'] == Constants.DATABUS_DEFAULT_CONTEXT_URL) {
         graph['@context'] = defaultContext;
       }
 
       var canonicalizedForm = await suite.expandAndCanonicalize(graph);
-
-      // console.log(`\x1b[32m${canonicalizedForm}\x1b[0m`);
       res.status(200).send(canonicalizedForm);
 
     } catch (err) {

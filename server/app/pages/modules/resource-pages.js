@@ -6,6 +6,9 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const rp = require('request-promise');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const { dataid } = require('../../common/queries/sparql');
 
 module.exports = function (router, protector) {
 
@@ -152,6 +155,10 @@ module.exports = function (router, protector) {
           //  req.params.artifact, req.params.version)
         };
       });
+
+      // Only deliver the version graph
+      var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
+      data.version = [ versionGraph ];
 
       if (data.version == null) {
         next('route');
