@@ -20,7 +20,7 @@
       }
 
       .databus-no-content {
-        background-color: #f3f3f3;
+        background-color: #f6f6f6;
         color: #9d9d9d;
         font-size: 18px;
         width: 100%;
@@ -151,7 +151,19 @@
 
         </div>
         <div ng-if="tabs.activeTab == 0">
-          <div ng-if="!group.hasData">
+
+          <div style="text-align:center" ng-if="isLoading">
+            <div class="loading-rect placeholder-large">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="!isLoading && !group.hasData">
             <div class="databus-no-content">
               <p>There are no datasets associated with this group!</p>
             </div>
@@ -171,7 +183,18 @@
         </div>
         <div ng-if="tabs.activeTab == 1">
 
-          <div ng-if="!group.hasData">
+          <div style="text-align:center" ng-if="isLoading">
+            <div class="loading-rect placeholder-large">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="!isLoading && !group.hasData">
             <div class="databus-no-content">
               <p>There are no datasets associated with this group!</p>
             </div>

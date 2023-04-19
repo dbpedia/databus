@@ -166,6 +166,7 @@ module.exports = function (router, protector) {
   });
 
 
+  /*
   router.get('/system/pages/artifacts-by-group', protector.protect(), async function (req, res, next) {
 
     try {
@@ -185,7 +186,7 @@ module.exports = function (router, protector) {
       console.log(err);
       res.status(500).send(err);
     }
-  });
+  });*/
 
 
 

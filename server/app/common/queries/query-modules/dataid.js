@@ -225,6 +225,7 @@ instance.getVersionsByArtifact = async function (account, group, artifact) {
 instance.getArtifactsByGroup = async function (account, group) {
   // Get a sanitized account uri
   let groupUri = UriUtils.createResourceUri([account, group]);
+  
   if (groupUri == null) {
     return null; // TODO throw error?
   }

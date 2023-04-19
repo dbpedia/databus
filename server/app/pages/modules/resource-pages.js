@@ -55,23 +55,47 @@ module.exports = function (router, protector) {
     return res.redirect('/' + req.params.account + '#apps');
   });
 
+  router.get('/app/group/get-artifacts', async function (req, res, next) {
+    try {
+      var splits = UriUtils.splitResourceUri(req.query.uri);
+      var accountName = splits[0];
+      var groupName = splits[1];
+
+      let cacheKey = `cache_key_artifacts__${accountName}_${groupName}`;
+
+      let artifactData = await cache.get(cacheKey, async () => {
+        return await sparql.dataid.getArtifactsByGroup(accountName, groupName);
+      });
+
+      res.status(200).send(artifactData);
+    } catch (err) {
+      res.status(400).send("Bad query");
+    }
+  });
+
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
-      let auth = ServerUtils.getAuthInfoFromRequest(req);
-      let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
+      // let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
 
-      if (groupData == null) {
+      let cacheKey = `cache_key_${req.params.account}_${req.params.group}`;
+      let data = await cache.get(cacheKey, async () => {
+        return {
+          group: await sparql.dataid.getGroup(req.params.account, req.params.group)
+        };
+      });
+
+      if (data.group == null) {
         next('route');
         return;
       }
 
-      var title = groupData.title != null ? groupData.title : UriUtils.uriToLabel(groupData.uri);
-      let artifactData = await sparql.dataid.getArtifactsByGroup(req.params.account, req.params.group);
+      data.auth = ServerUtils.getAuthInfoFromRequest(req);
+      var title = data.group.title != null ? data.group.title : UriUtils.uriToLabel(data.group.uri);
 
       res.render('group', {
         title: title,
-        data: { auth: auth, group: groupData, artifacts: artifactData }
+        data: data,
       });
 
     } catch (err) {
@@ -158,7 +182,7 @@ module.exports = function (router, protector) {
 
       // Only deliver the version graph
       var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
-      data.version = [ versionGraph ];
+      data.version = [versionGraph];
 
       data.licenseData = await licenseCache.get('dalicc', async () => {
         return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));

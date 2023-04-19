@@ -1,29 +1,40 @@
 function GroupPageController($scope, $http, $sce, $interval, collectionManager) {
 
   $scope.group = data.group;
-  $scope.artifacts = data.artifacts;
-  $scope.services = data.services;
   $scope.group.name = DatabusUtils.uriToResourceName($scope.group.uri);
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
-
   $scope.group.hasData = false;
+  $scope.isLoading = true;
 
-  for (var artifact of $scope.artifacts) {
-    if (artifact.latestVersionDate != undefined) {
-      $scope.group.hasData = true;
+
+
+  $http({
+    method: 'GET',
+    url: `/app/group/get-artifacts?uri=${encodeURIComponent($scope.group.uri)}`
+  }).then(function successCallback(response) {
+
+    $scope.artifacts = response.data;
+
+    for (var artifact of $scope.artifacts) {
+      if (artifact.latestVersionDate != undefined) {
+        $scope.group.hasData = true;
+      }
+  
+      artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
+      artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
+      artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
     }
-  }
+
+    $scope.group.hasData = $scope.artifacts.length > 0;
+    $scope.isLoading = false;
+  }, function errorCallback(response) {
+    $scope.isLoading = false;
+  });
+
 
   $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title,
     DatabusUtils.uriToTitle($scope.group.uri));
 
-
-
-  for (var artifact of $scope.artifacts) {
-    artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
-    artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
-    artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
-  }
 
   $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
 
@@ -98,11 +109,11 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
   $scope.fileSelector.config.columns = [];
-  $scope.fileSelector.config.columns.push({ field: 'artifact', label: 'Artifact', width: '32%', uriToName: true });
-  $scope.fileSelector.config.columns.push({ field: 'version', label: 'Version', width: '12%' });
-  $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '17%' });
-  $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '8%' });
-  $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '10%' });
+  $scope.fileSelector.config.columns.push({ field: 'artifact', label: 'Artifact', width: '30%', uriToName: true });
+  $scope.fileSelector.config.columns.push({ field: 'version', label: 'Version', width: '21%' });
+  $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '16%' });
+  $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '9%' });
+  $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '6%' });
 
   $scope.groupNode = new QueryNode($scope.group.uri, 'dataid:group');
   $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
@@ -260,22 +271,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.search = function () {
 
     $scope.searchResult = [];
-
-    /** 
-    if ($scope.searchInput === '') {
-      // $scope.artifacts = data.artifacts;
-
-      if ($scope.collectionManager.activeCollection == null) {
-        return;
-      }
-
-      for (var a in $scope.artifacts) {
-        var wrapper = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
-        $scope.updateArtifactState(wrapper, $scope.artifacts[a]);
-      }
-
-      return;
-    }*/
 
     var typeFilters = `&publisher=${$scope.publisherName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
 

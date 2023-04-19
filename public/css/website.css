@@ -11111,6 +11111,10 @@ a.databus-navbar-item {
   min-height: 400px;
 }
 
+.placeholder-large {
+  min-height: 600px;
+}
+
 .content-variant-tag {
   color: #aaa;
   margin-left: 5px;
