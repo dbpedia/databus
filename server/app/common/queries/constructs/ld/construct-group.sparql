@@ -4,6 +4,9 @@ CONSTRUCT
 }
 WHERE
 {
-  VALUES ?group { <%RESOURCE_URI%> }
-  ?group ?p ?o .
+  GRAPH ?g 
+  {
+    VALUES ?group { <%RESOURCE_URI%> }
+    ?group ?p ?o .
+  }
 }

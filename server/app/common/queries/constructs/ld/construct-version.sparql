@@ -16,24 +16,27 @@ CONSTRUCT
 }
 WHERE
 {
-  VALUES ?version { <%RESOURCE_URI%> }
+  GRAPH ?g 
   {
-    ?version ?p ?o .
-  }
-  UNION
-  {
-    ?version dcat:distribution ?distribution .
-    ?distribution ?distributionProperty ?distributionObject .
-  }
-  UNION
-  {
-    ?version sec:proof ?proof .
-    ?proof ?proofProperty ?proofObject .
-  }
-  UNION
-  {
-    ?distribution ?contentVariant ?contentVariantLiteral .
-    ?contentVariant ?contentVariantProperty ?contentVariantObject .
-    ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+    VALUES ?version { <%RESOURCE_URI%> }
+    {
+      ?version ?p ?o .
+    }
+    UNION
+    {
+      ?version dcat:distribution ?distribution .
+      ?distribution ?distributionProperty ?distributionObject .
+    }
+    UNION
+    {
+      ?version sec:proof ?proof .
+      ?proof ?proofProperty ?proofObject .
+    }
+    UNION
+    {
+      ?distribution ?contentVariant ?contentVariantLiteral .
+      ?contentVariant ?contentVariantProperty ?contentVariantObject .
+      ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+    }
   }
 }
