@@ -80,7 +80,8 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
 
     var groupUpdate = $scope.dataidCreator.createGroupUpdate();
 
-    var response = await $http.put($scope.group.uri, groupUpdate);
+    var relativeUri = new URL($scope.group.uri).pathname;
+    var response = await $http.put(relativeUri, groupUpdate);
 
     if (response.status == 200) {
       $scope.group.title = $scope.formData.group.title;

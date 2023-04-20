@@ -1,62 +1,55 @@
 <div>
-  <div class="file-browser-settings">
-    
-    <div style="display: flex">
 
-      <div class="field has-addons vis-picker" style="margin: 0">
-
-        <div class="control">
-          <div class="button" ng-click="$ctrl.activeTab = 0" ng-class="{ 'is-active' : $ctrl.activeTab == 0 }">
-            Table
-          </div>
-        </div>
-        <div class="control">
-          <div class="button" ng-click="$ctrl.activeTab = 1" ng-class="{ 'is-active' : $ctrl.activeTab == 1 }">
-            List
-          </div>
-        </div>
-        <div class="control">
-          <div class="button" ng-click="$ctrl.activeTab = 2" ng-class="{ 'is-active' : $ctrl.activeTab == 2 }">
-            Query
-          </div>
-        </div>
-
-
-      </div>
-
-
+  <div class="placeholder-large databus-no-content" ng-if="$ctrl.isLoading">
+    <div class="lds-ellipsis">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-    <div style="display: flex; align-items: center;">
-      <div ng-if="!$ctrl.isLoading" style="margin-right: 1em;">{{ $ctrl.numFiles }} file(s) / {{
-        $ctrl.totalSize }}</div>
-
-        
-      <collection-editor-widget selection='$ctrl.node'></collection-editor-widget>
-    </div>
-
   </div>
 
-  <!-- Table view tab -->
-  <div ng-if="$ctrl.activeTab == 0">
-    <div ng-if="$ctrl.isLoading" style="text-align:center">
-      <div class="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+  <div ng-if="!$ctrl.isLoading">
+
+    <div class="file-browser-settings">
+      <div style="display: flex">
+        <div class="field has-addons vis-picker" style="margin: 0">
+          <div class="control">
+            <div class="button" ng-click="$ctrl.activeTab = 0" ng-class="{ 'is-active' : $ctrl.activeTab == 0 }">
+              Table
+            </div>
+          </div>
+          <div class="control">
+            <div class="button" ng-click="$ctrl.activeTab = 1" ng-class="{ 'is-active' : $ctrl.activeTab == 1 }">
+              List
+            </div>
+          </div>
+          <div class="control">
+            <div class="button" ng-click="$ctrl.activeTab = 2" ng-class="{ 'is-active' : $ctrl.activeTab == 2 }">
+              Query
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div ng-if="!$ctrl.isLoading" style="margin-right: 1em;">{{ $ctrl.numFiles }} file(s) / {{
+          $ctrl.totalSize }}</div>
+        <collection-editor-widget selection='$ctrl.node'></collection-editor-widget>
       </div>
     </div>
-    <div ng-if="!$ctrl.isLoading">
-      <table class="table is-fullwidth" style="table-layout: fixed;">
+
+    <!-- Table view tab ng-style="{ 'width' : column.width }" -->
+    <div ng-if="$ctrl.activeTab == 0">
+      <table class="table is-fullwidth" >
         <tr style="cursor:pointer;">
-          <th ng-repeat='column in $ctrl.config.columns' ng-style="{ 'width' : column.width }"
+          <th ng-repeat='column in $ctrl.config.columns' 
             ng-click="$ctrl.sortBy(column.field + '.value')">{{ column.label }}</th>
           <th ng-click="$ctrl.sortBy('size.numericalValue')" style="text-align: right;">Download</th>
         </tr>
         <tr style="position:relative;"
           ng-repeat-start="binding in $ctrl.queryResult.bindings | limitTo:$ctrl.tableLimit | orderBy:$ctrl.sortProperty:$ctrl.sortReverse">
 
-          <td ng-repeat='column in $ctrl.config.columns' style="cursor:pointer"
+          <td ng-repeat='column in $ctrl.config.columns' style="cursor:pointer;"
             ng-click="binding.epxanded = !binding.epxanded">
             <div ng-if="$first" style="margin-right:1em;  cursor:pointer;"
               ng-class="{ right : !binding.epxanded, down : binding.epxanded }" class="arrow"></div>{{
@@ -64,7 +57,6 @@
           </td>
           <td style="text-align: right;">
             {{ $ctrl.formatUploadSize(binding.size.numericalValue) }}
-            <!--div class="group-info" style="margin-right: 1em;"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path fill="#b5b5b5" d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm.5 17h-1v-9h1v9zm-.5-12c.466 0 .845.378.845.845 0 .466-.379.844-.845.844-.466 0-.845-.378-.845-.844 0-.467.379-.845.845-.845z"/></svg></div>-->
             <a target="_blank" href="{{ $ctrl.createRelativeUri(binding.file.value) }}"><svg
                 style="margin-left:1em;margin-bottom:-.4em;" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
                 fill-rule="evenodd" clip-rule="evenodd">
@@ -74,7 +66,7 @@
           </td>
         </tr>
         <tr ng-repeat-end ng-if="binding.epxanded">
-          <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0;">
+          <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0; max-width: 0px;">
             <div>
               <pre ng-if="binding.preview.value != null">{{ binding.preview.value }}</pre>
               <pre ng-if="binding.preview.value == null">Preview could not be loaded</pre>
@@ -87,15 +79,16 @@
           ng-if="$ctrl.tableLimit!=null && $ctrl.queryResult.bindings.length > $ctrl.tableLimit">Show All</div>
       </div>
     </div>
-  </div>
 
-  <div class="distribution-list" ng-if="$ctrl.activeTab == 1">
-    <textarea class="textarea" rows="40">{{ $ctrl.queryResult.uriList }}</textarea>
-  </div>
-
-  <div class="distribution-query" ng-if="$ctrl.activeTab == 2">
-    <div class="disabled-yasqe">
-      <yasqe-text query="$ctrl.fileQuery"></yasqe-text>
+    <div class="distribution-list" ng-if="$ctrl.activeTab == 1">
+      <textarea class="textarea" rows="40">{{ $ctrl.queryResult.uriList }}</textarea>
     </div>
+
+    <div class="distribution-query" ng-if="$ctrl.activeTab == 2">
+      <div class="disabled-yasqe">
+        <yasqe-text query="$ctrl.fileQuery"></yasqe-text>
+      </div>
+    </div>
+
   </div>
 </div>

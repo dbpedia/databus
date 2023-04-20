@@ -69,6 +69,11 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
 
     $scope.licenseQuery = "";
     $scope.filterLicenses = function (licenseQuery) {
+
+      if (data.licenseData == null) {
+        return;
+      }
+
       // billo-suche mit lowercase und tokenization 
       var tokens = licenseQuery.toLowerCase().split(' ');
       $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {
@@ -132,39 +137,60 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
 
   $scope.saveVersion = async function () {
 
-    if ($scope.dataidCreator == null) {
-      return;
-    }
+    try {
+      if ($scope.dataidCreator == null) {
+        return;
+      }
+      var relativeUri = new URL($scope.version.uri).pathname;
 
-    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING,
-      $scope.formData.version.title);
-    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_ABSTRACT, DatabusUris.XSD_STRING,
-      $scope.formData.version.abstract);
-    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
-      $scope.formData.version.description);
+      var response = await $http({
+        method: 'GET',
+        url: relativeUri,
+        headers: {
+          'Accept': 'application/ld+json',
+          'X-Jsonld-Formatting': 'flatten'
+        }
+      });
 
-    JsonldUtils.setLink($scope.versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
+      var graphs = response.data;
+      var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATAID_VERSION);
 
-    JsonldUtils.setLiteral($scope.versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
-      $scope.formData.version.attribution);
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING,
+        $scope.formData.version.title);
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_ABSTRACT, DatabusUris.XSD_STRING,
+        $scope.formData.version.abstract);
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
+        $scope.formData.version.description);
 
-    if ($scope.formData.version.wasDerivedFrom) {
-      JsonldUtils.setLink($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM,
-        $scope.formData.version.wasDerivedFrom);
-    }
+      JsonldUtils.setLink(versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
 
-    var response = await $http.put($scope.version.uri, data.version);
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
+        $scope.formData.version.attribution);
 
-    if (response.status == 200) {
-      $scope.version.title = $scope.formData.version.title;
-      $scope.version.abstract = $scope.formData.version.abstract;
-      $scope.version.description = $scope.formData.version.description;
-      $scope.version.license = $scope.formData.version.license;
-      $scope.version.attribution = $scope.formData.version.attribution;
-      $scope.version.wasDerivedFrom = $scope.formData.version.wasDerivedFrom;
+      if ($scope.formData.version.wasDerivedFrom) {
+        JsonldUtils.setLink(versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM,
+          $scope.formData.version.wasDerivedFrom);
+      }
 
-      DatabusAlert.alert($scope, true, "Version Saved!");
-      $scope.$apply();
+
+      var relativeUri = new URL($scope.version.uri).pathname;
+
+      console.log(graphs);
+      var response = await $http.put(relativeUri, graphs);
+
+      if (response.status == 200) {
+        $scope.version.title = $scope.formData.version.title;
+        $scope.version.abstract = $scope.formData.version.abstract;
+        $scope.version.description = $scope.formData.version.description;
+        $scope.version.license = $scope.formData.version.license;
+        $scope.version.attribution = $scope.formData.version.attribution;
+        $scope.version.wasDerivedFrom = $scope.formData.version.wasDerivedFrom;
+
+        DatabusAlert.alert($scope, true, "Version Saved!");
+        $scope.$apply();
+      }
+    } catch (err) {
+      DatabusAlert.alert($scope, false, "Failed to save version!");
     }
   }
 

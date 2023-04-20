@@ -137,10 +137,7 @@ function FacetsViewController($http, $scope) {
           var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
           result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
             = DatabusCollectionUtils.uriToName(value);
-
         }
-
-
       }
 
       // Facet setting in this view is
@@ -169,23 +166,28 @@ function FacetsViewController($http, $scope) {
 
           var value = facetData.values[v];
 
-          var facetSetting = {
+          ctrl.viewModel[key].visibleFacetSettings.push({
             value: value,
             checked: false,
             isOverride: false
-          };
-
-          ctrl.viewModel[key].visibleFacetSettings.push(facetSetting);
-
-          if (v >= ctrl.maxEntries - 1)
-            break;
+          });
         }
+
+        ctrl.viewModel[key].visibleFacetSettings.sort();
+
+        // Show latest versions first
+        if(key == DatabusUris.DCT_HAS_VERSION) {
+          ctrl.viewModel[key].visibleFacetSettings.reverse(); 
+        }
+
+        // Only show the top few
+        var length = ctrl.viewModel[key].visibleFacetSettings.length;
+        ctrl.viewModel[key].visibleFacetSettings.length = Math.min(ctrl.maxEntries, length);
       }
 
+      // If we show the browser for a version, remove the version facet
       if (ctrl.resourceType == 'version') {
-
         delete ctrl.viewModel[DatabusUris.DCT_HAS_VERSION];
-
       }
 
       // Add the "Latest Version" facet to the visible settings of the version facet
@@ -213,8 +215,6 @@ function FacetsViewController($http, $scope) {
             }
           }
         }
-
-
 
         // If we're a group node, check for artifact nodes and add them as facets
         if (ctrl.resourceType == 'group') {

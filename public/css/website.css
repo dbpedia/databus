@@ -9734,16 +9734,16 @@ label.panel-block:hover {
 }
 
 .is-version path {
-  fill: #65bdb2;
+  fill: #76bfb6;
 }
 .is-version path.is-white {
   fill: #fff;
 }
 .is-version.title {
-  color: #65bdb2;
+  color: #76bfb6;
 }
 .is-version.tag:not(body) {
-  background-color: #65bdb2;
+  background-color: #76bfb6;
   color: #fff;
 }
 .is-version.databus-banner {
@@ -11105,6 +11105,16 @@ a.databus-navbar-item {
   font-weight: bolder;
   margin: 0;
   line-height: 1em;
+}
+
+.databus-no-content {
+  background-color: #f6f6f6;
+  color: #9d9d9d;
+  font-size: 18px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .placeholder-medium {

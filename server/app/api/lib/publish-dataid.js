@@ -26,17 +26,20 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
 
   for (var distribution of distributions) {
 
-    
+
     // Only fetch when there is something missing!
-    if(!alwaysFetch) {
+    if (!alwaysFetch) {
       var needsFetching = false;
 
       needsFetching |= distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == null;
       needsFetching |= distribution[DatabusUris.DATAID_COMPRESSION] == null;
       needsFetching |= distribution[DatabusUris.DATAID_SHASUM] == null;
       needsFetching |= distribution[DatabusUris.DCAT_BYTESIZE] == null;
-      logger.debug(versionGraphUri, `File properties for part <${distribution[DatabusUris.JSONLD_ID]}> are already specified.`, distribution);
-      continue;
+
+      if (!needsFetching) {
+        logger.debug(versionGraphUri, `File properties for part <${distribution[DatabusUris.JSONLD_ID]}> are already specified.`, distribution);
+        continue;
+      }
     }
 
     var downloadURL = distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID];
@@ -48,17 +51,17 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
     }
 
     logger.debug(versionGraphUri, `Analyzed part <${distribution[DatabusUris.JSONLD_ID]}>`, analyzeResult.data);
-    
 
-    if(distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
+
+    if (distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
       distribution[DatabusUris.DATAID_FORMAT_EXTENSION] = [{}];
-      distribution[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE] 
+      distribution[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE]
         = analyzeResult.data.formatExtension;
     }
 
-    if(distribution[DatabusUris.DATAID_COMPRESSION] == undefined) {
+    if (distribution[DatabusUris.DATAID_COMPRESSION] == undefined) {
       distribution[DatabusUris.DATAID_COMPRESSION] = [{}];
-      distribution[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE] 
+      distribution[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE]
         = analyzeResult.data.compression;
     }
 
@@ -244,7 +247,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     // Run construct query
     var dataidGraphs = await constructInput(expandedGraph, versionGraphUri, logger);
     versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
-  
+
     if (dataidGraphs == null) {
       logger.debug(versionGraphUri, `Construct query did not yield any triples. Nothing to publish.`, null);
       return 200;
@@ -263,34 +266,41 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     autocompleter.autocomplete(dataidGraphs, logger);
     logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
-   
-    logger.debug(versionGraphUri, `fetch-file-properties is set to ${fetchFileProperties}`, null);
-     // Verify parts: SHA256SUM, BYTESIZE, etc
 
-     if(fetchFileProperties == true || fetchFileProperties == null) {
+    logger.debug(versionGraphUri, `fetch-file-properties is set to ${fetchFileProperties}`, null);
+
+
+    // Verify parts: SHA256SUM, BYTESIZE, etc
+    if (fetchFileProperties == true || fetchFileProperties == null) {
 
       if (!(await verifyDataidParts(dataidGraphs, fetchFileProperties == true, logger))) {
         return 400;
-      } 
-     }
-    
+      }
+    }
 
     // Run CV validator to validate content variant setup
     var distributionGraphs = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
     var cvGraphs = JsonldUtils.getSubPropertyGraphs(dataidGraphs, DatabusUris.DATAID_CONTENT_VARIANT);
+
+    // Apply data fix for byteSize, so omitting DECIMAL passes the SHACL test
+    for(var distribution of distributionGraphs) {
+      if(distribution[DatabusUris.DCAT_BYTESIZE] != null && distribution[DatabusUris.DCAT_BYTESIZE].length > 0) {
+        distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
+      }
+    }
 
     var contentVariantUris = [];
 
     contentVariantUris.push(DatabusUris.DATAID_FORMAT_EXTENSION);
     contentVariantUris.push(DatabusUris.DATAID_COMPRESSION);
 
-    for(var cvGraph of cvGraphs) {
+    for (var cvGraph of cvGraphs) {
       contentVariantUris.push(cvGraph[DatabusUris.JSONLD_ID]);
     }
 
     var contentVariantErrors = DatabusUtils.cvSplit(distributionGraphs, contentVariantUris, 0);
 
-    if(contentVariantErrors.length > 0) {
+    if (contentVariantErrors.length > 0) {
       logger.error(versionGraphUri, `Invalid content variant setup. Two or more files are not distinguishable by either dataid:formatExtension, dataid:compression or any custom content variant.`, contentVariantErrors);
       return 400;
     }
@@ -334,7 +344,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
       return 500;
     }
 
-    
+
     logger.info(versionGraphUri, `Successfully published dataset <${versionGraphUri}>.`, compactedGraph);
     return 200;
 

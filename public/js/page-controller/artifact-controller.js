@@ -115,7 +115,8 @@ function ArtifactPageController($scope, $http, $sce, collectionManager) {
 
     var artifactUpdate = $scope.dataidCreator.createArtifactUpdate();
 
-    var response = await $http.put($scope.artifact.uri, artifactUpdate);
+    var relativeUri = new URL($scope.artifact.uri).pathname;
+    var response = await $http.put(relativeUri, artifactUpdate);
 
     if (response.status == 200) {
       $scope.artifact.title = $scope.formData.artifact.title;

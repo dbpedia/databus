@@ -13,6 +13,7 @@ function FileBrowserController($http, $scope) {
     ctrl.tableLimit = 20;
     ctrl.sortProperty = 'version.value';
     ctrl.sortReverse = false;
+    ctrl.isLoading = true;
     ctrl.queryResult = {};
   }
 
@@ -61,7 +62,7 @@ function FileBrowserController($http, $scope) {
     }
 
     if(value == "") {
-      return "---";
+      return "none";
     }
 
     return value.substr(0, value.length - 2);
@@ -120,27 +121,6 @@ function FileBrowserController($http, $scope) {
     } catch(e) {
       console.log(e);
     }
-    /*
-    var url = "https://databus.dbpedia.org/repo/sparql";
-    var queryUrl = url + "?query=" + encodeURIComponent(query);
-    var requestRevision = this.lastRequestRevision;
-
-    $.ajax({
-       url: queryUrl,
-       data: {
-           format: 'json'
-       },
-       error: function() {
-         alert("error");
-       },
-       dataType: 'jsonp',
-       success: function(data) {
-
-
-         
-       },
-       type: 'GET'
-    });*/
   }
 
   /**
@@ -154,16 +134,6 @@ function FileBrowserController($http, $scope) {
       ctrl.fileQuery = ctrl.query;
       ctrl.querySparql(ctrl.fullQuery);
     }
-    /* q
-    if(ctrl.previousLength == undefined || Object.keys(ctrl.facetSettings).length != ctrl.previousLength) {
-      ctrl.previousLength =  Object.keys(ctrl.facetSettings).length;
-
-      
-      ctrl.fileQuery = ctrl.fileQueryBuilder.createArtifactQuery(ctrl.resourceUri, ctrl.parentFacetSettings, ctrl.facetSettings);
-
-      var query = ctrl.fullQueryBuilder.createArtifactQuery(ctrl.resourceUri, ctrl.parentFacetSettings, ctrl.facetSettings);
-      ctrl.querySparql(query);
-    }*/
   }
 }
 

@@ -120,7 +120,7 @@ module.exports = function (router, protector) {
   });
 
 
-  var facetsCache = new DatabusCache(5);
+  var facetsCache = new DatabusCache(15, 6000);
 
   /**
    * Load facets for a given resource (group, artifact or version[to be implemented])

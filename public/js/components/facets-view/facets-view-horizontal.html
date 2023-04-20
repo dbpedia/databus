@@ -3,11 +3,6 @@
   <div  ng-if="$ctrl.isLoading" style="text-align:center" >
     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
   </div>
-
-  <!--pre>{{ $ctrl.parentSettings }}</pre>
-  <pre>{{ $ctrl.settings }}</pre>
-
-  <pre>{{ $ctrl.facets }}</pre-->
   <div ng-repeat="facet in $ctrl.viewModel" ng-if="!$ctrl.isLoading && facet.visibleFacetSettings.length > 0">
     <h1 class="title is-6">{{ facet.label }}</h1>
     <div ng-repeat="facetValue in facet.visibleFacetSettings">

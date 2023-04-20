@@ -19,16 +19,7 @@
         margin-left: 24px;
       }
 
-      .databus-no-content {
-        background-color: #f6f6f6;
-        color: #9d9d9d;
-        font-size: 18px;
-        width: 100%;
-        min-height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    
     </style>
 
     <section class="hero is-medium-small databus-banner is-group">
@@ -142,18 +133,11 @@
                 </div>
               </div>
             </div>
-
-
           </div>
-
-
-
-
         </div>
         <div ng-if="tabs.activeTab == 0">
-
-          <div style="text-align:center" ng-if="isLoading">
-            <div class="loading-rect placeholder-large">
+          <div style="padding-top: 0.75rem" ng-if="isLoading">
+            <div class="databus-no-content placeholder-large">
               <div class="lds-ellipsis">
                 <div></div>
                 <div></div>

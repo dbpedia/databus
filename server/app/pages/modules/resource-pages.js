@@ -14,7 +14,7 @@ module.exports = function (router, protector) {
 
   var cache = new DatabusCache(10);
 
-  var licenseCache = new DatabusCache(60 * 60);
+  var licenseCache = new DatabusCache(3600, 100000);
 
   router.get('/:account', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -184,9 +184,13 @@ module.exports = function (router, protector) {
       var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
       data.version = [versionGraph];
 
-      data.licenseData = await licenseCache.get('dalicc', async () => {
-        return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
-      });
+      try {
+        data.licenseData = await licenseCache.get('dalicc', async () => {
+          return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
+        });
+      } catch(err) {
+        data.licenseData = null;
+      }
 
       if (data.version == null) {
         next('route');

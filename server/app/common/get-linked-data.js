@@ -22,6 +22,13 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
   });
 
   var accept = req.get('Accept');
+  var formatting = req.get('X-Jsonld-Formatting');
+
+  console.log(formatting);
+
+  if(accept == undefined) {
+    accept = "application/ld+json";
+  }
 
   // Do a POST request with the passed query
   var options = {
@@ -30,7 +37,7 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
     body: `query=${encodeURIComponent(query)}`,
     headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      "Accept": req.get('Accept')
+      "Accept": accept
     },
   };
 
@@ -40,15 +47,20 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
 
       var result = JSON.parse(await rp(options));
 
-      // Single out jsonld in order to compact the result with the databus context
-      var compacted = await jsonld.compact(result, defaultContext);
+      if(formatting == undefined || formatting == 'compacted') {
+        // Single out jsonld in order to compact the result with the databus context
+        var result = await jsonld.compact(result, defaultContext);
 
-      if (process.env.DATABUS_CONTEXT_URL != undefined) {
-        compacted[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+        if (process.env.DATABUS_CONTEXT_URL != undefined) {
+          result[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+        }
+      }
+      else if(formatting == 'flatten') {
+        var result = await jsonld.flatten(result);
       }
 
       res.set('Content-Type', 'application/ld+json');
-      res.status(200).send(`${JSON.stringify(compacted, null, 3)}\n`);
+      res.status(200).send(`${JSON.stringify(result, null, 3)}\n`);
     } catch (err) {
       res.status(500).send('Encountered a database error when trying to fetch the resource.');
     }
