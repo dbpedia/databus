@@ -1,4 +1,4 @@
-# Configuration
+# Server Configuration
 
 ## Mandatory Configuration
 
@@ -14,7 +14,7 @@ If you would like to use the internal reverse proxy with automatic HTTPS (certif
 
 ## Advanced Configuration
 
-The configuration can be adjusted by modifying the docker-compose.yml file directly. The compose file starts 3 docker containers.
+The configuration can be adjusted by modifying the `docker-compose.yml` file directly. The compose file starts 3 docker containers.
 
 ### Databus Container
 

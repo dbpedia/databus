@@ -4,7 +4,7 @@
 
 
 Example (JSON-LD):
-```javascript
+```json
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
 	"@type": "Part",

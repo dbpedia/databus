@@ -62,7 +62,7 @@ we need to publish our data somewhere and make it publicly available.
 
 **In this step we need to obtain a URI or several URIs pointing to the actual data files for download.**
 
-As an example here we can publish this Readme.md file. So our URI is: 
+As an example here we can publish a single file, e.g. this Readme.md. So our URI is: 
 ```
 https://raw.githubusercontent.com/dbpedia/databus/master/README.md
 ```
@@ -111,30 +111,32 @@ Fill in the form for publishing and submit.
 -> here links on docs with detailed description of how to publish (api etc)
 
 ### Querying Metainformation
-After we have some files published, we can query for them.
+After we have some files published, we can query for them. Databus offers two 
+mechanisms for that: a SPARQL endpoint and Collections. 
+
+See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
+
+
 -> collections
 -> after publishing we can query the data
 ### Mods
--> describe mods?
+Databus offers metadata extensions using mods. 
+You can read about them more in detail [here](docs/mods.md).
 
 ## Use Cases
-Here are a few use cases for Databus:
+Databus can also be used in the following use cases:
  * [Meta registries](docs/building-meta-registries.md)
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 ## More Features
 ### Guidelines on Structuring Your Data for Publishing
- -> Publish the data in some publicly available space
- -> here minimal example of the dataid to publish 
- -> then the description of how to structure the data, data id and its fields
- -> here links the docs with detailed guidelines on how to structure the data
+Firstly, you should publish your data in some publicly available space for downloading.
+[Here](docs/model.md) you can find detailed explanation on our 
+suggestions to structuring your datasets.
 ### Instructions on Running the Databus Server
- -> configs etc
+For configuring your Databus server please refer [here](docs/configuration.md).
 ### API
- -> examples 
-### More on Querying
--> examples of useful queries
-### Collections and Mods
--> describe what is it and how to use
+Instead of using GUI, you can automate your publishing and data retrieving process
+ using out API. Refer to it [here](docs/api.md).
  
 ## License
 
