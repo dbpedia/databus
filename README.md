@@ -108,14 +108,17 @@ After you log in, click on your account's icon and then `Publish Data`.
 
 Fill in the form for publishing and submit.
 
--> here links on docs with detailed description of how to publish (api etc)
+-> better describe publishing
 
+See more on how to organise ans structure your data [here](docs/model.md).
+
+To automate publishing you can use our http API as well, 
+you can check it out [here](docs/api.md).
 ### Querying Metainformation
 After we have some files published, we can query for them. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
 See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
-
 
 -> collections
 -> after publishing we can query the data
@@ -127,14 +130,16 @@ You can read about them more in detail [here](docs/mods.md).
 Databus can also be used in the following use cases:
  * [Meta registries](docs/building-meta-registries.md)
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
-## More Features
-### Guidelines on Structuring Your Data for Publishing
+ 
+## Guidelines on Structuring Your Data for Publishing
 Firstly, you should publish your data in some publicly available space for downloading.
 [Here](docs/model.md) you can find detailed explanation on our 
 suggestions to structuring your datasets.
-### Instructions on Running the Databus Server
+
+## Instructions on Running the Databus Server
 For configuring your Databus server please refer [here](docs/configuration.md).
-### API
+
+## API
 Instead of using GUI, you can automate your publishing and data retrieving process
  using out API. Refer to it [here](docs/api.md).
  
