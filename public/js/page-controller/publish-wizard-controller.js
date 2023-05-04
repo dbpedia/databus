@@ -22,6 +22,8 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.loadRequestCount = 0;
   $scope.texts = data.texts;
 
+  $scope.licenseData = data.licenseData;
+
   $scope.nerdMode = {};
   $scope.nerdMode.enabled = false;
   $scope.nerdMode.customJson = "";
@@ -83,6 +85,11 @@ function PublishWizardController($scope, $http, focus, $q) {
 
   $scope.licenseQuery = "";
   $scope.filterLicenses = function (licenseQuery) {
+
+    if(data.licenseData == undefined) {
+      return;
+    }
+
     // billo-suche mit lowercase und tokenization 
     var tokens = licenseQuery.toLowerCase().split(' ');
     $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {

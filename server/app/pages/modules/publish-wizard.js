@@ -11,20 +11,27 @@ module.exports = function (router, protector) {
 
   router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
+    var dalicc = null;
+
+    try {
+      dalicc = await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000');
+      dalicc = JSON.parse(dalicc);
+    } catch(err) {
+      console.log("DALICC SERVICE APPEARS TO BE DOWN!");
+    }
+
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
-
-      var dalicc = await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000');
       var publishers = await sparql.accounts.getPublishersByAccount(auth.info.accountName);
       var texts = require('../publish-wizard-texts.json');
 
       res.render('publish-wizard', {
         title: 'Publish Data',
-        data: { auth: auth, publisherData: publishers, licenseData: JSON.parse(dalicc), texts: texts }
+        data: { auth: auth, publisherData: publishers, licenseData: dalicc, texts: texts }
       });
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      res.status(500).send(err);
     }
   });
 
