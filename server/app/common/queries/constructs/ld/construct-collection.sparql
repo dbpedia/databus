@@ -1,0 +1,12 @@
+CONSTRUCT
+{
+  ?collection ?p ?o .
+}
+WHERE
+{
+  GRAPH ?g 
+  {
+    VALUES ?collection { <%RESOURCE_URI%> }
+    ?collection ?p ?o .
+  }
+}

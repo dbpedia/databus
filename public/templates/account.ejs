@@ -3,7 +3,11 @@
 
   <script src="/min/d3.min.js"></script>
 
+
   <div ng-controller="AccountPageController">
+
+
+    <databus-alert></databus-alert>
     <style>
       .profile-picture {
         background-color: white;
@@ -77,7 +81,8 @@
             ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="goToTab('settings')">
             <div class="section-label">
               <databus-icon style="margin-right:12px;" shape="'settings'" size="24">
-              </databus-icon>Settings</div>
+              </databus-icon>Settings
+            </div>
           </div>
         </div>
 
@@ -150,6 +155,73 @@
 
       .columns .column {
         padding: 0.5em;
+      }
+
+      .ce-collection-list-header {
+        display: flex;
+        margin-bottom: 1em;
+      }
+
+      .ce-collection-list-header input {
+        max-width: 800px;
+        margin-right: .5em;
+      }
+
+      .ce-collection-list {
+      }
+
+      .ce-collection-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em;
+        margin-bottom: 1em;
+        border-radius: .25em;
+        border: 1px solid #dbdbdb;
+      }
+
+      .ce-collection-list-item:not(:last-child) {
+        border-bottom: 1px solid #dbdbdb;
+      }
+
+
+      .ce-flex-filler {
+        flex: 1;
+      }
+
+
+      .ce-collection-list-item h1 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-right: .5em;
+      }
+
+      .ce-collection-list-item .ce-tool-icons {
+        display: flex;
+        margin-right: 2em;
+      }
+
+      .ce-collection-list-item-header {
+        align-items: center;
+        margin-bottom: 1em;
+        display: flex;
+      }
+
+      .ce-collection-list-item-body ul {
+        display: flex;
+      }
+
+      .ce-collection-list-item-body p {
+        margin-bottom: 0.5em;
+      }
+
+      .ce-collection-list-item-body li {
+        margin-right: 2em;
+      }
+
+      .ce-placeholder-text {
+        color: rgb(170, 170, 170);
       }
     </style>
 
@@ -225,7 +297,7 @@
 
                     </div>
 
-                    
+
                   </div>
                 </div>
               </div>
@@ -257,18 +329,17 @@
           <div style="display: flex; align-items: center; margin-top: 1em; margin-bottom: 1em;">
             <div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>
             <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-            <entity-card label="group.title" uri="group.uri" type="'Group'" >
+            <entity-card label="group.title" uri="group.uri" type="'Group'">
             </entity-card>
           </div>
 
           <div ng-if="group.isExpanded && group.artifacts.length > 0" style="border-left: 1px solid #dbdbdb; 
           margin-left: 74px; padding-left: 24px; padding-top: 16px; padding-bottom: 16px; margin-bottom: 1em;">
 
-            <div ng-repeat="artifact in group.artifacts" >
+            <div ng-repeat="artifact in group.artifacts">
 
               <div class="node">
-                <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'"
-                  desc="artifact.abstract">
+                <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
                 </entity-card>
               </div>
 
@@ -278,27 +349,78 @@
           <div ng-if="!$last" style="margin: 1.5em 1.5em;" class="is-divider"></div>
         </div>
 
-      
+
       </div>
       <!-- COLLECTIONS -->
       <div class="container" ng-if="tabViewModel.activeTab == 2">
 
-        <div class="field is-grouped" style="margin-bottom: 2em">
-
-          <p class="control" style="flex: 1;">
-            <search search-input="collectionSearchInput" settings="collectionSearchSettings">
-          </search>
-          </p>
-        </div>
-
-        <div ng-if="collectionSearchInput == ''" class="hierarchy" ng-repeat="collection in collectionsData.collections">
-          <div style="margin-top: 24px; margin-bottom: 24px;">
-            <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract">
-            </entity-card>
+        <div ng-if="profileData.isOwn">
+          <div class="ce-collection-list-header">
+            <input class="input" ng-model="search.title" placeholder="Search collections...">
+            <div class="button">Sort</div>
+            <div class="ce-flex-filler"></div>
+            <div class="button is-collection">Create New</div>
           </div>
-          <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
-        </div>
 
+          <div class="ce-collection-list">
+            <div class="ce-collection-list-item"
+              ng-repeat="collection in collectionManager.local | collectionfilter:search.title">
+              <div>
+                <div class="ce-collection-list-item-header">
+                  <type-tag width="48" height="48" style="margin-right:12px" type="'Collection'"
+                    ng-class="{ 'grey-out' : collection.isDraft || !collection.isPublished }">
+                  </type-tag>
+                  <div>
+                    <h1>{{ collection.label }}</h1>
+                    <div class="ce-placeholder-text" ng-if="!collection.uri">Local draft</div>
+                    <uri-breadcrumbs ng-if="collection.uri" uri="collection.uri"></uri-breadcrumbs>
+                  </div>
+                </div>
+                <div class="ce-collection-list-item-body">
+                  <p class="ce-placeholder-text" ng-if="!collection.abstract">No abstract available</p>
+                  <p>{{ collection.abstract }}</p>
+                  <ul>
+                    <li>
+                      <collection-status is-published="collection.isPublished" is-draft="collection.isDraft"
+                        has-local-changes="collection.hasLocalChanges" class="ng-isolate-scope">
+                      </collection-status>
+                    </li>
+                    <li>
+                      <div ng-if="collection.issued" style="color: #aaa;">{{ formatCollectionDateFromNow(collection.issued) }}</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="ce-tool-icons">
+                <databus-icon ng-if="!collection.isDraft" style="margin-right: 3em;" shape="'clipboard'" size="24" is-clickable="true"
+                  on-click="copyUriToClipboard(collection)"></databus-icon>
+                  <databus-icon style="margin-right: 3em;" shape="'copy'" size="24" is-clickable="true"
+                  on-click="copyUriToClipboard(collection)"></databus-icon>
+                  <databus-icon style="margin-right:16px;" shape="'edit'" size="24" is-clickable="true"
+                  on-click="onEditCollectionClicked(collection)"></databus-icon>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div ng-if="!profileData.isOwn">
+          <div class="ce-collection-list-header">
+            <div class="control has-icons-left " style="flex:1;">
+              <input class="input" type="text" ng-model="search.title" placeholder="Search collections...">
+              <span class="icon is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </div>
+            <div class="button">Sort</div>
+          </div>
+          <div ng-repeat="collection in collectionsData.collections | collectionfilter:search.title">
+            <div style="margin-top: 24px; margin-bottom: 24px;">
+              <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract">
+              </entity-card>
+            </div>
+            <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
+          </div>
+        </div>
       </div>
 
 
@@ -306,7 +428,7 @@
         <% include profile %>
       </div>
 
-      
+
       </section>
     </div>
     <% include footer %>

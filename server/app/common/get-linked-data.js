@@ -47,7 +47,7 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
 
       var result = JSON.parse(await rp(options));
 
-      if(formatting == undefined || formatting == 'compacted') {
+      if(formatting == undefined || formatting == 'compacted' || formatting == 'compact') {
         // Single out jsonld in order to compact the result with the databus context
         var result = await jsonld.compact(result, defaultContext);
 

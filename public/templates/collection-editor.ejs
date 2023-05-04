@@ -1,0 +1,692 @@
+<% include header %>
+
+
+  <div ng-controller="CollectionsEditorController" ng-cloak>
+
+    <databus-alert></databus-alert>
+    <!-- Header -->
+    <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
+
+
+    <!-- NOT LOGGED IN VIEW-->
+    <div class="section" ng-if="!authenticated" style="min-height: 500px;">
+      <div class="container">
+        <p class="collection-editor-info-text">You need to be logged in to use the Databus Collection Editor.</p>
+        <br />
+        <p class="collection-editor-info-text">Don't have an account yet? Create one now!</p>
+        <br /> <br />
+        <div class="collection-editor-info-text">
+          <button class="button is-consumer" ng-click="logMeIn()" style="width: 100px; height: 40px">
+            <span class="icon has-text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                <path class="is-white"
+                  d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-5l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
+              </svg>
+            </span>
+            <span class="is-hidden-desktop-only">
+              Login
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="section" ng-if="authenticated && !hasAccount"
+      style="min-height: 600px; display: flex; align-items: center;">
+      <div class="container">
+        <p class="collection-editor-info-text">You need to create a user account in order to publish data.</p>
+        <br />
+        <div class="collection-editor-info-text">
+          <button class="button is-secondary" ng-click="createAccount()" style="width: 200px; height: 40px">
+            <span>
+              Create Account
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!--LOGGED IN VIEW-->
+
+    <div ng-if="authenticated && hasAccount" style="min-height: 500px;">
+
+      <!-- LOADING VIEW -->
+      <div class="section" ng-if="!collectionManager.isInitialized" style="text-align:center; margin: 2em;">
+        <div class="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+
+      <!-- LOADED VIEW -->
+      <div ng-if="collectionManager.isInitialized">
+
+        <style>
+          .ce-sidebar {
+            flex-basis: 20%;
+            flex-grow: 0;
+            min-height: 1000px;
+            background-color: #343a40;
+            color: white;
+            background-image: url(../img/banner-background.png);
+            background-repeat: repeat;
+            background-size: 150px;
+          }
+
+          .ce-sidebar-header {
+            padding: 16px 16px;
+            font-size: 1.1em;
+            background-color: #445462;
+          }
+
+          .ce-sidebar-caption {
+            padding: 12px 16px;
+            color: white;
+            font-weight: 600;
+            background-color: #445462;
+          }
+
+          .ce-sidebar-button {
+            padding: 12px 36px;
+            display: flex;
+            cursor: pointer;
+            position: relative;
+            align-items: center;
+          }
+
+          .ce-sidebar-gadient {
+            height: 128px;
+          }
+
+          .ce-sidebar-button:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+          }
+
+          .ce-sidebar-button.is-active {
+            background-color: #709e70
+          }
+
+          .ce-sidebar-button.is-active:hover {
+            background-color: #7caa7c
+          }
+
+          .ce-sidebar-button.is-active .ce-sidebar-button-pointer {
+            width: 0px;
+            height: 0px;
+            border-top: 24px solid transparent;
+            border-bottom: 24px solid transparent;
+            border-right: 24px solid #f9fafb;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+
+          .ce-content-active-hint {
+            background-color: rgb(233 244 231);
+            padding: 1em 1.5em;
+            margin-bottom: 1em;
+            color: #80967c;
+            border: 1px solid rgb(202 222 199);
+          }
+
+          .ce-content-header {
+            color: #68859e;
+            font-size: 1.5rem;
+            margin: 0;
+            font-family: 'PT Sans', sans-serif;
+            display: flex;
+            align-items: center;
+          }
+
+          .ce-content-hint {
+            color: #999;
+            margin-bottom: 1em;
+          }
+
+          .ce-content-collection-entry {
+            display: flex;
+            align-items: center;
+            border: 1px solid #dbdbdb;
+            border-top: none;
+            cursor: pointer;
+          }
+
+          .ce-content-collection-active-hint {
+            margin: 0px 32px;
+            width: 60px;
+            text-align: right;
+            color: rgb(142 168 137)
+          }
+
+          .ce-content-collection:last-child {
+            border-bottom: 1px solid #dbdbdb;
+          }
+
+          .ce-content-collection-entry.is-active {
+            background-color: rgb(233 244 231)
+          }
+
+          .ce-content-section {
+            display: flex;
+            border-bottom: 1px solid #dbdbdb;
+            padding: .2em 0em;
+            align-items: center;
+            font-weight: 600;
+            cursor: pointer;
+          }
+
+
+          .ce-action-bar {
+
+            display: flex;
+            align-items: center;
+            margin-bottom: 1em;
+            position: relative;
+            z-index: 1005;
+          }
+
+          .ce-action-bar div {
+            margin-right: .5em;
+          }
+
+          .ce-action-bar-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 600;
+            flex-basis: 20%;
+            flex: 1;
+            line-height: 1.5;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+          }
+
+
+          .ce-action-bar-title span {
+            margin: 0em .25em;
+          }
+
+          .ce-action-bar-content {
+            display: flex;
+            align-items: center;
+            padding: 8px 0px;
+          }
+
+          .ce-action-bar-button {
+            padding: 4px;
+            display: flex;
+            opacity: 0.9;
+            cursor: pointer;
+            align-items: center;
+          }
+
+          .ce-action-bar-button:hover {
+            opacity: 1;
+          }
+
+          .ce-action-bar-separator {
+            width: 1px;
+            height: 36px;
+            margin: 0px 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+          }
+
+          div.diagonal3:before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -33px;
+            border-top: 32px solid #cfcfcf;
+            border-left: 32px solid transparent;
+            width: 0;
+            z-index: 1;
+          }
+
+          div.inside:before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -32px;
+            border-top: 31px solid #ebebeb;
+            border-left: 31px solid transparent;
+            width: 0;
+            z-index: 2;
+          }
+
+          .ce-status-bar {
+            height: 32px;
+            background-color: #ebebeb;
+            position: absolute;
+            right: 0;
+            z-index: 1000;
+            width: 320px;
+            border-bottom: 1px solid #cfcfcf;
+            border-left: 1px solid #ebebeb;
+          }
+
+          .ce-top-section {
+            background-color: #f6f8fa;
+            width: 100%;
+            padding-top: 1.5em;
+            border-bottom: 1px solid #dbdbdb;
+          }
+
+          .ce-top-section .collection-editor-tabs {
+            margin-top: 0;
+          }
+
+
+
+          .ce-content {
+            min-height: 1000px;
+          }
+
+          .ce-collection-list-header {
+            display: flex;
+            margin-bottom: 1em;
+          }
+
+          .ce-collection-list-header input {
+            max-width: 800px;
+            margin-right: .5em;
+          }
+
+          .ce-collection-list {
+            border: 1px solid #dbdbdb;
+            border-radius: .25em;
+          }
+
+          .ce-collection-list-item {
+            cursor: pointer;
+            padding: 1em 1.2em;
+          }
+
+          .ce-collection-list-item:not(:last-child) {
+            border-bottom: 1px solid #dbdbdb;
+          }
+
+
+          .ce-flex-filler {
+            flex: 1;
+          }
+
+
+          .ce-collection-list-item h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-right: .5em;
+          }
+
+          .ce-collection-list-item-header {
+            align-items: center;
+            margin-bottom: 1em;
+          }
+
+          .ce-collection-list-item-body {
+            display: flex;
+          }
+
+          .ce-collection-list-item-body li {
+            margin-right: 2em;
+          }
+
+          .ce-placeholder-text {
+            color: rgb(170, 170, 170);
+          }
+
+          .ce-settings-box {
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+
+          }
+
+          .ce-settings-box .row {
+            padding: 1.5em;
+          }
+
+          .ce-settings-box .row:not(:last-child) {
+            border-bottom: 1px solid #dbdbdb;
+          }
+
+          .row-label {
+            font-weight: 600;
+            font-size: 1.15em;
+            margin-bottom: 0.5em
+          }
+
+          .ce-status-info {
+            color: #656d76;
+            max-width: 1000px;
+          }
+
+          .ce-settings-box-header {
+            margin-top: 2em;
+            margin-left: .5em;
+            color: #aaa;
+            text-transform: uppercase;
+            margin-bottom: .5em;
+            font-size: 1em;
+            letter-spacing: 0.1em;
+            flex: 1;
+          }
+
+          .ce-banner {
+            background-image: url(../img/banner-background.png);
+            background-repeat: repeat;
+            background-size: 150px;
+            padding: 2em 0em;
+          }
+
+          .ce-banner a {
+            color: white;
+          }
+
+          .ce-breadcrumbs {
+            font-size: 1.15em;
+            color: #656d76;
+            margin-bottom: 0.25em;
+          }
+
+          .ce-title-prefix {
+
+            font-size: 1.5em;
+            color: #343a40;
+          }
+
+          .ce-title-suffix {
+
+            font-size: 1.05em;
+            color: #c6ced5;
+          }
+
+          .ce-title {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #343a40;
+          }
+
+
+          .databus-banner.is-collection-editor {
+            background-color: #a2b7a1;
+          }
+        </style>
+
+        <div>
+
+          <div class="ce-top-section">
+
+
+            <div class="container">
+
+              <div style="display: flex; align-items: center; padding-bottom: 2.5em; padding-top: 1em;">
+
+                <databus-icon class="is-collection" color="'white'" shape="'collections'" size="48"></databus-icon>
+                <div style="margin-left: 20px;">
+                  <div class="ce-breadcrumbs">
+                    <a ng-href="/{{ accountName }}">{{ accountName }}</a>
+                    <span>»</span>
+                    <a ng-href="/{{ accountName }}/collections">collections</a>
+                  </div>
+
+                  <span class="ce-title-prefix">Editing </span><span class="ce-title">{{
+                    collectionManager.activeCollection.title }}</span>
+                  <span class="ce-title-suffix">{{
+                    collectionManager.activeCollection.uuid }}</span>
+
+                </div>
+              </div>
+
+              <div class="collection-editor-tabs">
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 0 }"
+                  ng-click="goToTab('docu')">
+                  <div class="section-label">Description</div>
+                </div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 1 }"
+                  ng-click="goToTab('content')">
+                  <div class="section-label">Content</div>
+                </div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 2 }"
+                  ng-click="goToTab('preview')">
+                  <div class="section-label">Preview</div>
+                </div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 3 }"
+                  ng-click="goToTab('query')">
+                  <div class="section-label">Query</div>
+                </div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 4 }"
+                  ng-click="goToTab('import')">
+                  <div class="section-label">Import / Export</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ce-content section">
+            <div class="container">
+
+              <!-- Description Tab -->
+              <div ng-if="session.activeTab == 0">
+                <div class="ce-action-bar">
+                  <div ng-click="saveCollection()" class="button is-collection">Save & Publish</div>
+                  <div class="button" ng-disabled="collectionManager.activeCollection.isDraft">Go to Collection Page
+                  </div>
+                </div>
+
+                <div class="ce-settings-box-header">General</div>
+                <div class="ce-settings-box">
+                  <div class="row">
+                    <div class="row-label optional">Status</div>
+                    <div style="flex: 1">
+                      <div style="margin-bottom: 0.5em">
+                        <collection-status is-published="collectionManager.activeCollection.isPublished"
+                          is-draft="collectionManager.activeCollection.isDraft"
+                          has-local-changes="collectionManager.activeCollection.hasLocalChanges"
+                          class="ng-isolate-scope">
+                        </collection-status>
+                      </div>
+                      <div style="margin-bottom: 0.75em">
+                        <div class="ce-status-info" style="margin-bottom: 0.5em">
+                          <div ng-if="collectionManager.activeCollection.isDraft">Your collection is currently a draft.
+                            That means that it is only saved in your local browser storage. It will be saved between
+                            sessions. Clearing the browser storage will delete this collection draft.</div>
+                        </div>
+                      </div>
+                      <div class="field override-checkbox" style="margin-bottom: 0em;"
+                        ng-class="{ 'is-override' : collectionManager.activeCollection.isHidden }">
+                        <input id="check--is--hidden" name="check--is--hidden" class="is-checkradio" type="checkbox"
+                          ng-model="collectionManager.activeCollection.isHidden" ng-change="onActiveCollectionChanged()">
+                        <label for="check--is--hidden" style="padding-top: 3px;">
+                          <span class="row-label">Hide Collection</span>
+                        </label>
+                      </div>
+                      <div class="ce-status-info">
+                        <div>A hidden collection will not show up in the list of collections on your account page or in
+                          any keyword search. Once published, the collection will still be accessible via its collection URI.</div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row" ng-if="!collectionManager.activeCollection.isDraft">
+                    <div class="row-label optional">Collection URI</div>
+                    <div style="flex: 1">
+                      <a ng-href="{{ collectionManager.activeCollection.uri }}">{{
+                        collectionManager.activeCollection.uri
+                        }}</a>
+                    </div>
+                  </div>
+                  <div class="row" ng-if="collectionManager.activeCollection.isDraft">
+                    <div class="row-label optional">Collection Identifier</div>
+                    <div style="flex: 1">
+                      <input type="text" class="input" ng-model="form.identifier.value" />
+                      <div>Collection will be accessible at <span style="color:#3867d6">{{ baseUrl
+                          }}/{{username}}/collections/{{form.identifier.value.length
+                          > 0 ? form.identifier.value : '...'}}</span></div>
+                      <div class="has-text-danger" ng-if="form.identifier.error">{{
+                        getStatusMessage(form.identifier.error) }}</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label optional">Title</div>
+                    <div style="flex: 1">
+                      <input class="input" type="text" ng-change="onActiveCollectionChanged()"
+                        ng-model="collectionManager.activeCollection.title">
+                      <div class="has-text-danger" ng-if="form.title.error">{{ getStatusMessage(form.title.error) }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label optional">Abstract</div>
+                    <div style="flex: 1">
+                      <div>
+                        <div class="field override-checkbox" style="margin-bottom: .25em;"
+                          ng-class="{ 'is-override' : form.generateAbstract }">
+                          <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                            type="checkbox" ng-model="form.generateAbstract">
+                          <label for="check--generate--abstract">
+                            <span>Generate Abstract From Description</span>
+                          </label>
+                        </div>
+                        <textarea wrap="hard" ng-disabled="form.generateAbstract"
+                          ng-change="onActiveCollectionChanged()" style="min-height: 120px; resize: vertical;"
+                          class="input" type="text" ng-change=""
+                          ng-model="collectionManager.activeCollection.abstract"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label optional">Description</div>
+                    <div style="flex: 1">
+                      <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                        ng-model="collectionManager.activeCollection.description"
+                        ng-change="onDescriptionChanged()"></textarea>
+                      <div class="has-text-danger" ng-if="form.description.error">{{
+                        getStatusMessage(form.description.error) }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ce-settings-box-header">
+                  <h3>DANGER ZONE</h3>
+                </div>
+                <div class="ce-settings-box">
+
+                  <div class="box-content">
+                    <div class="row">
+                      <div class="row-label">Unpublish Collection</div>
+                      <div style="flex: 1">
+                        <div class="button is-danger" style="margin-bottom: 0.5em"  ng-disabled="collectionManager.activeCollection.isDraft" >Unpublish</div>
+                        <div class="ce-status-info">
+                          Unpublish the collection and remove it from the database. The collection will remain in your local storage as a draft.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="row-label">Delete Collection</div>
+                      <div style="flex: 1">
+                        
+                        <div class="button is-danger" style="margin-bottom: 0.5em" ng-disabled="!collectionManager.activeCollection.isDraft">Delete</div>
+                        <div class="ce-status-info">
+                          Delete the collection. This will clear this collection from your local storage and cannot be undone. You can only delete local drafts, so make sure to unpublish your collection first.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hierarchy Tab -->
+              <div ng-if="session.activeTab == 1">
+
+                <div class="ce-action-bar">
+                  <div class="button is-collection">Save & Publish</div>
+                  <div class="button" ng-disabled="collectionManager.activeCollection.isDraft">Go to Collection Page
+                  </div>
+                </div>
+
+                <div class="ce-settings-box-header">Content Tree</div>
+
+                <div style="margin-bottom: 5em;" class="ce-content-body">
+                  <collection-hierarchy-two collection="collectionManager.activeCollection"
+                    on-change="onActiveCollectionChanged()" on-add-content="onAddContent(source)">
+                  </collection-hierarchy-two>
+                </div>
+              </div>
+
+              <!-- Preview Tab -->
+              <div ng-if="session.activeTab == 2">
+
+                <div style="padding: 1em; background-color: white; border: 1px solid #dbdbdb;">
+                  <collection-statistics collection="collectionManager.activeCollection">
+                  </collection-statistics>
+                  <br />
+                  <collection-data-table collection="collectionManager.activeCollection">
+                  </collection-data-table>
+                </div>
+              </div>
+
+              <!-- Query Tab -->
+              <div ng-if="session.activeTab == 3">
+                <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                  <p class="control">
+                    <button class="button" ng-click="queryToClipboard()">
+                      <databus-icon style="margin-right:12px;" color="'#333'" shape="'copy'" size="24">
+                      </databus-icon>Copy Query to Clipboard
+                    </button>
+                  </p>
+                </div>
+                <div class="ce-content-hint">The SPARQL field below shows the generated query for your collection.</div>
+                <div ng-if="collectionQuery !== undefined">
+                  <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
+                </div>
+              </div>
+
+              <div ng-if="session.activeTab == 4">
+
+                <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                  <div class="ce-content-header" style="flex: 1;">Import / Export Content for "{{
+                    collectionManager.activeCollection.label }}"</div>
+
+                </div>
+
+                <div class="ce-content-hint">You can download the JSON of a collection or import the contents of a
+                  collection below.</div>
+
+                <div style="display: flex; margin-bottom: .5em; align-items: center;">
+                  <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Export</h1>
+                  <p class="control">
+                    <button class="button" ng-click="downloadAsJson()">
+                      <databus-icon style="margin-right:12px;" color="'#333'" shape="'download'" size="24">
+                      </databus-icon>Download JSON
+                    </button>
+                  </p>
+                </div>
+                <pre>{{ collectionJson | json }}</pre>
+                <br />
+
+                <br /> <br />
+                <div style="display: flex; margin-bottom: .5em; align-items: center;">
+                  <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Import</h1>
+
+                </div>
+                <textarea class="input" style="min-height: 300px; margin-bottom: 0.5em;"
+                  ng-model="loadFromJsonString"></textarea>
+                <p class="control">
+                  <button class="button" ng-click="loadFromJson(loadFromJsonString)">
+                    <databus-icon style="margin-right:12px;" color="'#333'" shape="'import'" size="24">
+                    </databus-icon>Import JSON
+                  </button>
+                </p>
+              </div>
+
+
+             
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% include footer %>

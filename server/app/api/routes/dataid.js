@@ -48,12 +48,6 @@ module.exports = function (router, protector) {
       }
 
       logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
-
-      // var verifyParts = req.query["fetch-file-properties"];
-
-      // if(verifyParts == undefined) {
-      //  verifyParts = true;
-      // }
       
       var code = await publishDataId(req.params.account, expandedGraph, versionUri, null, logger);
       res.status(code).json(logger.getReport());

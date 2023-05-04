@@ -1,19 +1,23 @@
 var DEFAULT_IMAGE = "https://picsum.photos/id/223/320/320";
 
 // Controller for the header section
-function AccountPageController($scope, $http, $location) {
+function AccountPageController($scope, $http, $location, collectionManager) {
 
+  $scope.collectionManager = collectionManager;
 
 
   // Pick up the profile data
-  $scope.profileData = data.profile;
   $scope.auth = data.auth;
   $scope.location = $location;
+
+  $scope.profileData = data.profile;
 
   // Exit if there is no profile
   if ($scope.profileData == undefined) {
     return;
   }
+
+  $scope.profileData.isOwn = $scope.auth.authenticated && $scope.auth.info.accountName == $scope.profileData.accountName;
 
   // Initialize the user-internal search
   var uriComponent = encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`);
@@ -60,10 +64,10 @@ function AccountPageController($scope, $http, $location) {
       }
 
       // Order by latest version date
-      $scope.recentUploads = $scope.publishedData.artifacts.filter(function(v) {
+      $scope.recentUploads = $scope.publishedData.artifacts.filter(function (v) {
         return v.latestVersionDate != null;
       });
-      $scope.recentUploads.sort(function(a,b){
+      $scope.recentUploads.sort(function (a, b) {
         return new Date(b.latestVersionDate) - new Date(a.latestVersionDate);
       });
 
@@ -100,15 +104,17 @@ function AccountPageController($scope, $http, $location) {
   $scope.collectionsData = {};
   $scope.collectionsData.isLoading = true;
 
-  $http.get(`/app/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
-    .then(function (response) {
+  if (!$scope.profileData.isOwn) {
+    $http.get(`/app/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
+      .then(function (response) {
 
-      $scope.collectionsData.collections = response.data;
-      $scope.collectionsData.isLoading = false;
-      $scope.refreshFeaturedContent();
-    }, function (err) {
-      console.log(err);
-    });
+        $scope.collectionsData.collections = response.data;
+        $scope.collectionsData.isLoading = false;
+        $scope.refreshFeaturedContent();
+      }, function (err) {
+        console.log(err);
+      });
+  }
 
   $scope.getImageUrl = function () {
     if ($scope.profileData.imageUrl == undefined) {
@@ -118,16 +124,35 @@ function AccountPageController($scope, $http, $location) {
     }
   }
 
+  /**
+   * COLLECTION FUNCTIONS 
+   */
+
+  /**
+   * 
+   * @param {*} collection 
+   */
+  $scope.onEditCollectionClicked = function(collection) {
+    $scope.collectionManager.setActive(collection.uuid);
+    window.location.href = '/app/collection-editor';
+  }
+
+  $scope.copyUriToClipboard = function(collection) {
+    DatabusUtils.copyStringToClipboard(collection.uri);
+    DatabusAlert.alert($scope, true, "Collection URI copied to clipboard!");
+  }
+
   $scope.uriToName = function (uri) { return DatabusUtils.uriToName(uri); }
 
   $scope.formatDateFromNow = function (date) {
     return moment(date).fromNow();
   };
 
+
   $scope.formatCollectionDateFromNow = function (longString) {
     var number = new Number(longString);
     var dateTime = new Date(number);
-    return moment(dateTime).fromNow();
+    return $scope.formatDate(dateTime);
   };
 
   $scope.formatDate = function (date) {
@@ -135,7 +160,6 @@ function AccountPageController($scope, $http, $location) {
   };
 
   // We have profile data in $scope.profileData!
-  $scope.profileData.isOwn = $scope.auth.authenticated && $scope.auth.info.accountName == $scope.profileData.accountName;
 
   $scope.tabViewModel = {};
   $scope.tabViewModel.activeTab = 0;

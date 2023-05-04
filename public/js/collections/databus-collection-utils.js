@@ -4,18 +4,18 @@ class DatabusCollectionUtils {
 
     var hasError = false;
 
-    if (!this.checkLabel(collection.label, 1, 200)) {
+    if (!this.checkLabel(collection.title, 1, 200)) {
       hasError = true;
-      if (collection.label == undefined || collection.label == "") {
-        form.label.error = DatabusResponse.COLLECTION_MISSING_LABEL;
+      if (collection.title == undefined || collection.title == "") {
+        form.title.error = "DatabusResponse.COLLECTION_MISSING_LABEL";
       } else {
-        form.label.error = DatabusResponse.COLLECTION_INVALID_LABEL;
+        form.title.error = DatabusResponse.COLLECTION_INVALID_LABEL;
       }
     } else {
-      form.label.error = null;
+      form.title.error = null;
     }
 
-    if (!this.checkText(collection.description, 50, 0)) {
+    if (!this.checkText(collection.description, 10, 0)) {
       hasError = true;
       if (collection.description == undefined || collection.description == "") {
         form.description.error = DatabusResponse.COLLECTION_MISSING_DESCRIPTION;

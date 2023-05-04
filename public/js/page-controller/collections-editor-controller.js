@@ -23,6 +23,9 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     $scope.onActiveCollectionChanged();
   }
 
+  $scope.search = {};
+  $scope.search.title = "";
+
   /**
    * Watch for the current location hash to navigate betweem tabs
    */
@@ -33,31 +36,30 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     }
 
     if (newVal == 'import') {
-      $scope.session.activeTab = 5;
-      return;
-    }
-
-    if (newVal == 'query') {
       $scope.session.activeTab = 4;
       return;
     }
 
-    if (newVal == 'preview') {
+    if (newVal == 'query') {
       $scope.session.activeTab = 3;
       return;
     }
 
-    if (newVal == 'content') {
+    if (newVal == 'preview') {
       $scope.session.activeTab = 2;
       return;
     }
 
-    if (newVal == 'docu') {
+    if (newVal == 'content') {
       $scope.session.activeTab = 1;
       return;
     }
 
-    $scope.session.activeTab = 0;
+    if (newVal == 'docu') {
+      $scope.session.activeTab = 0;
+      return;
+    }
+
 
   }, true);
 
@@ -134,78 +136,27 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
    * Form data object for input errors, etc
    */
   $scope.form = {};
-  $scope.form.label = {};
+  $scope.form.title = {};
   $scope.form.identifier = {};
   $scope.form.description = {};
+  $scope.form.isHidden = $scope.collectionManager.activeCollection.issued == undefined;
   $scope.form.collectionPublishTag = '';
   $scope.form.generateAbstract = $scope.collectionManager.activeCollection.abstract ==
     DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
 
-  
+
   $scope.username = data.auth.info.accountName;
-
-  /** 
-  $scope.updateStatistics = function (collection) {
-    if (collection.uri === undefined) {
-      $scope.statistics = null;
-      $scope.files = null;
-      return;
-    }
-
-    /*
-    $http.get('/system/collections/collection-statistics', { params: { uri: collection.uri } }).then(function (result) {
-      for (let i in result.data.files) {
-        $scope.collectionFiles += result.data.files[i].downloadURLs + "\n";
-      }
-
-      $scope.statistics = result.data;
-      $scope.statistics.label = $scope.collectionManager.activeCollection.label;
-      $scope.statistics.uri = $scope.collectionManager.activeCollection.uri;
-      $scope.statistics.description = $scope.collectionManager.activeCollection.description;
-      $scope.files = result.data.files;
-    }).catch(function (err) {
-      $scope.statistics = null;
-      $scope.files = null;
-    });
-  }
-
-  $scope.removeCustomNode = function (node) {
-
-    var collection = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
-    collection.removeCustomQueryNode(node);
-    $scope.onActiveCollectionChanged();
-  }
-
-  $scope.addCustomNode = function () {
-
-    var collection = new DatabusCollectionWrapper($scope.collectionManager.activeCollection);
-
-    collection.addCustomQueryNode('New Query', 'PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n\
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n\
-PREFIX dct: <http://purl.org/dc/terms/>\n\
-PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\
-\n\
-# Get all files\n\
-SELECT DISTINCT ?file WHERE {\n\
-  ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
-  ?dataset dcat:distribution ?distribution .\n\
-  ?distribution dcat:downloadURL ?file .\n\
-}');
-    $scope.session.showQueries = true;
-    $scope.onActiveCollectionChanged();
-  }
-
-*/
 
   /**
    * Collection clicked in the collection list view
    */
   $scope.onCollectionClicked = function (collection) {
+
+    $scope.setActiveCollection(collection);
     if (collection.uuid == $scope.collectionManager.activeCollection.uuid && $scope.session.activeTab == 0) {
       $scope.goToTab('docu');
     }
 
-    $scope.setActiveCollection(collection);
   }
 
 
@@ -216,8 +167,8 @@ SELECT DISTINCT ?file WHERE {\n\
     }
   }
 
-  $scope.collectionManager.onCollectionChangedInDifferentTab = function() {
-    
+  $scope.collectionManager.onCollectionChangedInDifferentTab = function () {
+
   }
 
 
@@ -307,7 +258,7 @@ SELECT DISTINCT ?file WHERE {\n\
       DatabusAlert.alert($scope, true, "Collection saved successfully.");
       $scope.isSaving = false;
       $scope.$apply();
-      $scope.updateStatistics($scope.collectionManager.activeCollection);
+      // $scope.updateStatistics($scope.collectionManager.activeCollection);
       $timeout($scope.resetStatus, $scope.modalTime);
     }).catch(function (err) {
       DatabusAlert.alert($scope, false, err);
@@ -356,51 +307,6 @@ SELECT DISTINCT ?file WHERE {\n\
     });
   }
 
-  $scope.unHideCollection = function () {
-
-    var identifier = undefined;
-
-    if ($scope.collectionManager.activeCollection.uri != undefined) {
-      identifier = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri);
-    }
-
-    if (identifier == undefined) {
-      return;
-    }
-
-    $scope.collectionManager.unHideCollection($scope.username, identifier).then(function (response) {
-      $scope.statusCode = DatabusResponse.COLLECTION_PUBLISHED;
-      $scope.$apply();
-      $timeout($scope.resetStatus, $scope.modalTime);
-    }).catch(function (err) {
-      $scope.statusCode = err.code;
-      $scope.$apply();
-      $timeout($scope.resetStatus, $scope.modalTime);
-    });
-  }
-
-  $scope.hideCollection = function () {
-
-    var identifier = undefined;
-
-    if ($scope.collectionManager.activeCollection.uri != undefined) {
-      identifier = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri);
-    }
-
-    if (identifier == undefined) {
-      return;
-    }
-
-    $scope.collectionManager.hideCollection($scope.username, identifier).then(function (response) {
-      $scope.statusCode = DatabusResponse.COLLECTION_UNPUBLISHED;
-      $scope.$apply();
-      $timeout($scope.resetStatus, $scope.modalTime);
-    }).catch(function (err) {
-      $scope.statusCode = err.code;
-      $scope.$apply();
-      $timeout($scope.resetStatus, $scope.modalTime);
-    });
-  }
 
   $scope.deleteLocally = function () {
     if (!$scope.collectionManager.isInitialized) {

@@ -350,7 +350,7 @@ SELECT ?file WHERE {
 
     ctrl.root = ctrl.collection.content.root;
 
-    QueryNode.assignParents(ctrl.root);
+    // QueryNode.assignParents(ctrl.root);
 
     ctrl.view = {};
     ctrl.view.groups = {};
@@ -752,11 +752,14 @@ SELECT ?file WHERE {
   }
 
   ctrl.removeNode = function (node) {
-    var parent = node.parent;
 
+    var parent = ctrl.collectionWrapper.getParentNode(node);
     ctrl.collectionWrapper.removeNodeByUri(node.uri);
 
-    ctrl.query(parent);
+    if (parent != null) {
+      ctrl.query(parent);
+    }
+
     ctrl.onChange();
   }
 

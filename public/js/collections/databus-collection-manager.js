@@ -71,6 +71,15 @@ class DatabusCollectionManager {
         self.local = JSON.parse(window.localStorage.getItem(self.storageKey));
         self.currentHash = storageHash;
 
+        for (let identifier in self.local) {
+          if (identifier === undefined || identifier === "undefined") {
+            delete (self.local[identifier]);
+          } else {
+            //enable Collection Utils for all collections in local storage
+            self.local[identifier] = new DatabusCollectionWrapper(self.local[identifier]);
+          }
+        }
+
         if (self.onCollectionChangedInDifferentTab != null) {
           self.onCollectionChangedInDifferentTab();
         }
@@ -132,6 +141,7 @@ class DatabusCollectionManager {
         // We don't have a working copy in our local storage yet, time to create an identifier!
         let identifier = DatabusCollectionUtils.uuidv4();
         remoteCollections[uri].uuid = identifier;
+        remoteCollections[uri].isHidden = remoteCollections[uri].issued == undefined;
         // Create two entries, one in the local map, one in the remote map
         this.local[identifier] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri]);
         this.remote[identifier] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri]);
@@ -162,7 +172,7 @@ class DatabusCollectionManager {
       this.selectFirstOrCreate();
     }
 
-    QueryNode.assignParents(this.activeCollection.content.root);
+    // QueryNode.assignParents(this.activeCollection.content.root);
 
     // Save locally in case we created any local working copies
     this.saveLocally();
@@ -234,7 +244,7 @@ class DatabusCollectionManager {
     this.convertCollectionContentToTree(uuid);
 
     let collection = this.local[uuid];
-    QueryNode.assignParents(collection.content.root);
+    // QueryNode.assignParents(collection.content.root);
 
     this.sessionInfo.activeCollectionIdentifier = uuid;
     window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
@@ -339,7 +349,7 @@ class DatabusCollectionManager {
     }
 
 
-    collection.label = `Snapshot of ${source.label}`;
+    collection.title = `Snapshot of ${source.label}`;
     collection.description = source.description;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
@@ -378,12 +388,22 @@ class DatabusCollectionManager {
 
     let remoteCollection = this.remote[localCollection.uuid];
 
+    if(remoteCollection.isHidden != localCollection.isHidden) {
+      return true;
+    }
+
+    if(localCollection.title !== remoteCollection.title) {
+      return true;
+    }
+
+    if(localCollection.description !== remoteCollection.description) {
+      return true;
+    }
+
     let serializedRemoteContent = DatabusCollectionUtils.serialize(remoteCollection.content);
     let serializedLocalContent = DatabusCollectionUtils.serialize(localCollection.content);
 
-    return localCollection.label !== remoteCollection.label
-      || localCollection.description !== remoteCollection.description
-      || serializedLocalContent !== serializedRemoteContent;
+    return serializedLocalContent !== serializedRemoteContent;
   }
 
   discardLocalChanges(remoteCollections) {
@@ -406,7 +426,7 @@ class DatabusCollectionManager {
       this.remote[uuid] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri])
     }
 
-    this.local[uuid].label = this.remote[uuid].label;
+    this.local[uuid].title = this.remote[uuid].title;
     this.local[uuid].description = this.remote[uuid].description;
     this.local[uuid].content = DatabusCollectionUtils.createCleanCopy(this.remote[uuid].content);
     this.local[uuid].hasLocalChanges = this.hasLocalChanges(this.local[uuid]);
@@ -432,17 +452,17 @@ class DatabusCollectionManager {
 
 
 
-  createNew(label, description, callback) {
+  createNew(title, description, callback) {
     if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
     let reg = /^\w+[\w\s]*$/;
 
-    if (label === undefined || !reg.test(label)) {
+    if (title === undefined || !reg.test(title)) {
       callback(false);
       return;
     }
 
-    let collection = DatabusCollectionWrapper.createNew(label, description, DATABUS_RESOURCE_BASE_URL);
+    let collection = DatabusCollectionWrapper.createNew(title, description, DATABUS_RESOURCE_BASE_URL);
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
     this.setActive(collection.uuid);
@@ -523,12 +543,10 @@ class DatabusCollectionManager {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
-
       this.saveLocally();
 
       // Keep the identifier of the collection we want to push
       var pushIdentifier = this.activeCollection.uuid;
-
       var publisherUri = `${DATABUS_RESOURCE_BASE_URL}/${username}#this`;
 
       var ignoreKeys = [
@@ -545,7 +563,6 @@ class DatabusCollectionManager {
       var contentString = encodeURIComponent(DatabusCollectionUtils.serialize(this.activeCollection.content, ignoreKeys));
 
       // Format collection as json-ld
-
       let collectionJsonLd = {
         "@context": JSONLD_CONTEXT,
         "@graph": [
@@ -556,14 +573,12 @@ class DatabusCollectionManager {
             "title": this.activeCollection.label,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "dataid:content": contentString
+            "dataid:content": contentString,
           }
         ]
       };
 
-      if (this.activeCollection.issued != undefined) {
-        collectionJsonLd["@graph"][0].issued = this.activeCollection.issued;
-      } else {
+      if (!this.activeCollection.isHidden) {
         collectionJsonLd["@graph"][0].issued = Date.now().toString();
       }
 
@@ -571,15 +586,34 @@ class DatabusCollectionManager {
 
       try {
 
-        response = await this.http.put(collectionUri, collectionJsonLd);
+        var relativeUri = new URL(collectionUri).pathname;
+        response = await this.http.put(relativeUri, collectionJsonLd);
 
       } catch (errResponse) {
         console.log(errResponse);
         throw { code: errResponse.data.code };
       }
 
+      try {
+        var relativeUri = new URL(collectionUri).pathname;
+
+        var response = await this.http({
+          method: 'GET',
+          url: relativeUri,
+          headers: {
+            'Accept': 'application/ld+json',
+            'X-Jsonld-Formatting': 'compact'
+          }
+        });
+
+        
+      } catch (errResponse) {
+        console.log(errResponse);
+        throw { code: errResponse.data.code };
+      }
+
       // Get the remotely saved collection from the payload
-      var remoteGraph = response.data.data[0];
+      var remoteGraph = response.data;
 
       // If the user changed the active collection in the meantime throw an error. This
       // should be prevented by a loading dialog
@@ -587,16 +621,22 @@ class DatabusCollectionManager {
         throw { code: DatabusResponse.COLLECTION_INVALID_ARGUMENT };
       }
 
+      this.local[pushIdentifier].uri = remoteGraph['@id'];
+      this.local[pushIdentifier].hasLocalChanges = false;
+      this.local[pushIdentifier].modified = remoteGraph.modified;
+      this.local[pushIdentifier].issued = remoteGraph.issued;
+      // this.local[pushIdentifier].created = remoteGraph.created;
+
       //Update remote data
       this.remote[pushIdentifier] = JSON.parse(DatabusCollectionUtils.serialize(this.activeCollection));
 
       // Update the local data
-      this.local[pushIdentifier].uri = remoteGraph['@id'];
-      this.local[pushIdentifier].hasLocalChanges = this.hasLocalChanges(this.local[pushIdentifier]);
-      // this.local[pushIdentifier].modified = this.activeCollection.modified;
-      // this.local[pushIdentifier].issued = this.activeCollection.issued;
-      // this.local[pushIdentifier].created = this.activeCollection.created;
-      // this.local[pushIdentifier].files = this.activeCollection.files;
+      // this.local[pushIdentifier].uri = remoteGraph['@id'];
+      //this.local[pushIdentifier].hasLocalChanges = this.hasLocalChanges(this.local[pushIdentifier]);
+      //this.local[pushIdentifier].modified = this.activeCollection.modified;
+      //this.local[pushIdentifier].issued = this.activeCollection.issued;
+      //this.local[pushIdentifier].created = this.activeCollection.created;
+      
       this.saveLocally();
 
       return response.data;
@@ -731,34 +771,7 @@ class DatabusCollectionManager {
     }
   }
 
-  /**
-   revert(username, callback) {
  
-    var self = this;
- 
-    var req = {
-      method: 'GET',
-      url: this.activeCollection.uri,
-      headers: {
-        'Accept': 'application/json'
-      }
-    };
- 
-    this.http(req)
-      .then(function(response) {
- 
-      self.activeCollection.groups = response.data.groups;
-      self.activeCollection.customQueries = response.data.customQueries;
-      self.activeCollection.label = response.data.label;
-      self.activeCollection.descrtiption = response.data.description;
-      self.activeCollection.published = true;
- 
-      callback({ code : 908 });
-    }, function(error) {
-      console.log(error);
-    });
- 
-  }*/
 }
 
 
