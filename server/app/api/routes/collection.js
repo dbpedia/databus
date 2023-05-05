@@ -58,8 +58,6 @@ module.exports = function (router, protector) {
         return;
       }
 
-
-
       // Construct
       var triples = await constructor.executeConstruct(req.body, constructCollection);
       var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));

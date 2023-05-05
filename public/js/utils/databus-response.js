@@ -58,7 +58,5 @@ DatabusResponse.Message =
   4016 : "Collection JSON import failed."
 };
 
-
-
 if(typeof module === "object" && module && module.exports)
    module.exports = DatabusResponse;

@@ -9667,6 +9667,41 @@ label.panel-block:hover {
   background-color: #24292e;
 }
 
+.databus-settings-box {
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+}
+
+.databus-settings-box .row {
+  padding: 1.5em;
+}
+
+.databus-settings-box .row .row-label {
+  font-weight: 600;
+  font-size: 1.15em;
+  margin-bottom: 0.5em;
+}
+
+.databus-settings-box .row:not(:last-child) {
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.databus-settings-box-header {
+  margin-top: 2em;
+  margin-left: 0.5em;
+  color: #aaa;
+  text-transform: uppercase;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  flex: 1;
+}
+
+.databus-settings-info {
+  color: #656d76;
+  max-width: 1000px;
+}
+
 .slick-arrow {
   width: 24px !important;
   height: 24px !important;

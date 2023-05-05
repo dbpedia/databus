@@ -254,7 +254,7 @@
             z-index: 2;
           }
 
-          .ce-status-bar {
+          .databus-settings-bar {
             height: 32px;
             background-color: #ebebeb;
             position: absolute;
@@ -336,42 +336,6 @@
             color: rgb(170, 170, 170);
           }
 
-          .ce-settings-box {
-            border: 1px solid #dbdbdb;
-            border-radius: 8px;
-
-          }
-
-          .ce-settings-box .row {
-            padding: 1.5em;
-          }
-
-          .ce-settings-box .row:not(:last-child) {
-            border-bottom: 1px solid #dbdbdb;
-          }
-
-          .row-label {
-            font-weight: 600;
-            font-size: 1.15em;
-            margin-bottom: 0.5em
-          }
-
-          .ce-status-info {
-            color: #656d76;
-            max-width: 1000px;
-          }
-
-          .ce-settings-box-header {
-            margin-top: 2em;
-            margin-left: .5em;
-            color: #aaa;
-            text-transform: uppercase;
-            margin-bottom: .5em;
-            font-size: 1em;
-            letter-spacing: 0.1em;
-            flex: 1;
-          }
-
           .ce-banner {
             background-image: url(../img/banner-background.png);
             background-repeat: repeat;
@@ -408,7 +372,6 @@
             color: #343a40;
           }
 
-
           .databus-banner.is-collection-editor {
             background-color: #a2b7a1;
           }
@@ -440,25 +403,31 @@
               </div>
 
               <div class="collection-editor-tabs">
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 0 }"
-                  ng-click="goToTab('docu')">
-                  <div class="section-label">Description</div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
+                  ng-click="tabNavigation.navigateTo('docu')">
+                  <div class="section-label">Documentation</div>
                 </div>
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 1 }"
-                  ng-click="goToTab('content')">
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+                  ng-click="tabNavigation.navigateTo('content')">
                   <div class="section-label">Content</div>
                 </div>
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 2 }"
-                  ng-click="goToTab('preview')">
+
+                <div style="flex:1"></div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }"
+                  ng-click="tabNavigation.navigateTo('preview')">
                   <div class="section-label">Preview</div>
                 </div>
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 3 }"
-                  ng-click="goToTab('query')">
-                  <div class="section-label">Query</div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 3 }"
+                  ng-click="tabNavigation.navigateTo('query')">
+                  <div class="section-label">SPARQL</div>
                 </div>
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : session.activeTab == 4 }"
-                  ng-click="goToTab('import')">
-                  <div class="section-label">Import / Export</div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 4 }"
+                  ng-click="tabNavigation.navigateTo('json')">
+                  <div class="section-label">JSON</div>
+                </div>
+                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 5 }"
+                  ng-click="tabNavigation.navigateTo('import')">
+                  <div class="section-label">Import</div>
                 </div>
               </div>
             </div>
@@ -467,15 +436,16 @@
             <div class="container">
 
               <!-- Description Tab -->
-              <div ng-if="session.activeTab == 0">
+              <div ng-if="tabNavigation.activeTab == 0">
                 <div class="ce-action-bar">
                   <div ng-click="saveCollection()" class="button is-collection">Save & Publish</div>
-                  <div class="button" ng-disabled="collectionManager.activeCollection.isDraft">Go to Collection Page
+                  <div class="button" ng-click="preview()" ng-disabled="collectionManager.activeCollection.isDraft">Go
+                    to Collection Page
                   </div>
                 </div>
 
-                <div class="ce-settings-box-header">General</div>
-                <div class="ce-settings-box">
+                <div class="databus-settings-box-header">General</div>
+                <div class="databus-settings-box">
                   <div class="row">
                     <div class="row-label optional">Status</div>
                     <div style="flex: 1">
@@ -487,7 +457,7 @@
                         </collection-status>
                       </div>
                       <div style="margin-bottom: 0.75em">
-                        <div class="ce-status-info" style="margin-bottom: 0.5em">
+                        <div class="databus-settings-info" style="margin-bottom: 0.5em">
                           <div ng-if="collectionManager.activeCollection.isDraft">Your collection is currently a draft.
                             That means that it is only saved in your local browser storage. It will be saved between
                             sessions. Clearing the browser storage will delete this collection draft.</div>
@@ -496,14 +466,16 @@
                       <div class="field override-checkbox" style="margin-bottom: 0em;"
                         ng-class="{ 'is-override' : collectionManager.activeCollection.isHidden }">
                         <input id="check--is--hidden" name="check--is--hidden" class="is-checkradio" type="checkbox"
-                          ng-model="collectionManager.activeCollection.isHidden" ng-change="onActiveCollectionChanged()">
+                          ng-model="collectionManager.activeCollection.isHidden"
+                          ng-change="onActiveCollectionChanged()">
                         <label for="check--is--hidden" style="padding-top: 3px;">
                           <span class="row-label">Hide Collection</span>
                         </label>
                       </div>
-                      <div class="ce-status-info">
+                      <div class="databus-settings-info">
                         <div>A hidden collection will not show up in the list of collections on your account page or in
-                          any keyword search. Once published, the collection will still be accessible via its collection URI.</div>
+                          any keyword search. Once published, the collection will still be accessible via its collection
+                          URI.</div>
                       </div>
 
                     </div>
@@ -519,12 +491,12 @@
                   <div class="row" ng-if="collectionManager.activeCollection.isDraft">
                     <div class="row-label optional">Collection Identifier</div>
                     <div style="flex: 1">
-                      <input type="text" class="input" ng-model="form.identifier.value" />
+                      <input type="text" class="input" ng-model="form.identifier.value"
+                        ng-change="onActiveCollectionChanged()" />
                       <div>Collection will be accessible at <span style="color:#3867d6">{{ baseUrl
                           }}/{{username}}/collections/{{form.identifier.value.length
                           > 0 ? form.identifier.value : '...'}}</span></div>
-                      <div class="has-text-danger" ng-if="form.identifier.error">{{
-                        getStatusMessage(form.identifier.error) }}</div>
+                      <div class="has-text-danger" ng-if="form.identifier.error">{{ form.identifier.error }}</div>
                     </div>
                   </div>
                   <div class="row">
@@ -532,7 +504,7 @@
                     <div style="flex: 1">
                       <input class="input" type="text" ng-change="onActiveCollectionChanged()"
                         ng-model="collectionManager.activeCollection.title">
-                      <div class="has-text-danger" ng-if="form.title.error">{{ getStatusMessage(form.title.error) }}
+                      <div class="has-text-danger" ng-if="form.title.error">{{ form.title.error }}
                       </div>
                     </div>
                   </div>
@@ -552,6 +524,7 @@
                           ng-change="onActiveCollectionChanged()" style="min-height: 120px; resize: vertical;"
                           class="input" type="text" ng-change=""
                           ng-model="collectionManager.activeCollection.abstract"></textarea>
+                        <div class="has-text-danger" ng-if="form.abstract.error">{{form.abstract.error }}</div>
                       </div>
                     </div>
                   </div>
@@ -561,34 +534,47 @@
                       <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
                         ng-model="collectionManager.activeCollection.description"
                         ng-change="onDescriptionChanged()"></textarea>
-                      <div class="has-text-danger" ng-if="form.description.error">{{
-                        getStatusMessage(form.description.error) }}</div>
+                      <div class="has-text-danger" ng-if="form.description.error">{{form.description.error }}</div>
                     </div>
                   </div>
                 </div>
 
-                <div class="ce-settings-box-header">
+                <div class="databus-settings-box-header">
                   <h3>DANGER ZONE</h3>
                 </div>
-                <div class="ce-settings-box">
-
+                <div class="databus-settings-box">
                   <div class="box-content">
+                    <div class="row">
+                      <div class="row-label">Discard Changes</div>
+                      <div style="flex: 1">
+                        <div class="button is-danger" style="margin-bottom: 0.5em" ng-click="discardChanges()"
+                          ng-disabled="!collectionManager.activeCollection.hasLocalChanges
+                            || collectionManager.activeCollection.isDraft">Discard local changes</div>
+                        <div class="databus-settings-info">
+                          Reverts the working copy of the collection to its state in the database.
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="row">
                       <div class="row-label">Unpublish Collection</div>
                       <div style="flex: 1">
-                        <div class="button is-danger" style="margin-bottom: 0.5em"  ng-disabled="collectionManager.activeCollection.isDraft" >Unpublish</div>
-                        <div class="ce-status-info">
-                          Unpublish the collection and remove it from the database. The collection will remain in your local storage as a draft.
+                        <div class="button is-danger" style="margin-bottom: 0.5em" ng-click="unpublishCollection()"
+                          ng-disabled="collectionManager.activeCollection.isDraft">Unpublish</div>
+                        <div class="databus-settings-info">
+                          Unpublish the collection and remove it from the database. The collection will remain in your
+                          local storage as a draft.
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="row-label">Delete Collection</div>
                       <div style="flex: 1">
-                        
-                        <div class="button is-danger" style="margin-bottom: 0.5em" ng-disabled="!collectionManager.activeCollection.isDraft">Delete</div>
-                        <div class="ce-status-info">
-                          Delete the collection. This will clear this collection from your local storage and cannot be undone. You can only delete local drafts, so make sure to unpublish your collection first.
+                        <div class="button is-danger" ng-click="deleteLocally()" style="margin-bottom: 0.5em"
+                          ng-disabled="!collectionManager.activeCollection.isDraft">Delete</div>
+                        <div class="databus-settings-info">
+                          Delete the collection. This will clear this collection from your local storage and cannot be
+                          undone. You can only delete local drafts, so make sure to unpublish your collection first.
                         </div>
                       </div>
                     </div>
@@ -597,15 +583,16 @@
               </div>
 
               <!-- Hierarchy Tab -->
-              <div ng-if="session.activeTab == 1">
+              <div ng-if="tabNavigation.activeTab == 1">
 
                 <div class="ce-action-bar">
                   <div class="button is-collection">Save & Publish</div>
-                  <div class="button" ng-disabled="collectionManager.activeCollection.isDraft">Go to Collection Page
+                  <div class="button" ng-click="preview()" ng-disabled="collectionManager.activeCollection.isDraft">Go
+                    to Collection Page
                   </div>
                 </div>
 
-                <div class="ce-settings-box-header">Content Tree</div>
+                <div class="databus-settings-box-header">Content Tree</div>
 
                 <div style="margin-bottom: 5em;" class="ce-content-body">
                   <collection-hierarchy-two collection="collectionManager.activeCollection"
@@ -615,74 +602,101 @@
               </div>
 
               <!-- Preview Tab -->
-              <div ng-if="session.activeTab == 2">
+              <div ng-if="tabNavigation.activeTab == 2">
 
-                <div style="padding: 1em; background-color: white; border: 1px solid #dbdbdb;">
-                  <collection-statistics collection="collectionManager.activeCollection">
-                  </collection-statistics>
-                  <br />
-                  <collection-data-table collection="collectionManager.activeCollection">
-                  </collection-data-table>
+                <div class="ce-action-bar">
+                  <div class="button" ng-click="preview()" ng-disabled="collectionManager.activeCollection.isDraft">Go
+                    to Collection Page
+                  </div>
+                </div>
+
+                <div class="databus-settings-box-header">Preview</div>
+                <div class="databus-settings-box">
+                  <div class="row">
+                    <collection-statistics collection="collectionManager.activeCollection">
+                    </collection-statistics>
+                    <br />
+                    <collection-data-table collection="collectionManager.activeCollection">
+                    </collection-data-table>
+                  </div>
                 </div>
               </div>
 
               <!-- Query Tab -->
-              <div ng-if="session.activeTab == 3">
-                <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <p class="control">
-                    <button class="button" ng-click="queryToClipboard()">
-                      <databus-icon style="margin-right:12px;" color="'#333'" shape="'copy'" size="24">
-                      </databus-icon>Copy Query to Clipboard
-                    </button>
-                  </p>
-                </div>
-                <div class="ce-content-hint">The SPARQL field below shows the generated query for your collection.</div>
-                <div ng-if="collectionQuery !== undefined">
-                  <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
-                </div>
-              </div>
+              <div ng-if="tabNavigation.activeTab == 3">
 
-              <div ng-if="session.activeTab == 4">
-
-                <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                  <div class="ce-content-header" style="flex: 1;">Import / Export Content for "{{
-                    collectionManager.activeCollection.label }}"</div>
-
-                </div>
-
-                <div class="ce-content-hint">You can download the JSON of a collection or import the contents of a
-                  collection below.</div>
-
-                <div style="display: flex; margin-bottom: .5em; align-items: center;">
-                  <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Export</h1>
-                  <p class="control">
-                    <button class="button" ng-click="downloadAsJson()">
-                      <databus-icon style="margin-right:12px;" color="'#333'" shape="'download'" size="24">
-                      </databus-icon>Download JSON
-                    </button>
-                  </p>
-                </div>
-                <pre>{{ collectionJson | json }}</pre>
-                <br />
-
-                <br /> <br />
-                <div style="display: flex; margin-bottom: .5em; align-items: center;">
-                  <h1 style="flex: 1; font-weight: 600; font-size: 1.1em;">Import</h1>
-
-                </div>
-                <textarea class="input" style="min-height: 300px; margin-bottom: 0.5em;"
-                  ng-model="loadFromJsonString"></textarea>
-                <p class="control">
-                  <button class="button" ng-click="loadFromJson(loadFromJsonString)">
-                    <databus-icon style="margin-right:12px;" color="'#333'" shape="'import'" size="24">
-                    </databus-icon>Import JSON
+                <div class="ce-action-bar">
+                  <button class="button" ng-click="queryToClipboard()">
+                    <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
+                    </databus-icon>Copy Query to Clipboard
                   </button>
-                </p>
+                </div>
+
+
+                <div class="databus-settings-box-header">SPARQL Query</div>
+                <div class="databus-settings-box">
+                  <div class="row">
+                    <div class="databus-settings-info" style="margin-bottom: 0.5em">
+                      The SPARQL field below shows the generated query for your collection.
+                    </div>
+
+                    <div ng-if="collectionQuery !== undefined">
+                      <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
+                    </div>
+                  </div>
+                </div>
               </div>
 
+              <div ng-if="tabNavigation.activeTab == 4">
 
-             
+                <div class="ce-action-bar">
+                  <div class="button" ng-click="jsonToClipboard()">
+                    <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
+                    </databus-icon>Copy JSON to Clipboard
+                  </div>
+                  <div class="button" ng-click="downloadAsJson()">
+                    <databus-icon color="'#cfcfcf'" shape="'download'" size="24">
+                    </databus-icon>Download JSON
+                  </div>
+                </div>
 
+
+                <div class="databus-settings-box-header">Collection JSON</div>
+                <div class="databus-settings-box">
+                  <div class="row">
+                    <div class="databus-settings-info" style="margin-bottom: 1em">
+                      The box below shows the JSON representation of your collection. This may be useful if you wish to
+                      store your collection locally or want to import the collection somewhere else (e.g. another
+                      Databus).
+                    </div>
+                    <pre>{{ collectionJson | json }}</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div ng-if="tabNavigation.activeTab == 5">
+
+
+                <div class="ce-action-bar">
+                  <div class="button" ng-click="loadFromJson(loadFromJsonString)">
+                    <databus-icon color="'#cfcfcf'" shape="'import'" size="24">
+                    </databus-icon>Import JSON
+                  </div>
+                </div>
+
+                <div class="databus-settings-box-header">Import</div>
+                <div class="databus-settings-box">
+                  <div class="row">
+                    <div class="databus-settings-info" style="margin-bottom: 1em">
+                      Insert the JSON representation of a collection in the field below and click the import button to
+                      overwrite the collection with the inserted content.
+                    </div>
+
+                    <textarea class="input" style="min-height: 400px;" ng-model="loadFromJsonString"></textarea>
+                  </div>
+
+                </div>
+              </div>
             </div>
           </div>
         </div>

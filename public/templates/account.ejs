@@ -72,10 +72,6 @@
             ng-click="goToTab('collections');">
             <div class="section-label">Collections</div>
           </div>
-          <!--<div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 3 }"
-            ng-click="tabViewModel.activeTab=3;">
-            <div class="section-label">Apps & Services</div>
-          </div>-->
           <div style="flex: 1"></div>
           <div ng-if="profileData.isOwn" class="collection-editor-tab"
             ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="goToTab('settings')">
@@ -359,7 +355,7 @@
             <input class="input" ng-model="search.title" placeholder="Search collections...">
             <div class="button">Sort</div>
             <div class="ce-flex-filler"></div>
-            <div class="button is-collection">Create New</div>
+            <div class="button is-collection" ng-click="createNewCollection()">Create New</div>
           </div>
 
           <div class="ce-collection-list">
@@ -371,7 +367,7 @@
                     ng-class="{ 'grey-out' : collection.isDraft || !collection.isPublished }">
                   </type-tag>
                   <div>
-                    <h1>{{ collection.label }}</h1>
+                    <h1>{{ collection.title }}</h1>
                     <div class="ce-placeholder-text" ng-if="!collection.uri">Local draft</div>
                     <uri-breadcrumbs ng-if="collection.uri" uri="collection.uri"></uri-breadcrumbs>
                   </div>

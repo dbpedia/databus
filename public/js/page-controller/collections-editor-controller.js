@@ -1,13 +1,57 @@
-// hinzufügen eines Controllers zum Modul
+
+/**
+ * Controls the collection editor page
+ * @param {*} $scope 
+ * @param {*} $timeout 
+ * @param {*} $http 
+ * @param {*} $location 
+ * @param {*} collectionManager 
+ * @returns 
+ */
 function CollectionsEditorController($scope, $timeout, $http, $location, collectionManager) {
 
   $scope.authenticated = data.auth.authenticated;
-  $scope.accountName = data.auth.info.accountName;
-  $scope.location = $location;
   $scope.baseUrl = DATABUS_RESOURCE_BASE_URL;
 
+  // Check for proper authentication
+  if (!$scope.authenticated) {
+    return;
+  }
+
+  $scope.accountName = data.auth.info.accountName;
+  $scope.hasAccount = $scope.accountName != undefined;
+
+  if (!$scope.hasAccount) {
+    return;
+  }
+
+  // Create a tab navigation object for the tab navigation with locato
+  $scope.tabNavigation = new TabNavigation($scope, $location, [
+    'docu', 'content', 'preview', 'query', 'json', 'import'
+  ]);
+
+  // Make some util functions available in the template
+  $scope.utils = new DatabusWebappUtils();
+
+  // Make the manager available in the template
+  $scope.collectionManager = collectionManager;
+
+  // Form data object for input errors and extra fields and toggles
+  $scope.form = {};
+  $scope.form.title = {};
+  $scope.form.identifier = {};
+  $scope.form.identifier.value = "";
+  $scope.form.abstract = {};
+  $scope.form.description = {};
+  $scope.form.isHidden = $scope.collectionManager.activeCollection.issued == undefined;
+  $scope.form.collectionPublishTag = '';
+  var description = $scope.collectionManager.activeCollection.description;
+  var generatedAbstract = DatabusUtils.createAbstractFromDescription(description);
+  $scope.form.generateAbstract = $scope.collectionManager.activeCollection.abstract == generatedAbstract;
+
   /**
-   * Generates an abstract from the description. Triggered when the description field gets changed.
+   * Triggered when the description field gets changed.
+   * Generates an abstract from the description. 
    * @returns 
    */
   $scope.onDescriptionChanged = function () {
@@ -16,187 +60,37 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
     }
 
     if ($scope.form.generateAbstract) {
-      $scope.collectionManager.activeCollection.abstract =
-        DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
+      var description = $scope.collectionManager.activeCollection.description;
+      var generatedAbstract = DatabusUtils.createAbstractFromDescription(description);
+      $scope.collectionManager.activeCollection.abstract = generatedAbstract;
     }
 
+    // Triggers saving to the local storage
     $scope.onActiveCollectionChanged();
   }
 
-  $scope.search = {};
-  $scope.search.title = "";
 
   /**
-   * Watch for the current location hash to navigate betweem tabs
+   * Called whenever an input field or similar gets changed. Persists the local changes in the local storage
    */
-  $scope.$watch("location.hash()", function (newVal, oldVal) {
-
-    if ($scope.session == undefined) {
-      return;
-    }
-
-    if (newVal == 'import') {
-      $scope.session.activeTab = 4;
-      return;
-    }
-
-    if (newVal == 'query') {
-      $scope.session.activeTab = 3;
-      return;
-    }
-
-    if (newVal == 'preview') {
-      $scope.session.activeTab = 2;
-      return;
-    }
-
-    if (newVal == 'content') {
-      $scope.session.activeTab = 1;
-      return;
-    }
-
-    if (newVal == 'docu') {
-      $scope.session.activeTab = 0;
-      return;
-    }
-
-
-  }, true);
-
-  /**
-   * Change the tab - set location hash and scroll up
-   * @param {*} value 
-   */
-  $scope.goToTab = function (value) {
-    $location.hash(value);
-    window.scrollTo(0, 0);
-  }
-
-  $scope.logMeIn = function () {
-    window.location = '/system/login?redirectUrl=' + encodeURIComponent(window.location);
-  }
-
-  $scope.createAccount = function () {
-    window.location = '/app/account';
-  }
-
-  if (!$scope.authenticated) {
-    return;
-  }
-
-  $scope.hasAccount = data.auth.info.accountName != undefined;;
-
-  if (!$scope.hasAccount) {
-    return;
-  }
-
-  $scope.getCollectionJson = function () {
-    var copy = DatabusCollectionUtils.createCleanCopy($scope.collectionManager.activeCollection);
-    delete copy.uuid;
-
-    return copy;
-  }
-
-  $scope.collectionManager = collectionManager;
-
-  $scope.collectionQuery = new DatabusCollectionWrapper($scope.collectionManager.activeCollection).createQuery();
-  $scope.collectionJson = $scope.getCollectionJson();
-
-  var storageKeySession = `databus_collection_editor_session_${data.auth.info.accountName}`;
-  $scope.session = JSON.parse(window.sessionStorage.getItem(storageKeySession));
-
-  if ($scope.session == undefined) {
-    $scope.session = {};
-    $scope.session.activeTab = 0;
-    $scope.session.showDescription = true;
-    $scope.session.showGroups = true;
-  }
-
-  $scope.$watch('session', function (newVal, oldVal) {
-    window.sessionStorage.setItem(storageKeySession, JSON.stringify($scope.session));
-  }, true);
-
-  /**
-
-  $scope.$watch('statusCode', function (newVal, oldVal) {
-
-    if ($scope.timer != null) {
-      $timeout.cancel($scope.timer);
-    }
-
-    if ($scope.statusCode != 0) {
-      $scope.timer = $timeout(function () {
-        $scope.statusCode = 0;
-      }, 2000);
-    }
-
-  }, true); */
-
-  /**
-   * Form data object for input errors, etc
-   */
-  $scope.form = {};
-  $scope.form.title = {};
-  $scope.form.identifier = {};
-  $scope.form.description = {};
-  $scope.form.isHidden = $scope.collectionManager.activeCollection.issued == undefined;
-  $scope.form.collectionPublishTag = '';
-  $scope.form.generateAbstract = $scope.collectionManager.activeCollection.abstract ==
-    DatabusUtils.createAbstractFromDescription($scope.collectionManager.activeCollection.description);
-
-
-  $scope.username = data.auth.info.accountName;
-
-  /**
-   * Collection clicked in the collection list view
-   */
-  $scope.onCollectionClicked = function (collection) {
-
-    $scope.setActiveCollection(collection);
-    if (collection.uuid == $scope.collectionManager.activeCollection.uuid && $scope.session.activeTab == 0) {
-      $scope.goToTab('docu');
-    }
-
-  }
-
-
-  $scope.setActiveCollection = function (collection) {
-    if (collection.uuid != $scope.collectionManager.activeCollection.uuid) {
-      $scope.collectionManager.setActive(collection.uuid);
-      $scope.form.identifier.value = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri)
-    }
-  }
-
-  $scope.collectionManager.onCollectionChangedInDifferentTab = function () {
-
-  }
-
-
-
-  $scope.doStuffWhenInitialized = function () {
-    if ($scope.collectionManager.activeCollection == null) {
-      $scope.collectionManager.selectFirstOrCreate();
-    }
-
-    $scope.setActiveCollection($scope.collectionManager.activeCollection);
-  }
-
-  if (collectionManager.isInitialized) {
-    $scope.doStuffWhenInitialized()
-  } else {
-    collectionManager.onReady = $scope.doStuffWhenInitialized;
-  }
-
   $scope.onActiveCollectionChanged = function () {
-    $scope.collectionManager.saveLocally();
+
     let collection = $scope.collectionManager.activeCollection;
 
+    // Save to storage
+    if ($scope.collectionManager.isInitialized) {
+      $scope.collectionManager.saveLocally();
+    }
+
+    // Refresh query and json representation
     $scope.collectionQuery = new DatabusCollectionWrapper(collection).createQuery();
     $scope.collectionJson = $scope.getCollectionJson();
 
     if (collection != null) {
       collection.hasLocalChanges = $scope.collectionManager.hasLocalChanges(collection);
     }
+
+    DatabusCollectionUtils.checkCollectionForm($scope.form, collection)
   }
 
   $scope.getStatusMessage = function (code) {
@@ -212,71 +106,74 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   }
 
   $scope.preview = function () {
-    window.location.href = '/' + $scope.username + '/collections/'
-      + $scope.collectionManager.activeCollection.id;
-  }
-
-  $scope.createNewCollection = function () {
-    $scope.collectionManager.createNew('New Collection', 'Replace this description with a description of your choice.',
-      function (success) {
-        DatabusAlert.alert($scope, true, "A new collection has been created.");
-      });
-  }
-
-  $scope.editCopy = function () {
-    var copy = $scope.collectionManager.createCopy($scope.collectionManager.activeCollection);
-    $scope.collectionManager.setActive(copy.uuid);
-  }
-
-  $scope.saveCollection = function () {
-    if (!$scope.collectionManager.isInitialized) {
+    if ($scope.collectionManager.activeCollection.isDraft) {
       return;
     }
 
-    var identifier = undefined;
+    var identifier = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri);
+    window.location.href = `/${$scope.accountName}/collections/${identifier}`;
+  }
 
-    if ($scope.collectionManager.activeCollection.uri != undefined) {
-      identifier = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri);
-    }
+  /**
+   * Saves the collection to the remote server
+   * @returns 
+   */
+  $scope.saveCollection = async function () {
 
-    if (identifier == undefined) {
-      if (!DatabusCollectionUtils.checkIdentifier($scope.form.identifier.value)) {
-        $scope.form.identifier.error = DatabusResponse.COLLECTION_INVALID_ID;
-      } else {
-        $scope.form.identifier.error = undefined;
-        identifier = $scope.form.identifier.value;
+    try {
+      // Needs initialized CM
+      if (!$scope.collectionManager.isInitialized) {
+        return;
       }
-    }
 
-    if (!DatabusCollectionUtils.checkCollectionForm($scope.form, $scope.collectionManager.activeCollection)
-      || identifier == undefined) {
-      return;
-    }
+      let collection = $scope.collectionManager.activeCollection;
 
-    $scope.isSaving = true;
-    $scope.collectionManager.updateCollection($scope.username, identifier).then(function (response) {
-      DatabusAlert.alert($scope, true, "Collection saved successfully.");
-      $scope.isSaving = false;
-      $scope.$apply();
-      // $scope.updateStatistics($scope.collectionManager.activeCollection);
-      $timeout($scope.resetStatus, $scope.modalTime);
-    }).catch(function (err) {
+      // Check whether the form values are correct
+      if (!DatabusCollectionUtils.checkCollectionForm($scope.form, collection)) {
+        return;
+      }
+
+      // Look for an existing identifier
+      var identifier = undefined;
+
+      // Either take the identifier from the form (draft) or the collection uri (published)
+      if (collection.isDraft) {
+        identifier = $scope.form.identifier.value;
+      } else {
+        identifier = DatabusUtils.uriToName($scope.collectionManager.activeCollection.uri);
+      }
+
+      $scope.isSaving = true;
+      $scope.collectionManager.updateCollection($scope.accountName, identifier).then(function (response) {
+        DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_COLLECTION_SAVED);
+        $scope.isSaving = false;
+        $scope.$apply();
+      }).catch(function (err) {
+        console.log(err);
+        DatabusAlert.alert($scope, false, DatabusMessages.CEDIT_COLLECTION_SAVE_FAILED);
+        $scope.isSaving = false;
+        $scope.$apply();
+      });
+
+    } catch(err) {
+      console.log(err);
       DatabusAlert.alert($scope, false, err);
-      $scope.isSaving = false;
-      $scope.$apply();
-    });
+    }
   }
 
-  $scope.createDraft = function () {
-    if (!$scope.collectionManager.isInitialized) {
+  $scope.unpublishCollection = async function() {
+
+    if($scope.collectionManager.activeCollection.isDraft) {
       return;
     }
 
-    $scope.collectionManager.createDraft(function (response) {
-      $scope.statusCode = response;
-      $scope.isSaving = false;
-      $timeout($scope.resetStatus, $scope.modalTime);
-    });
+    try {
+      await $scope.collectionManager.unpublishActiveCollection();
+      DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_COLLECTION_UNPUBLISHED);
+    } catch(err) {
+      DatabusAlert.alert($scope, false, err);
+      console.log(err);
+    }
   }
 
   $scope.showDeleteModal = function () {
@@ -313,27 +210,34 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       return;
     }
 
-    $scope.collectionManager.deleteLocally(function (response) {
-      $scope.statusCode = response.code;
-    });
+    if(!$scope.collectionManager.activeCollection.isDraft) {
+      return;
+    }
+
+    $scope.collectionManager.deleteLocally();
+    window.location.href = `/${$scope.accountName}/collections`;
   }
 
   $scope.downloadAsJson = function () {
     DatabusCollectionUtils.exportToJsonFile($scope.collectionManager.activeCollection);
   }
 
+  /**
+   * Discard local changes of the active collection and revert to the remote collection state
+   * @returns 
+   */
   $scope.discardChanges = function () {
 
-    $scope.isDoingCommitWork = true;
+    if(!$scope.collectionManager.activeCollection.hasLocalChanges) {
+      return;
+    }
 
-    // reload remote
-    $http.get(`/app/account/collections?account=${$scope.accountName}`).then(function (res) {
-
-      $scope.collectionManager.discardLocalChanges(res.data);
-      $scope.statusCode = DatabusResponse.COLLECTION_LOCAL_CHANGES_DISCARDED;
-      $scope.isDoingCommitWork = false;
-
-    });
+    if($scope.collectionManager.activeCollection.isDraft) {
+      return;
+    }
+    
+    $scope.collectionManager.discardLocalChanges();
+    DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_LOCAL_CHANGES_DISCARDED);
   }
 
 
@@ -360,12 +264,110 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       var target = $scope.collectionManager.activeCollection;
       target.title = toLoad.title;
       target.description = toLoad.description;
+      target.abstract = toLoad.abstract;
       target.content = toLoad.content;
-      $scope.statusCode = DatabusResponse.COLLECTION_IMPORTED;
 
+      DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_COLLECTION_IMPORTED);
       $scope.isLoadFromJsonVisible = false;
     } catch (e) {
-      $scope.statusCode = DatabusResponse.COLLECTION_IMPORTED_FAILED
+      $scope.statusCode = DatabusMessages.CEDIT_COLLECTION_IMPORT_FAILED;
+      console.log(e);
     }
   }
+
+  $scope.getCollectionJson = function () {
+    var copy = DatabusCollectionUtils.createCleanCopy($scope.collectionManager.activeCollection);
+    delete copy.uuid;
+    return copy;
+  }
+
+  $scope.onActiveCollectionChanged();
+}
+
+class DatabusWebappUtils {
+
+  constructor() {
+
+  }
+
+  createAccount() {
+    window.location = '/app/account';
+  }
+
+  login() {
+    window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
+  }
+
+  logout() {
+    window.location = '/app/logout?redirectUrl=' + encodeURIComponent(window.location);
+  }
+
+  formatDateFromNow(date) {
+    return moment(date).fromNow();
+  };
+
+  formatDate(date) {
+    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
+  };
+
+  formatLongDate(longString) {
+    var number = new Number(longString);
+    var dateTime = new Date(number);
+    return this.formatDate(dateTime);
+  };
+
+  copyToClipboard(str) {
+    // Create new element
+    var el = document.createElement('textarea');
+    // Set value (string to be copied)
+    el.value = str;
+    // Set non-editable to avoid focus and move outside of view
+    el.setAttribute('readonly', '');
+    el.style = { position: 'absolute', left: '-9999px' };
+    document.body.appendChild(el);
+    // Select text inside element
+    el.select();
+    // Copy text to clipboard
+    document.execCommand('copy');
+    // Remove temporary element
+    document.body.removeChild(el);
+  }
+}
+
+class TabNavigation {
+
+  constructor($scope, $location, tabKeys) {
+    this.location = $location;
+    this.tabKeys = tabKeys;
+    this.activeTab = 0;
+
+    var self = this;
+    // Watch the location hash and tell the tabnavigation that it changed
+    $scope.$watch(function () {
+      return $location.hash();
+    }, function (newVal, oldVal) {
+      self.onLocationHashChanged(newVal, oldVal)
+    }, false);
+  }
+
+
+  onLocationHashChanged(value, oldVal) {
+    for (var i in this.tabKeys) {
+      var tabKey = this.tabKeys[i];
+      if (value == tabKey) {
+        this.activeTab = i;
+        return;
+      }
+    }
+  }
+
+  /**
+   * Change the tab - set location hash and scroll up
+   * @param {*} value 
+   */
+  navigateTo(value) {
+    this.location.hash(value);
+    window.scrollTo(0, 0);
+  }
+
 }

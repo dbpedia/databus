@@ -124,20 +124,33 @@ function AccountPageController($scope, $http, $location, collectionManager) {
     }
   }
 
+
+
   /**
    * COLLECTION FUNCTIONS 
    */
 
   /**
-   * 
+   * Pencil icon for edit pressed
    * @param {*} collection 
    */
-  $scope.onEditCollectionClicked = function(collection) {
+  $scope.onEditCollectionClicked = function (collection) {
     $scope.collectionManager.setActive(collection.uuid);
     window.location.href = '/app/collection-editor';
   }
 
-  $scope.copyUriToClipboard = function(collection) {
+  /**
+   * Create new collection
+   */
+  $scope.createNewCollection = function () {
+    $scope.collectionManager.createNew('New Collection', 'Replace this description with a description of your choice.',
+      function (success) {
+        window.location.href = '/app/collection-editor';
+      });
+  }
+
+
+  $scope.copyUriToClipboard = function (collection) {
     DatabusUtils.copyStringToClipboard(collection.uri);
     DatabusAlert.alert($scope, true, "Collection URI copied to clipboard!");
   }
@@ -147,7 +160,6 @@ function AccountPageController($scope, $http, $location, collectionManager) {
   $scope.formatDateFromNow = function (date) {
     return moment(date).fromNow();
   };
-
 
   $scope.formatCollectionDateFromNow = function (longString) {
     var number = new Number(longString);
