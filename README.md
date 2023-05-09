@@ -62,8 +62,7 @@ to help us test this new version.
 Databus does not store the data itself but only metainformation, therefore before running the server
 we need to publish our data somewhere and make it publicly available. 
 
-**In this step we need to obtain a URI or several URIs pointing to the actual data files for download.**
-
+**In this step we need to obtain a URI or several URIs pointing to the actual data files for download.** 
 As an example here we can publish a single file, e.g. this `README.md`. So our URI is: 
 ```
 https://raw.githubusercontent.com/dbpedia/databus/master/README.md
@@ -71,35 +70,22 @@ https://raw.githubusercontent.com/dbpedia/databus/master/README.md
 ### Running the Server
 #### Requirements
 
-In order to run the Databus on-premise you will need `docker` and `docker-compose` installed on your machine.&#x20;
+In order to run the Databus on-premise you will need `docker` and `docker-compose` 
+installed on your machine.&#x20;
 
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
-Additionally you need an OIDC provider.
-
 #### Starting the Databus Server
 
-Clone the repository or download the `docker-compose.yml` and `.env` file to 
-your machine. Both files need to exist in the same directory. Navigate to 
-the directory containing the files (or the root directory of the 
-cloned repository). It is possible to run the Databus on localhost in one 
-shot with the default configuration to have a quick look. However, for 
-proper setups it is required to start from a fresh/wiped state and 
-perform [mandatory configuration settings](docs/configuration.md#mandatory-configuration) first.&#x20;
+Clone the repository or download the `docker-compose.yml` and `.env` files. 
+Both files need to exist in the same directory. Navigate to 
+the directory with the files (root of the repo).
 
 &#x20;run:
-
 ```
 docker-compose up
 ```
-
-Or, to start the containers in the background i.e. detached, run:
-
-```
-docker-compose up -d
-```
-
 The Databus should be available at `http://localhost:3000`.&#x20;
 
 See [here](docs/configuration.md) on detailed configuration of Databus for the use in production.
@@ -111,24 +97,25 @@ icon and then `Publish Data`.
 
 Fill in the form for publishing and submit. 
 For simplicity, you can enter any name for group, artifact and version.
-Add the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/master/README.md`) 
+Use the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/master/README.md`) 
 in the `Files` section.  
 
 After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
 See more on how to organise your data [here](docs/model.md), there 
 you can find detailed explanations and our suggestions on structuring
- your datasets.
+your datasets.
+
 ### Querying Metainformation
-After we have some files published, we can query for them. Databus offers two 
+After we have some files published, we can perform queries. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
-You can very flexibly group and combine files and artifacts into collections. 
+Collections allow to flexibly combine files and artifacts together. 
 Read more [here](docs/collections.md).
 
-See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
+SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
 ### Mods
-Databus offers metadata extensions using mods. 
+Databus offers metadata extensions using Mods. 
 You can read about them more in detail [here](docs/mods.md).
 
 ## Use Cases
