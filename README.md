@@ -41,6 +41,11 @@ works with structured data, including researchers, data scientists,
 and developers. It provides a central hub for sharing and discovering 
 data, making it easier to leverage the full potential of Linked Data.
 
+## Use Cases
+More examples of the Databus capabilities are demonstrated in our use cases:
+ * [Meta registries](docs/building-meta-registries.md)
+ * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
+
 ## Status
 
 This repo develops Databus version >= 2.0, which is a major upgrade of version 
@@ -117,21 +122,10 @@ SPARQL endpoint allows to run queries directly. See some examples of the SPARQL 
 ### Mods
 Databus offers metadata extensions using Mods. 
 You can read about them more in detail [here](docs/mods.md).
-
-## Use Cases
-More examples of the Databus capabilities are demonstrated in our use cases:
- * [Meta registries](docs/building-meta-registries.md)
- * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
- 
-## Guidelines on Structuring Your Data for Publishing
-Firstly, you should publish your data in some publicly available space for downloading.
-[Here](docs/model.md) you can find detailed explanation on our 
-suggestions to structuring your datasets.
-
-## API
+### API
 Instead of using GUI, you can automate your publishing and data retrieving process
  using our http-API. Refer to it [here](docs/api.md).
- 
+
 ## License
 
 The source code of this repo is published under 
