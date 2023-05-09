@@ -48,6 +48,8 @@ This repo develops Databus version >= 2.0, which is a major upgrade of version
 find problems, please report in the [issue tracker](https://github.com/dbpedia/databus/issues) 
 to help us test this new version.
 
+**Documentation:** https://dbpedia.gitbook.io/databus/overview/readme 
+
 **Examples:** [https://energy.databus.dbpedia.org/](https://energy.databus.dbpedia.org/), [https://dev.databus.dbpedia.org/](https://dev.databus.dbpedia.org/)
 
 **API documentation:** https://github.com/dbpedia/databus/blob/master/API.md
@@ -57,12 +59,12 @@ to help us test this new version.
 ## Getting Started
 
 ### Preparing Your Data
-Databus does not store the data itself but only metainformation, so before running the server
+Databus does not store the data itself but only metainformation, therefore before running the server
 we need to publish our data somewhere and make it publicly available. 
 
 **In this step we need to obtain a URI or several URIs pointing to the actual data files for download.**
 
-As an example here we can publish a single file, e.g. this Readme.md. So our URI is: 
+As an example here we can publish a single file, e.g. this `README.md`. So our URI is: 
 ```
 https://raw.githubusercontent.com/dbpedia/databus/master/README.md
 ```
@@ -100,34 +102,37 @@ docker-compose up -d
 
 The Databus should be available at `http://localhost:3000`.&#x20;
 
-See [here](docs/configuration.md) on how to properly configure Databus for the use in production.
+See [here](docs/configuration.md) on detailed configuration of Databus for the use in production.
 
 ### Publishing Your First Artifact
 To publish an artifact you need to create a Databus account. 
-After you log in, click on your account's icon and then `Publish Data`.
+After creating an account, log in and click on your account's 
+icon and then `Publish Data`.
 
-Fill in the form for publishing and submit.
+Fill in the form for publishing and submit. 
+For simplicity, you can enter any name for group, artifact and version.
+Add the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/master/README.md`) 
+in the `Files` section.  
 
--> better describe publishing
+After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
-See more on how to organise ans structure your data [here](docs/model.md).
-
-To automate publishing you can use our http API as well, 
-you can check it out [here](docs/api.md).
+See more on how to organise your data [here](docs/model.md), there 
+you can find detailed explanations and our suggestions on structuring
+ your datasets.
 ### Querying Metainformation
 After we have some files published, we can query for them. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
-See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
+You can very flexibly group and combine files and artifacts into collections. 
+Read more [here](docs/collections.md).
 
--> collections
--> after publishing we can query the data
+See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
 ### Mods
 Databus offers metadata extensions using mods. 
 You can read about them more in detail [here](docs/mods.md).
 
 ## Use Cases
-Databus can also be used in the following use cases:
+More examples of the Databus capabilities are demonstrated in our use cases:
  * [Meta registries](docs/building-meta-registries.md)
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
  
@@ -136,12 +141,9 @@ Firstly, you should publish your data in some publicly available space for downl
 [Here](docs/model.md) you can find detailed explanation on our 
 suggestions to structuring your datasets.
 
-## Instructions on Running the Databus Server
-For configuring your Databus server please refer [here](docs/configuration.md).
-
 ## API
 Instead of using GUI, you can automate your publishing and data retrieving process
- using out API. Refer to it [here](docs/api.md).
+ using our http-API. Refer to it [here](docs/api.md).
  
 ## License
 
