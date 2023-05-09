@@ -107,7 +107,7 @@ you can find detailed explanations and our suggestions on structuring
 your datasets.
 
 ### Querying Metainformation
-After we have some files published, we can perform queries. Databus offers two 
+After files are published, we can perform queries. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
 Collections allow to flexibly combine files and artifacts together. 
