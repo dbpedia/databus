@@ -26,14 +26,9 @@ servers go down.
 * Provenance tracking: Databus tracks the provenance of data, 
 which means that users can see where the data came from and who has 
 modified it over time.
-* Collaborative environment: Databus encourages collaboration 
-among users by allowing them to share data and work 
-together on projects.
 * Data quality assessment: Databus provides tools for assessing 
 the quality of data, such as validation and testing. This helps to ensure 
 that the data is accurate, complete, and consistent.
-* Data transformation: Databus provides tools for transforming data
-into different formats, which makes it easy to use the data in
  different applications and contexts.
 
 The DBpedia Databus is a valuable resource for anyone who 
