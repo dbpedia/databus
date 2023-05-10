@@ -44,7 +44,7 @@ More examples of the Databus capabilities are demonstrated in our use cases:
 ## Status
 
 This repo develops Databus version >= 2.0, which is a major upgrade of version 
-1.3-beta (currently running at https://databus.dbpedia.org) If you install it and 
+1.3-beta (currently running at https://databus.dbpedia.org). If you install it and 
 find problems, please report in the [issue tracker](https://github.com/dbpedia/databus/issues) 
 to help us test this new version.
 
