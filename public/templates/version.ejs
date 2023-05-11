@@ -18,7 +18,7 @@
           <div style="display: flex; align-items: center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
               <path class="is-white" fill="#fff"
-                d="M 12,0 0.99999997,11.999022 12,23.999999 15.166016,20.546592 A 4.0000001,4.0003251 0 0 1 13,16.99943 a 4.0000001,4.0003251 0 0 1 4,-4.000327 4.0000001,4.0003251 0 0 1 3.378906,1.859527 l 2.621093,-2.859608 z" />
+                d="M 14.9 1 L 12.293 1.005 L 16.507 7.18 L 16.5 23.1 L 18.5 23.1 L 18.5 6.4 L 14.9 1 Z M 10.4 1 L 1.581 1.004 L 1.584 23.13 L 15 23.1 L 15 7.7 L 10.4 1 Z M 16.8 1 L 20 5.8 L 20 23.1 L 22 23.1 L 22 4.9 L 19.3 1 L 16.8 1 Z" />
             </svg>
             <div style="margin-left: 24px;">
               <h1 class="title is-2 has-text-left is-marginless">{{ version.title }} {{version.name}}
@@ -82,7 +82,7 @@
                     </tr>
                     <tr>
                       <td>Issued Date</td>
-                      <td>{{ formatDate(version.issued) }}</td>
+                      <td>{{ utils.formatDate(version.issued) }}</td>
                     </tr>
                     <tr>
                       <td>License</td>
@@ -111,17 +111,17 @@
 
         <!--Tabs-->
         <div class="collection-editor-tabs">
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }"
-            ng-click="tabs.activeTab=0;">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : navigation.activeTab == 0 }"
+            ng-click="navigation.navigateTo('');">
             <div class="section-label">Files</div>
           </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
-            ng-click="tabs.activeTab=1;">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : navigation.activeTab == 1 }"
+            ng-click="navigation.navigateTo('mods');">
             <div class="section-label">Mods</div>
           </div>
           <div style="flex: 1"></div>
           <div class="collection-editor-tab align-right" ng-if="canEdit"
-            ng-class="{ 'is-active' : tabs.activeTab == 2 }" ng-click="tabs.activeTab=2;">
+            ng-class="{ 'is-active' : navigation.activeTab == 2 }" ng-click="navigation.navigateTo('edit');">
 
             <div class="section-label" style="display: flex;">
               <databus-icon style="margin-right:12px;" shape="'edit'" size="24">
@@ -136,7 +136,7 @@
 
       <div class="container">
 
-        <div ng-if="tabs.activeTab == 2 && canEdit">
+        <div ng-if="navigation.activeTab == 2 && canEdit">
           <div class="content-box">
             <div class="box-header">
               <h3>EDIT VERSION INFO</h3>
@@ -244,7 +244,7 @@
           </div>
         </div>
 
-        <div ng-if="tabs.activeTab == 1">
+        <div ng-if="navigation.activeTab == 1">
 
           Learn <a target="_blank" href=https://github.com/dbpedia/databus-mods />how to create a new mod.</a>
           <br />
@@ -270,7 +270,7 @@
 
         </div>
 
-        <div class="file-browser" ng-if="tabs.activeTab == 0">
+        <div class="file-browser" ng-if="navigation.activeTab == 0">
           <div class="columns">
             <div class="column is-3">
               <facets-view node="artifactNode" resource-type="version" on-change="onFacetSettingsChanged()">
@@ -303,7 +303,7 @@
                       ng-class="{ 'is-active' : collection.id == collectionManager.activeCollection.id }"
                       ng-repeat="collection in collectionManager.collections" href="#"
                       class="is-list-item is-clickable">
-                      {{ collection.label }} ({{ formatId(collection.id) }})
+                      {{ collection.label }} ({{ formatId(collection.uri) }})
                     </div>
                   </div>
                 </div>

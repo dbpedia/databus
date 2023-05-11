@@ -31,15 +31,6 @@ function CollectionController($scope, $sce,  $http, collectionManager) {
     console.log(err);
   });
 
-  /*
-  $http.get('/system/collections/collection-statistics', { params : { uri : $scope.collection.uri } }).then(function(result) {
-    for(let i in result.data.files) {
-      $scope.collectionFiles += result.data.files[i].downloadURLs + "\n";
-    }
-
-    $scope.collection.statistics = result.data;
-    $scope.files = result.data.files;
-  });*/
 
   if($scope.authenticated) {
     $scope.username = data.auth.info.username;

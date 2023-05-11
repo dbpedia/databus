@@ -31,7 +31,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   ]);
 
   // Make some util functions available in the template
-  $scope.utils = new DatabusWebappUtils();
+  $scope.utils = new DatabusWebappUtils($scope);
 
   // Make the manager available in the template
   $scope.collectionManager = collectionManager;
@@ -241,12 +241,6 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   }
 
 
-  $scope.queryToClipboard = function () {
-    var query = DatabusCollectionUtils.createQueryString($scope.collectionManager.activeCollection);
-    DatabusCollectionUtils.copyStringToClipboard(query);
-    $scope.statusCode = DatabusResponse.COLLECTION_QUERY_COPIED_TO_CLIPBOARD;
-  }
-
   $scope.showLoadFromJson = function () {
     $scope.isLoadFromJsonVisible = true;
   }
@@ -284,90 +278,3 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.onActiveCollectionChanged();
 }
 
-class DatabusWebappUtils {
-
-  constructor() {
-
-  }
-
-  createAccount() {
-    window.location = '/app/account';
-  }
-
-  login() {
-    window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
-  }
-
-  logout() {
-    window.location = '/app/logout?redirectUrl=' + encodeURIComponent(window.location);
-  }
-
-  formatDateFromNow(date) {
-    return moment(date).fromNow();
-  };
-
-  formatDate(date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
-
-  formatLongDate(longString) {
-    var number = new Number(longString);
-    var dateTime = new Date(number);
-    return this.formatDate(dateTime);
-  };
-
-  copyToClipboard(str) {
-    // Create new element
-    var el = document.createElement('textarea');
-    // Set value (string to be copied)
-    el.value = str;
-    // Set non-editable to avoid focus and move outside of view
-    el.setAttribute('readonly', '');
-    el.style = { position: 'absolute', left: '-9999px' };
-    document.body.appendChild(el);
-    // Select text inside element
-    el.select();
-    // Copy text to clipboard
-    document.execCommand('copy');
-    // Remove temporary element
-    document.body.removeChild(el);
-  }
-}
-
-class TabNavigation {
-
-  constructor($scope, $location, tabKeys) {
-    this.location = $location;
-    this.tabKeys = tabKeys;
-    this.activeTab = 0;
-
-    var self = this;
-    // Watch the location hash and tell the tabnavigation that it changed
-    $scope.$watch(function () {
-      return $location.hash();
-    }, function (newVal, oldVal) {
-      self.onLocationHashChanged(newVal, oldVal)
-    }, false);
-  }
-
-
-  onLocationHashChanged(value, oldVal) {
-    for (var i in this.tabKeys) {
-      var tabKey = this.tabKeys[i];
-      if (value == tabKey) {
-        this.activeTab = i;
-        return;
-      }
-    }
-  }
-
-  /**
-   * Change the tab - set location hash and scroll up
-   * @param {*} value 
-   */
-  navigateTo(value) {
-    this.location.hash(value);
-    window.scrollTo(0, 0);
-  }
-
-}

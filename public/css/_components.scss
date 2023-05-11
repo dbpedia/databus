@@ -215,6 +215,7 @@
 .databus-settings-box {
   border: 1px solid #dbdbdb;
   border-radius: 8px;
+  margin-bottom: 3em;
 }
 
 .databus-settings-box .row {
@@ -232,7 +233,7 @@
 }
 
 .databus-settings-box-header {
-  margin-top: 2em;
+  margin-top: 0;
   margin-left: .5em;
   color: #aaa;
   text-transform: uppercase;

@@ -76,7 +76,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
       if (result.typeName[0].value == 'Artifact') {
 
         var artifactUri = result.resource[0].value;
-        let groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+        let groupUri = DatabusUtils.navigateUp(artifactUri);
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 
         if (groupNode == null) {

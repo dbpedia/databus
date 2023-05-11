@@ -60,21 +60,21 @@
 
         <!--Tabs-->
         <div class="collection-editor-tabs">
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 0 }"
-            ng-click="goToTab('');">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
+            ng-click="tabNavigation.navigateTo('home');">
             <div class="section-label">Overview</div>
           </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 1 }"
-            ng-click="goToTab('data');">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+            ng-click="tabNavigation.navigateTo('data');">
             <div class="section-label">Data</div>
           </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabViewModel.activeTab == 2 }"
-            ng-click="goToTab('collections');">
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }"
+            ng-click="tabNavigation.navigateTo('collections');">
             <div class="section-label">Collections</div>
           </div>
           <div style="flex: 1"></div>
           <div ng-if="profileData.isOwn" class="collection-editor-tab"
-            ng-class="{ 'is-active' : tabViewModel.activeTab == 4 }" ng-click="goToTab('settings')">
+            ng-class="{ 'is-active' : tabNavigation.activeTab == 3 }" ng-click="tabNavigation.navigateTo('settings')">
             <div class="section-label">
               <databus-icon style="margin-right:12px;" shape="'settings'" size="24">
               </databus-icon>Settings
@@ -158,13 +158,13 @@
         margin-bottom: 1em;
       }
 
-      .ce-collection-list-header input {
+      .ce-collection-list-header .search-input {
         max-width: 800px;
+        flex: 1;
         margin-right: .5em;
       }
 
-      .ce-collection-list {
-      }
+      .ce-collection-list {}
 
       .ce-collection-list-item {
         display: flex;
@@ -219,12 +219,16 @@
       .ce-placeholder-text {
         color: rgb(170, 170, 170);
       }
+
+      .account-page-tab {
+        min-height: 800px;
+      }
     </style>
 
     <div class="section" style="min-height: 500px;" ng-if="profileData != undefined">
 
       <!-- DASHBOARD -->
-      <div class="container" ng-if="tabViewModel.activeTab == 0">
+      <div class="container" ng-if="tabNavigation.activeTab == 0">
         <div class="columns">
           <div class="column is-3" style="padding-right: 2em;">
 
@@ -299,15 +303,12 @@
               </div>
             </div>
 
-
-
-
           </div>
         </div>
       </div>
 
       <!-- DATA -->
-      <div ng-if="tabViewModel.activeTab == 1" class="container">
+      <div ng-if="tabNavigation.activeTab == 1" class="container account-page-tab">
 
         <div class="field is-grouped" style="margin-bottom: 2.5em;">
           <p class="control" style="flex: 1;">
@@ -344,23 +345,61 @@
           </div>
           <div ng-if="!$last" style="margin: 1.5em 1.5em;" class="is-divider"></div>
         </div>
-
-
       </div>
+
       <!-- COLLECTIONS -->
-      <div class="container" ng-if="tabViewModel.activeTab == 2">
+      <div class="container account-page-tab" ng-if="tabNavigation.activeTab == 2">
+
+        <div class="ce-collection-list-header">
+          <div class="search-input control has-icons-left">
+            <input class="input" type="text" ng-model="collectionSearch.input" placeholder="Search collections...">
+            <span class="icon is-left">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
+          <div class="control">
+            <div class="dropdown" ng-class="{ 'is-active' : collectionSearch.sortVisible }">
+              <div class="dropdown-trigger">
+                <a class="button" aria-haspopup="true" aria-controls="dropdown-menu"
+                  ng-click="collectionSearch.sortVisible=true">
+                  <span>Sort By</span>
+                  <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                </a>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu"
+                style="left: initial; right: 0; padding-top: 8px;">
+                <div class="click-outside-mask" ng-if="collectionSearch.sortVisible"
+                  ng-click=" collectionSearch.sortVisible=false"></div>
+                <div class="dropdown-content">
+
+                  <div class="dropdown-item" style="display: flex;" ng-repeat="property in collectionSearch.sortProperties"
+                    ng-click="collectionSearch.toggleSort(property.key)">
+                    <div style="flex:1;">{{ property.label }}</div>
+                    <div>
+                      <databus-icon ng-if="collectionSearch.sortProperty==property.key && !collectionSearch.sortReverse"
+                        shape="'sort-asc'" size="20">
+                      </databus-icon>
+                      <databus-icon ng-if="collectionSearch.sortProperty==property.key && collectionSearch.sortReverse"
+                        shape="'sort-desc'" size="20">
+                      </databus-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ce-flex-filler"></div>
+          <div ng-if="profileData.isOwn" class="button is-collection" ng-click="createNewCollection()">Create New
+          </div>
+        </div>
 
         <div ng-if="profileData.isOwn">
-          <div class="ce-collection-list-header">
-            <input class="input" ng-model="search.title" placeholder="Search collections...">
-            <div class="button">Sort</div>
-            <div class="ce-flex-filler"></div>
-            <div class="button is-collection" ng-click="createNewCollection()">Create New</div>
-          </div>
 
           <div class="ce-collection-list">
             <div class="ce-collection-list-item"
-              ng-repeat="collection in collectionManager.local | collectionfilter:search.title">
+              ng-repeat="collection in collectionManager.local | collectionfilter:collectionSearch.input | orderBy:collectionSearch.sortProperty:collectionSearch.sortReverse">
               <div>
                 <div class="ce-collection-list-item-header">
                   <type-tag width="48" height="48" style="margin-right:12px" type="'Collection'"
@@ -382,36 +421,29 @@
                       </collection-status>
                     </li>
                     <li>
-                      <div ng-if="collection.issued" style="color: #aaa;">{{ formatCollectionDateFromNow(collection.issued) }}</div>
+                      <div ng-if="collection.issued" style="color: #aaa;">{{
+                        formatCollectionDateFromNow(collection.issued) }}</div>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="ce-tool-icons">
-                <databus-icon ng-if="!collection.isDraft" style="margin-right: 3em;" shape="'clipboard'" size="24" is-clickable="true"
-                  on-click="copyUriToClipboard(collection)"></databus-icon>
-                  <databus-icon style="margin-right: 3em;" shape="'copy'" size="24" is-clickable="true"
-                  on-click="copyUriToClipboard(collection)"></databus-icon>
-                  <databus-icon style="margin-right:16px;" shape="'edit'" size="24" is-clickable="true"
+                <databus-icon ng-if="!collection.isDraft" style="margin-right: 3em;" shape="'clipboard'" size="24"
+                  is-clickable="true" on-click="utils.copyToClipboard(collection.uri)"></databus-icon>
+                <databus-icon style="margin-right: 3em;" shape="'copy'" size="24" is-clickable="true"
+                  on-click="createCopy(collection)"></databus-icon>
+                <databus-icon style="margin-right:16px;" shape="'edit'" size="24" is-clickable="true"
                   on-click="onEditCollectionClicked(collection)"></databus-icon>
               </div>
             </div>
           </div>
-
         </div>
         <div ng-if="!profileData.isOwn">
-          <div class="ce-collection-list-header">
-            <div class="control has-icons-left " style="flex:1;">
-              <input class="input" type="text" ng-model="search.title" placeholder="Search collections...">
-              <span class="icon is-left">
-                <i class="fas fa-search"></i>
-              </span>
-            </div>
-            <div class="button">Sort</div>
-          </div>
+
           <div ng-repeat="collection in collectionsData.collections | collectionfilter:search.title">
-            <div style="margin-top: 24px; margin-bottom: 24px;">
-              <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract">
+            <div>
+              <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract"
+                date="formatCollectionDateFromNow(collection.issued)">
               </entity-card>
             </div>
             <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
@@ -420,7 +452,7 @@
       </div>
 
 
-      <div class="container" ng-if="tabViewModel.activeTab == 4">
+      <div class="container" ng-if="tabNavigation.activeTab == 3">
         <% include profile %>
       </div>
 

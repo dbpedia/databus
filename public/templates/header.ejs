@@ -78,6 +78,8 @@
       <script src="/js/utils/databus-utils.js"></script>
       <script src="/js/utils/databus-messages.js"></script>
       <script src="/js/utils/databus-facets-cache.js"></script>
+      <script src="/js/utils/databus-webapp-utils.js"></script>
+      <script src="/js/utils/tab-navigation.js"></script>
       <script src="/js/collections/databus-collection-manager.js"></script>
       <script src="/js/collections/databus-collection-utils.js"></script>
       <script src="/js/collections/databus-collection-wrapper.js"></script>
@@ -220,7 +222,7 @@
                   Publish Data
                 </span>
               </a>
-              <a class="navbar-item" href="/app/collection-editor">
+              <a ng-if="accountName" class="navbar-item" ng-href="/{{ accountName }}#collections" ng-click="hideAccountMenu()">
                 <span class="icon has-text-info dropdown-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                     <path xmlns="http://www.w3.org/2000/svg"
@@ -229,7 +231,19 @@
                   </svg>
                 </span>
                 <span>
-                  Collection Editor
+                  Collections
+                </span>
+              </a>
+              <a ng-if="accountName" class="navbar-item" ng-href="/{{ accountName }}#settings" ng-click="hideAccountMenu()">
+                <span class="icon has-text-info dropdown-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                    <path xmlns="http://www.w3.org/2000/svg"
+                      d="M24 13.616v-3.232l-2.869-1.02c-.198-.687-.472-1.342-.811-1.955l1.308-2.751-2.285-2.285-2.751 1.307c-.613-.339-1.269-.613-1.955-.811l-1.021-2.869h-3.232l-1.021 2.869c-.686.198-1.342.471-1.955.811l-2.751-1.308-2.285 2.285 1.308 2.752c-.339.613-.614 1.268-.811 1.955l-2.869 1.02v3.232l2.869 1.02c.197.687.472 1.342.811 1.955l-1.308 2.751 2.285 2.286 2.751-1.308c.613.339 1.269.613 1.955.811l1.021 2.869h3.232l1.021-2.869c.687-.198 1.342-.472 1.955-.811l2.751 1.308 2.285-2.286-1.308-2.751c.339-.613.613-1.268.811-1.955l2.869-1.02zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"
+                      fill="#fff" />
+                  </svg>
+                </span>
+                <span>
+                  Settings
                 </span>
               </a>
 

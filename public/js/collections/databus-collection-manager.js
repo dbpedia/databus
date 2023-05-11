@@ -423,6 +423,7 @@ class DatabusCollectionManager {
     }
 
     this.local[uuid].title = this.remote[uuid].title;
+    this.local[uuid].abstract = this.remote[uuid].abstract;
     this.local[uuid].description = this.remote[uuid].description;
     this.local[uuid].content = DatabusCollectionUtils.createCleanCopy(this.remote[uuid].content);
     this.local[uuid].hasLocalChanges = this.hasLocalChanges(this.local[uuid]);
@@ -487,7 +488,7 @@ class DatabusCollectionManager {
 
     let collection = DatabusCollectionWrapper.createNew();
     collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
-    collection.label = `Copy of ${source.label}`;
+    collection.title = `Copy of ${source.title}`;
     collection.abstract = source.abstract;
     collection.description = source.description;
 
@@ -646,7 +647,6 @@ class DatabusCollectionManager {
     }
   }
 
-
   async updateCollection(username, collectionTag) {
 
     if (this.activeCollection.uri != null) {
@@ -707,9 +707,6 @@ class DatabusCollectionManager {
         this.saveLocally();
         return { code: DatabusResponse.COLLECTION_DELETED };
       }
-
-      let uri = this.activeCollection.uri;
-      let tag = DatabusCollectionUtils.uriToName(uri);
 
       var targetUri = `/${username}/collections/${collectionTag}`;
 

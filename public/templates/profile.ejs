@@ -1,210 +1,201 @@
 <div ng-controller="ProfileController">
-  <div class="content">
+  <databus-alert></databus-alert>
+  <div>
 
-    <div class="title is-3">Welcome, {{ profileData.label }}</div>
-
-
-    <div class="title is-4">Edit Profile</div>
-
-    <div class="field">
-      <label class="label">Name</label>
-      <div class="control has-icons-left has-icons-right">
-        <input class="input" type="text" placeholder="Name" ng-model="editData.label">
-        <span class="icon is-small is-left">
-          <i class="fas fa-user"></i>
-        </span>
-      </div>
+    <div class="databus-settings-box-header">
+      <h3>EDIT PROFILE</h3>
     </div>
-
-    <div class="field">
-      <label class="label">Profile Picture URL</label>
-      <div class="control has-icons-left has-icons-right">
-        <input class="input" type="text" placeholder="Profile Picture URL" ng-model="editData.imageUrl">
-        <span class="icon is-small is-left">
-          <i class="fas fa-image"></i>
-        </span>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">About</label>
-      <div class="control has-icons-left has-icons-right">
-        <textarea class="input" type="text" placeholder="About" style="min-height: 10em;"
-          ng-model="editData.about"></textarea>
-        <span class="icon is-small is-left">
-          <i class="fas fa-question"></i>
-        </span>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Promoted Content</label>
-      <div class="control">
-        <textarea class="input" type="text" placeholder="Featured Content" style="min-height: 10em;"
-          ng-model="editData.featuredContent"></textarea>
-      </div>
-    </div>
-
-    <br />
-
-    <div class="field is-grouped">
-      <div class="control">
-        <button class="button is-consumer" ng-click="saveProfile()">Save</button>
-      </div>
-      <div class="control">
-        <button ng-click="resetEdits()" class="button">Reset</button>
-      </div>
-    </div>
-
-
-    <br />
-    <br />
-
-
-
-    <div class=content>
-
-      <!--
-
-      <h2>Authorized Accounts</h2>
-
-      <p>Enter an account URI to grant publishing access to this account.</p>
-
-      <div class="field has-addons" style="margin-bottom: 1.5em;">
-
-        <div class="control has-icons-left">
-          <input class="input" type="text" style="min-width: 500px;" placeholder="Account URI"
-            ng-model="grantAccessUri">
-          <span class="icon is-small is-left">
-            <i class="fas fa-id-card"></i>
-          </span>
+    <div class="databus-settings-box">
+      <div class="box-content">
+        <div class="row">
+          <div class="row-label">Name</div>
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="text" placeholder="Name" ng-model="editData.label">
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+          </div>
         </div>
-        <p class="control">
-          <a ng-click="grantAccess()" class="button is-consumer">
-            Add
-          </a>
-        </p>
-      </div>
-
-      <br />
-      <div ng-repeat="authorizedAccount in profileData.authorizedAccounts">
-
-        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
-        align-items: center;">
-          <div><a ng-href="{{authorizedAccount}}">{{ authorizedAccount }}</a></div>
-          <div style="flex: 1;"></div>
-          <a ng-click="revokeAccess(authorizedAccount)" class="button is-error">
-            Remove
-          </a>
+        <div class="row">
+          <div class="row-label">Profile Picture URL</div>
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="text" placeholder="Profile Picture URL" ng-model="editData.imageUrl">
+            <span class="icon is-small is-left">
+              <i class="fas fa-image"></i>
+            </span>
+          </div>
         </div>
-      </div>-->
+        <div class="row">
+          <div class="row-label">About</div>
+          <div class="control has-icons-left has-icons-right">
+            <textarea class="input" type="text" placeholder="About" style="min-height: 10em;"
+              ng-model="editData.about"></textarea>
+            <span class="icon is-small is-left">
+              <i class="fas fa-question"></i>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-label">Featured Content URLs</div>
+          <div class="control">
+            <textarea class="input" type="text" placeholder="Featured Content" style="min-height: 10em;"
+              ng-model="editData.featuredContent"></textarea>
+          </div>
+          <div class="databus-settings-info">
+            Post Databus resource URIs here to show them prominently on your account page. Resource URIs must be
+            separated by newlines.
+          </div>
+        </div>
+        <div class="row">
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-consumer" ng-click="saveProfile()">Save</button>
+            </div>
+            <div class="control">
+              <button ng-click="resetEdits()" class="button">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <h2>WebIds</h2>
-      <h3>Internal WebId Document</h3>
-      <p>
-        Internal WebId document identifier:
+    <div class="databus-settings-box-header">
+      <h3>API KEYS</h3>
+    </div>
+    <div class="databus-settings-box">
+      <div class="box-content">
+        <div class="row">
 
-      <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+          <div class="row-label">Usage Instructions</div>
+          <div>
+            <div class="databus-settings-info" style="margin-bottom: 0.5em">You can access the Databus API by sending an
+              API key along with your http request. Send your API key as a
+              <b>x-api-key</b> header
+            </div>
+            <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
+
+
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="row-label">Create API Key</div>
+
+          <div class="field has-addons" style="margin-bottom: 0;">
+            <p class="control" style="margin-bottom: 0;">
+              <input class="input" placeholder="Enter key name..." style="min-width: 500px;" input="searchInput"
+                ng-model="createApiKeyName" ng-change="onCreateApiKeyNameChanged()" filters="searchFilters">
+            </p>
+            <p class="control">
+              <a ng-click="addApiKey()" ng-disabled="createApiKeyError || !createApiKeyName" class="button is-consumer">
+                Create
+              </a>
+            </p>
+          </div>
+          <span ng-if="createApiKeyError" class="help is-danger">{{ createApiKeyError }}</span>
+          <div class="databus-settings-info">Enter a name for your API key and click <i>Create</i> to create a new API
+            key.</div>
+
+
+
+        </div>
+        <div class="row">
+          <div class="row-label">Active API Keys</div>
+          <div ng-if="apiKeys == null || apiKeys.length == 0" class="databus-settings-info">You haven't created any API
+            keys yet.</div>
+          <div ng-repeat="key in apiKeys">
+            <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+                align-items: center;">
+              <div><b>{{ key.keyname }}: </b>{{ key.apikey }}</div>
+              <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="utils.copyToClipboard(key.apikey)" width="24"
+                height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
+              </svg>
+              <div style="flex: 1;"></div>
+              <a ng-click="removeApiKey(key)" class="button is-error">
+                Delete
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="databus-settings-box-header">
+    <h3>WEBID</h3>
+  </div>
+  <div class="databus-settings-box">
+    <div class="box-content">
+      <div class="row">
+        <div class="row-label">Internal WebId Document</div>
+
+        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: .25em;
         align-items: center; height: 54px;">
-        <div><a ng-href="{{personUri}}">{{ personUri }}</a></div>
-        <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(personUri)" width="24" height="24"
-          xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
-          <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
-        </svg>
-        <div style="flex: 1;"></div>
-
-      </div>
-
-
-      </p>
-      <blockquote>IMPORTANT NOTE: Do not use this WebId document outside the scope of this Databus. It is not compatible
-        with WebId authentication and should only be used as a publisher identifier for this Databus instance.
-      </blockquote>
-
-
-
-      <h3>External WebIds</h3>
-
-
-
-      <p>Enter the WebId uri you want to connect to this account and click <i>Connect</i> to connect your WebId to this
-        account.</p>
-      <div class="field has-addons" style="margin-bottom: 1.5em;">
-
-        <div class="control has-icons-left">
-          <input class="input" type="text" style="min-width: 500px;" placeholder="WebId URI" ng-model="addWebIdUri">
-          <span class="icon is-small is-left">
-            <i class="fas fa-id-card"></i>
-          </span>
-        </div>
-        <p class="control">
-          <a ng-click="connectWebid()" class="button is-consumer">
-            Connect
-          </a>
-        </p>
-      </div>
-      <div style="color:red; margin-top: -20px">{{ addWebIdError }}</div>
-
-      <br />
-      <div ng-repeat="webIdEntry in profileData.webIds">
-
-        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
-        align-items: center;">
-          <div><a ng-href="{{webIdEntry}}">{{ webIdEntry }}</a></div>
-          <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(webIdEntry)" width="24"
-            height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
-            <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
-          </svg>
-          <div style="flex: 1;"></div>
-          <a ng-click="removeWebId(webIdEntry)" class="button is-error">
-            Remove
-          </a>
-        </div>
-
-
-      </div>
-
-    </div>
-
-    <br />
-    <h2>API Keys</h2>
-
-    <p>You can access the Databus API by sending an API key along with your http request. Send your API key as a
-      x-api-key header</p>
-    <pre>curl -H 'x-api-key: YOUR_API_KEY' -X PUT -H "Content-Type: application/json" -d 'YOUR_DATA' API_URL</pre>
-    <h3>Create New API Key</h3>
-    <p>Enter a name for your API key and click <i>Create</i> to create a new API key.</p>
-    <div class="field has-addons" style="margin-bottom: 0;">
-      <p class="control" style="margin-bottom: 0;">
-        <input class="input" placeholder="Enter key name..." style="min-width: 500px;" input="searchInput"
-          ng-model="createApiKeyName" ng-change="onCreateApiKeyNameChanged()" filters="searchFilters">
-      </p>
-      <p class="control">
-        <a ng-click="addApiKey()" ng-disabled="createApiKeyError || !createApiKeyName" class="button is-consumer">
-          Create
-        </a>
-      </p>
-    </div>
-    <span ng-if="createApiKeyError" class="help is-danger">{{ createApiKeyError }}</span>
-
-    <div ng-if="apiKeys != undefined && apiKeys.length > 0" style="margin-top: 2em">
-      <h3>API Keys</h3>
-      <div ng-repeat="key in apiKeys">
-        <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
-          align-items: center;">
-          <div><b>{{ key.keyname }}: </b>{{ key.apikey }}</div>
-          <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="copyToClipboard(key.apikey)" width="24" height="24"
+          <div><a ng-href="{{personUri}}">{{ personUri }}</a></div>
+          <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="utils.copyToClipboard(personUri)" width="24" height="24"
             xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
             <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
           </svg>
           <div style="flex: 1;"></div>
-          <a ng-click="removeApiKey(key)" class="button is-error">
-            Delete
-          </a>
+
+        </div>
+
+        <div class="databus-settings-info"><b>IMPORTANT NOTE:</b> Do not use this WebId document outside the scope of
+          this Databus. It is not compatible
+          with WebId authentication and should only be used as a publisher identifier for this Databus instance.
         </div>
       </div>
 
-    </div>
 
+      <div class="row">
+        <div class="row-label">Link External WebId</div>
+
+
+
+        <div class="field has-addons" style="margin-bottom: 1.5em;">
+
+          <div class="control has-icons-left">
+            <input class="input" type="text" style="min-width: 500px;" placeholder="WebId URI" ng-model="addWebIdUri">
+            <span class="icon is-small is-left">
+              <i class="fas fa-id-card"></i>
+            </span>
+          </div>
+          <p class="control">
+            <a ng-click="connectWebid()" class="button is-consumer">
+              Connect
+            </a>
+          </p>
+        </div>
+        <div style="color:red; margin-top: -20px">{{ addWebIdError }}</div>
+        <div class="databus-settings-info">Enter the WebId uri you want to connect to this account and click
+          <i>Connect</i> to connect your WebId to
+          this
+          account.</div>
+      </div>
+
+      <div class="row">
+        <div class="row-label">Linked WebIds</div>
+
+        <div ng-if="profileData.webIds == null || profileData.webIds.length == 0" class="databus-settings-info">You haven't linked any external WebIds yet.</div>
+
+        <div ng-repeat="webIdEntry in profileData.webIds">
+
+          <div style="border: 1px solid #dbdbdb; padding: 0.5em; padding-left: 1em; display: flex; margin-bottom: 1em;
+        align-items: center;">
+            <div><a ng-href="{{webIdEntry}}">{{ webIdEntry }}</a></div>
+            <svg style="margin-left: 0.5em; cursor: pointer;" ng-click="utils.copyToClipboard(webIdEntry)" width="24"
+              height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+              <path fill="#ccc" d="M17 7h6v16h-16v-6h-6v-16h16v6zm5 1h-14v14h14v-14zm-6-1v-5h-14v14h5v-9h9z" />
+            </svg>
+            <div style="flex: 1;"></div>
+            <a ng-click="removeWebId(webIdEntry)" class="button is-error">
+              Remove
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

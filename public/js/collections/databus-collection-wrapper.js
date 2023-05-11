@@ -144,7 +144,7 @@ class DatabusCollectionWrapper {
   }
 
   hasArtifact(artifactUri) {
-    var groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+    var groupUri = DatabusUtils.navigateUp(artifactUri);
 
     var group = this.findGroup(groupUri);
 
@@ -168,10 +168,10 @@ class DatabusCollectionWrapper {
 
     if(group == undefined) {
 
-      var publisherUri = DatabusCollectionUtils.navigateUp(groupUri);
+      var publisherUri = DatabusUtils.navigateUp(groupUri);
 
-      var groupLabel = DatabusCollectionUtils.uriToName(groupUri);
-      var publisherLabel = DatabusCollectionUtils.uriToName(publisherUri);
+      var groupLabel = DatabusUtils.uriToName(groupUri);
+      var publisherLabel = DatabusUtils.uriToName(publisherUri);
 
       group = {};
       group.uri = groupUri;
@@ -198,7 +198,7 @@ class DatabusCollectionWrapper {
    */
   addArtifactNode(artifactUri, artifactLabel, settings) {
 
-    var groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+    var groupUri = DatabusUtils.navigateUp(artifactUri);
     var group = this.addGroupNode(groupUri, [ 
       {
         facet: "http://purl.org/dc/terms/hasVersion",

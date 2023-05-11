@@ -190,7 +190,7 @@ SELECT ?file WHERE {
       if (result.typeName[0].value == 'Artifact') {
 
         var artifactUri = result.resource[0].value;
-        let groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+        let groupUri = DatabusUtils.navigateUp(artifactUri);
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 
         if (groupNode == null) {
@@ -629,19 +629,19 @@ SELECT ?file WHERE {
   }
 
   ctrl.formatGroupPrefix = function (uri) {
-    return DatabusCollectionUtils.uriToName(DatabusCollectionUtils.navigateUp(uri));
+    return DatabusUtils.uriToName(DatabusUtils.navigateUp(uri));
   }
 
   ctrl.formatArtifactPrefix = function (uri) {
-    var nav = DatabusCollectionUtils.navigateUp(uri);
-    var groupName = DatabusCollectionUtils.uriToName(nav);
-    var userName = DatabusCollectionUtils.uriToName(DatabusCollectionUtils.navigateUp(nav));
+    var nav = DatabusUtils.navigateUp(uri);
+    var groupName = DatabusUtils.uriToName(nav);
+    var userName = DatabusUtils.uriToName(DatabusUtils.navigateUp(nav));
 
     return userName + '/' + groupName;
   }
 
   ctrl.uriToName = function (uri) {
-    return DatabusCollectionUtils.uriToName(uri);
+    return DatabusUtils.uriToName(uri);
   }
 
   ctrl.objSize = function (obj) {

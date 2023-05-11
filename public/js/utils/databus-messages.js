@@ -12,6 +12,9 @@ class DatabusMessages {
   static CEDIT_COLLECTION_SAVE_FAILED = 'Failed to save the collection';
   static CEDIT_COLLECTION_UNPUBLISHED = 'Collection unpublished successfully';
   static CEDIT_LOCAL_CHANGES_DISCARDED = 'Local changes discarded';
+
+  // Generic
+  static GENERIC_COPIED_TO_CLIPBOARD = 'Copied to clipboard!';
 }
 
 if(typeof module === "object" && module && module.exports)

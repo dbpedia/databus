@@ -20,7 +20,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
   .controller("ProfileController", ["$scope", "$http", ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
-  .controller("VersionPageController", ["$scope", "$http", "$sce", "collectionManager", VersionPageController])
+  .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
     return {
       restrict: 'E',
@@ -43,10 +43,14 @@ function config($locationProvider) {
 databusApplication.filter('collectionfilter', function() {
   return function(input, search) {
     if (!input) return input;
-    if (!search) return input;
+    
+    var expected = '';
 
-    var expected = ('' + search).toLowerCase();
-    var result = {};
+    if (search != null) {
+      expected = ('' + search).toLowerCase();
+    }
+
+    var result = [];
 
     angular.forEach(input, function(value, key) {
       if(value.title == undefined) {
@@ -54,9 +58,12 @@ databusApplication.filter('collectionfilter', function() {
       }
       
       if(value.title.toLowerCase().includes(expected)) {
-        result[key] = value;
+        result.push(value); // [key] = value;
       }
     });
+
+
+
     return result;
   }
 });

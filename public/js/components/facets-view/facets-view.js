@@ -136,7 +136,7 @@ function FacetsViewController($http, $scope) {
         for (var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
           var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
           result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
-            = DatabusCollectionUtils.uriToName(value);
+            = DatabusUtils.uriToName(value);
         }
       }
 
@@ -220,7 +220,7 @@ function FacetsViewController($http, $scope) {
         if (ctrl.resourceType == 'group') {
           for (var i in ctrl.node.childNodes) {
             var artifactNode = ctrl.node.childNodes[i];
-            var facetValue = DatabusCollectionUtils.uriToName(artifactNode.uri)
+            var facetValue = DatabusUtils.uriToName(artifactNode.uri)
             var visibleFacetSetting =
               ctrl.getOrCreateVisibleFacetSetting('http://dataid.dbpedia.org/ns/core#artifact', facetValue);
             visibleFacetSetting.checked = true;
@@ -311,7 +311,7 @@ function FacetsViewController($http, $scope) {
     if (ctrl.viewModel[key] == undefined) {
       // This is a facet that the node does not have, but a parent has
 
-      var label = DatabusCollectionUtils.uriToName(key);
+      var label = DatabusUtils.uriToName(key);
       label = label[0].toUpperCase() + label.slice(1);
 
       ctrl.viewModel[key] = {};

@@ -19,8 +19,14 @@ function AccountPageController($scope, $http, $location, collectionManager) {
 
   $scope.profileData.isOwn = $scope.auth.authenticated && $scope.auth.info.accountName == $scope.profileData.accountName;
 
-  // Initialize the user-internal search
-  var uriComponent = encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`);
+  // Create a tab navigation object for the tab navigation with locato
+  $scope.tabNavigation = new TabNavigation($scope, $location, [
+    'home', 'data', 'collections', 'settings'
+  ]);
+
+  // Make some util functions available in the template
+  $scope.utils = new DatabusWebappUtils($scope);
+
 
   $scope.dataSearchInput = '';
   $scope.dataSearchSettings = {
@@ -40,6 +46,7 @@ function AccountPageController($scope, $http, $location, collectionManager) {
     filter: `&publisher=${$scope.profileData.accountName}&publisherWeight=0&typeNameWeight=0`
   };
 
+  
   // Wait for additional artifact data to arrive
   $scope.publishedData = {};
   $scope.publishedData.isLoading = true;
@@ -124,11 +131,26 @@ function AccountPageController($scope, $http, $location, collectionManager) {
     }
   }
 
-
-
   /**
    * COLLECTION FUNCTIONS 
    */
+
+  // Collection List Search
+  $scope.collectionSearch = {};
+  $scope.collectionSearch.sortVisible = false;
+  $scope.collectionSearch.sortProperty = 'title';
+  $scope.collectionSearch.sortProperties =  [ 
+    { key: 'title', label: 'Title' },
+    { key: 'issued', label: 'Issued Date' },
+  ];
+  $scope.collectionSearch.sortReverse = false;
+  $scope.collectionSearch.toggleSort = function(value) {
+    if($scope.collectionSearch.sortProperty == value) {
+      $scope.collectionSearch.sortReverse = !$scope.collectionSearch.sortReverse;
+    } else {
+      $scope.collectionSearch.sortProperty = value;
+    }
+  }
 
   /**
    * Pencil icon for edit pressed
@@ -149,71 +171,14 @@ function AccountPageController($scope, $http, $location, collectionManager) {
       });
   }
 
-
-  $scope.copyUriToClipboard = function (collection) {
-    DatabusUtils.copyStringToClipboard(collection.uri);
-    DatabusAlert.alert($scope, true, "Collection URI copied to clipboard!");
+  /**
+   * Create a copy of the clicked collection
+   */
+  $scope.createCopy = function(collection) {
+    $scope.collectionManager.createCopy(collection);
+    window.location.href = '/app/collection-editor';
   }
 
-  $scope.uriToName = function (uri) { return DatabusUtils.uriToName(uri); }
-
-  $scope.formatDateFromNow = function (date) {
-    return moment(date).fromNow();
-  };
-
-  $scope.formatCollectionDateFromNow = function (longString) {
-    var number = new Number(longString);
-    var dateTime = new Date(number);
-    return $scope.formatDate(dateTime);
-  };
-
-  $scope.formatDate = function (date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
-
-  // We have profile data in $scope.profileData!
-
-  $scope.tabViewModel = {};
-  $scope.tabViewModel.activeTab = 0;
-  $scope.tabViewModel.tabs = []
-  $scope.tabViewModel.tabs.length = 4;
-
-
-
-
-  $scope.goToTab = function (value) {
-    $location.hash(value);
-  }
-
-
-
-  $scope.$watch("location.hash()", function (newVal, oldVal) {
-
-    if (newVal == 'settings') {
-      $scope.tabViewModel.activeTab = 4;
-    }
-
-    if (newVal == 'collections') {
-      $scope.tabViewModel.activeTab = 2;
-    }
-
-    if (newVal == 'data') {
-      $scope.tabViewModel.activeTab = 1;
-    }
-
-    if (newVal == '') {
-      $scope.tabViewModel.activeTab = 0;
-    }
-
-  }, true);
-
-  var tabKeys = ['', 'data', 'collections', 'profile'];
-
-  for (var i = 0; i < tabKeys.length; i++) {
-    $scope.tabViewModel.tabs[i] = {};
-    $scope.tabViewModel.tabs[i].key = tabKeys[i];
-    $scope.tabViewModel.tabs[i].data = [];
-  }
 
   $scope.findFeaturedContent = function (uri) {
 
@@ -274,10 +239,5 @@ function AccountPageController($scope, $http, $location, collectionManager) {
       }
     }
   }
-
-  $scope.formatUploadSize = function (size) {
-    return DatabusUtils.formatFileSize(size);
-  };
-
 
 }

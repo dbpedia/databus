@@ -10,6 +10,8 @@ function ProfileController($scope, $http) {
   $scope.addWebIdUri = "";
   $scope.grantAccessUri = "";
 
+  $scope.utils = new DatabusWebappUtils($scope);
+
   $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
 
   $scope.putProfile = function(accountName, foafName) {
@@ -91,10 +93,6 @@ function ProfileController($scope, $http) {
   $scope.onCreateApiKeyNameChanged = function() {
     var hasError = !DatabusUtils.isValidResourceLabel($scope.createApiKeyName, 3, 20);
     $scope.createApiKeyError = hasError ? " API key name must have between 3 and 20 characters and match [A-Za-z0-9\\s_()\\.\\,\\-]*" : "";
-  }
-
-  $scope.copyToClipboard = function(key) {
-    DatabusUtils.copyStringToClipboard(key);
   }
 
   $scope.addApiKey = function() {

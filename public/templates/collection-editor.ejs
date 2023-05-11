@@ -59,77 +59,11 @@
         </div>
       </div>
 
-
       <!-- LOADED VIEW -->
       <div ng-if="collectionManager.isInitialized">
 
         <style>
-          .ce-sidebar {
-            flex-basis: 20%;
-            flex-grow: 0;
-            min-height: 1000px;
-            background-color: #343a40;
-            color: white;
-            background-image: url(../img/banner-background.png);
-            background-repeat: repeat;
-            background-size: 150px;
-          }
-
-          .ce-sidebar-header {
-            padding: 16px 16px;
-            font-size: 1.1em;
-            background-color: #445462;
-          }
-
-          .ce-sidebar-caption {
-            padding: 12px 16px;
-            color: white;
-            font-weight: 600;
-            background-color: #445462;
-          }
-
-          .ce-sidebar-button {
-            padding: 12px 36px;
-            display: flex;
-            cursor: pointer;
-            position: relative;
-            align-items: center;
-          }
-
-          .ce-sidebar-gadient {
-            height: 128px;
-          }
-
-          .ce-sidebar-button:hover {
-            background-color: rgba(255, 255, 255, 0.06);
-          }
-
-          .ce-sidebar-button.is-active {
-            background-color: #709e70
-          }
-
-          .ce-sidebar-button.is-active:hover {
-            background-color: #7caa7c
-          }
-
-          .ce-sidebar-button.is-active .ce-sidebar-button-pointer {
-            width: 0px;
-            height: 0px;
-            border-top: 24px solid transparent;
-            border-bottom: 24px solid transparent;
-            border-right: 24px solid #f9fafb;
-            position: absolute;
-            top: 0;
-            right: 0;
-          }
-
-          .ce-content-active-hint {
-            background-color: rgb(233 244 231);
-            padding: 1em 1.5em;
-            margin-bottom: 1em;
-            color: #80967c;
-            border: 1px solid rgb(202 222 199);
-          }
+       
 
           .ce-content-header {
             color: #68859e;
@@ -182,7 +116,7 @@
 
             display: flex;
             align-items: center;
-            margin-bottom: 1em;
+            margin-bottom: 2em;
             position: relative;
             z-index: 1005;
           }
@@ -276,8 +210,6 @@
             margin-top: 0;
           }
 
-
-
           .ce-content {
             min-height: 1000px;
           }
@@ -306,11 +238,9 @@
             border-bottom: 1px solid #dbdbdb;
           }
 
-
           .ce-flex-filler {
             flex: 1;
           }
-
 
           .ce-collection-list-item h1 {
             margin: 0;
@@ -354,13 +284,11 @@
           }
 
           .ce-title-prefix {
-
             font-size: 1.5em;
             color: #343a40;
           }
 
           .ce-title-suffix {
-
             font-size: 1.05em;
             color: #c6ced5;
           }
@@ -375,17 +303,26 @@
           .databus-banner.is-collection-editor {
             background-color: #a2b7a1;
           }
+
+          .databus-settings-box .row .row-actions {
+            display: flex;
+            margin-bottom: 1em;
+          }
+
+          .databus-settings-box .row .row-actions .button:not(:last-child) {
+            margin-right: .75em;
+          }
+
+          .button databus-icon {
+            margin-right: 8px;
+          }
         </style>
 
         <div>
 
           <div class="ce-top-section">
-
-
             <div class="container">
-
               <div style="display: flex; align-items: center; padding-bottom: 2.5em; padding-top: 1em;">
-
                 <databus-icon class="is-collection" color="'white'" shape="'collections'" size="48"></databus-icon>
                 <div style="margin-left: 20px;">
                   <div class="ce-breadcrumbs">
@@ -393,12 +330,10 @@
                     <span>»</span>
                     <a ng-href="/{{ accountName }}/collections">collections</a>
                   </div>
-
                   <span class="ce-title-prefix">Editing </span><span class="ce-title">{{
                     collectionManager.activeCollection.title }}</span>
                   <span class="ce-title-suffix">{{
                     collectionManager.activeCollection.uuid }}</span>
-
                 </div>
               </div>
 
@@ -411,7 +346,6 @@
                   ng-click="tabNavigation.navigateTo('content')">
                   <div class="section-label">Content</div>
                 </div>
-
                 <div style="flex:1"></div>
                 <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }"
                   ng-click="tabNavigation.navigateTo('preview')">
@@ -425,17 +359,14 @@
                   ng-click="tabNavigation.navigateTo('json')">
                   <div class="section-label">JSON</div>
                 </div>
-                <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 5 }"
-                  ng-click="tabNavigation.navigateTo('import')">
-                  <div class="section-label">Import</div>
-                </div>
               </div>
             </div>
           </div>
+
           <div class="ce-content section">
             <div class="container">
 
-              <!-- Description Tab -->
+              <!-- Documentation Tab -->
               <div ng-if="tabNavigation.activeTab == 0">
                 <div class="ce-action-bar">
                   <div ng-click="saveCollection()" class="button is-collection">Save & Publish</div>
@@ -443,7 +374,6 @@
                     to Collection Page
                   </div>
                 </div>
-
                 <div class="databus-settings-box-header">General</div>
                 <div class="databus-settings-box">
                   <div class="row">
@@ -538,7 +468,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="databus-settings-box-header">
                   <h3>DANGER ZONE</h3>
                 </div>
@@ -555,7 +484,6 @@
                         </div>
                       </div>
                     </div>
-
                     <div class="row">
                       <div class="row-label">Unpublish Collection</div>
                       <div style="flex: 1">
@@ -582,7 +510,7 @@
                 </div>
               </div>
 
-              <!-- Hierarchy Tab -->
+              <!-- Content Tab -->
               <div ng-if="tabNavigation.activeTab == 1">
 
                 <div class="ce-action-bar">
@@ -591,9 +519,7 @@
                     to Collection Page
                   </div>
                 </div>
-
                 <div class="databus-settings-box-header">Content Tree</div>
-
                 <div style="margin-bottom: 5em;" class="ce-content-body">
                   <collection-hierarchy-two collection="collectionManager.activeCollection"
                     on-change="onActiveCollectionChanged()" on-add-content="onAddContent(source)">
@@ -603,13 +529,6 @@
 
               <!-- Preview Tab -->
               <div ng-if="tabNavigation.activeTab == 2">
-
-                <div class="ce-action-bar">
-                  <div class="button" ng-click="preview()" ng-disabled="collectionManager.activeCollection.isDraft">Go
-                    to Collection Page
-                  </div>
-                </div>
-
                 <div class="databus-settings-box-header">Preview</div>
                 <div class="databus-settings-box">
                   <div class="row">
@@ -624,22 +543,18 @@
 
               <!-- Query Tab -->
               <div ng-if="tabNavigation.activeTab == 3">
-
-                <div class="ce-action-bar">
-                  <button class="button" ng-click="queryToClipboard()">
-                    <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
-                    </databus-icon>Copy Query to Clipboard
-                  </button>
-                </div>
-
-
                 <div class="databus-settings-box-header">SPARQL Query</div>
                 <div class="databus-settings-box">
                   <div class="row">
+                    <div class="row-actions">
+                      <button class="button" ng-click="utils.copyToClipboard(collectionQuery)">
+                        <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
+                        </databus-icon>Copy Query to Clipboard
+                      </button>
+                    </div>
                     <div class="databus-settings-info" style="margin-bottom: 0.5em">
                       The SPARQL field below shows the generated query for your collection.
                     </div>
-
                     <div ng-if="collectionQuery !== undefined">
                       <yasqe-text query="collectionQuery" read-only="true"> </yasqe-text>
                     </div>
@@ -647,23 +562,36 @@
                 </div>
               </div>
 
+              <!-- JSON Tab -->
               <div ng-if="tabNavigation.activeTab == 4">
-
-                <div class="ce-action-bar">
-                  <div class="button" ng-click="jsonToClipboard()">
-                    <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
-                    </databus-icon>Copy JSON to Clipboard
-                  </div>
-                  <div class="button" ng-click="downloadAsJson()">
-                    <databus-icon color="'#cfcfcf'" shape="'download'" size="24">
-                    </databus-icon>Download JSON
-                  </div>
-                </div>
-
-
-                <div class="databus-settings-box-header">Collection JSON</div>
+                <div class="databus-settings-box-header">Import JSON</div>
                 <div class="databus-settings-box">
                   <div class="row">
+                    <div class="databus-settings-info" style="margin-bottom: 1em">
+                      Insert the JSON representation of a collection in the field below and click the import button to
+                      overwrite the collection with the inserted content.
+                    </div>
+                    <textarea class="input" style="min-height: 400px; margin-bottom: 1em;"
+                      ng-model="loadFromJsonString"></textarea>
+                    <div class="button" ng-click="loadFromJson(loadFromJsonString)">
+                      <databus-icon color="'#cfcfcf'" shape="'import'" size="24">
+                      </databus-icon>Import JSON
+                    </div>
+                  </div>
+                </div>
+                <div class="databus-settings-box-header">Export JSON</div>
+                <div class="databus-settings-box">
+                  <div class="row">
+                    <div class="row-actions">
+                      <div class="button" ng-click="utils.copyToClipboard(collectionJson)">
+                        <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
+                        </databus-icon>Copy JSON to Clipboard
+                      </div>
+                      <div class="button" ng-click="downloadAsJson()">
+                        <databus-icon color="'#cfcfcf'" shape="'download'" size="24">
+                        </databus-icon>Download JSON
+                      </div>
+                    </div>
                     <div class="databus-settings-info" style="margin-bottom: 1em">
                       The box below shows the JSON representation of your collection. This may be useful if you wish to
                       store your collection locally or want to import the collection somewhere else (e.g. another
@@ -671,30 +599,6 @@
                     </div>
                     <pre>{{ collectionJson | json }}</pre>
                   </div>
-                </div>
-              </div>
-
-              <div ng-if="tabNavigation.activeTab == 5">
-
-
-                <div class="ce-action-bar">
-                  <div class="button" ng-click="loadFromJson(loadFromJsonString)">
-                    <databus-icon color="'#cfcfcf'" shape="'import'" size="24">
-                    </databus-icon>Import JSON
-                  </div>
-                </div>
-
-                <div class="databus-settings-box-header">Import</div>
-                <div class="databus-settings-box">
-                  <div class="row">
-                    <div class="databus-settings-info" style="margin-bottom: 1em">
-                      Insert the JSON representation of a collection in the field below and click the import button to
-                      overwrite the collection with the inserted content.
-                    </div>
-
-                    <textarea class="input" style="min-height: 400px;" ng-model="loadFromJsonString"></textarea>
-                  </div>
-
                 </div>
               </div>
             </div>
