@@ -36,25 +36,28 @@ works with structured data, including researchers, data scientists,
 and developers. It provides a central hub for sharing and discovering 
 data, making it easier to leverage the full potential of Linked Data.
 
+## Status 
+
+This repo develops Databus version >= 2.0, which is a major upgrade of version 
+1.3-beta (currently running at https://databus.dbpedia.org).
+
+## Important Links
+
+**Documentation:** [https://dbpedia.gitbook.io/databus/overview/readme](https://dbpedia.gitbook.io/databus/overview/readme) 
+
+**API documentation:** [https://github.com/dbpedia/databus/blob/master/API.md](https://github.com/dbpedia/databus/blob/master/API.md)
+
+**Working deployments:** [DBpedia Databus (Reference)](https://dev.databus.dbpedia.org/), [Energy Databus](https://energy.databus.dbpedia.org/)
+
+**Development setup:** [https://github.com/dbpedia/databus/blob/master/devenv/README.md](https://github.com/dbpedia/databus/blob/master/devenv/README.md)
+
+**Our Discord:** 
+
 ## Use Cases
+
 More examples of the Databus capabilities are demonstrated in our use cases:
  * [Meta registries](docs/building-meta-registries.md)
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
-
-## Status
-
-This repo develops Databus version >= 2.0, which is a major upgrade of version 
-1.3-beta (currently running at https://databus.dbpedia.org). If you install it and 
-find problems, please report in the [issue tracker](https://github.com/dbpedia/databus/issues) 
-to help us test this new version.
-
-**Documentation:** https://dbpedia.gitbook.io/databus/overview/readme 
-
-**Examples:** [https://energy.databus.dbpedia.org/](https://energy.databus.dbpedia.org/), [https://dev.databus.dbpedia.org/](https://dev.databus.dbpedia.org/)
-
-**API documentation:** https://github.com/dbpedia/databus/blob/master/API.md
-
-**Development setup:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
 
 ## Getting Started
 
@@ -121,6 +124,12 @@ You can read about them more in detail [here](docs/mods.md).
 Instead of using GUI, you can automate your publishing and data retrieving process
  using our http-API. Refer to it [here](docs/api.md).
 
+## Contributing
+Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).
+
+If you would like to submit a non-trivial patch or pull request 
+we will need you to sign the Contributor License Agreement, we 
+will send it to you in that case.
 ## License
 
 The source code of this repo is published under 
@@ -139,4 +148,3 @@ This work was partially supported by grants from
 the German Federal Ministry for Economic Affairs 
 and Climate Action (BMWK) to the projects 
 LOD-GEOSS (03EI1005E) and  PLASS (01MD19003D)
-
