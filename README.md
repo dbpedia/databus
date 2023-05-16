@@ -1,9 +1,8 @@
 ---
 description: >-
-  DBpedia Databus is an open platform for sharing structured data, 
-  including RDF (Resource Description Framework) datasets and 
-  ontologies. It is built on top of the Linked Data principles and 
-  FAIR (Findable, Accessible, Interoperable, and Reusable).
+ DBpedia Databus is an open platform for sharing structured data, 
+ including RDF datasets and ontologies. It is built on top of the 
+ Linked Data principles and FAIR.
 ---
 
 # Databus
