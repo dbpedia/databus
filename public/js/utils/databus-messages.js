@@ -15,6 +15,9 @@ class DatabusMessages {
 
   // Generic
   static GENERIC_COPIED_TO_CLIPBOARD = 'Copied to clipboard!';
+
+  // Account 
+  static ACCOUT_PROFILE_SAVED = 'Profile changes have been saved';
 }
 
 if(typeof module === "object" && module && module.exports)

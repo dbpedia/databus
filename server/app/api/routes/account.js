@@ -8,16 +8,17 @@ var shaclTester = require('../../common/shacl/shacl-tester');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
-var defaultContext = require('../../../../model/generated/context.json');
 const pem2jwk = require('pem-jwk').pem2jwk;
 const requestRDF = require('../../common/request-rdf');
-var defaultContext = require('../../common/context.json');
+
+const defaultContext = require('../../common/context.json');
 const getLinkedData = require("../../common/get-linked-data");
 
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
+const UriUtils = require('../../common/utils/uri-utils');
 
 module.exports = function (router, protector) {
 
@@ -31,12 +32,12 @@ module.exports = function (router, protector) {
 
   var putOrPatchAccount = async function (req, res, next, hasAccount) {
     try {
-      
+
       // Get the accountName from the protected request
       var authInfo = ServerUtils.getAuthInfoFromRequest(req);
       var accountName = authInfo.info.accountName;
 
-      if(accountName.length < 4) {
+      if (accountName.length < 4) {
         res.status(403).send(`Account name is too short. An account name should contain at least 4 characters.\n`);
         return false;
       }
@@ -137,7 +138,7 @@ module.exports = function (router, protector) {
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
 
-   
+
 
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
@@ -206,11 +207,11 @@ module.exports = function (router, protector) {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var webIdUri = decodeURIComponent(req.query.uri);
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${auth.info.accountName}`;
-      var foafAccountPredicate = `http://xmlns.com/foaf/0.1/account`;
 
       console.log(`Trying to connect ${webIdUri} to ${accountUri}.`);
 
       var quads = await requestRDF.requestQuads(webIdUri);
+
       var canConnect = false;
 
       for (var quad of quads) {
@@ -219,7 +220,7 @@ module.exports = function (router, protector) {
           continue;
         }
 
-        if (quad.predicate.id != foafAccountPredicate) {
+        if (quad.predicate.id != DatabusUris.FOAF_ACCOUNT) {
           continue;
         }
 
@@ -242,19 +243,23 @@ module.exports = function (router, protector) {
       var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJson));
 
       for (var graph of expandedGraphs) {
-        if (graph['@id'] == webIdUri) {
+        if (graph[DatabusUris.JSONLD_ID] == webIdUri) {
           res.status(403).send('WebId document already linked to this account.');
           return;
         }
       }
 
+
+      var accountReference = {};
+      accountReference[DatabusUris.JSONLD_ID] = accountUri;
+
       var addon = {};
-      addon['@id'] = webIdUri;
-      addon[foafAccountPredicate] = { '@id': accountUri, '@type': '@id' };
+      addon[DatabusUris.JSONLD_ID] = webIdUri;
+      addon[DatabusUris.FOAF_ACCOUNT] = accountReference;
       expandedGraphs.push(addon);
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-      var result = await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
+      await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
 
       res.status(200).send('WebId linked to account.\n');
       return;
@@ -262,6 +267,99 @@ module.exports = function (router, protector) {
     } catch (err) {
       res.status(400).send(err.message);
     }
+  });
+
+  router.post('/api/account/mods/search-extensions/add', protector.protect(), async function (req, res, next) {
+
+    try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+
+      // Get the request input
+      var searchExtensionUri = decodeURIComponent(req.query.uri);
+      var searchExtensionAdapter = req.query.adapter;
+
+      var accountUri = UriUtils.createResourceUri([auth.info.accountName]);
+
+      // Add triple to account!
+      var path = Constants.DATABUS_FILE_WEBID;
+      var accountJsonLd = await GstoreHelper.read(auth.info.accountName, path);
+
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJsonLd));
+
+      var searchExtensionGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_SEARCH_EXTENSION);
+
+      for (var extensionGraph of searchExtensionGraphs) {
+
+        try {
+
+          var endpointUri = extensionGraph[DatabusUris.DATABUS_SEARCH_EXTENSION_ENDPOINT][0][DatabusUris.JSONLD_ID];
+
+          if (endpointUri == searchExtensionUri) {
+            res.status(403).send('A search extension with this URI has already been added to this account.');
+            return;
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      var accountReference = {};
+      accountReference[DatabusUris.JSONLD_ID] = accountUri;
+
+      var searchExtensionReference = {};
+      searchExtensionReference[DatabusUris.JSONLD_ID] = searchExtensionUri;
+
+      var extensionGraph = {};
+      extensionGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SEARCH_EXTENSION;
+      extensionGraph[DatabusUris.DATABUS_SEARCH_EXTENSION_ADAPTER] = searchExtensionAdapter;
+      extensionGraph[DatabusUris.DATABUS_SEARCH_EXTENSION_ENDPOINT] = searchExtensionReference;
+      extensionGraph[DatabusUris.DATABUS_EXTENDS] = accountReference;
+
+      // console.log(JSON.stringify(extensionGraph, null, 3));
+      expandedGraphs.push(extensionGraph);
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
+
+      res.status(200).send('Search extension has been saved.\n');
+      return;
+
+    } catch (err) {
+      res.status(400).send(err.message);
+    }
+  });
+
+  router.post('/api/account/mods/search-extensions/remove', protector.protect(), async function (req, res, next) {
+
+    try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+
+      // Get the request input
+      var searchExtensionUri = decodeURIComponent(req.query.uri);
+
+      if (searchExtensionUri == undefined || searchExtensionUri.length < 1) {
+        res.status(400).send('Missing parameter uri.');
+        return;
+      }
+
+      var accountJsonLd = await GstoreHelper.read(auth.info.accountName, Constants.DATABUS_FILE_WEBID);
+      var expandedGraphs = await jsonld.flatten(await jsonld.expand(accountJsonLd));
+
+      expandedGraphs = expandedGraphs.filter(function (graph) {
+        var endpointUri = JsonldUtils.getProperty(graph, DatabusUris.DATABUS_SEARCH_EXTENSION_ENDPOINT);
+        return endpointUri != searchExtensionUri;
+      });
+
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+      await GstoreHelper.save(auth.info.accountName, Constants.DATABUS_FILE_WEBID, compactedGraph);
+
+      res.status(200).send('Search extension has been removed.\n');
+      return;
+
+    } catch (err) {
+      res.status(400).send(err.message);
+    }
+
   });
 
   router.post('/api/account/access/grant', protector.protect(), async function (req, res, next) {
@@ -404,20 +502,6 @@ module.exports = function (router, protector) {
     var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}`;
     var template = require('../../common/queries/constructs/ld/construct-account.sparql');
     getLinkedData(req, res, next, resourceUri, template);
-
-    /*
-    var repo = req.params.account;
-    var path = `webid.jsonld`;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);*/
   });
 
   /* GET an account. */

@@ -1,4 +1,11 @@
-function ProfileController($scope, $http) {
+// Pseudo include for easier dev
+if (typeof require !== 'undefined') {
+  const DatabusUtils = require("../utils/databus-utils");
+  const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+  const DatabusAlert = require("../components/databus-alert/databus-alert");
+}
+
+function ProfileController($scope, $http, searchAdapters) {
 
   $scope.profileData = data.profile;
   $scope.auth = data.auth;
@@ -9,12 +16,12 @@ function ProfileController($scope, $http) {
   $scope.createApiKeyError = "";
   $scope.addWebIdUri = "";
   $scope.grantAccessUri = "";
-
+  $scope.adapters = searchAdapters;
   $scope.utils = new DatabusWebappUtils($scope);
 
   $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
 
-  $scope.putProfile = function(accountName, foafName) {
+  $scope.putProfile = function (accountName, foafName) {
 
     var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
     var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
@@ -27,15 +34,15 @@ function ProfileController($scope, $http) {
             "http://xmlns.com/foaf/0.1/Person",
             "http://dbpedia.org/ontology/DBpedian"
           ],
-          "http://xmlns.com/foaf/0.1/account": { "@id" : profileUri },
-          "http://xmlns.com/foaf/0.1/img": { "@id" : "" }, 
+          "http://xmlns.com/foaf/0.1/account": { "@id": profileUri },
+          "http://xmlns.com/foaf/0.1/img": { "@id": "" },
           "http://xmlns.com/foaf/0.1/name": foafName
         },
         {
           "@id": profileUri,
           "@type": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
-          "http://xmlns.com/foaf/0.1/maker": { "@id" : personUri },
-          "http://xmlns.com/foaf/0.1/primaryTopic": { "@id" : personUri }
+          "http://xmlns.com/foaf/0.1/maker": { "@id": personUri },
+          "http://xmlns.com/foaf/0.1/primaryTopic": { "@id": personUri }
         }
       ]
     };
@@ -54,16 +61,13 @@ function ProfileController($scope, $http) {
   if ($scope.profileData == undefined) {
 
     $scope.createProfile = function () {
-      if(!$scope.auth.authenticated) {
+      if (!$scope.auth.authenticated) {
         return;
       }
 
-      // Create webId data locally
-      var webIdData = {};
-
       var accountName = $scope.preferredDatabusUsername;
 
-      if(accountName == undefined || !DatabusUtils.isValidAccountName(accountName)) {
+      if (accountName == undefined || !DatabusUtils.isValidAccountName(accountName)) {
         $scope.createAccountError = "Enter a valid account name."
         $scope.showAccountNameHints = true;
         return;
@@ -77,8 +81,8 @@ function ProfileController($scope, $http) {
     return;
   }
 
-  $scope.removeApiKey = function(key) {
-    
+  $scope.removeApiKey = function (key) {
+
     $http.post(`/api/account/api-key/delete?name=${key.keyname}`).then(function (result) {
       $scope.apiKeys = $scope.apiKeys.filter(function (k) {
         return k.keyname != key.keyname;
@@ -90,16 +94,16 @@ function ProfileController($scope, $http) {
     });
   }
 
-  $scope.onCreateApiKeyNameChanged = function() {
+  $scope.onCreateApiKeyNameChanged = function () {
     var hasError = !DatabusUtils.isValidResourceLabel($scope.createApiKeyName, 3, 20);
     $scope.createApiKeyError = hasError ? " API key name must have between 3 and 20 characters and match [A-Za-z0-9\\s_()\\.\\,\\-]*" : "";
   }
 
-  $scope.addApiKey = function() {
-    
+  $scope.addApiKey = function () {
+
     $http.post(`/api/account/api-key/create?name=${encodeURIComponent($scope.createApiKeyName)}`).then(function (result) {
-      
-      if(result.data != null) {
+
+      if (result.data != null) {
         $scope.apiKeys.push(result.data);
       }
 
@@ -110,7 +114,41 @@ function ProfileController($scope, $http) {
 
   }
 
-  $scope.grantAccess = function() {
+  $scope.removeSearchExtension = function(uri) {
+    $http.post(`/api/account/mods/search-extensions/remove?uri=${encodeURIComponent(uri)}`)
+    .then(function (result) {
+      console.log(result);
+      DatabusAlert.alert($scope, true, result.data);
+
+      $scope.profileData.searchExtensions =  $scope.profileData.searchExtensions.filter(function (e) {
+        return e.endpointUri != uri;
+      });
+
+    }, function (err) {
+      console.log(err);
+      DatabusAlert.alert($scope, false, err.data);
+    });
+  }
+
+  $scope.addSearchExtension = function () {
+    var uri = $scope.modsSettings.searchExtensionURI;
+    var adapter = $scope.modsSettings.searchExtensionAdapter.name;
+
+    $http.post(`/api/account/mods/search-extensions/add?uri=${encodeURIComponent(uri)}&adapter=${adapter}`)
+      .then(function (result) {
+        console.log(result);
+        DatabusAlert.alert($scope, true, result.data);
+        $scope.profileData.searchExtensions.push({
+          endpointUri: uri,
+          adapter: adapter
+        });
+      }, function (err) {
+        console.log(err);
+        DatabusAlert.alert($scope, false, err.data);
+      });
+  }
+
+  $scope.grantAccess = function () {
     $http.post(`/api/account/access/grant?uri=${encodeURIComponent($scope.grantAccessUri)}`).then(function (result) {
       $scope.profileData.authorizedAccounts.push($scope.grantAccessUri);
     }, function (err) {
@@ -119,9 +157,9 @@ function ProfileController($scope, $http) {
     });
   }
 
-  $scope.revokeAccess = function(uri) {
+  $scope.revokeAccess = function (uri) {
     $http.post(`/api/account/access/revoke?uri=${encodeURIComponent(uri)}`).then(function (result) {
-      $scope.profileData.authorizedAccounts = $scope.profileData.webIds.filter(function(value, index, arr) {
+      $scope.profileData.authorizedAccounts = $scope.profileData.webIds.filter(function (value, index, arr) {
         return value != uri;
       });
     }, function (err) {
@@ -130,7 +168,7 @@ function ProfileController($scope, $http) {
     });
   }
 
-  $scope.connectWebid = function() {
+  $scope.connectWebid = function () {
 
     $http.post(`/api/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
       $scope.profileData.webIds.push($scope.addWebIdUri);
@@ -141,11 +179,11 @@ function ProfileController($scope, $http) {
     });
   }
 
-  $scope.removeWebId = function(webIdToRemove) {
+  $scope.removeWebId = function (webIdToRemove) {
 
     $http.post(`/api/account/webid/remove?uri=${encodeURIComponent(webIdToRemove)}`).then(function (result) {
-      
-      $scope.profileData.webIds =  $scope.profileData.webIds.filter(function(value, index, arr) {
+
+      $scope.profileData.webIds = $scope.profileData.webIds.filter(function (value, index, arr) {
         return value != webIdToRemove;
       });
 
@@ -156,9 +194,9 @@ function ProfileController($scope, $http) {
   }
 
 
-  $scope.saveProfile = function () {
+  $scope.saveProfile = async function () {
 
-    if(!$scope.auth.authenticated) {
+    if (!$scope.auth.authenticated) {
       return;
     }
 
@@ -178,7 +216,7 @@ function ProfileController($scope, $http) {
         },
         {
           "@id": personUri,
-          "@type": [ "dbo:DBpedian", "foaf:Person"],
+          "@type": ["dbo:DBpedian", "foaf:Person"],
           "name": $scope.editData.label,
           "rdfs:comment": $scope.editData.about,
           "account": profileUri,
@@ -187,17 +225,16 @@ function ProfileController($scope, $http) {
       ]
     };
 
-    if($scope.editData.webIdURI != undefined && $scope.editData.webIdURI != '') {
+    if ($scope.editData.webIdURI != undefined && $scope.editData.webIdURI != '') {
       webIdData['@graph'].push({
         "@id": $scope.editData.webIdURI,
         "account": profileUri
       });
     }
 
+
     $http.put('/' + $scope.auth.info.accountName, webIdData).then(function (result) {
-      if (result.data.code == DatabusResponse.USER_PROFILE_UPDATED) {
-        window.location.reload(true);
-      }
+      DatabusAlert.alert($scope, true, DatabusMessages.ACCOUT_PROFILE_SAVED);
     }, function (err) {
       console.log(err);
     });
@@ -208,6 +245,12 @@ function ProfileController($scope, $http) {
   if (!$scope.profileData.isOwn) {
     return;
   }
+
+  $scope.modsSettings = {}
+  $scope.modsSettings.searchExtensionURI = "";
+  $scope.modsSettings.searchExtensionAdapter = searchAdapters[0];
+
+
 
   $scope.editData = DatabusUtils.createCleanCopy($scope.profileData);
 

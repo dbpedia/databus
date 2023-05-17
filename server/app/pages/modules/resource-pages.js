@@ -9,6 +9,9 @@ const rp = require('request-promise');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const { dataid } = require('../../common/queries/sparql');
+const getJsonLd = require('../../common/get-jsonld');
+const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
+const AppJsonFormatter = require('../app-json-formatter');
 
 module.exports = function (router, protector) {
 
@@ -20,12 +23,17 @@ module.exports = function (router, protector) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
-      var accountData = await sparql.accounts.getAccount(req.params.account);
+      var accountUri = UriUtils.createResourceUri([req.params.account]);
+      var accountJsonLd = await getJsonLd(accountUri, accountQueryTemplate, 'flatten');
 
-      if (accountData == null) {
+      if (accountJsonLd == null) {
         next('route');
         return;
       }
+
+      var accountData = AppJsonFormatter.formatAccountData(accountJsonLd);
+
+      console.log(JSON.stringify(accountData, null, 3));
 
       res.render('account', {
         title: accountData.label,

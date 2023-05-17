@@ -53,3 +53,5 @@ function DatabusAlertController($scope, $timeout) {
   }
 }
 
+if (typeof module === "object" && module && module.exports)
+  module.exports = DatabusAlert;

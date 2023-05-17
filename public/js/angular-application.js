@@ -11,6 +11,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
       });
     };
   }])
+  .value("searchAdapters", searchAdapters)
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .controller("AccountPageController", ["$scope", "$http", "$location", "collectionManager", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])
@@ -18,7 +19,7 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
-  .controller("ProfileController", ["$scope", "$http", ProfileController])
+  .controller("ProfileController", ["$scope", "$http", 'searchAdapters', ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
   .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
@@ -39,6 +40,7 @@ function config($locationProvider) {
     rewriteLinks: false
   });
 };
+
 
 databusApplication.filter('collectionfilter', function() {
   return function(input, search) {
@@ -105,7 +107,7 @@ databusApplication.component('entityCard', {
 
 databusApplication.component('search', {
   templateUrl: '/js/components/search/search.html',
-  controller: ['$http', '$interval', '$sce', SearchController],
+  controller: ['$http', '$interval', '$sce', 'searchAdapters', SearchController],
   bindings: {
     searchInput: '=',
     settings: '<',
@@ -335,8 +337,6 @@ databusApplication.component('multiselectDropdown', {
     onChange: '&'
   }
 });
-
-
 
 databusApplication.component('tableEditor', {
   templateUrl: '/js/components/table-editor/table-editor.html',

@@ -1,3 +1,7 @@
+if (typeof require !== 'undefined') {
+  const DatabusUtils = require("../utils/databus-utils");
+}
+
 class DatabusWebappUtils {
 
   constructor($scope) {
@@ -38,6 +42,10 @@ class DatabusWebappUtils {
     return DatabusUtils.uriToName(uri); 
   }
 
+  isValidHttpsUrl(url) {
+    return DatabusUtils.isValidHttpsUrl(url);
+  }
+
   copyToClipboard(str) {
 
     if(typeof str === 'object') {
@@ -62,3 +70,6 @@ class DatabusWebappUtils {
     DatabusAlert.alert(this.scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
   }
 }
+
+if (typeof module === "object" && module && module.exports)
+  module.exports = DatabusWebappUtils;

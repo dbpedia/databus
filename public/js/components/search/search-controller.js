@@ -1,9 +1,11 @@
 
 
 // hinzufügen eines Controllers zum Modul
-function SearchController($http, $interval, $sce) {
+function SearchController($http, $interval, $sce, searchAdapters) {
 
   var ctrl = this;
+
+  // TODO: get search extensions from the logged in user
 
   ctrl.results = [];
 

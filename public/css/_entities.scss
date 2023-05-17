@@ -140,13 +140,6 @@
         border: none;
     }
 
-    path {
-      fill: $entity-collection; 
-      &.is-white {
-          fill: $white;
-      }
-    }
-
     &.title {
         color: $entity-collection;
     }

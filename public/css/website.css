@@ -9701,6 +9701,7 @@ label.panel-block:hover {
 .databus-settings-info {
   color: #656d76;
   max-width: 1000px;
+  padding: 0.1em 0.2em;
 }
 
 .slick-arrow {
@@ -9823,12 +9824,6 @@ label.panel-block:hover {
   background-color: #81b180;
   color: #fff;
   border: none;
-}
-.is-collection path {
-  fill: #81b180;
-}
-.is-collection path.is-white {
-  fill: #fff;
 }
 .is-collection.title {
   color: #81b180;
