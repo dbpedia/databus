@@ -163,17 +163,6 @@
                 <databus-icon shape="'check'" color="'#65bdb2'" size="24">
                 </databus-icon>
               </div>
-              <div class="hover-note" ng-if="group.errors.length > 0">
-                <databus-icon shape="'error'" color="'red'" size="24">
-                </databus-icon>
-                <div class="hover-dropdown has-error content">
-                  <ul>
-                    <li ng-repeat="error in group.errors">
-                      {{ texts.errors[error] }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
               <div class="hover-note">
                 <!-- todo: link to Docu -->
                 <databus-icon shape="'info'" size="24">
@@ -186,17 +175,19 @@
 
                 <div class="control">
                   <label class="radio">
-                    <input type="radio" name="answer">
+                    <input type="radio" ng-model="group.generateMetadata" value="create" name="group-metadata"
+                      ng-change="session.setCreateNewGroup(group.generateMetadata)">
                     Create New
                   </label>
                   <label class="radio">
-                    <input type="radio" name="answer">
+                    <input type="radio" ng-model="group.generateMetadata" value="existing" name="group-metadata"
+                      ng-change="session.setCreateNewGroup(group.generateMetadata)">
                     Use Existing
                   </label>
                 </div>
 
               </div>
-              <div class="row" ng-if="!group.createNew">
+              <div class="row" ng-if="group.generateMetadata == 'existing'">
                 <div class="row-label">Name</div>
                 <div style="flex: 1">
                   <div class="dropdown is-hoverable">
@@ -220,7 +211,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" ng-if="group.createNew">
+              <div class="row" ng-if="group.generateMetadata == 'create'">
                 <div class="row-label">Name</div>
                 <div style="flex: 1">
                   <input class="input" type="text" ng-model="group.name">
@@ -230,13 +221,13 @@
                     texts.errors['warning_group_exists'] }}</span>
                 </div>
               </div>
-              <div class="row" ng-if="group.createNew">
+              <div class="row" ng-if="group.generateMetadata == 'create'">
                 <div class="row-label optional">Title</div>
                 <div style="flex: 1">
                   <input class="input" type="text" ng-model="group.title">
                 </div>
               </div>
-              <div class="row" ng-if="group.createNew">
+              <div class="row" ng-if="group.generateMetadata == 'create'">
                 <div class="row-label optional">Abstract</div>
                 <div style="flex: 1">
                   <div>
@@ -254,7 +245,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" ng-if="group.createNew">
+              <div class="row" ng-if="group.generateMetadata == 'create'">
                 <div class="row-label optional">Description</div>
                 <div style="flex: 1">
                   <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
@@ -302,21 +293,24 @@
                     <div class="row-label">Artifact Metadata</div>
                     <div class="control">
                       <label class="radio">
-                        <input type="radio" name="artifact-metadata">
+                        <input type="radio" ng-model="artifact.generateMetadata" value="create" name="artifact-metadata"
+                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
                         Create New
                       </label>
                       <label class="radio">
-                        <input type="radio" name="artifact-metadata">
+                        <input type="radio" ng-model="artifact.generateMetadata" value="existing" name="artifact-metadata"
+                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
                         Use Existing
                       </label>
                       <label class="radio">
-                        <input type="radio" name="artifact-metadata">
+                        <input type="radio" ng-model="artifact.generateMetadata" value="none" name="artifact-metadata"
+                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
                         None
                       </label>
                     </div>
                   </div>
 
-                  <div class="row" ng-if="!artifact.createNew">
+                  <div class="row" ng-if="artifact.generateMetadata == 'existing'">
                     <div class="row-label">Name</div>
                     <div style="flex: 1">
                       <div class="dropdown is-hoverable">
@@ -340,7 +334,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" ng-if="artifact.createNew">
+                  <div class="row" ng-if="artifact.generateMetadata == 'create'">
                     <div class="row-label">Name</div>
                     <div style="flex: 1">
                       <input class="input" type="text" ng-model="artifact.name">
@@ -351,7 +345,7 @@
                         texts.errors['warning_artifact_exists'] }}</span>
                     </div>
                   </div>
-                  <div class="row" ng-if="artifact.createNew">
+                  <div class="row" ng-if="artifact.generateMetadata == 'create'">
                     <div class="row-label optional">Title</div>
                     <div style="flex: 1">
                       <input class="input" type="text" ng-model="artifact.title">
@@ -361,7 +355,7 @@
                     </div>
                   </div>
                   <!-- ARTIFACT ABSTRACT -->
-                  <div class="row" ng-if="artifact.createNew">
+                  <div class="row" ng-if="artifact.generateMetadata == 'create'">
                     <div class="row-label optional">Abstract</div>
                     <div style="flex: 1">
                       <div>
@@ -380,7 +374,7 @@
                     </div>
                   </div>
                   <!-- ARTIFACT DESCRIPTION -->
-                  <div class="row" ng-if="artifact.createNew">
+                  <div class="row" ng-if="artifact.generateMetadata == 'create'">
                     <div class="row-label optional">Description</div>
                     <div style="flex: 1">
                       <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
@@ -394,9 +388,7 @@
               </div>
             </div>
 
-
             <!-- VERSION BOX-->
-
             <div class="databus-settings-box-header">VERSION INFO</div>
             <div class="databus-settings-box" ng-init="version=session.formData.version">
 
@@ -432,22 +424,24 @@
                 <div class="row-label">Version Metadata</div>
                 <div class="control">
                   <label class="radio">
-                    <input type="radio" name="version-metadata">
+                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="create"
+                      ng-change="session.setCreateNewVersion(version.generateMetadata)">
                     Create New
                   </label>
                   <label class="radio">
-                    <input type="radio" name="version-metadata">
+                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="existing">
                     Use Existing
                   </label>
                   <label class="radio">
-                    <input type="radio" name="version-metadata">
+                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="none"
+                      ng-change="session.setCreateNewVersion(version.generateMetadata)">
                     None
                   </label>
                 </div>
               </div>
 
               <!-- VERSION NAME -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Name</div>
                 <div style="width: 100%;">
                   <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
@@ -481,7 +475,7 @@
               </div>
 
               <!-- VERSION TITLE -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Title</div>
                 <div style="flex: 1">
                   <div>
@@ -500,7 +494,7 @@
                 </div>
               </div>
               <!-- VERSION ABSTRACT -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Abstract</div>
                 <div style="flex: 1">
                   <div>
@@ -521,7 +515,7 @@
                 </div>
               </div>
               <!-- VERSION DESCRIPTION -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Description</div>
                 <div style="flex: 1">
                   <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
@@ -532,7 +526,7 @@
               </div>
 
               <!-- LICENSE URI -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">License URI</div>
                 <div style="flex: 1">
                   <div style="width: 100%;">
@@ -569,7 +563,7 @@
 
 
               <!-- LICENSE ATTRIBUTION -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Attribution</div>
                 <div style="flex: 1">
                   <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
@@ -578,7 +572,7 @@
               </div>
 
               <!-- DERIVED FROM -->
-              <div class="row">
+              <div class="row" ng-if="version.generateMetadata == 'create'">
                 <div class="row-label">Derived From</div>
                 <div style="flex: 1">
                   <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"

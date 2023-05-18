@@ -1,3 +1,7 @@
+if (typeof require !== 'undefined') {
+  const PublishSession = require("../publish/publish-session");
+}
+
 // Controller for the header section
 function PublishWizardController($scope, $http, focus, $q) {
 

@@ -1,4 +1,6 @@
-
+if (typeof require !== 'undefined') {
+    const DatabusUtils = require("../utils/databus-utils");
+}
 
 class PublishSession {
 
@@ -79,8 +81,8 @@ class PublishSession {
     }
 
     setCreateNewGroup(value) {
-        if (value) {
-            this.formData.group.createNew = true
+        this.formData.group.generateMetadata = value;
+        if (value == 'create') {
             this.formData.group.name = "";
             this.formData.group.title = "";
             this.formData.group.abstract = "";
@@ -88,12 +90,12 @@ class PublishSession {
             this.formData.group.generateAbstract = true;
             this.currentGroup = null;
             this.setCreateNewArtifact(true);
-        } else {
+        } else if(value == 'existing') {
             this.formData.group.publishGroupOnly = false;
             var hasGroups = DatabusUtils.objSize(this.accountData.groups) > 0;
 
             if (!hasGroups) {
-                this.setCreateNewGroup(true);
+                this.setCreateNewGroup('create');
                 return;
             }
 
@@ -107,17 +109,18 @@ class PublishSession {
     }
     
       setCreateNewArtifact(value) {
-        if (value) {
-            this.formData.artifact.createNew = value;
+        this.formData.artifact.generateMetadata = value;
+
+        if (value == 'create') {
             this.formData.artifact.name = "";
             this.formData.artifact.title = "";
             this.formData.artifact.description = "";
             this.currentArtifact = null;
 
-        } else {
+        } else if(value == 'existing') {
 
             if (!this.currentGroup.hasArtifacts) {
-                this.setCreateNewArtifact(true);
+                this.setCreateNewArtifact('create');
                 return;
             }
 
@@ -182,3 +185,7 @@ class PublishSession {
         }
     }
 }
+
+
+if (typeof module === "object" && module && module.exports)
+  module.exports = PublishSession;
