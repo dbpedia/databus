@@ -50,7 +50,7 @@ This repo develops Databus version >= 2.0, which is a major upgrade of version
 
 **Development setup:** [https://github.com/dbpedia/databus/blob/master/devenv/README.md](https://github.com/dbpedia/databus/blob/master/devenv/README.md)
 
-**Our Discord:** 
+**Our Discord:** [https://discord.gg/fB8byAPP7e](https://discord.gg/fB8byAPP7e)
 
 ## Use Cases
 
