@@ -90,7 +90,7 @@ docker-compose up
 ```
 The Databus should be available at `http://localhost:3000`.&#x20;
 
-See [here](docs/configuration.md) on detailed configuration of Databus for the use in production.
+See [here](docs/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
 
 ### Publishing Your First Artifact
 To publish an artifact you need to create a Databus account. 

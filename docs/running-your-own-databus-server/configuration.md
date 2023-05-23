@@ -10,7 +10,7 @@ Configure your Databus installation by changing the values in the `.env` file in
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
 * **VIRTUOSO\_PASSWORD**: The password of the VIRTUOSO\_USER account
 
-If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](docs/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](docs/https-and-proxy-setup.md#external-proxy-example)).
+If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](https-and-proxy-setup.md#external-proxy-example)).
 
 ## Advanced Configuration
 
@@ -32,7 +32,13 @@ The volumes of the Databus container are best left unchanged. The internal path 
 
 ### GStore Container
 
-The GStore is a git-repository / triple store hybrid database. It stores chunks of RDF data both as files in a git repository and graphs in a triple store. This allows rollback of commits AND sending of SPARQL queries. The default GStore configuration operates with an internal git repository (can be changed to an external repository, please refer to the GStore documentation) and a Virtuoso triple store.
+The [GStore](https://dbpedia.gitbook.io/databus/v/gstore/) is a git-repository / triple store hybrid database. 
+It stores chunks of RDF data both as files in a git repository 
+and graphs in a triple store. This allows rollback of commits 
+AND sending of SPARQL queries. The default GStore configuration 
+operates with an internal git repository (can be changed to an 
+external repository, please refer to the GStore documentation) 
+and a Virtuoso triple store.
 
 The GStore Container accepts the following environment variables:
 
@@ -42,7 +48,7 @@ The GStore Container accepts the following environment variables:
 
 ### Virtuoso Container
 
-The Virtuoso container is the triple store database.
+The [Virtuoso](https://virtuoso.openlinksw.com) container is the triple store database.
 
 The Virtuoso Container accepts the following environment variables:
 
