@@ -11,6 +11,6 @@ the directory with the files (or root of the repo).
 
 &#x20;run:
 ```
-docker-compose up  # optionally with -d parameter to the containers in background
+docker-compose up  # optionally with -d parameter to run the containers in background
 ```
 The Databus will be available at `http://localhost:3000`.&#x20;
