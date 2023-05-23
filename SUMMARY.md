@@ -1,4 +1,5 @@
 # Table of contents
+
 * [Overview](README.md)
   * [Roadmap](docs/roadmap.md)
 * [Use Cases](docs/usecases.md)
@@ -6,29 +7,29 @@
   * [Automated Deployment of DBpedia Services](docs/dbpediadeployment.md)
   * [Building Meta Registries](docs/building-meta-registries.md)
   * [Maven for Data](docs/maven-for-data-manage-data-dependencies-like-code.md)
-* Running Your Own Databus Server
-  * Run with Docker
+* [Running Your Own Databus Server](running-your-own-databus-server/README.md)
+  * [Run with Docker](running-your-own-databus-server/run-with-docker.md)
   * [Configuration](docs/configuration.md)
   * [HTTPS & Proxy Setup](docs/https-and-proxy-setup.md)
-* Usage
-  * Web Interface
-    * Publish 
-    * [Auto-Completion](docs/auto-completion.md) 
-    * Browsing Data 
-    * Collections
-  * API
+* [Usage](usage/README.md)
+  * [Web Interface](usage/web-interface/README.md)
+    * [Publish](usage/web-interface/publish.md)
+    * [Auto-Completion](docs/auto-completion.md)
+    * [Browsing Data](usage/web-interface/browsing-data.md)
+    * [Collections](usage/web-interface/collections.md)
+  * [API](usage/api/README.md)
     * [Quickstart Examples (Publish, Download)](docs/quickstart-examples.md)
     * [API Docs](docs/api.md)
   * [Customizing, Mods, Metadata Quality](docs/mods.md)
-  * [Databus Client](docs/databus-client.md) 
+  * [Databus Client](docs/databus-client.md)
 * [Organising your data (Model)](docs/model.md)
   * [URI Design](docs/uridesign.md)
   * [Versioning](docs/versioning.md)
-  * Metadata
+  * [Metadata](model/metadata/README.md)
     * [Group](docs/group.md)
     * [Artifact](docs/artifact.md)
     * [Version](docs/dataid.md)
     * [Distribution](docs/distribution.md)
   * [Content Variants](docs/content-variants.md)
-  * [Persistence (HowTo)](install/persistence-howto.md)
+  * [Persistence (HowTo)](model/persistence-howto.md)
 * [Development Environment](devenv/README.md)
