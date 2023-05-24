@@ -1,36 +1,37 @@
+## General Structure
 
-1. [Quickstart Example](/docs/quickstart-examples.md) gives a very minimal example of a valid input for the metadata publishing API. Additionally, it provides SPARQL queries for fetching your metadata from a Databus SPARQL endpoint.
-2. The following sections, [group](group.md), [artifact](artifact.md), [version](version.md) and [distribution](distribution.md) contain technical details of the API inputs, such as  identifier and other metadata constraints.
-3. Most constraints are formalized using SHACL-shapes. The shapes can be found in the following subchapters.
+As pointed out in the [use-cases section](../usecases.md),Databus can be seen as *[Maven](https://maven.apache.org) for data*. An important distinction to Maven, is that Databus does not store the data itself, but only metadata describing your data.
 
+The prerequisite for using Databus is having some data you would like to publish. The data must be publicly accessible (for download) via URIs. Each URI should correspond to a single file. 
+
+The minimal entity for publishing is a dataset, which may consist of minimally one [file (Distribution)](../distribution.md). **If you want to publish a single file you will need to create a dataset with one file**.
+
+In the Databus model a dataset corresponds to an [artifact](../artifact.md) and the artifacts are [versioned](../dataid.md). The artifacts are grouped together with [groups](../group.md), this enables better structure for big projects which may combine several datasets in one logical element. When you publish a dataset, you essentially publish its version. Versions are assumed for release cycle of your data, similarly to how software distributions are versioned.
+
+Here is the visualisation of group/artifact/version/file relationship:
+![alt text](model.drawio.svg)
 
 ## Creating Dataset identifiers
 
-As pointed out in the [use-cases section](/docs/usecases.md), 
-the Databus can be seen as a *maven for data*. 
 Metadata for your Datasets is made available under 
 a specific URI identifier, where certain path 
-segments of that URI are shared between related 
-Datasets (see examples below).
+segments of that URI are shared between related (using groups)
+Datasets (see examples below). The identifiers reflect the above-mentioned group/artifact/version/file structure. 
 
 > **Note**
-> Choosing descriptive names for your identifiers and putting thought into the partitioning  of your metadata entries can greatly impact the understandability and usefulness of your data.
-
-Similar to maven, URI identifiers of metadata entries are a 
-composite of names chosen by the metadata publisher. 
-This allows publishers to create a hierarchy of metadata 
-entries for a clean and understandable structure.
+> Choosing descriptive names for your identifiers and putting thought into the partitioning of your metadata entries can greatly impact the understandability and usefulness of your data.
 
 ### Identifier Hierarchy
 
-The Databus allows users with an account to publish metadata in 
-a certain hierarchical structure. The hierarchy has the following levels:
+The identifier URI hierarchy has the following levels:
 
-* Account
-    * [Group](/docs/group.md)
-        * [Artifact](/docs/artifact.md)
-            * [Version](/docs/version.md)
-                * [Distribution](/docs/distribution.md)
+* Account (Username)
+    * [Group](../group.md)
+        * [Artifact](../artifact.md)
+            * [Version](../version.md)
+                * [Distribution](../distribution.md)
+
+![uri_identifiers](uri_structure.png)
 
 Thus, the identifiers of your metadata entries on the Databus are a composite of two or more of the following:
 
@@ -63,11 +64,11 @@ The metadata publisher has complete control over the names of the Databus identi
 3. **The artifact**
 * an artifact consists of multiple versions of different files, but all the files should somehow be related, so an artifact should represent *data of one certain topic*.
 5. **The version**:
-* A version consists of multiple distributions, each representing a file and tracks the evolution of one artifact. There is a [whole page](/docs/versioning.md) for versioning best practises.
+* A version consists of multiple distributions, each representing a file and tracks the evolution of one artifact. There is a [whole page](../versioning.md) for versioning best practises.
 7. **The distribution**
-* One distribution represents one certain file in an artifact/version and is distinguished by others through [content variants](content-variants.md). As the name suggests, in one artifact/version the files should somehow be closely related or even the same data in different flavors.
+* One distribution represents one certain file in an artifact/version and is distinguished by others through [content variants](../content-variants.md). As the name suggests, in one artifact/version the files should somehow be closely related or even the same data in different flavors.
 * Examples:
     * the same data in different languages or encodings/file types
     * a file and other files generated from that file
     * a file and other files describing that file
-* Of course it is not always, but it is helpful to keep the names of content variants the same across versions of the dataset, which helps keeping SPARQL queries consistent 
+* Of course it is not always, but it is helpful to keep the names of content variants the same across versions of the dataset, which helps keeping SPARQL queries consistent
