@@ -9,7 +9,7 @@ The minimal entity for publishing is a dataset, which may consist of minimally o
 In the Databus model a dataset corresponds to an [artifact](../artifact.md) and the artifacts are [versioned](../dataid.md). The artifacts are grouped together with [groups](../group.md), this enables better structure for big projects which may combine several datasets in one logical element. When you publish a dataset, you essentially publish its version. Versions are assumed for release cycle of your data, similarly to how software distributions are versioned.
 
 Here is the visualisation of group/artifact/version/file relationship:
-![alt text](model.drawio.svg)
+![alt text](model.drawio.png)
 
 ## Creating Dataset identifiers
 
