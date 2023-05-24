@@ -14,7 +14,7 @@ Here is the visualisation of group/artifact/version/file relationship:&#x20;
 
 <figure><img src="model.drawio.png" alt=""><figcaption></figcaption></figure>
 
-### Creating Dataset identifiers
+### Creating Dataset Identifiers
 
 Metadata for your Datasets is made available under a specific URI identifier, where certain path segments of that URI are shared between related (using groups) Datasets (see examples below). The identifiers reflect the above-mentioned group/artifact/version/file structure.
 
