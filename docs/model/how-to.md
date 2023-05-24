@@ -49,6 +49,8 @@ The full example identifiers would look like this:
 * **Version** Identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30
 * **Distribution** (file) Identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30/cats.ttl.bz
 
+See more on the URI design [here](../uridesign.md).
+
 #### Best Practices
 
 The metadata publisher has complete control over the names of the Databus identifiers. Though, there are a few best practices to be considered:
