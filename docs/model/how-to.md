@@ -2,17 +2,17 @@
 
 ### General Structure
 
-As pointed out in the [use-cases section](../usecases.md),Databus can be seen as [_Maven_](https://maven.apache.org) _for data_. An important distinction to Maven, is that Databus does not store the data itself, but only metadata describing your data.
+Databus can be seen as [_Maven_](https://maven.apache.org) _for data_. A key differentiation from Maven is that the Databus does not store the actual data but rather focuses solely on capturing metadata that describes your data.
 
-The prerequisite for using Databus is having some data you would like to publish. The data must be publicly accessible (for download) via URIs. Each URI should correspond to a single file.
+To utilize the Databus, you need to possess data that you intend to publish on the Databus. The minimal requirement is a single file containing your data and the data file must be accessible via the HTTP protocol. 
 
-The minimal entity for publishing is a dataset, which may consist of minimally one [file (Distribution)](../distribution.md). **If you want to publish a single file you will need to create a dataset with one file**.
+In the Databus model a dataset corresponds to an [artifact](../artifact.md). The artifacts are [versioned](../dataid.md) and grouped together into [groups](../group.md). Groups in the DBpedia Databus serve as a means of grouping together related datasets. They allow users to navigate and discover datasets that are associated with a specific topic of interest.
 
-In the Databus model a dataset corresponds to an [artifact](../artifact.md) and the artifacts are [versioned](../dataid.md). The artifacts are grouped together with [groups](../group.md), this enables better structure for big projects which may combine several datasets in one logical element. When you publish a dataset, you essentially publish its version. Versions are assumed for release cycle of your data, similarly to how software distributions are versioned.
+By organizing dataset artifacts into groups, the DBpedia Databus provides a structured and coherent way to manage and publish data files, making it easier for users to find and access datasets that are relevant to their needs.
 
-Here is the visualisation of group/artifact/version/file relationship:&#x20;
+The group group/artifact/version/file relationship is depicted in the following diagram.&#x20;
 
-<figure><img src="model.drawio.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="databus-model.png" alt=""><figcaption></figcaption></figure>
 
 ### Creating Dataset Identifiers
 
