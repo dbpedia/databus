@@ -1,130 +1,149 @@
 ---
 description: >-
-  A digital factory platform for managing files online with stable IDs,
-  high-quality metadata, powerful API and tools for building on data: find,
-  access, make interoperable, re-use
+ DBpedia Databus is an open platform for sharing structured
+ data, including RDF datasets and ontologies. It is built on top of the 
+ Linked Data principles and FAIR.
 ---
 
 # Databus
 
-## License
+DBpedia Databus is an open platform for sharing structured data, 
+including RDF (Resource Description Framework) datasets and 
+ontologies. It is in essence a repository of metainformation describing your data. 
+Databus is built on top of the Linked Data principles and
+FAIR (Findable, Accessible, Interoperable, and Reusable).
 
-The source code of this repo is published under the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
+The key features of DBpedia Databus are:
+* Versioning: Databus can be used as a repository, 
+like [Maven](https://maven.apache.org) in Java 
+or [Pip](https://pypi.org/project/pip/) in Python, for your data artifacts.
+* Querying: SPARQL endpoint and Databus Collections provide a rich API 
+for querying the metadata you publish.
+* Decentralized infrastructure: Databus is built on a decentralized 
+infrastructure. This ensures that the data is always available, even if some 
+servers go down.
+* Provenance tracking: Databus tracks the provenance of data, 
+which means that users can see where the data came from and who has 
+modified it over time.
+* Data quality assessment: Databus provides tools for assessing 
+the quality of data, such as validation and testing. This helps to ensure 
+that the data is accurate, complete, and consistent.
+ different applications and contexts.
 
-Databus is configured so that the default license of all metadata is CC-0, which is relevant for all data of the Model, i.e. who published which data, when and under which license.
+The DBpedia Databus is a valuable resource for anyone who 
+works with structured data, including researchers, data scientists, 
+and developers. It provides a central hub for sharing and discovering 
+data, making it easier to leverage the full potential of Linked Data.
 
-The individual datasets are referenced via links (dcat:downloadURL) and can have any license.
+## Status 
 
-## Status
+This repo develops Databus version >= 2.0, which is a major upgrade of version 
+1.3-beta (currently running at https://databus.dbpedia.org).
 
-This repo develops Databus version 2.0, which is a major upgrade of version 1.3-beta (currently running at https://databus.dbpedia.org) If you install it and find problems, please report in the [issue tracker](https://github.com/dbpedia/databus/issues) to help us test this new version.
+## Important Links
 
-**Examples:** [https://energy.databus.dbpedia.org/](https://energy.databus.dbpedia.org/), [https://dev.databus.dbpedia.org/](https://dev.databus.dbpedia.org/)
+**Documentation:** [https://dbpedia.gitbook.io/databus/overview/readme](https://dbpedia.gitbook.io/databus/overview/readme) 
 
-**API docu:** https://github.com/dbpedia/databus/blob/master/API.md
+**API documentation:** [https://github.com/dbpedia/databus/blob/master/API.md](https://github.com/dbpedia/databus/blob/master/API.md)
 
-**Development setup:** https://github.com/dbpedia/databus/blob/master/devenv/README.md
+**Working deployments:** [DBpedia Databus (Reference)](https://dev.databus.dbpedia.org/), [Energy Databus](https://energy.databus.dbpedia.org/)
 
-## Acknowledgements
+**Development setup:** [https://github.com/dbpedia/databus/blob/master/devenv/README.md](https://github.com/dbpedia/databus/blob/master/devenv/README.md)
 
-This work was partially supported by grants from the German Federal Ministry for Economic Affairs and Climate Action (BMWK) to the projects LOD-GEOSS (03EI1005E) and  PLASS (01MD19003D)
+**Our Discord:** [https://discord.gg/fB8byAPP7e](https://discord.gg/fB8byAPP7e)
 
-## Requirements
+## Use Cases
 
-In order to run the Databus on-premise you will need `docker` and `docker-compose` installed on your machine.&#x20;
+More examples of the Databus capabilities are demonstrated in our use cases:
+ * [Meta registries](docs/building-meta-registries.md)
+ * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
+
+## Getting Started
+
+### Preparing Your Data
+Databus does not store the data itself but only metainformation, therefore before running the server
+we need to publish our data somewhere and make it publicly available. 
+
+**In this step we need to obtain a URI or several URIs pointing to the actual data files for download.** 
+As an example here we can publish a single file, e.g. this `README.md`. So our URI is: 
+```
+https://raw.githubusercontent.com/dbpedia/databus/master/README.md
+```
+### Running the Server
+#### Requirements
+
+In order to run the Databus on-premise you will need `docker` and `docker-compose` 
+installed on your machine.&#x20;
 
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
-Additionally you need an OIDC provider.
+#### Starting the Databus Server
 
-## Starting the Databus Server
-
-Clone the repository or download the `docker-compose.yml` and `.env` file to your machine. Both files need to exist in the same directory. Navigate to the directory containing the files (or the root directory of the cloned repository). It is possible to run the Databus on localhost in one shot with the default configuration to have a quick look. However, for proper setups it is required to start from a fresh/wiped state and perform [mandatory configuration settings](#mandatory-configuration) first.&#x20;
+Clone the repository or download the `docker-compose.yml` and `.env` files. 
+Both files need to exist in the same directory. Navigate to 
+the directory with the files (root of the repo).
 
 &#x20;run:
-
 ```
 docker-compose up
 ```
-
-Or, to start the containers in the background i.e. detached, run:
-
-```
-docker-compose up -d
-```
-
 The Databus should be available at `http://localhost:3000`.&#x20;
 
-## Mandatory Configuration
+See [here](docs/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
 
-Configure your Databus installation by changing the values in the `.env` file in the root directory of the repository. The following values can be configured:
+### Publishing Your First Artifact
+To publish an artifact you need to create a Databus account. 
+After creating an account, log in and click on your account's 
+icon and then `Publish Data`.
 
-* **DATABUS\_RESOURCE\_BASE\_URL**: The base resource URL. All Databus resources will start with this URL prefix. Make sure that it matches the DNS entry pointing to your Databus server so that HTTP requests on the resource identifiers will point to your Databus deployment.
-* **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
-* **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
-* **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
-* **VIRTUOSO\_PASSWORD**: The password of the VIRTUOSO\_USER account
+Fill in the form for publishing and submit. 
+For simplicity, you can enter any name for group, artifact and version.
+Use the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/master/README.md`) 
+in the `Files` section.  
 
-If you would like to use the internal reverse proxy with automatic HTTPS (certificate) provisioning follow further [proxy configuration instructions](docs/https-and-proxy-setup.md). Otherwise it is required to configure an external reverse proxy with a TLS-encrypted connection (HTTPS) of your choice for the Databus container (port 3000 by default - see [example config](docs/https-and-proxy-setup.md#external-proxy-example)).
+After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
-## Advanced Configuration
+See more on how to organise your data [here](docs/model.md), there 
+you can find detailed explanations and our suggestions on structuring
+your datasets.
 
-The configuration can be adjusted by modifying the docker-compose.yml file directly. The compose file starts 3 docker containers.
+### Querying Metainformation
+After files are published, we can perform queries. Databus offers two 
+mechanisms for that: a SPARQL endpoint and Collections. 
 
-### Databus Container
+Collections allow to flexibly combine files and artifacts together. 
+Read more [here](docs/collections.md).
 
-The Databus container holds the Databus server application (port 3000) and search API (port 8080). The internal ports can be mapped to an outside port using the docker-compose port settings. Mapping the port of the search API is optional.
+SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
+### Mods
+Databus offers metadata extensions using Mods. 
+You can read about them more in detail [here](docs/mods.md).
+### API
+Instead of using GUI, you can automate your publishing and data retrieving process
+ using our http-API. Refer to it [here](docs/api.md).
 
-The Databus container accepts the following environment variables:
+## Contributing
+Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).
 
-* **DATABUS\_RESOURCE\_BASE\_URL**: The base resource URL. All Databus resources will start with this URL prefix. Make sure that it matches the DNS entry pointing to your Databus server so that HTTP requests on the resource identifiers will point to your Databus deployment.
-* **DATABUS\_DATABASE\_URL**: The URL of your GStore database. Can be left as is. Change this only if you want to host your database elsewhere and you know what you are doing.
-* **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
-* **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
-* **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
+If you would like to submit a non-trivial patch or pull request 
+we will need you to sign the Contributor License Agreement, we 
+will send it to you in that case.
+## License
 
-The volumes of the Databus container are best left unchanged. The internal path of the volumes should not be altered. The ourside paths may be changed to any desired path. The keypair folder will store the private and public key of your Databus deployment. The users folder will hold a mini-database associating your OIDC users with Databus users.
+The source code of this repo is published under 
+the [Apache License Version 2.0](https://github.com/AKSW/jena-sparql-api/blob/master/LICENSE)
 
-### GStore Container
+Databus is configured so that the default license of all 
+metadata is CC-0, which is relevant for all data of the Model, 
+i.e. who published which data, when and under which license.
 
-The GStore is a git-repository / triple store hybrid database. It stores chunks of RDF data both as files in a git repository and graphs in a triple store. This allows rollback of commits AND sending of SPARQL queries. The default GStore configuration operates with an internal git repository (can be changed to an external repository, please refer to the GStore documentation) and a Virtuoso triple store.
+The individual datasets are referenced via links (dcat:downloadURL) 
+and can have any license.
 
-The GStore Container accepts the following environment variables:
+## Acknowledgements
 
-* **VIRT\_USER**: The admin user of your virtuoso deployment
-* **VIRT\_PASS**: The admin password of your virtuoso deployment
-* **VIRT\_URI**: The uri of the virtuoso deployment. Keep this as is unless you want to host your virtuoso triple store elsewhere.
-
-### Virtuoso Container
-
-The Virtuoso container is the triple store database.
-
-The Virtuoso Container accepts the following environment variables:
-
-* **DBA\_PASSWORD**: Admin password
-* **SPARQL\_UPDATE**: Needs to be set to true to allow updates
-* **DEFAULT\_GRAPH**: Set this to your DATABUS\_RESOURCE\_BASE\_URL setting
-
-## OIDC Configuration
-
-### OIDC Client Configuration
-
-Follow the documentation of your OIDC provider to configure a client. Connect the client to the deployed Databus instance by setting the following environment variables on Datbaus startup:
-
-* **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: The base URL of your OIDC provider
-* **DATABUS\_OIDC\_CLIENT\_ID**: The client id of the configured client at the OIDC provider
-* **DATABUS\_OIDC\_SECRET**: the client secret of the configured client at the OIDC provider
-
-When configuring the client at the OIDC provider, you will be most likely asked to specify a callback URI for redirects after a login. The callback values need to be set to the following values:
-
-**Callback** `https://databus.example.org/app/callback`
-
-**Logout** `https://databus.example.org/app/logout`
-
-**Login** `https://databus.example.org/app/login`
-
-### OIDC Providers
-
-Tested OIDC providers: Keycloak, Auth0, Microsoft Azure Active Directory
-
+This work was partially supported by grants from 
+the German Federal Ministry for Economic Affairs 
+and Climate Action (BMWK) to the projects 
+LOD-GEOSS (03EI1005E) and  PLASS (01MD19003D)

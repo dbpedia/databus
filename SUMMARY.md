@@ -1,37 +1,36 @@
 # Table of contents
 
-## Overview
-
-* [Databus](README.md)
-* [🚀 Unique Features (Draft)](docs/uniquesellingpoints.md)
+* [Overview](README.md)
+  * [Roadmap](docs/roadmap.md)
 * [Use Cases](docs/usecases.md)
+  * [🚀 Unique Features (Draft)](docs/uniquesellingpoints.md)
   * [Automated Deployment of DBpedia Services](docs/dbpediadeployment.md)
   * [Building Meta Registries](docs/building-meta-registries.md)
   * [Maven for Data](docs/maven-for-data-manage-data-dependencies-like-code.md)
-* [Customizing, Mods, Metadata Quality](docs/mods.md)
-* [Roadmap](docs/roadmap.md)
-
-## Install
-
-* [Instructions](overview/instructions.md)
-* [Persistence (HowTo)](install/persistence-howto.md)
-
-## Model
-
-* [Model](docs/model.md)
-  * [Quickstart Examples](docs/quickstart-examples.md)
-  * [Group](docs/group.md)
-  * [Artifact](docs/artifact.md)
-  * [Version](docs/dataid.md)
-  * [Distribution](docs/distribution.md)
-* [URI Design](docs/uridesign.md)
-* [Versioning](docs/versioning.md)
-* [Content Variants](docs/content-variants.md)
-* [Auto-Completion](docs/auto-completion.md)
-
-## Usage
-
-* [Examples](examples/README.md)
-* [Databus API](docs/api.md)
-* [HTTPS & Proxy Setup](docs/https-and-proxy-setup.md)
+* [Running Your Own Databus Server](docs/running-your-own-databus-server/running-own-server.md)
+  * [Run with Docker](docs/running-your-own-databus-server/run-with-docker.md)
+  * [Configuration](docs/running-your-own-databus-server/configuration.md)
+  * [HTTPS & Proxy Setup](docs/running-your-own-databus-server/https-and-proxy-setup.md)
+* [Organising Your Data (Model)](docs/model.md)
+  * [How to Organise Your Data](docs/model/how-to.md)
+  * [URI Design](docs/uridesign.md)
+  * [Versioning](docs/versioning.md)
+  * [Metadata](docs/model/metadata/README.md)
+    * [Group](docs/group.md)
+    * [Artifact](docs/artifact.md)
+    * [Version](docs/dataid.md)
+    * [Distribution](docs/distribution.md)
+  * [Content Variants](docs/content-variants.md)
+  * [Persistence (HowTo)](docs/model/persistence-howto.md)
+* [Usage](docs/usage/README.md)
+  * [Web Interface](docs/usage/web-interface/README.md)
+    * [Publish](docs/usage/web-interface/publish.md)
+    * [Auto-Completion](docs/auto-completion.md)
+    * [Browsing Data](docs/usage/web-interface/browsing-data.md)
+    * [Collections](docs/usage/web-interface/collections.md)
+  * [API](docs/usage/api/README.md)
+    * [Quickstart Examples (Publish, Download)](docs/quickstart-examples.md)
+    * [API Docs](docs/api.md)
+  * [Customizing, Mods, Metadata Quality](docs/mods.md)
+  * [Databus Client](docs/databus-client.md)
 * [Development Environment](devenv/README.md)

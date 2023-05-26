@@ -583,6 +583,7 @@
                             <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
                               <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
                                 ng-change="filterLicenses(licenseQuery)" />
+                              <div style="padding: 0.5em; color: #888" ng-if="licenseData == undefined">The content of this dropdown relies on the license service provided by <a href="https://dalicc.net" target="_blank">https://dalicc.net</a>. If you are unable to find any licenses, this might be due to the service being temporarily unavailable.</div>
                               <div ng-repeat="license in filteredLicenseList | limitTo: 25"
                                 style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
                                 {{ license.title.value }}
