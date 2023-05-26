@@ -6,17 +6,15 @@
 
 
     .edit-table {
-      table-layout: fixed;
       background-color: white;
       white-space: nowrap;
-      width: fit-content;
+      width: min-content;
     }
 
     .edit-table-wrapper {
-      margin: -0.5em;
       overflow-x: auto;
       margin-top: 1em;
-      border-top: solid 1px #dbdbdb;
+      border: solid 1px #dbdbdb;
     }
 
     .edit-table td {
@@ -51,13 +49,18 @@
       border-right: solid 1px #dbdbdb;
     }
 
+    .edit-table thead td.cv-header {
+      min-width: 100px;
+    }
+
+
     .edit-table .edit {
-      width: 100%;
+      min-width: 100%;
       border: none;
       background-color: inherit;
       font-family: inherit;
       margin: 0;
-      padding: 0.75em 0.75em;
+      padding: 10px;
     }
 
     .table-content td {
@@ -86,10 +89,10 @@
 
   <div class="edit-table-wrapper">
     <table class="edit-table" click-outside="$ctrl.deselect()">
-      <colgroup>
+      <!--colgroup>
         <col width="45px">
         <col ng-repeat="column in $ctrl.columns" width="{{column.width}}">
-      </colgroup>
+      </colgroup-->
       <thead>
         <tr>
           <td></td>
@@ -101,16 +104,14 @@
           </td>
           <td>Format</td>
           <td>Compression</td>
-          <td ng-repeat="cv in $ctrl.model.contentVariants">{{ cv.label }}</td>
+          <td class="cv-header" ng-repeat="cv in $ctrl.model.contentVariants">{{ cv.label }}</td>
           <td>Status/Actions</td>
           <td></td>
         </tr>
       </thead>
       <tbody class="table-content">
 
-        <tr style="position:relative;" ng-repeat="file in $ctrl.model.files" ng-init="outerIndex=$index">
-
-
+        <tr ng-repeat="file in $ctrl.model.files" ng-init="outerIndex=$index">
           <td class="readonly" style="padding: .5em; text-align: center;">{{ $index + 1 }}</td>
           <td style="padding: .5em; cursor: pointer" class="readonly"
             ng-class="{ 'selected' : $index == $ctrl.selection.x && $parent.$index == $ctrl.selection.y }">
@@ -123,8 +124,11 @@
             ng-class="{ 'selected' : $index == $ctrl.selection.x && outerIndex == $ctrl.selection.y }"
             ng-click="$ctrl.selectCell($event, $index, outerIndex)">
             <input focus-me="$index == $ctrl.edit.x && outerIndex == $ctrl.edit.y"
+              ng-style="{ width: $ctrl.getSpanWidth(outerIndex, cv.label) + 'px' }"
               ng-change="$ctrl.onChangeCv(file, cv)" ng-model="file.contentVariants[cv.label]" class='edit'
               ng-readonly="$index != $ctrl.edit.x || outerIndex != $ctrl.edit.y">
+            <span id="{{ outerIndex + '_' + cv.label }}" style="visibility:hidden; position:absolute; left:-1000px; top:-1000px;">{{ file.contentVariants[cv.label]
+              }}</span>
           </td>
           <td class="readonly">
             <div style="display: flex; padding: .55em; justify-content: flex-end;">
@@ -134,7 +138,7 @@
                     d="M24 23h-24l12-22 12 22zm-22.315-1h20.63l-10.315-18.912-10.315 18.912zm10.315-2c.466 0 .845-.378.845-.845 0-.466-.379-.844-.845-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.5-11v8h-1v-8h1z" />
                 </svg>
                 <div class="hover-dropdown has-error content"
-                  style="transform: translateX(-533px) translateY(30px); top: initial; right: initial;">
+                  style="transform: translateX(-533px) translateY(30px); top: initial; right: initial; position: absolute;">
                   <ul style="margin-top: 0; margin-left: 1.5em;">
                     <li ng-repeat="error in file.errors">
                       {{ error.message }}
@@ -146,11 +150,11 @@
                 size="24"></databus-icon>
             </div>
           </td>
-          <td >
+          <td>
 
-            
+
           </td>
-        
+
         </tr>
 
 

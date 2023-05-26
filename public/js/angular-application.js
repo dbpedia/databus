@@ -1,5 +1,4 @@
 
-
 var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .factory('collectionManager', [ "$interval", "$http", function ($interval, $http) { return new DatabusCollectionManager($http, $interval, 'databus_collections'); }])
@@ -12,16 +11,17 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
       });
     };
   }])
+  .value("searchAdapters", searchAdapters)
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
-  .controller("AccountPageController", ["$scope", "$http", "$location", AccountPageController])
+  .controller("AccountPageController", ["$scope", "$http", "$location", "collectionManager", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])
   .controller("ArtifactPageController", ["$scope", "$http", "$sce", "collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
-  .controller("ProfileController", ["$scope", "$http", ProfileController])
+  .controller("ProfileController", ["$scope", "$http", 'searchAdapters', ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
-  .controller("VersionPageController", ["$scope", "$http", "$sce", "collectionManager", VersionPageController])
+  .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
     return {
       restrict: 'E',
@@ -40,6 +40,36 @@ function config($locationProvider) {
     rewriteLinks: false
   });
 };
+
+
+
+databusApplication.filter('collectionfilter', function() {
+  return function(input, search) {
+    if (!input) return input;
+    
+    var expected = '';
+
+    if (search != null) {
+      expected = ('' + search).toLowerCase();
+    }
+
+    var result = [];
+
+    angular.forEach(input, function(value, key) {
+      if(value.title == undefined) {
+        return;
+      }
+      
+      if(value.title.toLowerCase().includes(expected)) {
+        result.push(value); // [key] = value;
+      }
+    });
+
+
+
+    return result;
+  }
+});
 
 databusApplication.config(['$locationProvider', config]);
 
@@ -78,7 +108,7 @@ databusApplication.component('entityCard', {
 
 databusApplication.component('search', {
   templateUrl: '/js/components/search/search.html',
-  controller: ['$http', '$interval', '$sce', SearchController],
+  controller: ['$http', '$interval', '$sce', 'searchAdapters', SearchController],
   bindings: {
     searchInput: '=',
     settings: '<',
@@ -309,8 +339,6 @@ databusApplication.component('multiselectDropdown', {
   }
 });
 
-
-
 databusApplication.component('tableEditor', {
   templateUrl: '/js/components/table-editor/table-editor.html',
   controller: TableEditorController,
@@ -395,6 +423,8 @@ databusApplication.directive('eventFocus', function (focus) {
     });
   };
 });
+
+
 
 databusApplication.directive('uploaderRanking', function () {
   return {

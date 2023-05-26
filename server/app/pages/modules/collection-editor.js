@@ -15,7 +15,9 @@ module.exports = function (router, protector) {
       data.collections = await sparql.collections.getCollectionsByAccount(data.auth.info.accountName);
     }
 
-    res.render('collections-editor', {
+    console.log(data);
+
+    res.render('collection-editor', {
       title: 'Collection Editor',
       data: data
     });

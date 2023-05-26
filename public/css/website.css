@@ -9667,6 +9667,43 @@ label.panel-block:hover {
   background-color: #24292e;
 }
 
+.databus-settings-box {
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  margin-bottom: 3em;
+}
+
+.databus-settings-box .row {
+  padding: 1.5em;
+}
+
+.databus-settings-box .row .row-label {
+  font-weight: 600;
+  font-size: 1.15em;
+  margin-bottom: 0.5em;
+}
+
+.databus-settings-box .row:not(:last-child) {
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.databus-settings-box-header {
+  margin-top: 0;
+  margin-left: 0.5em;
+  color: #aaa;
+  text-transform: uppercase;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  flex: 1;
+}
+
+.databus-settings-info {
+  color: #656d76;
+  max-width: 1000px;
+  padding: 0.1em 0.2em;
+}
+
 .slick-arrow {
   width: 24px !important;
   height: 24px !important;
@@ -9787,12 +9824,6 @@ label.panel-block:hover {
   background-color: #81b180;
   color: #fff;
   border: none;
-}
-.is-collection path {
-  fill: #81b180;
-}
-.is-collection path.is-white {
-  fill: #fff;
 }
 .is-collection.title {
   color: #81b180;
@@ -11326,7 +11357,6 @@ a.databus-navbar-item {
 
 .content-box .box-content {
   padding-left: 0.6em;
-  padding-right: 0.6em;
   padding-bottom: 0.6em;
 }
 

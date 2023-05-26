@@ -69,7 +69,8 @@ module.exports = function (router, protector) {
       var content = await cache.get(cacheKey, async () => {
         return {
           groups: await sparql.dataid.getGroupsByAccount(req.query.account),
-          artifacts: await sparql.dataid.getArtifactsByAccount(req.query.account)
+          artifacts: await sparql.dataid.getArtifactsByAccount(req.query.account),
+          versions: await sparql.dataid.getVersionsByAccount(req.query.account)
         };
       });
 

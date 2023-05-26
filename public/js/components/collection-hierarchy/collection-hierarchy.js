@@ -116,19 +116,19 @@ function CollectionHierarchyController($http, $location, $sce) {
   }
 
   ctrl.formatGroupPrefix = function(uri) {
-    return DatabusCollectionUtils.uriToName(DatabusCollectionUtils.navigateUp(uri));
+    return DatabusUtils.uriToName(DatabusUtils.navigateUp(uri));
   }
 
   ctrl.formatArtifactPrefix = function(uri) {
-    var nav = DatabusCollectionUtils.navigateUp(uri);
-    var groupName = DatabusCollectionUtils.uriToName(nav);
-    var userName = DatabusCollectionUtils.uriToName(DatabusCollectionUtils.navigateUp(nav));
+    var nav = DatabusUtils.navigateUp(uri);
+    var groupName = DatabusUtils.uriToName(nav);
+    var userName = DatabusUtils.uriToName(DatabusUtils.navigateUp(nav));
 
     return userName + '/' + groupName;
   }
 
   ctrl.uriToName = function(uri) {
-    return DatabusCollectionUtils.uriToName(uri);
+    return DatabusUtils.uriToName(uri);
   }
 
   ctrl.showCollectionSearch = function() {

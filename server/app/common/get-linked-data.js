@@ -1,15 +1,13 @@
-const defaultContext = require('./context.json');
-const rp = require('request-promise');
 const request = require('request');
-const jsonld = require('jsonld');
 const exec = require('./execute-query');
 const ServerUtils = require('./utils/server-utils');
-const DatabusUris = require('../../../public/js/utils/databus-uris');
+const HttpStrings = require('./http-strings');
+const getJsonld = require('./get-jsonld');
+
 
 module.exports = async function getLinkedData(req, res, next, resourceUri, template) {
 
   // ASK if the requested resource exists
-
   var exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
 
   if (!exists) {
@@ -17,54 +15,47 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
     return;
   }
 
-  var query = ServerUtils.formatQuery(template, {
-    RESOURCE_URI: resourceUri
-  });
+  // Get request headers
+  var accept = req.get(HttpStrings.HEADER_ACCEPT);
+  var formatting = req.get(HttpStrings.HEADER_JSONLD_FORMATTING);
 
-  var accept = req.get('Accept');
-  var formatting = req.get('X-Jsonld-Formatting');
-
-  console.log(formatting);
-
-  if(accept == undefined) {
-    accept = "application/ld+json";
+  // Default to jsonld
+  if (accept == undefined) {
+    accept = HttpStrings.CONTENT_TYPE_JSONLD;
   }
 
-  // Do a POST request with the passed query
-  var options = {
-    method: 'POST',
-    uri: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
-    body: `query=${encodeURIComponent(query)}`,
-    headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      "Accept": accept
-    },
-  };
+  if(accept == HttpStrings.CONTENT_TYPE_JSONLD) {
+    // Handle JSONLD separately
+    var jsonld = await getJsonld(resourceUri, template, formatting);
 
-  if (accept == "application/ld+json") {
-
-    try {
-
-      var result = JSON.parse(await rp(options));
-
-      if(formatting == undefined || formatting == 'compacted') {
-        // Single out jsonld in order to compact the result with the databus context
-        var result = await jsonld.compact(result, defaultContext);
-
-        if (process.env.DATABUS_CONTEXT_URL != undefined) {
-          result[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-        }
-      }
-      else if(formatting == 'flatten') {
-        var result = await jsonld.flatten(result);
-      }
-
-      res.set('Content-Type', 'application/ld+json');
-      res.status(200).send(`${JSON.stringify(result, null, 3)}\n`);
-    } catch (err) {
-      res.status(500).send('Encountered a database error when trying to fetch the resource.');
+    if(jsonld != null) {
+      res.set(HttpStrings.HEADER_CONTENT_TYPE, HttpStrings.CONTENT_TYPE_JSONLD);
+      res.status(200).send(`${JSON.stringify(jsonld, null, 3)}\n`);
+      return;
     }
   } else {
+
+    // Format the query
+    var query = ServerUtils.formatQuery(template, {
+      RESOURCE_URI: resourceUri
+    });
+
+    // Prepare OPTIONS for database request
+    var headers = {};
+    headers[HttpStrings.HEADER_CONTENT_TYPE] = HttpStrings.CONTENT_TYPE_FORM_URL_ENCODED;
+    headers[HttpStrings.HEADER_ACCEPT] = accept;
+
+    var options = {
+      method: HttpStrings.METHOD_POST,
+      uri: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
+      body: `query=${encodeURIComponent(query)}`,
+      headers: headers,
+    };
+
+    // Pipe the request
     request(options).pipe(res);
+    return;
   }
+
+  res.status(500).send('Encountered a database error when trying to fetch the resource.');
 }

@@ -10,9 +10,7 @@ PREFIX sec: <https://w3id.org/security#>
 CONSTRUCT
 {
   ?version ?p ?o .
-  ?distribution ?distributionProperty ?distributionObject .
-  ?contentVariant ?contentVariantProperty ?contentVariantObject .
-  ?proof ?proofProperty ?proofObject .
+  ?all ?the ?triples .
 }
 WHERE
 {
@@ -21,22 +19,7 @@ WHERE
     VALUES ?version { <%RESOURCE_URI%> }
     {
       ?version ?p ?o .
-    }
-    UNION
-    {
-      ?version dcat:distribution ?distribution .
-      ?distribution ?distributionProperty ?distributionObject .
-    }
-    UNION
-    {
-      ?version sec:proof ?proof .
-      ?proof ?proofProperty ?proofObject .
-    }
-    UNION
-    {
-      ?distribution ?contentVariant ?contentVariantLiteral .
-      ?contentVariant ?contentVariantProperty ?contentVariantObject .
-      ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+      ?all ?the ?triples .
     }
   }
 }

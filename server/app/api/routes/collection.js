@@ -12,6 +12,8 @@ var shaclTester = require('../../common/shacl/shacl-tester');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructCollection = require('../../common/queries/constructs/construct-collection.sparql');
+const UriUtils = require('../../common/utils/uri-utils');
+const getLinkedData = require('../../common/get-linked-data');
 
 module.exports = function (router, protector) {
 
@@ -56,8 +58,39 @@ module.exports = function (router, protector) {
         return;
       }
 
+      // Construct
+      var triples = await constructor.executeConstruct(req.body, constructCollection);
+      var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
+
+      
+      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
+    
+      collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
+
+      // Set publisher
+      collectionGraph[DatabusUris.DCT_PUBLISHER] = [ {
+          "@id": `${baseUrl}/${req.params.account}#this`
+      } ];
+
+      var timeString = new Date(Date.now()).toISOString();
+
+      // Set times
+      if (collectionGraph[DatabusUris.DCT_CREATED] == undefined) {
+        collectionGraph[DatabusUris.DCT_CREATED] = [{}];
+        collectionGraph[DatabusUris.DCT_CREATED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+        collectionGraph[DatabusUris.DCT_CREATED][0][DatabusUris.JSONLD_VALUE] = timeString;
+      }
+
+      if (collectionGraph[DatabusUris.DCT_MODIFIED] == undefined) {
+        collectionGraph[DatabusUris.DCT_MODIFIED] = [{}];
+        collectionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
+        collectionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
+      }
+
+      console.log(expandedGraphs);
+
       // Validate the group RDF with the shacl validation tool
-      var shaclResult = await shaclTester.validateCollectionRDF(req.body);
+      var shaclResult = await shaclTester.validateCollectionRDF(expandedGraphs);
       
        // Return failure
        if (!shaclResult.isSuccess) {
@@ -73,21 +106,6 @@ module.exports = function (router, protector) {
         });
         return;
       }
-
-      // Construct
-      var triples = await constructor.executeConstruct(req.body, constructCollection);
-      var expandedGraphs = await jsonld.expand(await jsonld.fromRDF(triples));
-
-      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
-    
-      // console.log(collectionGraph);
-      // Possible TODO: validate instead of replace
-      collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
-      collectionGraph['http://purl.org/dc/terms/publisher'] = [ 
-        {
-          "@id": `${baseUrl}/${req.params.account}#this`
-        }
-      ];
 
       var targetPath = `collections/${req.params.collection}/collection.jsonld`;
       var publishResult = await GstoreHelper.save(req.params.account, targetPath, expandedGraphs);
@@ -162,6 +180,23 @@ module.exports = function (router, protector) {
 
   router.get('/:account/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
 
+
+    if (req.params.account.length < 4) {
+      next('route');
+      return;
+    }
+
+    var resourceUri = UriUtils.createResourceUri([
+      req.params.account,
+      "collections",
+      req.params.collection
+    ]);
+
+    var template = require('../../common/queries/constructs/ld/construct-collection.sparql');
+    getLinkedData(req, res, next, resourceUri, template);
+    
+    /*
+
     var repo = req.params.account;
     var path = `collections/${req.params.collection}/collection.jsonld`;
 
@@ -173,15 +208,7 @@ module.exports = function (router, protector) {
       json: true
     };
 
-    request(options).pipe(res);
+    request(options).pipe(res);*/
 
-    /*
-    sparql.collections.getCollection(req.params.publisher, req.params.collection).then(function (result) {
-      if (result != null) {
-        res.status(200).send(result);
-      } else {
-        res.status(404).send('Unable to find the collection.');
-      }
-    });*/
   });
 }

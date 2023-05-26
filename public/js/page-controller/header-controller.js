@@ -5,6 +5,12 @@ function HeaderController($scope, $http, collectionManager) {
   $scope.auth = data.auth;
   $scope.authenticated = data.auth.authenticated;
 
+  $scope.accountName = null;
+  
+  if($scope.authenticated && $scope.auth.info != null) {
+    $scope.accountName = $scope.auth.info.accountName;
+  }
+
   // Check for cookie settings
   $scope.databusCookieConsentKey = 'databus_cookie_consent';
   let cookieConsent = window.localStorage.getItem($scope.databusCookieConsentKey);

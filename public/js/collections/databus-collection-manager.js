@@ -64,12 +64,21 @@ class DatabusCollectionManager {
 
     var self = this;
 
-    this.interval(function() {
+    this.interval(function () {
       var storageHash = window.localStorage.getItem(`${self.storageKey}_hash`);
 
-      if(storageHash != self.currentHash) {
+      if (storageHash != self.currentHash) {
         self.local = JSON.parse(window.localStorage.getItem(self.storageKey));
         self.currentHash = storageHash;
+
+        for (let identifier in self.local) {
+          if (identifier === undefined || identifier === "undefined") {
+            delete (self.local[identifier]);
+          } else {
+            //enable Collection Utils for all collections in local storage
+            self.local[identifier] = new DatabusCollectionWrapper(self.local[identifier]);
+          }
+        }
 
         if (self.onCollectionChangedInDifferentTab != null) {
           self.onCollectionChangedInDifferentTab();
@@ -132,6 +141,7 @@ class DatabusCollectionManager {
         // We don't have a working copy in our local storage yet, time to create an identifier!
         let identifier = DatabusCollectionUtils.uuidv4();
         remoteCollections[uri].uuid = identifier;
+        remoteCollections[uri].isHidden = remoteCollections[uri].issued == undefined;
         // Create two entries, one in the local map, one in the remote map
         this.local[identifier] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri]);
         this.remote[identifier] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri]);
@@ -162,7 +172,7 @@ class DatabusCollectionManager {
       this.selectFirstOrCreate();
     }
 
-    QueryNode.assignParents(this.activeCollection.content.root);
+    // QueryNode.assignParents(this.activeCollection.content.root);
 
     // Save locally in case we created any local working copies
     this.saveLocally();
@@ -171,7 +181,7 @@ class DatabusCollectionManager {
       this.initialized();
     }
 
-    
+
   }
 
 
@@ -234,7 +244,7 @@ class DatabusCollectionManager {
     this.convertCollectionContentToTree(uuid);
 
     let collection = this.local[uuid];
-    QueryNode.assignParents(collection.content.root);
+    // QueryNode.assignParents(collection.content.root);
 
     this.sessionInfo.activeCollectionIdentifier = uuid;
     window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
@@ -339,7 +349,7 @@ class DatabusCollectionManager {
     }
 
 
-    collection.label = `Snapshot of ${source.label}`;
+    collection.title = `Snapshot of ${source.label}`;
     collection.description = source.description;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
@@ -378,15 +388,25 @@ class DatabusCollectionManager {
 
     let remoteCollection = this.remote[localCollection.uuid];
 
+    if (remoteCollection.isHidden != localCollection.isHidden) {
+      return true;
+    }
+
+    if (localCollection.title !== remoteCollection.title) {
+      return true;
+    }
+
+    if (localCollection.description !== remoteCollection.description) {
+      return true;
+    }
+
     let serializedRemoteContent = DatabusCollectionUtils.serialize(remoteCollection.content);
     let serializedLocalContent = DatabusCollectionUtils.serialize(localCollection.content);
 
-    return localCollection.label !== remoteCollection.label
-      || localCollection.description !== remoteCollection.description
-      || serializedLocalContent !== serializedRemoteContent;
+    return serializedLocalContent !== serializedRemoteContent;
   }
 
-  discardLocalChanges(remoteCollections) {
+  discardLocalChanges() {
 
     if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
@@ -402,14 +422,13 @@ class DatabusCollectionManager {
       return;
     }
 
-    if (remoteCollections != undefined && remoteCollections[uri] != undefined) {
-      this.remote[uuid] = DatabusCollectionUtils.createCleanCopy(remoteCollections[uri])
-    }
-
-    this.local[uuid].label = this.remote[uuid].label;
+    this.local[uuid].title = this.remote[uuid].title;
+    this.local[uuid].abstract = this.remote[uuid].abstract;
     this.local[uuid].description = this.remote[uuid].description;
     this.local[uuid].content = DatabusCollectionUtils.createCleanCopy(this.remote[uuid].content);
     this.local[uuid].hasLocalChanges = this.hasLocalChanges(this.local[uuid]);
+
+    this.saveLocally();
   }
 
   addElement(elementQuery) {
@@ -432,17 +451,17 @@ class DatabusCollectionManager {
 
 
 
-  createNew(label, description, callback) {
+  createNew(title, description, callback) {
     if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
     let reg = /^\w+[\w\s]*$/;
 
-    if (label === undefined || !reg.test(label)) {
+    if (title === undefined || !reg.test(title)) {
       callback(false);
       return;
     }
 
-    let collection = DatabusCollectionWrapper.createNew(label, description, DATABUS_RESOURCE_BASE_URL);
+    let collection = DatabusCollectionWrapper.createNew(title, description, DATABUS_RESOURCE_BASE_URL);
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
     this.setActive(collection.uuid);
@@ -469,7 +488,7 @@ class DatabusCollectionManager {
 
     let collection = DatabusCollectionWrapper.createNew();
     collection.content = DatabusCollectionUtils.createCleanCopy(source.content);
-    collection.label = `Copy of ${source.label}`;
+    collection.title = `Copy of ${source.title}`;
     collection.abstract = source.abstract;
     collection.description = source.description;
 
@@ -482,12 +501,9 @@ class DatabusCollectionManager {
 
 
 
-  deleteLocally(callback) {
+  deleteLocally() {
     delete this.local[this.activeCollection.uuid];
-    this.selectFirstOrCreate();
     this.saveLocally();
-
-    callback({ code: 909 });
   }
 
   /**
@@ -523,12 +539,10 @@ class DatabusCollectionManager {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
-
       this.saveLocally();
 
       // Keep the identifier of the collection we want to push
       var pushIdentifier = this.activeCollection.uuid;
-
       var publisherUri = `${DATABUS_RESOURCE_BASE_URL}/${username}#this`;
 
       var ignoreKeys = [
@@ -545,7 +559,6 @@ class DatabusCollectionManager {
       var contentString = encodeURIComponent(DatabusCollectionUtils.serialize(this.activeCollection.content, ignoreKeys));
 
       // Format collection as json-ld
-
       let collectionJsonLd = {
         "@context": JSONLD_CONTEXT,
         "@graph": [
@@ -556,14 +569,12 @@ class DatabusCollectionManager {
             "title": this.activeCollection.label,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "dataid:content": contentString
+            "dataid:content": contentString,
           }
         ]
       };
 
-      if (this.activeCollection.issued != undefined) {
-        collectionJsonLd["@graph"][0].issued = this.activeCollection.issued;
-      } else {
+      if (!this.activeCollection.isHidden) {
         collectionJsonLd["@graph"][0].issued = Date.now().toString();
       }
 
@@ -571,7 +582,26 @@ class DatabusCollectionManager {
 
       try {
 
-        response = await this.http.put(collectionUri, collectionJsonLd);
+        var relativeUri = new URL(collectionUri).pathname;
+        response = await this.http.put(relativeUri, collectionJsonLd);
+
+      } catch (errResponse) {
+        console.log(errResponse);
+        throw { code: errResponse.data.code };
+      }
+
+      try {
+        var relativeUri = new URL(collectionUri).pathname;
+
+        var response = await this.http({
+          method: 'GET',
+          url: relativeUri,
+          headers: {
+            'Accept': 'application/ld+json',
+            'X-Jsonld-Formatting': 'compact'
+          }
+        });
+
 
       } catch (errResponse) {
         console.log(errResponse);
@@ -579,7 +609,7 @@ class DatabusCollectionManager {
       }
 
       // Get the remotely saved collection from the payload
-      var remoteGraph = response.data.data[0];
+      var remoteGraph = response.data;
 
       // If the user changed the active collection in the meantime throw an error. This
       // should be prevented by a loading dialog
@@ -587,16 +617,22 @@ class DatabusCollectionManager {
         throw { code: DatabusResponse.COLLECTION_INVALID_ARGUMENT };
       }
 
+      this.local[pushIdentifier].uri = remoteGraph['@id'];
+      this.local[pushIdentifier].hasLocalChanges = false;
+      this.local[pushIdentifier].modified = remoteGraph.modified;
+      this.local[pushIdentifier].issued = remoteGraph.issued;
+      // this.local[pushIdentifier].created = remoteGraph.created;
+
       //Update remote data
       this.remote[pushIdentifier] = JSON.parse(DatabusCollectionUtils.serialize(this.activeCollection));
 
       // Update the local data
-      this.local[pushIdentifier].uri = remoteGraph['@id'];
-      this.local[pushIdentifier].hasLocalChanges = this.hasLocalChanges(this.local[pushIdentifier]);
-      // this.local[pushIdentifier].modified = this.activeCollection.modified;
-      // this.local[pushIdentifier].issued = this.activeCollection.issued;
-      // this.local[pushIdentifier].created = this.activeCollection.created;
-      // this.local[pushIdentifier].files = this.activeCollection.files;
+      // this.local[pushIdentifier].uri = remoteGraph['@id'];
+      //this.local[pushIdentifier].hasLocalChanges = this.hasLocalChanges(this.local[pushIdentifier]);
+      //this.local[pushIdentifier].modified = this.activeCollection.modified;
+      //this.local[pushIdentifier].issued = this.activeCollection.issued;
+      //this.local[pushIdentifier].created = this.activeCollection.created;
+
       this.saveLocally();
 
       return response.data;
@@ -611,7 +647,6 @@ class DatabusCollectionManager {
     }
   }
 
-
   async updateCollection(username, collectionTag) {
 
     if (this.activeCollection.uri != null) {
@@ -624,54 +659,11 @@ class DatabusCollectionManager {
           throw "A collection with the specifed URI already exists.";
         }
       }
-      
+
       return await this.changeCollection(username, collectionUri);
     }
-    
-
   }
 
-  async unHideCollection(username, collectionTag) {
-    try {
-      if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
-
-      var collectionUri = `${DATABUS_RESOURCE_BASE_URL}/${username}/collections/${collectionTag}`;
-      var updateResponse = await this.changeCollection(username, collectionUri, null, true);
-      var updatedCollection = this.getCollectionByUri(updateResponse.data[0]['@id']);
-
-      this.remote[updatedCollection.uuid].issued = updateResponse.data[0]['http://purl.org/dc/terms/issued'][0]['@value'];
-      this.local[updatedCollection.uuid].issued = updateResponse.data[0]['http://purl.org/dc/terms/issued'][0]['@value'];
-
-      this.saveLocally();
-      return { code: updateResponse.code };
-    } catch (err) {
-      throw {
-        code: err.data !== undefined && err.data.code !== undefined ? err.data.code :
-          DatabusResponse.COLLECTION_UPDATE_ERROR
-      };
-    }
-  }
-
-  async hideCollection(username, collectionTag) {
-    try {
-      if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
-
-      var collectionUri = `${DATABUS_RESOURCE_BASE_URL}/${username}/collections/${collectionTag}`;
-      var updateResponse = await this.changeCollection(username, collectionUri);
-      var updatedCollection = this.getCollectionByUri(updateResponse.data[0]['@id']);
-
-      delete this.remote[updatedCollection.uuid].issued;
-      delete this.local[updatedCollection.uuid].issued;
-
-      this.saveLocally();
-      return { code: updateResponse.code };
-    } catch (err) {
-      throw {
-        code: err.data !== undefined && err.data.code !== undefined ? err.data.code :
-          DatabusResponse.COLLECTION_UPDATE_ERROR
-      };
-    }
-  }
 
   /**
    * Fetches the remote data of the current collection and assigns the field values to the local copy
@@ -705,6 +697,8 @@ class DatabusCollectionManager {
     try {
       if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
 
+
+
       // Keep the identifier of the collection we want to push
       let deleteIdentifier = this.activeCollection.uuid;
 
@@ -713,9 +707,6 @@ class DatabusCollectionManager {
         this.saveLocally();
         return { code: DatabusResponse.COLLECTION_DELETED };
       }
-
-      let uri = this.activeCollection.uri;
-      let tag = DatabusCollectionUtils.uriToName(uri);
 
       var targetUri = `/${username}/collections/${collectionTag}`;
 
@@ -732,33 +723,29 @@ class DatabusCollectionManager {
   }
 
   /**
-   revert(username, callback) {
- 
-    var self = this;
- 
-    var req = {
-      method: 'GET',
-      url: this.activeCollection.uri,
-      headers: {
-        'Accept': 'application/json'
-      }
-    };
- 
-    this.http(req)
-      .then(function(response) {
- 
-      self.activeCollection.groups = response.data.groups;
-      self.activeCollection.customQueries = response.data.customQueries;
-      self.activeCollection.label = response.data.label;
-      self.activeCollection.descrtiption = response.data.description;
-      self.activeCollection.published = true;
- 
-      callback({ code : 908 });
-    }, function(error) {
-      console.log(error);
-    });
- 
-  }*/
+   * Deletes the active collection from the server but keeps the local storage entry
+   */
+  async unpublishActiveCollection() {
+
+    if (!this.isInitialized) throw "Databus-Collection-Manager is not initialized.";
+
+    if (this.activeCollection.isDraft) {
+      throw "Cannot unpublish an unpublished draft";
+    }
+
+    // Keep the identifier of the collection we want to push
+    let uuid = this.activeCollection.uuid;
+    let identifier = DatabusUtils.uriToName(this.activeCollection.uri);
+
+    var targetUri = `/${this.accountName}/collections/${identifier}`;
+    await this.http.delete(targetUri);
+
+    delete this.remote[uuid];
+    delete this.local[uuid].uri;
+    delete this.local[uuid].issued;
+    this.saveLocally();
+  }
 }
+
 
 

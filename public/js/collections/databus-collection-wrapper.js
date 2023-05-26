@@ -66,10 +66,10 @@ class DatabusCollectionWrapper {
   }
 
 
-  static createNew(label, description, source) {
+  static createNew(title, description, source) {
     var data = {};
     data.uuid = DatabusCollectionUtils.uuidv4();
-    data.label = label;
+    data.title = title;
     data.description = description;
     data.abstract = description;
     data.content = {};
@@ -104,7 +104,7 @@ class DatabusCollectionWrapper {
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(angular.toJson(this));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", this.label + ".json");
+    downloadAnchorNode.setAttribute("download", this.title + ".json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
@@ -118,6 +118,10 @@ class DatabusCollectionWrapper {
 
   removeNodeByUri(uri) {
     QueryNode.removeChildByUri(this.content.root, uri);
+  }
+
+  getParentNode(node) {
+    return QueryNode.findParentNodeRecursive(this.content.root, node);
   }
 
   removeGroupNode(groupNode) {
@@ -140,7 +144,7 @@ class DatabusCollectionWrapper {
   }
 
   hasArtifact(artifactUri) {
-    var groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+    var groupUri = DatabusUtils.navigateUp(artifactUri);
 
     var group = this.findGroup(groupUri);
 
@@ -164,10 +168,10 @@ class DatabusCollectionWrapper {
 
     if(group == undefined) {
 
-      var publisherUri = DatabusCollectionUtils.navigateUp(groupUri);
+      var publisherUri = DatabusUtils.navigateUp(groupUri);
 
-      var groupLabel = DatabusCollectionUtils.uriToName(groupUri);
-      var publisherLabel = DatabusCollectionUtils.uriToName(publisherUri);
+      var groupLabel = DatabusUtils.uriToName(groupUri);
+      var publisherLabel = DatabusUtils.uriToName(publisherUri);
 
       group = {};
       group.uri = groupUri;
@@ -194,7 +198,7 @@ class DatabusCollectionWrapper {
    */
   addArtifactNode(artifactUri, artifactLabel, settings) {
 
-    var groupUri = DatabusCollectionUtils.navigateUp(artifactUri);
+    var groupUri = DatabusUtils.navigateUp(artifactUri);
     var group = this.addGroupNode(groupUri, [ 
       {
         facet: "http://purl.org/dc/terms/hasVersion",

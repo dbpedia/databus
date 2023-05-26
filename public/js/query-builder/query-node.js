@@ -90,7 +90,7 @@ class QueryNode {
    */
   addChild(node) {
     this.childNodes.push(node);
-    node.parent = this;
+    // node.parent = this;
   }
 
   static removeChildByUri(node, uri) {
@@ -173,16 +173,16 @@ class QueryNode {
   }
 
   static serialize(queryNode) {
-    QueryNode.clearParents(queryNode);
+    // QueryNode.clearParents(queryNode);
     var result = JSON.stringify(queryNode);
-    QueryNode.assignParents(queryNode);
+    // QueryNode.assignParents(queryNode);
     return result;
   }
 
 
   static addChild(node, child) {
     node.childNodes.push(child);
-    child.parent = node;
+    // child.parent = node;
   }
 
   static mergeAddChild(root, child) {
@@ -202,6 +202,7 @@ class QueryNode {
     }
   }
 
+  /*
   static clearParents(queryNode) {
     queryNode.parent = null;
     for(var i = 0; i < queryNode.childNodes.length; i++) {
@@ -215,12 +216,40 @@ class QueryNode {
       QueryNode.assignParents(queryNode.childNodes[i]);
     }
   }
+*/
 
   static expandAll(queryNode) {
     queryNode.expanded = true;
     for(var i = 0; i < queryNode.childNodes.length; i++) {
       QueryNode.expandAll(queryNode.childNodes[i]);
     }
+  }
+
+  static findParentNodeRecursive(parent, node) {
+
+    if(node.uri == null) {
+      return null;
+    }
+    
+    if(parent.childNodes == null || parent.childNodes.length == 0) {
+      return null;
+    }
+
+    for(var child of parent.childNodes) {
+      if(child.uri == node.uri) {
+        return parent;
+      }
+    }     
+    
+    for(var child of parent.childNodes) {
+      var recParent = QueryNode.findParentNodeRecursive(child, node);
+
+      if(recParent != null) {
+        return recParent;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -231,7 +260,7 @@ class QueryNode {
     var tmpNode = new QueryNode(obj.uri, obj.property);
     tmpNode.childNodes = obj.childNodes;
     tmpNode.facetSettings = obj.facetSettings;
-    tmpNode.parent = obj.parent;
+    // tmpNode.parent = obj.parent;
     tmpNode.files = obj.files;
     return tmpNode;
   }
@@ -239,7 +268,7 @@ class QueryNode {
   static createSubTree(obj) {
     var node = QueryNode.createFrom(obj);
     node.facetSettings = node.createFullFacetSettings();
-    node.parent = null;
+    // node.parent = null;
     return node;
   }
 

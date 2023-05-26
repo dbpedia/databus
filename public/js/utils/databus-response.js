@@ -46,8 +46,8 @@ DatabusResponse.Message =
   4000 : "Invalid collection id. Please use only lower case letters, numbers, underscores or dashes.",
   4001 : "Saving the collection failed. Please try again later.",
   4002 : "Failed to create the requested identifiers.",
-  4010 : "The label field is required.",
-  4011 : "Please enter at most 200 characters. The label should not contain any special characters except '(' and ')'.",
+  4010 : "The title field is required.",
+  4011 : "Please enter at most 200 characters. The title should not contain any special characters except '(' and ')'.",
   4013 : "Please enter at least 50 and at most 500 characters.",
   4014 : "The description field is required",
   4015 : "Please enter at least 50 characters.",
@@ -57,8 +57,6 @@ DatabusResponse.Message =
   4033 : "No graph with person data found.",
   4016 : "Collection JSON import failed."
 };
-
-
 
 if(typeof module === "object" && module && module.exports)
    module.exports = DatabusResponse;

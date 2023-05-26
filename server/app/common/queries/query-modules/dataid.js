@@ -207,6 +207,43 @@ instance.getArtifactsByAccount = async function (accountName) {
 }
 
 /**
+ * Retrieves all artifacts by account name
+ * @param {*} accountName 
+ */
+ instance.getVersionsByAccount = async function (accountName) {
+  try {
+    // Get a sanitized account uri
+    let accountUri = UriUtils.createResourceUri([accountName]);
+
+    if (accountUri == null) {
+      return null; // TODO throw error?
+    }
+
+    // Create the query and insert the account uri
+    let queryOptions = { ACCOUNT_URI: accountUri };
+    let query = require('../sparql/get-versions-by-account.sparql');
+
+    query = exec.formatQuery(query, queryOptions);
+    // Execute the query to get a list of bindings
+    let bindings = await exec.executeSelect(query);
+
+    var result = [];
+
+    for (let i in bindings) {
+      let binding = bindings[i];
+      result.push(binding.version);
+    }
+
+    // return the result object
+    return result;
+  } catch (err) {
+    // log an error if there is one and return null;
+    console.log(err);
+    return null;
+  }
+}
+
+/**
  * Get some basic information on versions of an artifact with artifactUri
  */
 instance.getVersionsByArtifact = async function (account, group, artifact) {

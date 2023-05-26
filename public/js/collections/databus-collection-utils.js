@@ -1,29 +1,62 @@
+
 class DatabusCollectionUtils {
+
+  static CEDIT_IDENTIFIER_REGEX = /^[a-z0-9_-]{3,50}$/;
+  static CEDIT_TITLE_REGEX = /^[A-Za-z0-9\s_()\.\,\-]{3,200}$/;
+  static CEDIT_ABSTRACT_REGEX = /^[\x00-\xFF\n]{10,}$/;
+  static CEDIT_DESCRIPTION_REGEX = /^[\x00-\xFF\n]{10,}$/;
+
+  static formatMessageWithRegex(message, regex) {
+    var regexString = regex.source;
+    return message.replace("#REGEX#", regexString);
+  }
 
   static checkCollectionForm(form, collection) {
 
     var hasError = false;
 
-    if (!this.checkLabel(collection.label, 1, 200)) {
-      hasError = true;
-      if (collection.label == undefined || collection.label == "") {
-        form.label.error = DatabusResponse.COLLECTION_MISSING_LABEL;
-      } else {
-        form.label.error = DatabusResponse.COLLECTION_INVALID_LABEL;
+    form.identifier.error = null;
+    form.title.error = null;
+    form.abstract.error = null;
+    form.description.error = null;
+
+    if (collection.isDraft) {
+
+      // Check the identifier
+      if (!this.CEDIT_IDENTIFIER_REGEX.test(form.identifier.value)) {
+        hasError = true;
+        form.identifier.error = this.formatMessageWithRegex(
+          DatabusMessages.CEDIT_INVALID_IDENTIFIER, 
+          this.CEDIT_IDENTIFIER_REGEX
+        );
       }
-    } else {
-      form.label.error = null;
     }
 
-    if (!this.checkText(collection.description, 50, 0)) {
+    // Check the title
+    if (!this.CEDIT_TITLE_REGEX.test(collection.title)) {
       hasError = true;
-      if (collection.description == undefined || collection.description == "") {
-        form.description.error = DatabusResponse.COLLECTION_MISSING_DESCRIPTION;
-      } else {
-        form.description.error = DatabusResponse.COLLECTION_INVALID_DESCRIPTION;
-      }
-    } else {
-      form.description.error = null;
+      form.title.error = this.formatMessageWithRegex(
+        DatabusMessages.CEDIT_INVALID_TITLE, 
+        this.CEDIT_TITLE_REGEX
+      );
+    }
+
+    // Check the abstract
+    if (!this.CEDIT_ABSTRACT_REGEX.test(collection.abstract)) {
+      hasError = true;
+      form.abstract.error = this.formatMessageWithRegex(
+        DatabusMessages.CEDIT_INVALID_ABSTRACT, 
+        this.CEDIT_ABSTRACT_REGEX
+      );
+    }
+
+    // Check the description
+    if (!this.CEDIT_DESCRIPTION_REGEX.test(collection.description)) {
+      hasError = true;
+      form.description.error = this.formatMessageWithRegex(
+        DatabusMessages.CEDIT_INVALID_DESCRIPTION, 
+        this.CEDIT_DESCRIPTION_REGEX
+      );
     }
 
     return !hasError;
@@ -33,8 +66,8 @@ class DatabusCollectionUtils {
 
 
   static checkIdentifier(identifier) {
-    var identifierRegex = /^[a-z0-9_-]+$/;
-    return this.checkField(identifier, identifierRegex, 1, 50);
+    var identifierRegex = /^[a-z0-9_-]{3, 50}$/;
+    return this.checkField(identifier, identifierRegex, 3, 50);
   }
 
   static checkText(value, min, max) {
@@ -97,37 +130,6 @@ class DatabusCollectionUtils {
     });
   }
 
-  static uriToName(uri) {
-    if (uri == null) {
-      return null;
-    }
-
-    var result = uri.substr(uri.lastIndexOf('/') + 1);
-    result = result.substr(result.lastIndexOf('#') + 1);
-    return result;
-  }
-
-  static navigateUp(uri) {
-    return uri.substr(0, uri.lastIndexOf('/'));
-  }
-
-  static copyStringToClipboard(str) {
-    // Create new element
-    var el = document.createElement('textarea');
-    // Set value (string to be copied)
-    el.value = str;
-    // Set non-editable to avoid focus and move outside of view
-    el.setAttribute('readonly', '');
-    el.style = { position: 'absolute', left: '-9999px' };
-    document.body.appendChild(el);
-    // Select text inside element
-    el.select();
-    // Copy text to clipboard
-    document.execCommand('copy');
-    // Remove temporary element
-    document.body.removeChild(el);
-  }
-
   static createQueryString(collection) {
     var wrapper = new DatabusCollectionWrapper(collection);
     return wrapper.createQuery();
@@ -144,13 +146,13 @@ class DatabusCollectionUtils {
   static async getCollectionStatistics($http, collection) {
 
     var query = QueryBuilder.build({
-      node : collection.content.root,
-      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      node: collection.content.root,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
       template: QueryTemplates.COLLECTION_STATISTICS_TEMPLATE
     });
 
     if (query == null) return null;
-    
+
     var req = {
       method: 'POST',
       url: DATABUS_SPARQL_ENDPOINT_URL,
@@ -163,7 +165,7 @@ class DatabusCollectionUtils {
     var response = await $http(req);
     var entries = response.data.results.bindings;
 
-    entries = entries.filter(function(e) {
+    entries = entries.filter(function (e) {
       return e.file != undefined;
     });
 
@@ -196,13 +198,13 @@ class DatabusCollectionUtils {
 
   static async getCollectionFiles($http, collection) {
 
-    if(!collection.hasContent) {
+    if (!collection.hasContent) {
       return [];
     }
-    
+
     let query = QueryBuilder.build({
-      node : collection.content.root,
-      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      node: collection.content.root,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
       template: QueryTemplates.COLLECTION_FILES_TEMPLATE
     });
 
@@ -223,7 +225,7 @@ class DatabusCollectionUtils {
     }
 
     let result = [];
-    
+
     for (let i in entries) {
       let element = DatabusCollectionUtils.reduceBinding(entries[i]);
       result.push(element);
@@ -235,8 +237,8 @@ class DatabusCollectionUtils {
   static async getCollectionFileURLs($http, collection) {
 
     let query = QueryBuilder.build({
-      node : collection.content.root,
-      resourceBaseUrl : DATABUS_RESOURCE_BASE_URL,
+      node: collection.content.root,
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
       template: QueryTemplates.DEFAULT_FILE_TEMPLATE
     });
 
@@ -257,7 +259,7 @@ class DatabusCollectionUtils {
     }
 
     let result = "";
-    
+
     for (let i in entries) {
       let element = DatabusCollectionUtils.reduceBinding(entries[i]);
       console.log(element);
@@ -296,7 +298,7 @@ class DatabusCollectionUtils {
     });
   }
 
-  static cyrb53Hash (str, seed = 0) {
+  static cyrb53Hash(str, seed = 0) {
     let h1 = 0xdeadbeef ^ seed,
       h2 = 0x41c6ce57 ^ seed;
     for (let i = 0, ch; i < str.length; i++) {
@@ -304,10 +306,10 @@ class DatabusCollectionUtils {
       h1 = Math.imul(h1 ^ ch, 2654435761);
       h2 = Math.imul(h2 ^ ch, 1597334677);
     }
-    
+
     h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
     h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    
+
     return 4294967296 * (2097151 & h2) + (h1 >>> 0);
   };
 

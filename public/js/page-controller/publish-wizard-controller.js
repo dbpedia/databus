@@ -1,3 +1,10 @@
+
+if (typeof require !== 'undefined') {
+  const PublishSession = require("../publish/publish-session");
+  const JsonldUtils = require("../utils/jsonld-utils");
+  const DatabusUris = require("../utils/databus-uris");
+}
+
 // Controller for the header section
 function PublishWizardController($scope, $http, focus, $q) {
 
@@ -14,6 +21,8 @@ function PublishWizardController($scope, $http, focus, $q) {
     window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
   }
 
+  $scope.utils = new DatabusWebappUtils($scope);
+
   $scope.createAccount = function () {
     window.location = '/app/account';
   }
@@ -27,7 +36,7 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.nerdMode = {};
   $scope.nerdMode.enabled = false;
   $scope.nerdMode.customJson = "";
-  $scope.nerdMode.logLevelOptions = [ 'error', 'info', 'debug' ];
+  $scope.nerdMode.logLevelOptions = ['error', 'info', 'debug'];
   $scope.nerdMode.logLevel = 'error';
 
   // controller does not work without authentication
@@ -61,11 +70,11 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
 
     // Try to resume the session with the account data
-    var session = PublishSession.resume(accountData);
+    var session = PublishSession.resume($http, accountData);
 
     // Resume failed -> start new session
     if (session == null) {
-      session = new PublishSession(null, accountData);
+      session = new PublishSession($http, null, accountData);
     }
 
     $scope.session = session;
@@ -138,7 +147,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     $scope.session.formData.version.isConfigDirty = true;
   }
 
-  $scope.hasError = function(errorList, error) {
+  $scope.hasError = function (errorList, error) {
     return errorList.includes(error);
   }
 
@@ -175,7 +184,7 @@ function PublishWizardController($scope, $http, focus, $q) {
     });
   }
 
-  $scope.customPublish = async function() {
+  $scope.customPublish = async function () {
     var options = {}
     options.headers = {
       'Accept': 'application/json, text/plain, */*',

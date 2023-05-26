@@ -168,7 +168,7 @@ function validateDatasetUri(dataidGraphs, accountUri, logger) {
 
 async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
-  dataidGraphs = await jsonld.flatten(dataidGraphs);
+  // dataidGraphs = await jsonld.flatten(dataidGraphs);
   // Fetch important uris
   var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
@@ -205,7 +205,9 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
     logger.debug(versionGraphUri, `Generating signature.`, null);
     generatingSignature = true;
     proofGraph = signer.createProof(dataidGraphs);
+
     versionGraph[DatabusUris.SEC_PROOF] = [proofGraph];
+
     dataidGraphs = await jsonld.flatten(dataidGraphs);
   }
 
@@ -315,6 +317,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     }
 
     logger.debug(versionGraphUri, `SHACL validation successful`, shaclResult);
+    dataidGraphs = await jsonld.flatten(dataidGraphs);
     validationCode = await createOrValidateSignature(dataidGraphs, accountUri, logger);
 
     if (validationCode != 200) {

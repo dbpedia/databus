@@ -35,7 +35,7 @@ function FileBrowserController($http, $scope) {
     var value = binding[column.field].value;
 
     if(column.uriToName) {
-      value = DatabusCollectionUtils.uriToName(value);
+      value = DatabusUtils.uriToName(value);
     }
 
 

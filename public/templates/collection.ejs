@@ -13,8 +13,6 @@
             <uri-breadcrumbs class="header-breadcrumbs" uri="collection.uri"></uri-breadcrumbs>
           </div>
         </div>
-
-        
       </div>
     </div>
     <div class="open-beta">Open Beta</div>
@@ -44,6 +42,26 @@
         </div>
         </div>
         <div style="flex: 1;"></div>
+        
+      </div>
+    </div>
+  </div>
+ 
+  <div class="section" style="min-height: 700px;">
+   
+    <!-- DATA-->
+    <div class="container" ng-if="activeTab == 0">
+     
+      <div style="display: flex; justify-content: flex-end; margin-bottom: .5em;">
+        <div ng-if="isOwn" class="button is-collection" ng-click="editCollection()" style="margin-right: 0.5em">
+          <databus-icon class="is-white" color="'white'" shape="'edit-thick'" size="16" style="margin-right: 8px;">
+          </databus-icon>
+          Edit
+        </div>
+
+        <div class="button" ng-click="bashScriptToClipboard()" style="margin-right: 0.5em">
+          Copy Bash Script to Clipboard
+        </div>
         <div class="control">
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
@@ -54,7 +72,7 @@
                 </span>
               </a>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial; padding-top: 0.5em">
               <div class="dropdown-content">
                 <a href="#" class="dropdown-item" ng-click="queryToClipboard()">
                   Copy Query to Clipboard
@@ -74,19 +92,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <div class="section" style="min-height: 700px;">
-   
-    <!-- DATA-->
-    <div class="container" ng-if="activeTab == 0">
-     
-      <div style="display: flex; justify-content: flex-end; margin-bottom: .5em;">
-        <div class="button" ng-click="bashScriptToClipboard()">
-          Copy Bash Script to Clipboard
         </div>
       </div>
 

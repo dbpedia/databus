@@ -1,5 +1,11 @@
+// Fake includes for syntax highlighting
+if (typeof require !== 'undefined') {
+  const JsonldUtils = require("../utils/jsonld-utils");
+  const DatabusUtils = require("../utils/databus-utils");
+  const QueryNode = require("../query-builder/query-node");
+}
 
-function VersionPageController($scope, $http, $sce, collectionManager) {
+function VersionPageController($scope, $http, $sce, $location, collectionManager) {
 
   // TODO: Change this hacky BS!
   setTimeout(function () {
@@ -8,7 +14,6 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
       $(dropdown).removeClass("is-active");
       e.stopPropagation();
     });
-
 
     $("body").click(function () {
       $(".dropdown").removeClass("is-active");
@@ -22,18 +27,11 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   }, 500);
 
 
+  $scope.navigation = new TabNavigation($scope, $location, [
+    '', 'mods', 'edit'
+  ]);
 
-  /*
-  angular.element(function () {
-    $('.sliderboy').slick({
-      slidesToShow: 3,
-      slidesToScroll: 3,
-      infinite: false,
-      dots: true,
-      prevArrow: '<svg class="slick-prev" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M20 .755l-14.374 11.245 14.374 11.219-.619.781-15.381-12 15.391-12 .609.755z"/></svg>',
-      nextArrow: '<svg class="slick-next" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M4 .755l14.374 11.245-14.374 11.219.619.781 15.381-12-15.391-12-.609.755z"/></svg>',
-    });
-  });*/
+  $scope.utils = new DatabusWebappUtils($scope);
 
   $scope.tabs = {};
   $scope.tabs.activeTab = 0;
@@ -161,9 +159,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
         $scope.formData.version.abstract);
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
         $scope.formData.version.description);
-
       JsonldUtils.setLink(versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
-
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
         $scope.formData.version.attribution);
 
@@ -172,10 +168,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
           $scope.formData.version.wasDerivedFrom);
       }
 
-
       var relativeUri = new URL($scope.version.uri).pathname;
-
-      console.log(graphs);
       var response = await $http.put(relativeUri, graphs);
 
       if (response.status == 200) {
@@ -215,7 +208,7 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   $scope.artifactNode = new QueryNode($scope.version.artifact, 'dataid:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.version.name, true);
 
-  $scope.groupNode = new QueryNode(DatabusCollectionUtils.navigateUp($scope.version.artifact), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.version.artifact), 'dataid:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};
@@ -265,18 +258,6 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
     $scope.hideCollectionModal();
   };
 
-  $scope.formatUploadSize = function (size) {
-    return DatabusUtils.formatFileSize(size);
-  };
-
-  $scope.formatDate = function (date) {
-    return moment(date).format('MMM Do YYYY');
-  };
-
-  $scope.formatId = function (id) {
-    return DatabusCollectionUtils.formatId(id);
-  };
-
   $scope.addQueryToCollection = function () {
 
     if ($scope.collectionManager.activeCollection == null) {
@@ -295,11 +276,10 @@ function VersionPageController($scope, $http, $sce, collectionManager) {
   }
 
   $scope.formatModFile = function (uri) {
-    return DatabusCollectionUtils.uriToName(uri);
+    return DatabusUtils.uriToName(uri);
   }
 
   $scope.markdownToHtml = function (markdown) {
-
     var converter = window.markdownit();
     return $sce.trustAsHtml(converter.render(markdown));
   };

@@ -7,15 +7,19 @@ class QueryBuilder {
 
   createQuery(node, template, resourceBaseUrl) {
 
+    /*
     console.log(typeof QueryNode);
 
+    */
+
     if (typeof QueryNode !== 'function') {
-      require("./query-node").assignParents(node);
+      this.getParent = require("./query-node").findParentNodeRecursive;
     } else {
-      QueryNode.assignParents(node);
+      this.getParent = QueryNode.findParentNodeRecursive;
     }
 
     this.result = '';
+    this.root = node;
     this.cvCounter = 0;
     this.resourceBaseUrl = resourceBaseUrl;
     this.select = template.select;
@@ -378,7 +382,7 @@ class QueryBuilder {
       facetUris.push(facetUri);
     }
 
-    var parentNode = node.parent;
+    var parentNode = this.getParent(this.root, node); // node.parent;
 
     while (parentNode != undefined) {
 
@@ -394,7 +398,7 @@ class QueryBuilder {
         facetUris.push(facetUri);
       }
 
-      parentNode = parentNode.parent;
+      parentNode = this.getParent(this.root, parentNode); // parentNode.parent;
     }
 
     return facetUris;
@@ -412,7 +416,7 @@ class QueryBuilder {
       result.push(node.facetSettings[facetUri][i]);
     }
 
-    var parentNode = node.parent;
+    var parentNode = this.getParent(this.root, node); // node.parent;
 
     while (parentNode != undefined) {
 
@@ -431,7 +435,7 @@ class QueryBuilder {
         }
       }
 
-      parentNode = parentNode.parent;
+      parentNode = this.getParent(this.root, parentNode); //parentNode.parent;
     }
 
 

@@ -1,22 +1,32 @@
 var DEFAULT_IMAGE = "https://picsum.photos/id/223/320/320";
 
 // Controller for the header section
-function AccountPageController($scope, $http, $location) {
+function AccountPageController($scope, $http, $location, collectionManager) {
 
+  $scope.collectionManager = collectionManager;
 
 
   // Pick up the profile data
-  $scope.profileData = data.profile;
   $scope.auth = data.auth;
   $scope.location = $location;
+
+  $scope.profileData = data.profile;
 
   // Exit if there is no profile
   if ($scope.profileData == undefined) {
     return;
   }
 
-  // Initialize the user-internal search
-  var uriComponent = encodeURIComponent(`${DATABUS_RESOURCE_BASE_URL}/${$scope.profileData.accountName}`);
+  $scope.profileData.isOwn = $scope.auth.authenticated && $scope.auth.info.accountName == $scope.profileData.accountName;
+
+  // Create a tab navigation object for the tab navigation with locato
+  $scope.tabNavigation = new TabNavigation($scope, $location, [
+    'home', 'data', 'collections', 'settings'
+  ]);
+
+  // Make some util functions available in the template
+  $scope.utils = new DatabusWebappUtils($scope);
+
 
   $scope.dataSearchInput = '';
   $scope.dataSearchSettings = {
@@ -36,6 +46,7 @@ function AccountPageController($scope, $http, $location) {
     filter: `&publisher=${$scope.profileData.accountName}&publisherWeight=0&typeNameWeight=0`
   };
 
+  
   // Wait for additional artifact data to arrive
   $scope.publishedData = {};
   $scope.publishedData.isLoading = true;
@@ -60,10 +71,10 @@ function AccountPageController($scope, $http, $location) {
       }
 
       // Order by latest version date
-      $scope.recentUploads = $scope.publishedData.artifacts.filter(function(v) {
+      $scope.recentUploads = $scope.publishedData.artifacts.filter(function (v) {
         return v.latestVersionDate != null;
       });
-      $scope.recentUploads.sort(function(a,b){
+      $scope.recentUploads.sort(function (a, b) {
         return new Date(b.latestVersionDate) - new Date(a.latestVersionDate);
       });
 
@@ -100,15 +111,17 @@ function AccountPageController($scope, $http, $location) {
   $scope.collectionsData = {};
   $scope.collectionsData.isLoading = true;
 
-  $http.get(`/app/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
-    .then(function (response) {
+  if (!$scope.profileData.isOwn) {
+    $http.get(`/app/account/collections?account=${encodeURIComponent($scope.profileData.accountName)}`)
+      .then(function (response) {
 
-      $scope.collectionsData.collections = response.data;
-      $scope.collectionsData.isLoading = false;
-      $scope.refreshFeaturedContent();
-    }, function (err) {
-      console.log(err);
-    });
+        $scope.collectionsData.collections = response.data;
+        $scope.collectionsData.isLoading = false;
+        $scope.refreshFeaturedContent();
+      }, function (err) {
+        console.log(err);
+      });
+  }
 
   $scope.getImageUrl = function () {
     if ($scope.profileData.imageUrl == undefined) {
@@ -118,66 +131,54 @@ function AccountPageController($scope, $http, $location) {
     }
   }
 
-  $scope.uriToName = function (uri) { return DatabusUtils.uriToName(uri); }
+  /**
+   * COLLECTION FUNCTIONS 
+   */
 
-  $scope.formatDateFromNow = function (date) {
-    return moment(date).fromNow();
-  };
-
-  $scope.formatCollectionDateFromNow = function (longString) {
-    var number = new Number(longString);
-    var dateTime = new Date(number);
-    return moment(dateTime).fromNow();
-  };
-
-  $scope.formatDate = function (date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
-
-  // We have profile data in $scope.profileData!
-  $scope.profileData.isOwn = $scope.auth.authenticated && $scope.auth.info.accountName == $scope.profileData.accountName;
-
-  $scope.tabViewModel = {};
-  $scope.tabViewModel.activeTab = 0;
-  $scope.tabViewModel.tabs = []
-  $scope.tabViewModel.tabs.length = 4;
-
-
-
-
-  $scope.goToTab = function (value) {
-    $location.hash(value);
+  // Collection List Search
+  $scope.collectionSearch = {};
+  $scope.collectionSearch.sortVisible = false;
+  $scope.collectionSearch.sortProperty = 'title';
+  $scope.collectionSearch.sortProperties =  [ 
+    { key: 'title', label: 'Title' },
+    { key: 'issued', label: 'Issued Date' },
+  ];
+  $scope.collectionSearch.sortReverse = false;
+  $scope.collectionSearch.toggleSort = function(value) {
+    if($scope.collectionSearch.sortProperty == value) {
+      $scope.collectionSearch.sortReverse = !$scope.collectionSearch.sortReverse;
+    } else {
+      $scope.collectionSearch.sortProperty = value;
+    }
   }
 
-
-
-  $scope.$watch("location.hash()", function (newVal, oldVal) {
-
-    if (newVal == 'settings') {
-      $scope.tabViewModel.activeTab = 4;
-    }
-
-    if (newVal == 'collections') {
-      $scope.tabViewModel.activeTab = 2;
-    }
-
-    if (newVal == 'data') {
-      $scope.tabViewModel.activeTab = 1;
-    }
-
-    if (newVal == '') {
-      $scope.tabViewModel.activeTab = 0;
-    }
-
-  }, true);
-
-  var tabKeys = ['', 'data', 'collections', 'profile'];
-
-  for (var i = 0; i < tabKeys.length; i++) {
-    $scope.tabViewModel.tabs[i] = {};
-    $scope.tabViewModel.tabs[i].key = tabKeys[i];
-    $scope.tabViewModel.tabs[i].data = [];
+  /**
+   * Pencil icon for edit pressed
+   * @param {*} collection 
+   */
+  $scope.onEditCollectionClicked = function (collection) {
+    $scope.collectionManager.setActive(collection.uuid);
+    window.location.href = '/app/collection-editor';
   }
+
+  /**
+   * Create new collection
+   */
+  $scope.createNewCollection = function () {
+    $scope.collectionManager.createNew('New Collection', 'Replace this description with a description of your choice.',
+      function (success) {
+        window.location.href = '/app/collection-editor';
+      });
+  }
+
+  /**
+   * Create a copy of the clicked collection
+   */
+  $scope.createCopy = function(collection) {
+    $scope.collectionManager.createCopy(collection);
+    window.location.href = '/app/collection-editor';
+  }
+
 
   $scope.findFeaturedContent = function (uri) {
 
@@ -238,10 +239,5 @@ function AccountPageController($scope, $http, $location) {
       }
     }
   }
-
-  $scope.formatUploadSize = function (size) {
-    return DatabusUtils.formatFileSize(size);
-  };
-
 
 }

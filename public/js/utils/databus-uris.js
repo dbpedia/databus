@@ -55,6 +55,11 @@ class DatabusUris {
 
   // DATABUS
   static DATABUS_TRACTATE_V1 = 'http://dataid.dbpedia.org/ns/core#DatabusTractateV1';
+  static DATABUS_PLUGIN = 'http://dataid.dbpedia.org/ns/core#Plugin';
+  static DATABUS_SEARCH_EXTENSION = 'http://dataid.dbpedia.org/ns/core#SearchExtension';
+  static DATABUS_SEARCH_EXTENSION_ADAPTER = 'http://dataid.dbpedia.org/ns/core#searchExtensionAdapter';
+  static DATABUS_SEARCH_EXTENSION_ENDPOINT = 'http://dataid.dbpedia.org/ns/core#searchExtensionEndpoint';
+  static DATABUS_EXTENDS = 'http://dataid.dbpedia.org/ns/core#extends';
 
   // RDF
   static RDF_PROPERTY = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property';
@@ -75,6 +80,9 @@ class DatabusUris {
 
   // FOAF
   static FOAF_PERSONAL_PROFILE_DOCUMENT = 'http://xmlns.com/foaf/0.1/PersonalProfileDocument';
+  static FOAF_ACCOUNT = 'http://xmlns.com/foaf/0.1/account';
+  static FOAF_NAME = 'http://xmlns.com/foaf/0.1/name';
+  static FOAF_PERSON = 'http://xmlns.com/foaf/0.1/Person';
 
   // S4AC
   static S4AC_ACCESS_POLICY = 'http://ns.inria.fr/s4ac/v2#AccessPolicy';
