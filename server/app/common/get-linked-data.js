@@ -30,7 +30,8 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
 
     if(jsonld != null) {
       res.set(HttpStrings.HEADER_CONTENT_TYPE, HttpStrings.CONTENT_TYPE_JSONLD);
-      res.status(200).send(`${JSON.stringify(result, null, 3)}\n`);
+      res.status(200).send(`${JSON.stringify(jsonld, null, 3)}\n`);
+      return;
     }
   } else {
 

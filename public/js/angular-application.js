@@ -42,6 +42,7 @@ function config($locationProvider) {
 };
 
 
+
 databusApplication.filter('collectionfilter', function() {
   return function(input, search) {
     if (!input) return input;

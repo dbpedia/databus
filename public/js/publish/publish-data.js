@@ -359,7 +359,7 @@ class PublishData {
             var index = this.getRowIndex(artifact.files, files[0].name);
           }
 
-          var errorMessage = 'Content variants of files need to be unique. Duplicate content variant setting found at row '
+          var errorMessage = 'Content variants of files need to be unique. There is at least another file with the same content variant settings at row '
             + index + ' (' +
             cvHints.join(', ') + ').';
 

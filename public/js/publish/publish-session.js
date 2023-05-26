@@ -1,5 +1,8 @@
+
 if (typeof require !== 'undefined') {
     const DatabusUtils = require("../utils/databus-utils");
+    const DatabusUris = require("../utils/databus-uris");
+    const JsonldUtils = require("../utils/jsonld-utils");
 }
 
 class PublishSession {
@@ -15,11 +18,12 @@ class PublishSession {
         'streamQueue'
     ];
 
-    constructor(session, accountData) {
+    constructor($http, session, accountData) {
 
+        this.$http = $http;
         this.accountData = accountData;
 
-        for(var group of this.accountData.groups) {
+        for (var group of this.accountData.groups) {
             group.artifacts = this.accountData.artifacts.filter(function (value) {
                 return value.groupName == group.name;
             });
@@ -38,17 +42,28 @@ class PublishSession {
         this.initializeField(session, 'currentArtifact', null);
         this.initializeField(session, 'currentGroup', null);
 
-        if(session != null) {
+
+        this.availableGroups = [];
+        this.availableArtifacts = [];
+        this.availableVersions = [];
+
+
+        this.isGroupLoading = false;
+        this.isArtifactLoading = false;
+        this.isVersionLoading = false;
+
+        if (session != null) {
             this.selectGroup(session.currentGroup);
             this.selectArtifact(session.currentArtifact);
         }
         this.dataIdCreator = new DataIdCreator(this.formData, this.accountData.accountName);
         this.inputs = this.dataIdCreator.createInputs();
+
     }
 
     selectGroup(targetGroup) {
 
-        if(targetGroup == null) {
+        if (targetGroup == null) {
             return;
         }
 
@@ -62,13 +77,16 @@ class PublishSession {
 
         if (this.currentGroup == null || this.currentGroup.name != targetGroup.name) {
             this.currentGroup = targetGroup;
-            this.currentArtifact = null;
-            this.setCreateNewArtifact(artifact.createNew);
+
+            if (this.formData.artifact.generateMetadata == 'existing') {
+                this.currentArtifact = null;
+                this.setCreateNewArtifact('create');
+            }
         }
     }
 
     selectArtifact(targetArtifact) {
-        if(targetArtifact == null) {
+        if (targetArtifact == null) {
             return;
         }
 
@@ -78,7 +96,57 @@ class PublishSession {
         artifact.abstract = targetArtifact.abstract;
         artifact.description = targetArtifact.description;
         this.currentArtifact = targetArtifact;
+
+        this.availableVersions = this.accountData.versions.filter(function (v) {
+            return v.startsWith(targetArtifact.uri);
+        });
     }
+
+    selectVersion = function (versionUri) {
+
+        try {
+            var relativeUri = new URL(versionUri).pathname;
+            var options = {
+                method: 'GET',
+                url: relativeUri,
+                headers: {
+                    'Accept': 'application/ld+json',
+                    'X-Jsonld-Formatting': 'flatten'
+                }
+            };
+
+            var version = this.formData.version;
+            version.isLoading = true;
+
+            var self = this;
+
+            this.$http(options).then(function (response) {
+
+                var version = self.formData.version;
+                version.isLoading = false;
+
+                var versionData = response.data;
+                var versionGraph = JsonldUtils.getTypedGraph(versionData, DatabusUris.DATAID_VERSION);
+
+                version.name = DatabusUtils.uriToName(versionGraph[DatabusUris.JSONLD_ID]);
+                version.title = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
+                version.abstract = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_ABSTRACT);
+                version.description = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_DESCRIPTION);
+                version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATAID_ATTRIBUTION);
+                version.license = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_LICENSE);
+                version.derivedFrom = JsonldUtils.getProperty(versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
+
+                // Save the preset values
+                delete version.preset;
+                version.preset = JSON.parse(JSON.stringify(version));
+            });
+
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
     setCreateNewGroup(value) {
         this.formData.group.generateMetadata = value;
@@ -89,9 +157,11 @@ class PublishSession {
             this.formData.group.description = "";
             this.formData.group.generateAbstract = true;
             this.currentGroup = null;
-            this.setCreateNewArtifact(true);
-        } else if(value == 'existing') {
-            this.formData.group.publishGroupOnly = false;
+
+            if (this.formData.artifact.generateMetadata == 'existing') {
+                this.setCreateNewArtifact('create');
+            }
+        } else if (value == 'existing') {
             var hasGroups = DatabusUtils.objSize(this.accountData.groups) > 0;
 
             if (!hasGroups) {
@@ -107,17 +177,23 @@ class PublishSession {
             }
         }
     }
-    
-      setCreateNewArtifact(value) {
+
+    setCreateNewArtifact(value) {
         this.formData.artifact.generateMetadata = value;
 
         if (value == 'create') {
+
+            this.availableVersions = [];
             this.formData.artifact.name = "";
             this.formData.artifact.title = "";
             this.formData.artifact.description = "";
             this.currentArtifact = null;
 
-        } else if(value == 'existing') {
+            if (this.formData.version.generateMetadata == 'existing') {
+                this.setCreateNewVersion('create');
+            }
+
+        } else if (value == 'existing') {
 
             if (!this.currentGroup.hasArtifacts) {
                 this.setCreateNewArtifact('create');
@@ -127,13 +203,44 @@ class PublishSession {
             if (this.currentArtifact == null) {
                 this.selectArtifact(this.currentGroup.artifacts[0]);
             }
+        } else {
+
+            this.availableVersions = [];
+            if (this.formData.version.generateMetadata != 'none') {
+                this.setCreateNewVersion('none');
+            }
         }
+    }
+
+    setCreateNewVersion(value) {
+        this.formData.version.generateMetadata = value;
+
+        if (value == 'create') {
+
+
+        } else if (value == 'existing') {
+
+            if(this.availableVersions.length == 0) {
+                this.setCreateNewVersion('create');
+                return;
+            }
+
+            this.selectVersion(this.availableVersions[0]);
+        }
+
+    }
+    currentGroupHasArtifacts() {
+        if (this.formData.group.generateMetadata == 'create') {
+            return false;
+        }
+
+        return this.currentGroup.artifacts != null && this.currentGroup.artifacts.length > 0;
     }
 
     initializeField(source, name, defaultValue) {
         this[name] = source != null ? source[name] : defaultValue;
     }
-        
+
     save() {
         try {
             var sessionDataString = JSON.stringify(this, function (key, value) {
@@ -153,7 +260,7 @@ class PublishSession {
         this.formData.addFile(file);
     }
 
-    static resume(accountData) {
+    static resume($http, accountData) {
 
         var sessionData = JSON.parse(window.sessionStorage.getItem(PublishSession.sessionStorageKey));
 
@@ -165,7 +272,7 @@ class PublishSession {
             return null;
         }
 
-        var publishSession = new PublishSession(sessionData, accountData);
+        var publishSession = new PublishSession($http, sessionData, accountData);
 
         return publishSession;
     }
@@ -178,7 +285,7 @@ class PublishSession {
         if (this.dataIdCreator != undefined) {
             this.inputs = this.dataIdCreator.createInputs();
 
-            this.isReadyForUpload = 
+            this.isReadyForUpload =
                 !this.formData.artifact.errors.length > 0 &&
                 !this.formData.group.errors.length > 0 &&
                 !this.formData.version.errors.length > 0;
@@ -188,4 +295,4 @@ class PublishSession {
 
 
 if (typeof module === "object" && module && module.exports)
-  module.exports = PublishSession;
+    module.exports = PublishSession;

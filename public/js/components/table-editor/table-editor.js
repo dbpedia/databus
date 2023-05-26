@@ -19,6 +19,17 @@ function TableEditorController() {
     ctrl.updateViewModel();
   }
 
+  ctrl.getSpanWidth = function(row, cv) {
+    var span = $(`#${row}_${cv}`);
+    var width = span.width();
+
+    if(width == undefined) {
+      return 0;
+    }
+
+    return width + 22;
+  }
+
   ctrl.setupColumns = function() {
 
     ctrl.columns = [];
