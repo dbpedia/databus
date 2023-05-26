@@ -31,6 +31,6 @@
   * [API](docs/usage/api/README.md)
     * [Quickstart Examples (Publish, Download)](docs/quickstart-examples.md)
     * [API Docs](docs/api.md)
-  * [Customizing, Mods, Metadata Quality](docs/mods.md)
+  * [Databus Mods](docs/mods.md)
   * [Databus Client](docs/databus-client.md)
 * [Development Environment](devenv/README.md)
