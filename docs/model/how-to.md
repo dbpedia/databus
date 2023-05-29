@@ -1,8 +1,9 @@
 # How to Organise Your Data
+**Please read this chapter carefully, it is very important to further understanding of Databus**
 
 ### General Structure
 
-Databus can be seen as [_Maven_](https://maven.apache.org) _for data_. A key differentiation from Maven is that the Databus does not store the actual data but rather focuses solely on capturing metadata that describes your data.
+Databus can be seen as a **data** repository (analogous to [software repositories](https://en.wikipedia.org/wiki/Software_repository), e.g. Maven or Pip). A key differentiation of Databus from a typical software repository is that it does not store the actual data (i.e. files on disk) but focuses solely on capturing metadata describing your data.
 
 To utilize the Databus, you need to possess data that you intend to publish on the Databus. The minimal requirement is a single file containing your data and the data file must be accessible via the HTTP protocol. 
 
