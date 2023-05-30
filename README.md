@@ -13,6 +13,12 @@ ontologies. It is in essence a repository of metainformation describing your dat
 Databus is built on top of the Linked Data principles and
 FAIR (Findable, Accessible, Interoperable, and Reusable).
 
+Databus can be seen as a **data** repository (analogous to [software repositories](https://en.wikipedia.org/wiki/Software_repository), e.g. Maven or Pip). A key difference of Databus from a typical software repository is that it does not store the actual data (i.e. files on disk) but focuses solely on capturing metadata describing your data (i.e. what kind of files and where are they).
+
+The idea is simple. Owners of the data upload the descriptions of their data and where to find it. Users of the data can find and download what they want and check out for updates if new versions of the data were uploaded. **This enables smooth continuous integration processes for your data.**
+
+![Databus as a repo](docs/databus-as-repo.drawio.png)
+
 The key features of DBpedia Databus are:
 * Versioning: Databus can be used as a repository, 
 like [Maven](https://maven.apache.org) in Java 
