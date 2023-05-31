@@ -180,7 +180,6 @@ module.exports = function (router, protector) {
 
   router.get('/:account/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
 
-
     if (req.params.account.length < 4) {
       next('route');
       return;
@@ -194,21 +193,6 @@ module.exports = function (router, protector) {
 
     var template = require('../../common/queries/constructs/ld/construct-collection.sparql');
     getLinkedData(req, res, next, resourceUri, template);
-    
-    /*
-
-    var repo = req.params.account;
-    var path = `collections/${req.params.collection}/collection.jsonld`;
-
-    let options = {
-      url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-      headers: {
-        'Accept': 'application/ld+json'
-      },
-      json: true
-    };
-
-    request(options).pipe(res);*/
-
+  
   });
 }

@@ -2,6 +2,8 @@
 <% include header %>
 <div ng-controller="CollectionController" ng-cloak>
 
+
+  <databus-alert></databus-alert>
   <!-- Header -->
   <section class="hero is-medium-small is-collection databus-banner">
     <div class="hero-body">
@@ -9,7 +11,7 @@
         <div style="display: flex; align-items: center;">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path class="is-white" fill="#fff" d="M11.499 12.03v11.971l-10.5-5.603v-11.835l10.5 5.467zm11.501 6.368l-10.501 5.602v-11.968l10.501-5.404v11.77zm-16.889-15.186l10.609 5.524-4.719 2.428-10.473-5.453 4.583-2.499zm16.362 2.563l-4.664 2.4-10.641-5.54 4.831-2.635 10.474 5.775z"/></svg>
           <div style="margin-left: 24px;">
-            <h1 class="is-2 title is-marginless">{{ collection.label }}</h1>
+            <h1 class="is-2 title is-marginless">{{ collection.title }}</h1>
             <uri-breadcrumbs class="header-breadcrumbs" uri="collection.uri"></uri-breadcrumbs>
           </div>
         </div>
@@ -59,9 +61,11 @@
           Edit
         </div>
 
-        <div class="button" ng-click="bashScriptToClipboard()" style="margin-right: 0.5em">
-          Copy Bash Script to Clipboard
-        </div>
+        <button class="button" ng-click="bashScriptToClipboard()" style="margin-right: 0.5em">
+          <databus-icon color="'#cfcfcf'" shape="'clipboard'" size="24">
+          </databus-icon> Copy Bash Script to Clipboard
+        </button>
+      
         <div class="control">
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">

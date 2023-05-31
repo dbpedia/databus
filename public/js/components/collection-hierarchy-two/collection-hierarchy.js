@@ -544,7 +544,8 @@ SELECT ?file WHERE {
     var fullQuery = QueryBuilder.build({
       node: queryNode,
       template: QueryTemplates.NODE_FILE_TEMPLATE,
-      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL
+      resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
+      root: ctrl.root 
     });
 
     this.querySparql(fullQuery).then(function (result) {

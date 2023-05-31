@@ -41,6 +41,24 @@ class AppJsonFormatter {
 
     return result;
   }
+
+  static formatCollectionData(graphs) {
+    var collectionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATAID_COLLECTION);
+    
+    var result = {};
+
+    result.uri = collectionGraph[DatabusUris.JSONLD_ID];
+    result.title = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_TITLE);
+    result.abstract = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_ABSTRACT);
+    result.description = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_DESCRIPTION);
+    result.issued = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_ISSUED);
+    result.publisher = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_PUBLISHER);
+
+    var content = JsonldUtils.getProperty(collectionGraph, DatabusUris.DATAID_CONTENT)
+    result.content = DatabusUtils.tryParseJson(unescape(content)); 
+
+    return result;
+  }
 }
 
 

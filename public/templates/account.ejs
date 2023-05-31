@@ -338,13 +338,13 @@
           <div style="display: flex; align-items: center; margin-bottom: 1em;">
             <div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>
             <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-            <entity-card label="group.title" uri="group.uri" type="'Group'" style="margin-bottom: -1em;  width: 100%">
+            <entity-card label="group.title" uri="group.uri" type="'Group'" style="width: 100%">
             </entity-card>
           </div>
 
           <div ng-if="group.isExpanded && group.artifacts.length > 0" style="margin-left: 74px; padding-left: 24px; margin-bottom: 1em;">
 
-            <div ng-repeat="artifact in group.artifacts">
+            <div ng-repeat="artifact in group.artifacts" style="margin-bottom: 1em;">
 
                 <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
                 </entity-card>

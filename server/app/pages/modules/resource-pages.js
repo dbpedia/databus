@@ -11,6 +11,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const { dataid } = require('../../common/queries/sparql');
 const getJsonLd = require('../../common/get-jsonld');
 const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
+const collectionQueryTemplate = require("../../common/queries/constructs/ld/construct-collection.sparql");
 const AppJsonFormatter = require('../app-json-formatter');
 
 module.exports = function (router, protector) {
@@ -113,6 +114,31 @@ module.exports = function (router, protector) {
   });
 
   router.get('/:account/collections/:collection', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
+    
+    try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var collectionUri = UriUtils.createResourceUri([req.params.account, 'collections', req.params.collection]);
+      var collectionJsonLd = await getJsonLd(collectionUri, collectionQueryTemplate, 'flatten');
+
+      if (collectionJsonLd == null) {
+        next('route');
+        return;
+      }
+
+      var collectionData = AppJsonFormatter.formatCollectionData(collectionJsonLd);
+      console.log(JSON.stringify(collectionData, null, 3));
+
+      res.render('collection', {
+        title: collectionData.title,
+        data: { collection: collectionData, auth: auth }
+      });
+
+    } catch (err) {
+      console.log(err);
+      next('route');
+    }
+    /*
+
     try {
       let auth = ServerUtils.getAuthInfoFromRequest(req);
       let collectionData = await sparql.collections.getCollection(req.params.account, req.params.collection);
@@ -135,6 +161,7 @@ module.exports = function (router, protector) {
     } catch (err) {
       res.status(500).send(err);
     }
+    */
   });
 
   router.get('/:account/:group/:artifact', protector.checkSso(), async function (req, res, next) {
@@ -183,8 +210,6 @@ module.exports = function (router, protector) {
         return {
           version: await sparql.dataid.getVersion(req.params.account, req.params.group,
             req.params.artifact, req.params.version)
-          //mods: await sparql.pages.getModsByVersion(req.params.account, req.params.group,
-          //  req.params.artifact, req.params.version)
         };
       });
 

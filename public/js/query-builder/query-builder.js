@@ -2,15 +2,10 @@ class QueryBuilder {
 
   static build(config) {
     var builder = new QueryBuilder();
-    return builder.createQuery(config.node, config.template, config.resourceBaseUrl);
+    return builder.createQuery(config.node, config.template, config.resourceBaseUrl, config.root);
   }
 
-  createQuery(node, template, resourceBaseUrl) {
-
-    /*
-    console.log(typeof QueryNode);
-
-    */
+  createQuery(node, template, resourceBaseUrl, root) {
 
     if (typeof QueryNode !== 'function') {
       this.getParent = require("./query-node").findParentNodeRecursive;
@@ -19,7 +14,7 @@ class QueryBuilder {
     }
 
     this.result = '';
-    this.root = node;
+    this.root = root != undefined ? root : node;
     this.cvCounter = 0;
     this.resourceBaseUrl = resourceBaseUrl;
     this.select = template.select;

@@ -6,6 +6,11 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   $scope.activeTab = 0;
   $scope.collectionManager = collectionManager;
 
+
+
+  // Make some util functions available in the template
+  $scope.utils = new DatabusWebappUtils($scope);
+
   $scope.isOwn = false;
 
   if ($scope.authenticated) {
@@ -109,8 +114,10 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   }
 
   $scope.queryToClipboard = function () {
-    DatabusCollectionUtils.copyStringToClipboard($scope.collectionQuery);
-    $scope.statusCode = DatabusResponse.COLLECTION_QUERY_COPIED_TO_CLIPBOARD;
+
+    $scope.utils.copyToClipboard($scope.collectionQuery);
+    DatabusAlert.alert($scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
+
   }
 
   $scope.openInYasgui = function () {
@@ -118,9 +125,13 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   }
 
   $scope.bashScriptToClipboard = function () {
-    DatabusCollectionUtils.copyStringToClipboard($scope.collectionViewModel.downloadScript[0] + '\n'
-      + $scope.collectionViewModel.downloadScript[1] + '\n' + $scope.collectionViewModel.downloadScript[2]);
-    $scope.statusCode = DatabusResponse.COLLECTION_BASH_COPIED_TO_CLIPBOARD;
+
+    var bashscript = `${$scope.collectionViewModel.downloadScript[0]}
+${$scope.collectionViewModel.downloadScript[1]}
+${$scope.collectionViewModel.downloadScript[2]}`
+
+    $scope.utils.copyToClipboard(bashscript);
+    DatabusAlert.alert($scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
   }
 
   $scope.markdownToHtml = function (markdown) {
@@ -129,8 +140,8 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   };
 
   $scope.filesToClipboard = function () {
-    DatabusCollectionUtils.copyStringToClipboard($scope.collectionFiles);
-    $scope.statusCode = DatabusResponse.COLLECTION_DOWNLOAD_URLS_COPIED_TO_CLIPBOARD;
+    $scope.utils.copyToClipboard($scope.collectionFiles);
+    DatabusAlert.alert($scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
   }
 
   $scope.getStatusMessage = function (code) {

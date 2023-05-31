@@ -79,8 +79,8 @@
               </div>
               <br />
               <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW Datasets</p>
-              <div ng-repeat="dataset in recentUploadsData.data">
-                <entity-card style="flex: 1;" 
+              <div ng-repeat="dataset in recentUploadsData.data" style="margin-bottom: 1em;">
+                <entity-card style="flex: 1; " 
                   type="'Version'"
                   uri="dataset.version"
                   label="dataset.title"  

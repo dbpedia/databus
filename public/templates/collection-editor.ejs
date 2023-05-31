@@ -514,7 +514,7 @@
               <div ng-if="tabNavigation.activeTab == 1">
 
                 <div class="ce-action-bar">
-                  <div class="button is-collection">Save & Publish</div>
+                  <div ng-click="saveCollection()" class="button is-collection">Save & Publish</div>
                   <div class="button" ng-click="preview()" ng-disabled="collectionManager.activeCollection.isDraft">Go
                     to Collection Page
                   </div>
