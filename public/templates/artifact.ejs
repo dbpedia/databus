@@ -64,14 +64,14 @@
         </div>
         <div ng-if="versions == null || versions.length == 0" style="margin-bottom: 2em">
         </div>
-        <div ng-if="versions != null && versions.length > 0">
+        <div>
           <!--Tabs-->
           <div class="collection-editor-tabs">
             <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }"
               ng-click="tabs.activeTab=0;">
               <div class="section-label">Files</div>
             </div>
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
+            <div  ng-if="versions != null && versions.length > 0" class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
               ng-click="tabs.activeTab=1;">
               <div class="section-label">Versions</div>
             </div>
@@ -174,7 +174,7 @@
         </div>
         <div class="topic file-browser" ng-if="tabs.activeTab==0">
           <div ng-if="versions == null || versions.length == 0">
-            <div class="databus-no-content">
+            <div class="databus-no-content" style="min-height: 300px">
               <p>There are no datasets associated with this artifact!</p>
             </div>
           </div>

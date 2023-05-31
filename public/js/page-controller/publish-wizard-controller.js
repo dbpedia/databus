@@ -85,7 +85,6 @@ function PublishWizardController($scope, $http, focus, $q) {
     $scope.$apply();
   }
 
-
   $scope.getContentForAccount(data.auth.info.accountName);
 
   /**

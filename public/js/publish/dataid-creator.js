@@ -79,7 +79,7 @@ class DataIdCreator {
 
   createArtifactUpdate() {
     
-    if (this.formData.group.publishGroupOnly) {
+    if (this.formData.artifact.generateMetadata == 'none') {
       return undefined;
     }
 
@@ -101,7 +101,7 @@ class DataIdCreator {
 
   createVersionUpdate() {
 
-    if (this.formData.group.publishGroupOnly) {
+    if (this.formData.version.generateMetadata == 'none') {
       return undefined;
     }
 
