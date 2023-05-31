@@ -349,7 +349,7 @@ class DatabusCollectionManager {
     }
 
 
-    collection.title = `Snapshot of ${source.label}`;
+    collection.title = `Snapshot of ${source.title}`;
     collection.description = source.description;
 
     this.local[collection.uuid] = new DatabusCollectionWrapper(collection);
@@ -566,7 +566,7 @@ class DatabusCollectionManager {
             "@id": collectionUri,
             "@type": "dataid:Collection",
             "publisher": publisherUri,
-            "title": this.activeCollection.label,
+            "title": this.activeCollection.title,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
             "dataid:content": contentString,
@@ -684,7 +684,7 @@ class DatabusCollectionManager {
       this.local[collection.uuid].content = getResponse.data.content;
       this.local[collection.uuid].created = getResponse.data.created;
       this.local[collection.uuid].issued = getResponse.data.issued;
-      this.local[collection.uuid].label = getResponse.data.label;
+      this.local[collection.uuid].title = getResponse.data.title;
       this.local[collection.uuid].description = getResponse.data.description;
       this.local[collection.uuid].files = getResponse.data.files;
     } catch (errResponse) {
