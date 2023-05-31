@@ -68,34 +68,41 @@ signer.expandAndCanonicalize = async function (graph) {
 
 signer.canonicalize = function (expandedGraph) {
 
-  var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
+  try {
+    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
 
-  var tractate = '';
-  tractate += `${tractateConfig.header}\n`;
-  tractate += `${datasetGraph[DatabusUris.JSONLD_ID]}\n`;
-  tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.publisherProperty)}\n`;
-  tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.licenseProperty)}\n`;
+    var tractate = '';
+    tractate += `${tractateConfig.header}\n`;
+    tractate += `${datasetGraph[DatabusUris.JSONLD_ID]}\n`;
+    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.publisherProperty)}\n`;
+    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.licenseProperty)}\n`;
 
-  var shasums = [];
+    var shasums = [];
 
-  var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+    var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
 
-  for (var d in distributionGraphs) {
-    var distributionGraph = distributionGraphs[d];
-    var shasum = JsonldUtils.getFirstObject(distributionGraph, DatabusUris.DATAID_SHASUM);
+    for (var d in distributionGraphs) {
+      var distributionGraph = distributionGraphs[d];
+      var shasum = JsonldUtils.getFirstObject(distributionGraph, DatabusUris.DATAID_SHASUM);
 
-    if (shasum != null) {
-      shasums.push(shasum['@value']);
+      if (shasum != null) {
+        shasums.push(shasum['@value']);
+      }
     }
+
+    shasums.sort();
+
+    for (var s in shasums) {
+      tractate += `${shasums[s]}\n`;
+    }
+
+    return tractate;
+  } catch (err) {
+    console.log("Failed to canonicalize graph.");
+    console.log(err);
+    console.log(JSON.stringify(expandedGraph, null, 3));
+    throw ("Failed to canonicalize graph.");
   }
-
-  shasums.sort();
-
-  for (var s in shasums) {
-    tractate += `${shasums[s]}\n`;
-  }
-
-  return tractate;
 }
 
 signer.createProof = function (datasetGraph) {
@@ -191,7 +198,7 @@ signer.sign = function (canonicalized) {
   // console.log(`Signing: \n${canonicalized}`);
   signer.init();
   var data = Buffer.from(canonicalized);
-  
+
   var sign = signer.privateKey.sign(data);
   var signature = sign.toString('base64');
   // console.log(`Result:\n${signature}`);

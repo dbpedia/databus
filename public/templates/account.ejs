@@ -333,29 +333,24 @@
 
 
 
-        <div ng-if="dataSearchInput == ''" class="hierarchy" ng-repeat="group in publishedData.groups">
+        <div ng-if="dataSearchInput == ''" ng-repeat="group in publishedData.groups">
 
-          <div style="display: flex; align-items: center; margin-top: 1em; margin-bottom: 1em;">
+          <div style="display: flex; align-items: center; margin-bottom: 1em;">
             <div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>
             <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-            <entity-card label="group.title" uri="group.uri" type="'Group'">
+            <entity-card label="group.title" uri="group.uri" type="'Group'" style="margin-bottom: -1em;  width: 100%">
             </entity-card>
           </div>
 
-          <div ng-if="group.isExpanded && group.artifacts.length > 0" style="border-left: 1px solid #dbdbdb; 
-          margin-left: 74px; padding-left: 24px; padding-top: 16px; padding-bottom: 16px; margin-bottom: 1em;">
+          <div ng-if="group.isExpanded && group.artifacts.length > 0" style="margin-left: 74px; padding-left: 24px; margin-bottom: 1em;">
 
             <div ng-repeat="artifact in group.artifacts">
 
-              <div class="node">
                 <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
                 </entity-card>
-              </div>
 
-              <div ng-if="!$last" style="margin: 1.5em 1.5em;"></div>
             </div>
           </div>
-          <div ng-if="!$last" style="margin: 1.5em 1.5em;" class="is-divider"></div>
         </div>
       </div>
 

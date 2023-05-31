@@ -348,7 +348,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     }
 
 
-    logger.info(versionGraphUri, `Successfully published dataset <${versionGraphUri}>.`, compactedGraph);
+    logger.info(versionGraphUri, `Successfully published version <${versionGraphUri}>.`, compactedGraph);
     return 200;
 
   } catch (err) {

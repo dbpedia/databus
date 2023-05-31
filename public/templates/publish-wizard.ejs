@@ -657,6 +657,9 @@
               </div>
               <div class="row">
                 <div class="row-label">Add Files From Resource Page</div>
+                <div class="databus-settings-info">
+                  <div>Searches the HTML document of the entered URL for links to files and adds them to the version.</div>
+                </div>
                 <div class="field has-addons">
                   <div class="control" style="width: 100%;">
                     <input ng-model="session.fetchFilesInput" class="input" type="text"
@@ -686,6 +689,11 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="databus-settings-info">
+                  <div>Content variants are facets that you can add to your files. This can be helpful when your files exist in multiple languages or your dataset is partitioned into multiple files in any other way. Content variants can help other Databus users to find the correct files for their use case.</div>
+                </div>
+
                 <div class="field has-addons">
                   <div class="control" style="width: 100%;">
                     <input ng-model="session.contentVariantInput" class="input" type="text"
@@ -699,7 +707,6 @@
                   </div>
                 </div>
                 <div class="content-variants-panel">
-
                   <div style="border: 1px solid #dbdbdb;" class="content-variant-box" ng-repeat="variant in version.contentVariants">
                     <div>
                       <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
@@ -780,6 +787,9 @@
 
               <div class="row">
                 <div class="row-label">Publisher</div>
+                <div class="databus-settings-info">
+                  <div>Every dataset on the Databus needs to be signed by the publisher. Databus uses cryptographic keypairs and public keys exposed via WebId to enable decentralized dataset validation. You can either use your Databus account as a WebId and let the Databus sign your metadata or sign it with your own private key and WebId. For more information, please refer to the <a href="https://dbpedia.gitbook.io/databus/usage" target="_blank">Gitbook</a>.</div>
+                </div>
                 <div style="width: 100%;">
                   <div class="field">
                     <div class="control">
@@ -821,10 +831,13 @@
                     <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
                       <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
                       <div style="display: flex; margin-bottom: 8px;">
-                        <div style="margin-right: 8px;" class="button" ng-click="createTractate(result.versionUpdate)"
-                          ng-disabled="creatingTracate">Create
+                        <div style="margin-right: 8px;" class="button" ng-click="createTractate()"
+                          ng-disabled="creatingTractate">Create
                           Tractate</div>
                         <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                      </div>
+                      <div class="databus-settings-info" style="margin-bottom: 10px">
+                        <div>Click the <b>Create Tractate</b> button to generate the tractate for your metadata document. The Databus tractate is a minimal canonicalized form of your document containing the most crucial pieces of information. Sign the tractate with your private key and post the signature into the field below.</div>
                       </div>
                       <textarea ng-model="session.formData.signature.userSignature" class="textarea"
                         style="resize: vertical" placeholder="Signature"></textarea>
@@ -867,7 +880,7 @@
                 </pre>
             </div>
             <div class="row">
-              <div class="row-label">Full Body</div>
+              <div class="row-label">Full Publish Request Body</div>
               <pre ng-if="session.isReadyForUpload && session.showFullInput"
                 style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
                   style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ session.inputs.all | json }}</pre>
@@ -880,7 +893,7 @@
 
 
             <div class="row">
-              <div class="row-label">Publish</div>
+              <div class="row-label">Publish Consent</div>
               <div style="width: 100%;">
                 <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
                   <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"

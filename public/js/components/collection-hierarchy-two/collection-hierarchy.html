@@ -416,13 +416,10 @@
           </div>
         </div>
         <div style="flex: 1;"></div>
-
         <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="!groupView.expanded" shape="'max'" size="24">
         </databus-icon>
         <databus-icon style="margin-right:16px; cursor: pointer;" ng-if="groupView.expanded" shape="'min'" size="24">
         </databus-icon>
-
-
       </div>
 
       <div class="ce-content-group-body" ng-if="groupView.expanded && !$ctrl.isValidHttpUrl(groupNode.uri)">
@@ -602,13 +599,10 @@
               </div>
             </div>
           </div>
-
           <div style="flex: 1;"></div>
           <databus-icon style="margin-right:16px;" ng-if="!artifactView.expanded" shape="'max'" size="24">
           </databus-icon>
           <databus-icon style="margin-right:16px;" ng-if="artifactView.expanded" shape="'min'" size="24"></databus-icon>
-
-
         </div>
 
         <div class="ce-content-group-body " ng-if="artifactView.expanded">
@@ -627,14 +621,9 @@
 
           <div ng-if="artifactView.facets">
 
-
             <div ng-if="$ctrl.objSize(groupNode.facetSettings) + $ctrl.objSize(artifactNode.facetSettings) > 0">
-
-
               <p style="margin-bottom: 0.5em;"><b>Active Filters:</b></p>
-
               <div>
-
                 <!-- Active filters on the group node -->
                 <div ng-repeat="uri in $ctrl.getAllFilters(artifactNode, groupNode)"
                   style="margin-right: 1em; margin-bottom: 1em;">
@@ -662,33 +651,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- Active filters on the artifact node 
-        <div ng-repeat="(uri, setting) in artifactNode.facetSettings" ng-if="groupNode.facetSettings[uri] == undefined"
-          style="margin-right: 1em; margin-bottom: 1em;">
-          <div class="field has-addons">
-            <div class="ce-content-filter-dropdown-button is-facet">
-              <svg style="margin-right: 8px; fill:#2bcbba;" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                viewBox="0 0 24 24">
-                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
-              </svg>
-              <span>{{ artifactView.facets[uri].label}}</span>
-            </div>
-            <multiselect-dropdown style="min-width: 250px" placeholder="Enter value..."
-              parent-input="groupNode.facetSettings[uri]" input="artifactNode.facetSettings[uri]"
-              values="artifactView.facets[uri].values" on-change="$ctrl.onActiveFilterChanged(groupNode)">
-            </multiselect-dropdown>
-            <div class="ce-content-filter-dropdown-button is-delete" ng-click="$ctrl.removeFilter(artifactNode, uri)">
-              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd"
-                clip-rule="evenodd">
-                <path
-                  d="M12 11.293l10.293-10.293.707.707-10.293 10.293 10.293 10.293-.707.707-10.293-10.293-10.293 10.293-.707-.707 10.293-10.293-10.293-10.293.707-.707 10.293 10.293z" />
-              </svg>
-            </div>
-          </div>
-        </div>-->
-
-
               </div>
             </div>
 

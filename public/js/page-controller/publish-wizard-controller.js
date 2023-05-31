@@ -173,13 +173,13 @@ function PublishWizardController($scope, $http, focus, $q) {
     }
   }
 
-  $scope.createTractate = function (graph) {
-    $scope.creatingTracate = true;
-    $http.post('/api/tractate/v1/canonicalize', graph).then(function (response) {
-      $scope.session.data.signature.tractate = response.data;
-      $scope.creatingTracate = false;
+  $scope.createTractate = function () {
+    $scope.creatingTractate = true;
+    $http.post('/api/tractate/v1/canonicalize', $scope.session.inputs.dataid).then(function (response) {
+      $scope.session.formData.signature.tractate = response.data;
+      $scope.creatingTractate = false;
     }, function (err) {
-      $scope.creatingTracate = false;
+      $scope.creatingTractate = false;
       console.log(err);
     });
   }

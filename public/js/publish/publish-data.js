@@ -359,7 +359,7 @@ class PublishData {
             var index = this.getRowIndex(artifact.files, files[0].name);
           }
 
-          var errorMessage = 'Content variants of files need to be unique. There is at least another file with the same content variant settings at row '
+          var errorMessage = 'The Databus requires any two files to be distinguishable by either their format, compression or any content variant. You have added a file with the exact same format, compression and content variants at row '
             + index + ' (' +
             cvHints.join(', ') + ').';
 
