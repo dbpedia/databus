@@ -84,4 +84,5 @@ The metadata publisher has complete control over the names of the Databus identi
   * the same data in different languages or encodings/file types
   * a file and other files generated from that file
   * a file and other files describing that file
+
 Of course, it is not always feasible, but it is highly recommended to keep the names of content variants same across different versions of the dataset. This allows easy search and retrieval of the datasets using SPARQL.
