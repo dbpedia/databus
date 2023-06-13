@@ -121,13 +121,13 @@ mechanisms for that: a SPARQL endpoint and Collections.
 Collections allow to flexibly combine files and artifacts together. 
 Read more [here](docs/collections.md).
 
-SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/quickstart-examples.md).
+SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/api/quickstart-examples.md).
 ### Mods
 Databus offers metadata extensions using Mods. 
 You can read about them more in detail [here](docs/mods.md).
 ### API
 Instead of using GUI, you can automate your publishing and data retrieving process
- using our http-API. Refer to it [here](docs/api.md).
+ using our http-API. Refer to it [here](docs/usage/api/api-docs.md).
 
 ## Contributing
 Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).

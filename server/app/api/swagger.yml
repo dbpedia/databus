@@ -19,7 +19,7 @@ paths:
       description: "Get the Databus manifest."
       operationId: "manifest-get"
       tags:
-        - general
+        - Main API
       security:
         - ApiKeyAuth: []
       responses:
@@ -40,86 +40,47 @@ paths:
 
                   <> a dataid:Databus . 
                   <> dct:hasVersion "<2.1.0-rc.1>" .
-  /sparql:
-    post:
-      summary: "Send SPARQL Query"
-      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
-      operationId: "sparql-post"
-      tags:
-        - general
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        description: "A SPARQL query."
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                query:
-                  type: string
-                  example: "select distinct * where {?a ?b ?c} LIMIT 2"
-      responses:
-        "200":
-          description: "Accepted"
-          content:
-            application/sparql-results+xml:
-              schema:
-                type: object
-                xml: 
-                  name: 'sparql'
-                example: |
-                  <sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
-                    <head>
-                      <variable name="a"/>
-                      <variable name="b"/>
-                      <variable name="c"/>
-                    </head>
-                    <results distinct="false" ordered="true">
-                      <result>
-                        <binding name="a">
-                          <uri>http://www.openlinksw.com/schemas/virtrdf#DefaultQuadMap</uri>
-                        </binding>
-                        <binding name="b">
-                          <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
-                        </binding>
-                        <binding name="c">
-                          <uri>http://www.openlinksw.com/schemas/virtrdf#QuadMap</uri>
-                        </binding>
-                      </result>
-                      <result>
-                        <binding name="a">
-                          <uri>http://www.openlinksw.com/schemas/virtrdf#DefaultServiceMap</uri>
-                        </binding>
-                        <binding name="b">
-                          <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
-                        </binding>
-                        <binding name="c">
-                          <uri>http://www.openlinksw.com/schemas/virtrdf#QuadMap</uri>
-                        </binding>
-                      </result>
-                    </results>
-                  </sparql>
-        "400":
-          description: "Error: Bad Request"
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: |
-                  Virtuoso 37000 Error SP030: SPARQL compiler, line 2: syntax error at '=' before 'distinct'
 
-                  SPARQL query:
-                  define sql:big-data-const 0
-                  select= distinct * where {?a ?b ?c} LIMIT 2
   /api/publish:
     post:
-      summary: "Publish Metdata"
-      description: "Publish metadata on the Databus. The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties."
+      summary: "Publish Metadata"
+      description: "
+      Publish metadata Json-LD (DataID) on the Databus. 
+
+      
+      A [DataId](http://dataid.dbpedia.org/ns/core.html) is an RDF metadata document with an entity of rdf:type [dataid:Dataset](http://dataid.dbpedia.org/ns/core#Dataset) at its heart. The document contains information about the corresponding dataset:
+      
+        * The containing files and their metadata
+        
+        * A Databus version
+        
+        * A Databus artifact
+        
+        * A Databus group
+        
+      
+      The server will try to auto-complete your input and can optionally calculate the required sha256sum and byteSize properties.
+      
+            
+           The input data must be supplied as Json-LD.
+           
+            
+           The input data will be filtered with the following construct queries:
+            
+                * [Construct group](./server/app/common/queries/constructs/construct-group.sparql) query
+              
+                * [Construct version](./server/app/common/queries/constructs/construct-version.sparql) query
+                
+              
+           Each construct query result will then be validated with their corresponding SHACL shape (e.g. group construct query result validated by group SHACL shapes):
+            
+                * [Group SHACL](./server/app/common/shacl/group-shacl.ttl) shapes
+              
+                * [Version SHACL](./server/app/common/shacl/dataid-shacl.ttl) shapes
+      "
       operationId: "publish"
       tags:
-        - general
+        - Main API
       security:
         - ApiKeyAuth: []
       parameters:
@@ -144,7 +105,31 @@ paths:
           application/ld+json:
             schema:
               type: object
-              example: '{
+              example: '
+              {
+  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+  "@graph": [
+    {
+      "@type": "Dataset",
+      "@id": "https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2022-02-09#Dataset",
+      "hasVersion": "2022-02-09",
+      "title": "test_group test_artifact",
+      "description": "version of the test_artifact dataset from DBpedia",
+      "license": "https://dalicc.net/licenselibrary/Apache-2.0",
+      "distribution": [
+        {
+          "@type": "Part",
+          "formatExtension": "md",
+          "compression": "none",
+          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/master/README.md"
+        }
+      ]
+    }
+  ]
+}
+              
+              
+              {
                 "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                 "@graph": [
                   {
@@ -242,13 +227,86 @@ paths:
                       }
                     ]
                   }
+  /sparql:
+    post:
+      summary: "Send SPARQL Query"
+      description: "Send a SPARQL request to Databus. SPARQL queries are useful for retrieving the published metadata. This gives users flexibility to make complicated requests combining files from different datasets and of different versions."
+      operationId: "sparql-post"
+      tags:
+        - Main API
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        description: "A SPARQL query."
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  example: "select distinct * where {?a ?b ?c} LIMIT 2"
+      responses:
+        "200":
+          description: "The result of the SPARQL query."
+          content:
+            application/sparql-results+xml:
+              schema:
+                type: object
+                xml:
+                  name: 'sparql'
+                example: |
+                  <sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+                    <head>
+                      <variable name="a"/>
+                      <variable name="b"/>
+                      <variable name="c"/>
+                    </head>
+                    <results distinct="false" ordered="true">
+                      <result>
+                        <binding name="a">
+                          <uri>http://www.openlinksw.com/schemas/virtrdf#DefaultQuadMap</uri>
+                        </binding>
+                        <binding name="b">
+                          <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+                        </binding>
+                        <binding name="c">
+                          <uri>http://www.openlinksw.com/schemas/virtrdf#QuadMap</uri>
+                        </binding>
+                      </result>
+                      <result>
+                        <binding name="a">
+                          <uri>http://www.openlinksw.com/schemas/virtrdf#DefaultServiceMap</uri>
+                        </binding>
+                        <binding name="b">
+                          <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+                        </binding>
+                        <binding name="c">
+                          <uri>http://www.openlinksw.com/schemas/virtrdf#QuadMap</uri>
+                        </binding>
+                      </result>
+                    </results>
+                  </sparql>
+        "400":
+          description: "Error: Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |
+                  Virtuoso 37000 Error SP030: SPARQL compiler, line 2: syntax error at '=' before 'distinct'
+
+                  SPARQL query:
+                  define sql:big-data-const 0
+                  select= distinct * where {?a ?b ?c} LIMIT 2
   /api/search:
     get:
       summary: "Search"
       description: "Search the index of the Databus. For a full list of the search syntax please refer to the [Lookup Documentation](https://github.com/dbpedia/dbpedia-lookup)"
       operationId: "search"
       tags:
-        - general
+        - Main API
       parameters:
         - name: query
           in: query
@@ -319,10 +377,23 @@ paths:
   /{account}/{group}:
     put:
       summary: "Create / Update Group"
-      description: "Creates or updates a Databus Group."
+      description: "
+        Creates or updates a Databus Group.
+        
+          * The input data must be supplied as Json-LD 
+        
+          * The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-group.sparql)
+
+          * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/group-shacl.ttl)
+
+          * The uri of the dataid:Group has to match the request uri. 
+          
+          
+          Note that the *@id* of the supplied graph has to be the same as the request uri. Additionally, the uri has to be in user's namespace.
+      "
       operationId: "create-group"
       tags:
-        - group
+        - Group 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -396,7 +467,7 @@ paths:
       description: "Retrieve a Databus Group as JSONLD."
       operationId: "get-group"
       tags:
-        - group
+        - Group 
       parameters:
         - name: account
           in: path
@@ -438,7 +509,7 @@ paths:
         **If you intend to delete the whole group, query the associated entities and delete them first.**"
       operationId: "delete-group"
       tags:
-        - group
+        - Group 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -476,7 +547,7 @@ paths:
       description: "Creates or updates a Databus Artifact."
       operationId: "create-artifact"
       tags:
-        - artifact
+        - Artifact 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -558,7 +629,7 @@ paths:
       description: "Retrieve a Databus Artifact as JSONLD."
       operationId: "get-artifact"
       tags:
-        - artifact
+        - Artifact 
       parameters:
         - name: account
           in: path
@@ -659,7 +730,7 @@ paths:
         **If you intend to delete the whole artifact, query the associated DataIds and delete them first.**"
       operationId: "delete-artifact"
       tags:
-        - artifact
+        - Artifact 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -700,10 +771,19 @@ paths:
   /{account}/{group}/{artifact}/{version}:
     put:
       summary: "Create / Update DataId"
-      description: "Create or update a DataId on the Databus"
+      description: "
+        Create or update a DataId on the Databus
+        
+        * The input data must be supplied as Json-LD 
+        
+        * The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-version.sparql)
+        
+        * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+        
+      "
       operationId: "create-dataid"
       tags:
-        - dataid
+        - DataID (version) 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -793,7 +873,7 @@ paths:
     get:
       summary: "Get DataId"
       tags:
-        - dataid
+        - DataID (version) 
       description: "Retrieve a DataId as JSONLD"
       operationId: "get-dataid"
       parameters:
@@ -911,7 +991,7 @@ paths:
       description: "Delete a DataId from the Databus."
       operationId: "delete-dataid"
       tags:
-        - dataid
+        - DataID (version) 
       security:
         - ApiKeyAuth: []
       parameters:
@@ -956,7 +1036,7 @@ paths:
       description: "Get a file from the Databus. The request URI is the Databus file identifier."
       operationId: "get-file"
       tags:
-        - dataid
+        - DataID (version) 
       parameters:
         - name: account
           in: path
@@ -1002,140 +1082,13 @@ paths:
             text/plain:
               schema:
                 type: string
-
-  /api/tractate/v1/canonicalize:
-    post:
-      summary: "Canonicalize DataId"
-      description: "Generate the canonicalized form of a DataId for the Databus Tractate v1."
-      operationId: "tractate-canonicalize"
-      tags:
-        - tractate
-      requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
-        required: true
-        content:
-          application/ld+json:
-            schema:
-              type: object
-              example: |
-                {
-                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                  "@graph": {
-                    "@type": [ "Version", "Dataset" ],
-                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
-                    "hasVersion": "%VERSION%",
-                    "title": "Test Version",
-                    "description": "Data for testing purposes.",
-                    "license": "http://creativecommons.org/licenses/by/4.0/",
-                    "distribution": [
-                      {
-                        "@type": "Part",
-                        "formatExtension": "ttl",
-                        "compression": "none",
-                        "downloadURL": "https://holycrab13.github.io/webid.ttl",
-                        "byteSize": 2730,
-                        "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
-                      }
-                    ]
-                  }
-                }
-      responses:
-        "200":
-          description: "OK"
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: 'Databus Tractate Version 1.0
-                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this
-                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%
-                  http://creativecommons.org/licenses/by/4.0/
-                  d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1'
-  /api/tractate/v1/verify:
-    post:
-      summary: "Verify Tractate"
-      description: "Verify a Databus Tractate v1."
-      operationId: "tractate-verify"
-      tags:
-        - tractate
-      requestBody:
-        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
-        required: true
-        content:
-          application/ld+json:
-            schema:
-              type: object
-              example: '{
-                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
-                "@graph": [
-                    {
-                      "@id": "_:b0",
-                      "@type": "dataid:DatabusTractateV1",
-                      "signature": {
-                          "@type": "xsd:string",
-                          "@value": "ydUqnbsw4JZaiuJ7n9vsIIAIhU1to0Dlr85KVGAFEYGOiAvx22ruwWfgeGOeRC2Dwkwcnq1QdgnAZnAkxiAu1XqmRMlGtwUtkn7XyeSQBQfbuiaL/Vsq7iQWd7YyD9C5PMXcP6T7F21mqW8oZcFso/JDemhNu//dC+o/XWsGM6Vf7teBaXuWUFTrg39c0Rf9X/7MxQN6TQ6Na0+C/vjQO5nM55B7kJyfGaO8PUez8zShA3uYoCHbeJgd8MIvM04S3ia6itg+w+CaEhN9OZNKRm8I7Kxd67c+3hBaijqYROswC4+5O+fEWIqCUdKnPu11/DFSUP5I0gSBgx1gVdx+aA=="
-                      }
-                    },
-                    {
-                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
-                      "@type": "dataid:Artifact"
-                    },
-                    {
-                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
-                      "@type": "dataid:Version"
-                    },
-                    {
-                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
-                      "@type": "Dataset",
-                      "artifact": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
-                      "group": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
-                      "version": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
-                      "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
-                      "hasVersion": "%VERSION%",
-                      "issued": "2022-02-11T13:28:58.132Z",
-                      "license": "http://creativecommons.org/licenses/by/4.0/",
-                      "modified": "2022-02-11T13:28:58.132Z",
-                      "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
-                      "title": "%GROUP% %ARTIFACT%",
-                      "distribution": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
-                      "proof": {
-                          "@id": "_:b0"
-                      }
-                    },
-                    {
-                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
-                      "@type": "Part",
-                      "compression": "none",
-                      "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%/%ARTIFACT%.ttl",
-                      "formatExtension": "ttl",
-                      "formatExtension": "ttl",
-                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
-                      "hasVersion": "%VERSION%",
-                      "issued": "2022-02-11T13:28:58.132Z",
-                      "byteSize": "2730",
-                      "downloadURL": "https://holycrab13.github.io/webid.ttl"
-                    }
-                ]
-              }'
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                example: '{
-                    "success": true,
-                    "message": "Verification successful.\n"
-                  }'
-
-  /{account}/collections/{id}:
+    /{account}/collections/{id}:
     put:
       summary: "Create / Update Collection"
       description: "Creates or updates a Databus Collection."
       operationId: "create-collection"
       tags:
-        - collection
+        - Collection
       security:
         - ApiKeyAuth: []
       parameters:
@@ -1224,7 +1177,7 @@ paths:
       description: "Retrieve a Databus Collection."
       operationId: "get-collection"
       tags:
-        - collection
+        - Collection
       parameters:
         - name: account
           in: path
@@ -1307,7 +1260,7 @@ paths:
       description: ""
       operationId: "delete-collection"
       tags:
-        - collection
+        - Collection
       security:
         - ApiKeyAuth: []
       parameters:
@@ -1336,7 +1289,7 @@ paths:
       description: "Get the md5-Hash of the collection contents. Can be used to check whether the selected files of a collection changed."
       operationId: "collection-md5"
       tags:
-        - collection
+        - Collection
       parameters:
         - name: uri
           in: query
@@ -1358,10 +1311,18 @@ paths:
   /{account}:
     put:
       summary: "Create / Update Account"
-      description: "Creates or updates a Databus Account."
+      description: "
+        Creates or updates a Databus Account.
+        
+          * The input data must be supplied as Json-LD 
+          
+          * The input data will be filtered with this [construct query](./server/app/common/queries/constructs/construct-account.sparql)
+  
+          * The **filtered data** must conform to these [SHACL shapes](./server/app/common/shacl/dataid-shacl.ttl)
+      "
       operationId: "create-account"
       tags:
-        - account
+        - Account
       security:
         - ApiKeyAuth: []
       parameters:
@@ -1420,7 +1381,7 @@ paths:
       description: "Retrieve a Databus Account as JSONLD."
       operationId: "get-account"
       tags:
-        - account
+        - Account
       parameters:
         - name: account
           in: path
@@ -1524,7 +1485,7 @@ paths:
       security:
         - ApiKeyAuth: []
       tags:
-        - account
+        - Account
       parameters:
         - name: uri
           in: query
@@ -1551,7 +1512,7 @@ paths:
       security:
         - ApiKeyAuth: []
       tags:
-        - account
+        - Account
       parameters:
         - name: uri
           in: query
@@ -1576,7 +1537,7 @@ paths:
       security:
         - ApiKeyAuth: []
       tags:
-        - account
+        - Account
       parameters:
         - name: name
           in: query
@@ -1618,7 +1579,7 @@ paths:
       security:
         - ApiKeyAuth: []
       tags:
-        - account
+        - Account
       parameters:
         - name: name
           in: query
@@ -1632,3 +1593,132 @@ paths:
           description: "OK"
         "204":
           description: "Api-Key didn't exist"
+          
+  /api/tractate/v1/canonicalize:
+    post:
+      summary: "Canonicalize DataId"
+      description: "Generate the canonicalized form of a DataId for the Databus Tractate v1."
+      operationId: "tractate-canonicalize"
+      tags:
+        - Tractate
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              example: |
+                {
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@type": [ "Version", "Dataset" ],
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
+                    "hasVersion": "%VERSION%",
+                    "title": "Test Version",
+                    "description": "Data for testing purposes.",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@type": "Part",
+                        "formatExtension": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                        "byteSize": 2730,
+                        "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                      }
+                    ]
+                  }
+                }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Databus Tractate Version 1.0
+                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this
+                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%
+                  http://creativecommons.org/licenses/by/4.0/
+                  d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1'
+  /api/tractate/v1/verify:
+    post:
+      summary: "Verify Tractate"
+      description: "Verify a Databus Tractate v1."
+      operationId: "tractate-verify"
+      tags:
+        - Tractate
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                    {
+                      "@id": "_:b0",
+                      "@type": "dataid:DatabusTractateV1",
+                      "signature": {
+                          "@type": "xsd:string",
+                          "@value": "ydUqnbsw4JZaiuJ7n9vsIIAIhU1to0Dlr85KVGAFEYGOiAvx22ruwWfgeGOeRC2Dwkwcnq1QdgnAZnAkxiAu1XqmRMlGtwUtkn7XyeSQBQfbuiaL/Vsq7iQWd7YyD9C5PMXcP6T7F21mqW8oZcFso/JDemhNu//dC+o/XWsGM6Vf7teBaXuWUFTrg39c0Rf9X/7MxQN6TQ6Na0+C/vjQO5nM55B7kJyfGaO8PUez8zShA3uYoCHbeJgd8MIvM04S3ia6itg+w+CaEhN9OZNKRm8I7Kxd67c+3hBaijqYROswC4+5O+fEWIqCUdKnPu11/DFSUP5I0gSBgx1gVdx+aA=="
+                      }
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
+                      "@type": "dataid:Artifact"
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
+                      "@type": "dataid:Version"
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
+                      "@type": "Dataset",
+                      "artifact": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
+                      "group": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
+                      "version": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
+                      "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
+                      "hasVersion": "%VERSION%",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "license": "http://creativecommons.org/licenses/by/4.0/",
+                      "modified": "2022-02-11T13:28:58.132Z",
+                      "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
+                      "title": "%GROUP% %ARTIFACT%",
+                      "distribution": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
+                      "proof": {
+                          "@id": "_:b0"
+                      }
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
+                      "@type": "Part",
+                      "compression": "none",
+                      "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%/%ARTIFACT%.ttl",
+                      "formatExtension": "ttl",
+                      "formatExtension": "ttl",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
+                      "hasVersion": "%VERSION%",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "byteSize": "2730",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                    }
+                ]
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: '{
+                    "success": true,
+                    "message": "Verification successful.\n"
+                  }'
+
+          
+
