@@ -194,7 +194,7 @@
           <div ng-repeat="extension in profileData.searchExtensions" class="settings-entity">
             <div style="display: flex; align-items: center; width: 100%;">
             <div style="margin-right: .5em">{{ extension.endpointUri }}</div>
-            <div style="flex: 1; color: #aaa">[{{ extension.adapter }}]</div>
+            <div style="flex: 1; color: #aaa">[{{ extension.adapterName }}]</div>
             <div ng-click="removeSearchExtension(extension.endpointUri)" class="button is-error">
               Remove
             </div>

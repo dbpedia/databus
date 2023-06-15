@@ -1,3 +1,7 @@
+const QueryBuilder = require("../query-builder/query-builder");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusConstants = require("../utils/databus-constants");
+const DatabusMessages = require("../utils/databus-messages");
 
 class DatabusCollectionUtils {
 
@@ -155,7 +159,7 @@ class DatabusCollectionUtils {
 
     var req = {
       method: 'POST',
-      url: DATABUS_SPARQL_ENDPOINT_URL,
+      url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
       data: "format=json&query=" + encodeURIComponent(query),
       headers: {
         "Content-type": "application/x-www-form-urlencoded"
@@ -210,7 +214,7 @@ class DatabusCollectionUtils {
 
     var req = {
       method: 'POST',
-      url: DATABUS_SPARQL_ENDPOINT_URL,
+      url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
       data: "format=json&query=" + encodeURIComponent(query),
       headers: {
         "Content-type": "application/x-www-form-urlencoded"
@@ -244,7 +248,7 @@ class DatabusCollectionUtils {
 
     var req = {
       method: 'POST',
-      url: DATABUS_SPARQL_ENDPOINT_URL,
+      url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
       data: "format=json&query=" + encodeURIComponent(query),
       headers: {
         "Content-type": "application/x-www-form-urlencoded"
@@ -345,5 +349,4 @@ class DatabusCollectionUtils {
 
 }
 
-if (typeof module === "object" && module && module.exports)
-  module.exports = DatabusCollectionUtils;
+module.exports = DatabusCollectionUtils;

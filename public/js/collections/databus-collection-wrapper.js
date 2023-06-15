@@ -1,3 +1,7 @@
+const QueryBuilder = require("../query-builder/query-builder");
+const QueryNode = require("../query-builder/query-node");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusUtils = require("../utils/databus-utils");
 
 class DatabusCollectionWrapper {
 
@@ -132,7 +136,7 @@ class DatabusCollectionWrapper {
 
   addCustomQueryNode(label, query) {
     this.content.customQueries.push({
-      guid : DatabusCollectionUtils.uuidv4(),
+      guid : DatabusUtils.uuidv4(),
       label : label,
       query : query,
     });
@@ -247,3 +251,5 @@ class DatabusCollectionWrapper {
     return null;
   }
 }
+
+module.exports = DatabusCollectionWrapper;

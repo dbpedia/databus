@@ -1,3 +1,6 @@
+const DatabusCollectionUtils = require("./databus-collection-utils");
+const DatabusCollectionWrapper = require("./databus-collection-wrapper");
+
 class DatabusCollectionManager {
 
   // Daten die wir haben:
@@ -748,4 +751,4 @@ class DatabusCollectionManager {
 }
 
 
-
+module.exports = DatabusCollectionManager;

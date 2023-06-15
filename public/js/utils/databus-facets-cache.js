@@ -1,3 +1,4 @@
+const DatabusUtils = require("./databus-utils");
 
 class DatabusFacetsCache {
 
@@ -171,3 +172,4 @@ class DatabusFacetsCache {
 
 }
 
+module.exports = DatabusFacetsCache;

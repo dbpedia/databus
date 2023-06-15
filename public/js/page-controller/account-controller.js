@@ -1,3 +1,7 @@
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const TabNavigation = require("../utils/tab-navigation");
+
 var DEFAULT_IMAGE = "https://picsum.photos/id/223/320/320";
 
 // Controller for the header section
@@ -241,3 +245,5 @@ function AccountPageController($scope, $http, $location, collectionManager) {
   }
 
 }
+
+module.exports = AccountPageController;

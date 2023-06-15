@@ -20,31 +20,10 @@
         </type-tag>
       </div>
 
-<!--
-      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Artifact']"
-        ng-click="$ctrl.toggleFilter('filterArtifact');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterArtifact }" type="'Artifact'">
-        </type-tag>
-      </div>
-      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Group']" ng-click="$ctrl.toggleFilter('filterGroup')"
-        class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterGroup }" type="'Group'">
-        </type-tag>
-      </div>
-      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['PersonalProfileDocument']"
-        ng-click="$ctrl.toggleFilter('PersonalProfileDocument');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterPublisher }"
-          type="'PersonalProfileDocument'"></type-tag>
-      </div>
-      <div style="margin-left:4px;" ng-if="$ctrl.filterVisible['Collection']"
-        ng-click="$ctrl.toggleFilter('filterCollection');" class="is-clickable">
-        <type-tag width="36" height="36" ng-class="{ 'grey-out' : !$ctrl.filters.filterCollection }"
-          type="'Collection'"></type-tag>
-      </div>-->
     </div>
   </div>
 
-  <div ng-if="$ctrl.searchInput.length > 0">
+  <div ng-if="$ctrl.searchInput.length > 0" style="margin-top: 2em;">
     <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center;">
       <div class="lds-ellipsis">
         <div></div>
@@ -54,7 +33,7 @@
       </div>
     </div>
 
-    <div ng-if="!$ctrl.isSearching" style="margin-top: 2em;">
+    <div ng-if="!$ctrl.isSearching" style="margin-top: 1em;">
       <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any
           resource.</i></div>
       <div class="dataset-name" ng-repeat="result in $ctrl.results.docs" style="margin-bottom: 1em;">

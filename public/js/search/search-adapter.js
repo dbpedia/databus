@@ -1,25 +1,31 @@
 
 
 
-var searchAdapters = [
-    { 
-        name: 'lookup',
-        label: 'Lookup',
-        factory: this.lookup
-    }
-    /*
-    {
-        name: 'virtuoso',
-        label: 'Virtuoso SPARQL',
-        factory: this.virtuoso
-    }
-    */
-];
 
 class SearchAdapter {
 
+    static list = [
+        { 
+            name: 'lookup',
+            label: 'Lookup',
+            factory: this.lookup
+        }
+        /*
+        {
+            name: 'virtuoso',
+            label: 'Virtuoso SPARQL',
+            factory: this.virtuoso
+        }
+        */
+    ];
+    
+
     static lookup($http, endpoint) {
-        return new SearchAdapter($http, endpoint);
+        return new SearchAdapter($http, endpoint, function(query) {
+            return `?query=${query}&format=json`;
+        }, function(response) {
+            return response;
+        });
     }
 
     static virtuoso($http, endpoint) {
@@ -60,3 +66,5 @@ class SearchAdapter {
         }
     }
 }
+
+module.exports = SearchAdapter;

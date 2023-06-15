@@ -32,7 +32,8 @@ class TabNavigation {
    */
   navigateTo(value) {
     this.location.hash(value);
-    // window.scrollTo(0, 0);
   }
 
 }
+
+module.exports = TabNavigation;

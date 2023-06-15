@@ -58,3 +58,4 @@ function CollectionEditorWidgetController(collectionManager, $scope) {
 }
 
 
+module.exports = CollectionEditorWidgetController;

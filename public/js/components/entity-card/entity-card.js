@@ -16,3 +16,4 @@ function EntityCardController($sce) {
 }
 
 
+module.exports = EntityCardController;

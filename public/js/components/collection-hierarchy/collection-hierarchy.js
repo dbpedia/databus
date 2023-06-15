@@ -1,4 +1,7 @@
-// TODO fabian bug
+const DatabusCollectionWrapper = require("../../collections/databus-collection-wrapper");
+const QueryBuilder = require("../../query-builder/query-builder");
+const QueryNode = require("../../query-builder/query-node");
+const DatabusUtils = require("../../utils/databus-utils");
 
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyController($http, $location, $sce) {
@@ -202,3 +205,4 @@ SELECT DISTINCT ?file WHERE {\n\
   }
 }
 
+module.exports = CollectionHierarchyController;

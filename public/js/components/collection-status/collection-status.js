@@ -36,3 +36,4 @@ function CollectionStatusController($http, $location, $sce) {
   }
 }
 
+module.exports = CollectionStatusController;

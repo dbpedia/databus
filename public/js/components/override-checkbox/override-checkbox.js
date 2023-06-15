@@ -20,3 +20,4 @@ function OverrideCheckboxController() {
   }
 }
 
+module.exports = OverrideCheckboxController;

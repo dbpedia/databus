@@ -38,3 +38,5 @@ function YasqeTextController($scope, $element) {
 
   }
 }
+
+module.exports = YasqeTextController;

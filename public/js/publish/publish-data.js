@@ -1,3 +1,5 @@
+const DatabusUtils = require("../utils/databus-utils");
+
 /**
  * Handles shasum creation (and possibly other file stats)
  */
@@ -426,3 +428,5 @@ class PublishData {
   }
 
 }
+
+module.exports = PublishData;

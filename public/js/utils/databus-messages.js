@@ -20,5 +20,4 @@ class DatabusMessages {
   static ACCOUT_PROFILE_SAVED = 'Profile changes have been saved';
 }
 
-if(typeof module === "object" && module && module.exports)
-   module.exports = DatabusMessages;
+  module.exports = DatabusMessages;

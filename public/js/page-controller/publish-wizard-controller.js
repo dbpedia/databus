@@ -1,9 +1,5 @@
-
-if (typeof require !== 'undefined') {
-  const PublishSession = require("../publish/publish-session");
-  const JsonldUtils = require("../utils/jsonld-utils");
-  const DatabusUris = require("../utils/databus-uris");
-}
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const PublishSession = require("../publish/publish-session");
 
 // Controller for the header section
 function PublishWizardController($scope, $http, focus, $q) {
@@ -225,3 +221,4 @@ function PublishWizardController($scope, $http, focus, $q) {
 }
 
 
+module.exports = PublishWizardController;

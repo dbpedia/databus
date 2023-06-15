@@ -20,4 +20,5 @@ function ExpandableArrowController() {
   }
 }
 
+module.exports = ExpandableArrowController;
 

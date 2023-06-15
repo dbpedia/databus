@@ -1,9 +1,13 @@
+const DatabusCollectionUtils = require("../../collections/databus-collection-utils");
+const DatabusUtils = require("../../utils/databus-utils");
+const DatabusWebappUtils = require("../../utils/databus-webapp-utils");
 
 // hinzufügen eines Controllers zum Modul
 function CollectionStatisticsController($http, $scope, $location, $sce) {
 
   var ctrl = this;
   ctrl.$http = $http;
+  ctrl.utils = new DatabusWebappUtils($scope, $sce);
 
 
   ctrl.$onInit = function() {
@@ -19,8 +23,7 @@ function CollectionStatisticsController($http, $scope, $location, $sce) {
   }
 
   ctrl.markdownToHtml = function(markdown) {
-    var converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
+    return ctrl.utils.markdownToHtml(markdown);
   };
 
   ctrl.formatUploadSize = function(size) {
@@ -28,4 +31,5 @@ function CollectionStatisticsController($http, $scope, $location, $sce) {
   };
 }
 
+module.exports = CollectionStatisticsController;
 

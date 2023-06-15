@@ -1,3 +1,10 @@
+const DatabusCollectionUtils = require("../collections/databus-collection-utils");
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const DatabusMessages = require("../utils/databus-messages");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const TabNavigation = require("../utils/tab-navigation");
 
 /**
  * Controls the collection editor page
@@ -278,3 +285,4 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.onActiveCollectionChanged();
 }
 
+module.exports = CollectionsEditorController;

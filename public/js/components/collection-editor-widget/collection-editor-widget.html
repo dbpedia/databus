@@ -37,17 +37,11 @@
 
               <div ng-click="$ctrl.addSelectionToCollection(collection.uuid)" class="dropdown-item"
                 ng-repeat="collection in $ctrl.collectionManager.local" class="dropdown-item">
-                {{ collection.label == '' ? "Untitled Collection" : collection.label }}
+                {{ collection.title == '' ? "Untitled Collection" : collection.title }}
               </div>
-
             </div>
-
           </div>
-
-
-
         </div>
-
       </div>
     </div>
   </div>

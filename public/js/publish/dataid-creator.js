@@ -1,3 +1,4 @@
+const DatabusUtils = require("../utils/databus-utils");
 
 class DataIdCreator {
 
@@ -154,7 +155,7 @@ class DataIdCreator {
         variantSuffix += '_' + cv.id + '=' + value;
       }
 
-      var fileName = artifact.name; // DatabusUtils.uriToName(file.uri);
+      var fileName = artifact.name; 
 
       var distributionUri = `${versionUri}#${fileName}`;
       var fileUri = `${versionUri}/${fileName}${variantSuffix}`;
@@ -208,7 +209,4 @@ class DataIdCreator {
   }
 }
 
-
-
-if (typeof module === "object" && module && module.exports)
-  module.exports = DataIdCreator;
+module.exports = DataIdCreator;

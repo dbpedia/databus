@@ -1,7 +1,42 @@
+const AccountPageController = require("./page-controller/account-controller");
+const ArtifactPageController = require("./page-controller/artifact-controller");
+const FrontPageController = require("./page-controller/frontpage-controller");
+const HeaderController = require("./page-controller/header-controller");
+const CollectionController = require("./page-controller/collection-controller");
+const CollectionsEditorController = require("./page-controller/collections-editor-controller");
+const GroupPageController = require("./page-controller/group-controller");
+const ProfileController = require("./page-controller/profile-controller");
+const PublishWizardController = require("./page-controller/publish-wizard-controller");
+const VersionPageController = require("./page-controller/version-controller");
+const DatabusCollectionManager = require("./collections/databus-collection-manager");
+const SearchManager = require("./search/search-manager");
+const SearchController = require("./components/search/search-controller");
+const DatabusAlertController = require("./components/databus-alert/databus-alert-controller");
+const EntityCardController = require("./components/entity-card/entity-card");
+const OverrideCheckboxController = require("./components/override-checkbox/override-checkbox");
+const AutofillDropdownController = require("./components/autofill-dropdown/autofill-dropdown");
+const DatabusIconController = require("./components/databus-icon/databus-icon");
+const TypeTagController = require("./components/type-tag/type-tag");
+const CollectionEditorWidgetController = require("./components/collection-editor-widget/collection-editor-widget");
+const CollectionHierarchyControllerTwo = require("./components/collection-hierarchy-two/collection-hierarchy");
+const UriBreadcrumbsController = require("./components/uri-breadcrumbs/uri-breadcrumbs");
+const TableEditorController = require("./components/table-editor/table-editor");
+const MultiselectDropdownController = require("./components/multiselect-dropdown/multiselect-dropdown");
+const FileBrowserController = require("./components/file-browser/file-browser");
+const FacetsViewController = require("./components/facets-view/facets-view");
+const ExpandableArrowController = require("./components/expandable-arrow/expandable-arrow");
+const YasqeTextController = require("./components/yasqe-text/yasqe-text");
+const CollectionStatisticsController = require("./components/collection-statistics/collection-statistics");
+const CollectionNodeController = require("./components/collection-node/collection-node");
+const CollectionSearchController = require("./components/collection-search/collection-search");
+const CollectionStatusController = require("./components/collection-status/collection-status");
+const CollectionDataTableController = require("./components/collection-data-table/collection-data-table");
 
-var databusApplication = angular.module("databusApplication", ['angular-content-editable', 'dndLists', 'angular-click-outside'])
+
+var databusApplication = angular.module("databusApplication", [])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
   .factory('collectionManager', [ "$interval", "$http", function ($interval, $http) { return new DatabusCollectionManager($http, $interval, 'databus_collections'); }])
+  .factory('searchManager', [ "$interval", "$http", function ($interval, $http) { return new SearchManager($http, $interval); }])
   .factory('focus', ["$timeout", "$window", function ($timeout, $window) {
     return function (id) {
       $timeout(function () {
@@ -11,15 +46,14 @@ var databusApplication = angular.module("databusApplication", ['angular-content-
       });
     };
   }])
-  .value("searchAdapters", searchAdapters)
-  .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
+  .controller("HeaderController", ["$scope", "$http", "collectionManager", "searchManager", HeaderController])
   .controller("AccountPageController", ["$scope", "$http", "$location", "collectionManager", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])
-  .controller("ArtifactPageController", ["$scope", "$http", "$sce", "collectionManager", ArtifactPageController])
+  .controller("ArtifactPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", ArtifactPageController])
   .controller("CollectionController", ["$scope", "$sce", "$http", "collectionManager", CollectionController])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "collectionManager", GroupPageController])
-  .controller("ProfileController", ["$scope", "$http", 'searchAdapters', ProfileController])
+  .controller("ProfileController", ["$scope", "$http", ProfileController])
   .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
   .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
@@ -41,8 +75,6 @@ function config($locationProvider) {
   });
 };
 
-
-
 databusApplication.filter('collectionfilter', function() {
   return function(input, search) {
     if (!input) return input;
@@ -61,11 +93,9 @@ databusApplication.filter('collectionfilter', function() {
       }
       
       if(value.title.toLowerCase().includes(expected)) {
-        result.push(value); // [key] = value;
+        result.push(value); 
       }
     });
-
-
 
     return result;
   }
@@ -95,7 +125,7 @@ databusApplication.component('databusAlert', {
 
 databusApplication.component('entityCard', {
   templateUrl: '/js/components/entity-card/entity-card.html',
-  controller: ['$sce', EntityCardController],
+  controller: ['$sce', EntityCardController ],
   bindings: {
     label: '<',
     uri: '<',
@@ -108,16 +138,26 @@ databusApplication.component('entityCard', {
 
 databusApplication.component('search', {
   templateUrl: '/js/components/search/search.html',
-  controller: ['$http', '$interval', '$sce', 'searchAdapters', SearchController],
+  controller: ['$http', '$interval', '$sce', 'searchManager', SearchController],
   bindings: {
     searchInput: '=',
     settings: '<',
   }
 });
 
+/*
+databusApplication.component('databusSearch', {
+  templateUrl: '/js/components/databus-search/databus-search.html',
+  controller: ['$http', '$interval', '$sce', DatabusSearchController],
+  bindings: {
+    filters: '=',
+    input: '='
+  }
+});*/
+
 databusApplication.component('autofillDropdown', {
   templateUrl: '/js/components/autofill-dropdown/autofill-dropdown.html',
-  controller: ['$timeout', AutofillDropdownController],
+  controller: ['$timeout', AutofillDropdownController ],
   bindings: {
     input: '=',
     values: '<',
@@ -140,15 +180,6 @@ databusApplication.component('databusIcon', {
   }
 });
 
-
-databusApplication.component('artifactCard', {
-  templateUrl: '/js/components/artifact-card/artifact-card.html',
-  controller: ArtifactCardController,
-  bindings: {
-    artifact: '<'
-  }
-});
-
 databusApplication.component('typeTag', {
   templateUrl: '/js/components/type-tag/type-tag.html',
   controller: TypeTagController,
@@ -158,6 +189,8 @@ databusApplication.component('typeTag', {
     width: '<',
   }
 });
+
+/*
 
 databusApplication.component('collectionEditor', {
   templateUrl: '/js/components/collection-editor/collection-editor.html',
@@ -169,17 +202,18 @@ databusApplication.component('collectionEditor', {
     onDelete: '&',
     loggedIn: '<'
   }
-});
+});*/
 
 databusApplication.component('collectionEditorWidget', {
   templateUrl: '/js/components/collection-editor-widget/collection-editor-widget.html',
-  controller: ['collectionManager', '$scope', CollectionEditorWidgetController],
+  controller: ['collectionManager', '$scope', CollectionEditorWidgetController ],
   bindings: {
     selection: '<',
     collection: '=',
   }
 });
 
+/*
 databusApplication.component('collectionHierarchy', {
   templateUrl: '/js/components/collection-hierarchy/collection-hierarchy.html',
   controller: ['$http', '$location', '$sce', CollectionHierarchyController],
@@ -191,11 +225,11 @@ databusApplication.component('collectionHierarchy', {
     loggedIn: '<',
     onChange: '&'
   }
-});
+});*/
 
 databusApplication.component('collectionHierarchyTwo', {
   templateUrl: '/js/components/collection-hierarchy-two/collection-hierarchy.html',
-  controller: ['$http', '$location', '$sce', '$scope', 'collectionManager', CollectionHierarchyControllerTwo],
+  controller: ['$http', '$location', '$sce', '$scope', 'collectionManager', CollectionHierarchyControllerTwo ],
   bindings: {
     collection: '=',
     onChange: '&',
@@ -218,7 +252,7 @@ databusApplication.component('collectionNode', {
 
 databusApplication.component('collectionSearch', {
   templateUrl: '/js/components/collection-search/collection-search.html',
-  controller: ['collectionManager', '$http', '$interval', '$sce', CollectionSearchController],
+  controller: ['collectionManager', '$http', '$interval', '$sce', CollectionSearchController ],
   bindings: {
     collection: '=',
     targetDatabusUrl: '<',
@@ -228,7 +262,7 @@ databusApplication.component('collectionSearch', {
 
 databusApplication.component('collectionStatistics', {
   templateUrl: '/js/components/collection-statistics/collection-statistics.html',
-  controller: ['$http', '$scope', '$location', '$sce', CollectionStatisticsController],
+  controller: ['$http', '$scope', '$location', '$sce', CollectionStatisticsController ],
   bindings: {
     collection: '<'
   }
@@ -236,7 +270,7 @@ databusApplication.component('collectionStatistics', {
 
 databusApplication.component('collectionStatus', {
   templateUrl: '/js/components/collection-status/collection-status.html',
-  controller: ['$http', '$location', '$sce', CollectionStatusController],
+  controller: ['$http', '$location', '$sce', CollectionStatusController ],
   bindings: {
     hasLocalChanges: '<',
     isPublished: '<',
@@ -244,14 +278,7 @@ databusApplication.component('collectionStatus', {
   }
 });
 
-databusApplication.component('databusSearch', {
-  templateUrl: '/js/components/databus-search/databus-search.html',
-  controller: ['$http', '$interval', '$sce', DatabusSearchController],
-  bindings: {
-    filters: '=',
-    input: '='
-  }
-});
+/*
 
 databusApplication.component('editLabel', {
   templateUrl: '/js/components/edit-label/edit-label.html',
@@ -262,7 +289,7 @@ databusApplication.component('editLabel', {
     onBlur: '&',
     onChange: '&'
   }
-});
+});*/
 
 databusApplication.component('expandableArrow', {
   templateUrl: '/js/components/expandable-arrow/expandable-arrow.html',
@@ -276,7 +303,7 @@ databusApplication.component('expandableArrow', {
 
 databusApplication.component('facetsView', {
   templateUrl: '/js/components/facets-view/facets-view.html',
-  controller: ['$http', '$scope', FacetsViewController],
+  controller: ['$http', '$scope', FacetsViewController ],
   bindings: {
     node: '=',
     readonly: '<',
@@ -288,7 +315,7 @@ databusApplication.component('facetsView', {
 
 databusApplication.component('facetsViewHorizontal', {
   templateUrl: '/js/components/facets-view/facets-view-horizontal.html',
-  controller: ['$http', '$scope', FacetsViewController],
+  controller: ['$http', '$scope', FacetsViewController ],
   bindings: {
     node: '=',
     readonly: '<',
@@ -300,7 +327,7 @@ databusApplication.component('facetsViewHorizontal', {
 
 databusApplication.component('fileBrowser', {
   templateUrl: '/js/components/file-browser/file-browser.html',
-  controller: ['$http', '$scope', FileBrowserController],
+  controller: ['$http', '$scope', FileBrowserController ],
   bindings: {
     resourceUri: '<',
     resourceType: '@',
@@ -313,6 +340,8 @@ databusApplication.component('fileBrowser', {
   }
 });
 
+/*
+
 databusApplication.component('multiselectArtifactDropdown', {
   templateUrl: '/js/components/multiselect-artifact-dropdown/multiselect-artifact-dropdown.html',
   controller: ['$timeout', '$sce', MultiselectArtifactDropdownController],
@@ -324,7 +353,7 @@ databusApplication.component('multiselectArtifactDropdown', {
     icon: '<',
     onChange: '&'
   }
-});
+});*/
 
 databusApplication.component('multiselectDropdown', {
   templateUrl: '/js/components/multiselect-dropdown/multiselect-dropdown.html',
@@ -361,7 +390,7 @@ databusApplication.component('uriBreadcrumbs', {
 
 databusApplication.component('yasqeText', {
   templateUrl: '/js/components/yasqe-text/yasqe-text.html',
-  controller: ['$scope', '$element', YasqeTextController],
+  controller: ['$scope', '$element', YasqeTextController ],
   bindings: {
     query: '=',
     readOnly: '<',
@@ -376,8 +405,6 @@ databusApplication.component('collectionDataTable', {
     collection: '<'
   }
 });
-
-
 
 
 databusApplication.directive('selectOnClick', ['$window', function ($window) {
@@ -541,4 +568,116 @@ databusApplication.directive('onFinishRender', ['$timeout', '$parse', function (
       }
     }
   }
-}])
+}]);
+
+databusApplication.directive('clickOutside', [
+  '$document', '$parse', '$timeout',
+  clickOutside
+]);
+
+/**
+     * @ngdoc directive
+     * @name angular-click-outside.directive:clickOutside
+     * @description Directive to add click outside capabilities to DOM elements
+     * @requires $document
+     * @requires $parse
+     * @requires $timeout
+     **/
+ function clickOutside($document, $parse, $timeout) {
+  return {
+      restrict: 'A',
+      link: function($scope, elem, attr) {
+
+          // postpone linking to next digest to allow for unique id generation
+          $timeout(function() {
+              var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.split(/[ ,]+/) : [],
+                  fn;
+
+              function eventHandler(e) {
+                  var i,
+                      element,
+                      r,
+                      id,
+                      classNames,
+                      l;
+
+                  // check if our element already hidden and abort if so
+                  if (angular.element(elem).hasClass("ng-hide")) {
+                      return;
+                  }
+
+                  // if there is no click target, no point going on
+                  if (!e || !e.target) {
+                      return;
+                  }
+
+                  // loop through the available elements, looking for classes in the class list that might match and so will eat
+                  for (element = e.target; element; element = element.parentNode) {
+                      // check if the element is the same element the directive is attached to and exit if so (props @CosticaPuntaru)
+                      if (element === elem[0]) {
+                          return;
+                      }
+                      
+                      // now we have done the initial checks, start gathering id's and classes
+                      id = element.id,
+                      classNames = element.className,
+                      l = classList.length;
+
+                      // Unwrap SVGAnimatedString classes
+                      if (classNames && classNames.baseVal !== undefined) {
+                          classNames = classNames.baseVal;
+                      }
+
+                      // if there are no class names on the element clicked, skip the check
+                      if (classNames || id) {
+
+                          // loop through the elements id's and classnames looking for exceptions
+                          for (i = 0; i < l; i++) {
+                              //prepare regex for class word matching
+                              r = new RegExp('\\b' + classList[i] + '\\b');
+
+                              // check for exact matches on id's or classes, but only if they exist in the first place
+                              if ((id !== undefined && id === classList[i]) || (classNames && r.test(classNames))) {
+                                  // now let's exit out as it is an element that has been defined as being ignored for clicking outside
+                                  return;
+                              }
+                          }
+                      }
+                  }
+
+                  // if we have got this far, then we are good to go with processing the command passed in via the click-outside attribute
+                  $timeout(function() {
+                      fn = $parse(attr['clickOutside']);
+                      fn($scope, { event: e });
+                  });
+              }
+
+              // if the devices has a touchscreen, listen for this event
+              if (_hasTouch()) {
+                  $document.on('touchstart', eventHandler);
+              }
+
+              // still listen for the click event even if there is touch to cater for touchscreen laptops
+              $document.on('click', eventHandler);
+
+              // when the scope is destroyed, clean up the documents event handlers as we don't want it hanging around
+              $scope.$on('$destroy', function() {
+                  if (_hasTouch()) {
+                      $document.off('touchstart', eventHandler);
+                  }
+
+                  $document.off('click', eventHandler);
+              });
+
+              /**
+               * @description Private function to attempt to figure out if we are on a touch device
+               * @private
+               **/
+              function _hasTouch() {
+                  // works on most browsers, IE10/11 and Surface
+                  return 'ontouchstart' in window || navigator.maxTouchPoints;
+              };
+          });
+      }
+  };
+}

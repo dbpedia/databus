@@ -143,5 +143,4 @@
   };
 }
 
-if(typeof module === "object" && module && module.exports)
-  module.exports = QueryTemplates;
+module.exports = QueryTemplates;

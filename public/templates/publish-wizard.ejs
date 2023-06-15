@@ -1,8 +1,5 @@
 <% include header %>
 
-  <script src="/js/publish/publish-session.js"></script>
-  <script src="/js/components/table-editor/table-editor.js"></script>
-  <script src="/node_modules/bulma-steps/dist/js/bulma-steps.min.js"></script>
   <script src="/node_modules/stream-file/dist/stream-file.min.js"></script>
   <script src="/node_modules/js-sha256/build/sha256.min.js"></script>
 
@@ -24,8 +21,6 @@
         margin-bottom: 0.75em;
       }
     </style>
-
-    <link rel="stylesheet" href="/node_modules/bulma-steps/dist/css/bulma-steps.min.css" type="text/css" />
 
 
     <div style="display: flex; align-items: flex-end; justify-content: flex-end;">
@@ -754,9 +749,9 @@
           
               <div class="row">
                 <div class="row-label">File Table</div>
-                <table-editor ng-if="objSize(version.files) > 0" model="version" on-remove-file="removeFile(file)">
+                <table-editor ng-if="utils.objSize(version.files) > 0" model="version" on-remove-file="removeFile(file)">
                 </table-editor>
-                <div ng-if="loadRequestCount == 0 && objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
+                <div ng-if="loadRequestCount == 0 && utils.objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
                   <div class="hint-box">
                     <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>

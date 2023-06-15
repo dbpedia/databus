@@ -100,5 +100,4 @@ class DatabusUris {
 
 }
 
-if(typeof module === "object" && module && module.exports)
-   module.exports = DatabusUris;
+module.exports = DatabusUris;

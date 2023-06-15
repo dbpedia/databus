@@ -18,3 +18,4 @@ function CollectionNodeController() {
   }
 }
 
+module.exports = CollectionNodeController;

@@ -1,11 +1,9 @@
-// Pseudo include for easier dev
-if (typeof require !== 'undefined') {
-  const DatabusUtils = require("../utils/databus-utils");
-  const DatabusWebappUtils = require("../utils/databus-webapp-utils");
-  const DatabusAlert = require("../components/databus-alert/databus-alert");
-}
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const SearchAdapter = require("../search/search-adapter");
 
-function ProfileController($scope, $http, searchAdapters) {
+function ProfileController($scope, $http) {
 
   $scope.profileData = data.profile;
   $scope.auth = data.auth;
@@ -16,7 +14,7 @@ function ProfileController($scope, $http, searchAdapters) {
   $scope.createApiKeyError = "";
   $scope.addWebIdUri = "";
   $scope.grantAccessUri = "";
-  $scope.adapters = searchAdapters;
+  $scope.adapters = SearchAdapter.list;
   $scope.utils = new DatabusWebappUtils($scope);
 
   $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
@@ -248,8 +246,7 @@ function ProfileController($scope, $http, searchAdapters) {
 
   $scope.modsSettings = {}
   $scope.modsSettings.searchExtensionURI = "";
-  $scope.modsSettings.searchExtensionAdapter = searchAdapters[0];
-
+  $scope.modsSettings.searchExtensionAdapter = $scope.adapters[0];
 
 
   $scope.editData = DatabusUtils.createCleanCopy($scope.profileData);
@@ -259,3 +256,5 @@ function ProfileController($scope, $http, searchAdapters) {
   }
 
 }
+
+module.exports = ProfileController;

@@ -1,11 +1,10 @@
-if (typeof require !== 'undefined') {
-  const DatabusUtils = require("../utils/databus-utils");
-}
+const DatabusUtils = require("../utils/databus-utils");
 
 class DatabusWebappUtils {
 
-  constructor($scope) {
+  constructor($scope, $sce) {
     this.scope = $scope;
+    this.sce = $sce;
   }
 
   createAccount() {
@@ -24,8 +23,19 @@ class DatabusWebappUtils {
     return moment(date).fromNow();
   }
 
+  markdownToHtml(markdown) {
+
+    if(this.sce == null) {
+      return markdown;
+    }
+
+    var markdown = DatabusUtils.renderMarkdown(markdown);
+
+    return this.sce.trustAsHtml(markdown);
+  };
+
   formatDate(date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
+    return DatabusUtils.formatDate(date); // moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
   }
 
   formatLongDate(longString) {
@@ -37,6 +47,16 @@ class DatabusWebappUtils {
   formatFileSize (size) {
     return DatabusUtils.formatFileSize(size);
   }
+
+  getPathname(uri) {
+    var url = new URL(uri);
+    return url.pathname;
+  }
+
+  objSize(obj) {
+    return DatabusUtils.objSize(obj);
+  }
+
 
   uriToName(uri) {
     return DatabusUtils.uriToName(uri); 
@@ -71,5 +91,4 @@ class DatabusWebappUtils {
   }
 }
 
-if (typeof module === "object" && module && module.exports)
-  module.exports = DatabusWebappUtils;
+module.exports = DatabusWebappUtils;

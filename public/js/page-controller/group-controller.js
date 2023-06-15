@@ -1,3 +1,11 @@
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DataIdCreator = require("../publish/dataid-creator");
+const QueryBuilder = require("../query-builder/query-builder");
+const QueryNode = require("../query-builder/query-node");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+
 function GroupPageController($scope, $http, $sce, $interval, collectionManager) {
 
   $scope.group = data.group;
@@ -5,7 +13,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
   $scope.group.hasData = false;
   $scope.isLoading = true;
-
+  $scope.utils = new DatabusWebappUtils($scope, $sce);
 
 
   $http({
@@ -153,9 +161,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     return $sce.trustAsHtml(result);
   }
 
-  $scope.formatDate = function (date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
 
   $scope.formatLicense = function (licenseUri) {
     var licenseName = DatabusUtils.uriToName(licenseUri);
@@ -293,3 +298,5 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     });
   }
 }
+
+module.exports = GroupPageController;

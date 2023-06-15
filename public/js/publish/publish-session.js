@@ -1,9 +1,9 @@
 
-if (typeof require !== 'undefined') {
-    const DatabusUtils = require("../utils/databus-utils");
-    const DatabusUris = require("../utils/databus-uris");
-    const JsonldUtils = require("../utils/jsonld-utils");
-}
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusUris = require("../utils/databus-uris");
+const JsonldUtils = require("../utils/jsonld-utils");
+const PublishData = require("./publish-data");
+const DataIdCreator = require("./dataid-creator");
 
 class PublishSession {
 
@@ -220,7 +220,7 @@ class PublishSession {
 
         } else if (value == 'existing') {
 
-            if(this.availableVersions.length == 0) {
+            if (this.availableVersions.length == 0) {
                 this.setCreateNewVersion('create');
                 return;
             }
@@ -293,6 +293,4 @@ class PublishSession {
     }
 }
 
-
-if (typeof module === "object" && module && module.exports)
-    module.exports = PublishSession;
+module.exports = PublishSession;

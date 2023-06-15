@@ -12,7 +12,9 @@ const { dataid } = require('../../common/queries/sparql');
 const getJsonLd = require('../../common/get-jsonld');
 const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
 const collectionQueryTemplate = require("../../common/queries/constructs/ld/construct-collection.sparql");
-const AppJsonFormatter = require('../app-json-formatter');
+const versionQueryTemplate = require("../../common/queries/constructs/ld/construct-version.sparql");
+
+const AppJsonFormatter = require('../../../../public/js/utils/app-json-formatter');
 
 module.exports = function (router, protector) {
 
@@ -114,7 +116,7 @@ module.exports = function (router, protector) {
   });
 
   router.get('/:account/collections/:collection', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
-    
+
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var collectionUri = UriUtils.createResourceUri([req.params.account, 'collections', req.params.collection]);
@@ -203,38 +205,61 @@ module.exports = function (router, protector) {
   router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
-      let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}_${req.params.version}`;
 
 
-      let data = await cache.get(cacheKey, async () => {
-        return {
-          version: await sparql.dataid.getVersion(req.params.account, req.params.group,
-            req.params.artifact, req.params.version)
-        };
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var versionUri = UriUtils.createResourceUri([req.params.account, req.params.group,
+      req.params.artifact, req.params.version]);
+
+      var versionGraphs = await cache.get(versionUri, async () => {
+        return await getJsonLd(versionUri, versionQueryTemplate, 'flatten')
       });
 
-      // Only deliver the version graph
-      var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
-      data.version = [versionGraph];
-
-      try {
-        data.licenseData = await licenseCache.get('dalicc', async () => {
-          return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
-        });
-      } catch(err) {
-        data.licenseData = null;
-      }
-
-      if (data.version == null) {
+      if (versionGraphs == null) {
         next('route');
         return;
       }
 
-      data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      res.render('version', { title: data.version.title, data: data });
+      var versionGraph = JsonldUtils.getTypedGraph(versionGraphs, DatabusUris.DATAID_VERSION);
+      var versionTitle = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
+
+      res.render('version', {
+        title: versionTitle,
+        data: {
+          auth: auth,
+          graph: versionGraph
+        }
+      });
+
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      next('route');
     }
+
+    /*
+
+    // Only deliver the version graph
+    var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
+    data.version = [versionGraph];
+
+    try {
+      data.licenseData = await licenseCache.get('dalicc', async () => {
+        return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
+      });
+    } catch(err) {
+      data.licenseData = null;
+    }
+
+    if (data.version == null) {
+      next('route');
+      return;
+    }
+
+    data.auth = ServerUtils.getAuthInfoFromRequest(req);
+    res.render('version', { title: data.version.title, data: data });
+  } catch (err) {
+    console.log(err);
+    res.status(404).send('Sorry cant find that!');
+  } */
   });
 }

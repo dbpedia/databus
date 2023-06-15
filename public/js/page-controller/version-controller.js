@@ -1,63 +1,29 @@
-// Fake includes for syntax highlighting
-if (typeof require !== 'undefined') {
-  const JsonldUtils = require("../utils/jsonld-utils");
-  const DatabusUtils = require("../utils/databus-utils");
-  const QueryNode = require("../query-builder/query-node");
-}
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const JsonldUtils = require("../utils/jsonld-utils");
+const DatabusUtils = require("../utils/databus-utils");
+const QueryNode = require("../query-builder/query-node");
+const TabNavigation = require("../utils/tab-navigation");
+const DatabusUris = require("../utils/databus-uris");
+const DataIdCreator = require("../publish/dataid-creator");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const QueryBuilder = require("../query-builder/query-builder");
+const AppJsonFormatter = require("../utils/app-json-formatter");
 
 function VersionPageController($scope, $http, $sce, $location, collectionManager) {
 
-  // TODO: Change this hacky BS!
-  setTimeout(function () {
-    $(".dropdown-item").click(function (e) {
-      var dropdown = $(this).closest(".dropdown");
-      $(dropdown).removeClass("is-active");
-      e.stopPropagation();
-    });
-
-    $("body").click(function () {
-      $(".dropdown").removeClass("is-active");
-    });
-
-    $(".dropdown").click(function (e) {
-      $(".dropdown").removeClass("is-active");
-      $(this).addClass("is-active");
-      e.stopPropagation();
-    });
-  }, 500);
-
-
   $scope.navigation = new TabNavigation($scope, $location, [
-    '', 'mods', 'edit'
+    'files', 'mods', 'edit'
   ]);
 
-  $scope.utils = new DatabusWebappUtils($scope);
-
-  $scope.tabs = {};
-  $scope.tabs.activeTab = 0;
-
+  $scope.utils = new DatabusWebappUtils($scope, $sce);
   $scope.collectionManager = collectionManager;
-  $scope.actions = data.actions;
-  $scope.versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
-
-  $scope.version = {};
-  $scope.version.uri = $scope.versionGraph[DatabusUris.JSONLD_ID];
-  $scope.version.title = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_TITLE);
-  $scope.version.abstract = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ABSTRACT);
-  $scope.version.description = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_DESCRIPTION);
-  $scope.version.artifact = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
-  $scope.version.license = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_LICENSE);
-  $scope.version.attribution = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ATTRIBUTION);
-  $scope.version.wasDerivedFrom = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
-
-  $scope.version.issued = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ISSUED);
-  $scope.version.name = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_HAS_VERSION);
-
-  $scope.serviceData = data.services;
-  $scope.modsData = data.mods;
+  $scope.authenticated = data.auth.authenticated;
+  $scope.versionGraph = data.graph;
+  $scope.version = AppJsonFormatter.formatVersionData(data.graph);
+  
   $scope.queryResult = {};
   $scope.addToCollectionQuery = "";
-  $scope.authenticated = data.auth.authenticated;
   $scope.collectionModalVisible = false;
 
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.version.uri, 3));
@@ -279,8 +245,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
     return DatabusUtils.uriToName(uri);
   }
 
-  $scope.markdownToHtml = function (markdown) {
-    var converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
-  };
+
 }
+
+module.exports = VersionPageController;

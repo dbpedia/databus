@@ -32,3 +32,5 @@ function UriBreadcrumbsController() {
   }
 }
 
+module.exports = UriBreadcrumbsController;
+

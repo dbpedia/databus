@@ -163,3 +163,5 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
   };
 }
 
+
+module.exports = CollectionSearchController;

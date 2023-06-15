@@ -185,3 +185,5 @@ function MultiselectDropdownController($timeout, $sce) {
   }
 }
 
+
+module.exports = MultiselectDropdownController;

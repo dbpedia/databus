@@ -1,3 +1,8 @@
+const DatabusCollectionWrapper = require("../../collections/databus-collection-wrapper");
+const QueryNode = require("../../query-builder/query-node");
+const DatabusFacetsCache = require("../../utils/databus-facets-cache");
+const DatabusUtils = require("../../utils/databus-utils");
+
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collectionManager) {
 
@@ -347,10 +352,7 @@ SELECT ?file WHERE {
 
   ctrl.updateViewModel = function () {
     ctrl.collectionWrapper = new DatabusCollectionWrapper(ctrl.collection);
-
     ctrl.root = ctrl.collection.content.root;
-
-    // QueryNode.assignParents(ctrl.root);
 
     ctrl.view = {};
     ctrl.view.groups = {};
@@ -776,3 +778,4 @@ SELECT ?file WHERE {
 }
 
 
+module.exports = CollectionHierarchyControllerTwo;

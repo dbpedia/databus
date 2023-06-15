@@ -316,5 +316,4 @@ class QueryNode {
   }
 }
 
-if(typeof module === "object" && module && module.exports)
-  module.exports = QueryNode;
+module.exports = QueryNode;

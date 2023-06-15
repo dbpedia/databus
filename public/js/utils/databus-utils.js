@@ -1,10 +1,6 @@
-var JsonldUris = undefined;
-
-if (typeof module === "object" && module && module.exports) {
-  JsonldUris = require("./databus-uris");
-} else {
-  JsonldUris = DatabusUris;
-}
+const DatabusCollectionUtils = require("../collections/databus-collection-utils");
+var markdownit = require('markdown-it');
+const moment = require("moment/moment");
 
 class DatabusUtils {
 
@@ -269,6 +265,10 @@ class DatabusUtils {
     return uri.split('/');
   }
 
+  static formatDate(date) {
+    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
+  }
+
   static exportToJsonFile(jsonData) {
 
     var ignoreKeys = [
@@ -336,6 +336,26 @@ class DatabusUtils {
     return undefined;
   }
 
+  static parseMarkdown(markdown) {
+
+    if(markdown == null) {
+      return null;
+    }
+
+    var markdownParser = markdownit();
+    return markdownParser.parse(markdown);
+  }
+
+  static renderMarkdown(markdown) {
+
+    if(markdown == null) {
+      return null;
+    }
+
+    var markdownParser = markdownit();
+    return markdownParser.render(markdown);
+  }
+
   /**
    * Create a dct:abstract from the content of a dct:description
    * @param {*} description 
@@ -343,17 +363,15 @@ class DatabusUtils {
   static createAbstractFromDescription(description) {
 
     try {
-      var markdownParser = undefined;
+      var tokens = this.parseMarkdown(description);
 
-      if (typeof module === "object" && module && module.exports) {
-        markdownParser = require('markdown-it')();
-      } else {
-        markdownParser = window.markdownit();
-      }
-
-      var tokens = markdownParser.parse(description);
+     
       var paragraphFound = false;
       var result = "";
+
+      if(tokens == null) {
+       return result; 
+      }
 
       var firstParagraphText = null;
 
@@ -402,18 +420,18 @@ class DatabusUtils {
 
         for (var distribution of distributionGraphs) {
 
-          error.downloadURLs.push(distribution[JsonldUris.DCAT_DOWNLOAD_URL][0][JsonldUris.JSONLD_ID]);
+          error.downloadURLs.push(distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID]);
         }
 
-        error[JsonldUris.DATAID_FORMAT_EXTENSION] =
-          distributionGraphs[0][JsonldUris.DATAID_FORMAT_EXTENSION][0][JsonldUris.JSONLD_VALUE];
+        error[DatabusUris.DATAID_FORMAT_EXTENSION] =
+          distributionGraphs[0][DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
 
-        error[JsonldUris.DATAID_COMPRESSION] =
-          distributionGraphs[0][JsonldUris.DATAID_COMPRESSION][0][JsonldUris.JSONLD_VALUE];
+        error[DatabusUris.DATAID_COMPRESSION] =
+          distributionGraphs[0][DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
 
         for (var contentVariantUri of contentVariantUris) {
           error[contentVariantUri] = distributionGraphs[0][contentVariantUri] != null ?
-            distributionGraphs[0][contentVariantUri][0][JsonldUris.JSONLD_VALUE] : 'none'
+            distributionGraphs[0][contentVariantUri][0][DatabusUris.JSONLD_VALUE] : 'none'
         }
 
         errorList.push(error);
@@ -460,5 +478,6 @@ class DatabusUtils {
 
 }
 
-if (typeof module === "object" && module && module.exports)
-  module.exports = DatabusUtils;
+// export default DatabusUtils;
+
+module.exports = DatabusUtils;

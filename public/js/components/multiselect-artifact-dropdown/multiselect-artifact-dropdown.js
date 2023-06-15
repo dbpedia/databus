@@ -58,3 +58,4 @@ function MultiselectArtifactDropdownController($timeout, $sce) {
   }
 }
 
+module.exports = MultiselectArtifactDropdownController;

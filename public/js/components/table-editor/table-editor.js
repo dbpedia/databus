@@ -1,4 +1,3 @@
-
 // hinzufügen eines Controllers zum Modul
 function TableEditorController() {
 
@@ -178,5 +177,6 @@ function TableEditorController() {
   ctrl.change = function() {
 
   }
-}
+};
 
+module.exports = TableEditorController;

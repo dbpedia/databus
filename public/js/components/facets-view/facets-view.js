@@ -1,3 +1,8 @@
+const QueryNode = require("../../query-builder/query-node");
+const DatabusConstants = require("../../utils/databus-constants");
+const DatabusUris = require("../../utils/databus-uris");
+const DatabusUtils = require("../../utils/databus-utils");
+
 /**
  * Manages an array of facets with respect to a parent facets array.
  * Provides some convenient\ce methods to write to the facets array and
@@ -191,9 +196,9 @@ function FacetsViewController($http, $scope) {
       }
 
       // Add the "Latest Version" facet to the visible settings of the version facet
-      if (ctrl.resourceType != 'version' && ctrl.viewModel[FACET_VERSION_KEY] != undefined) {
-        ctrl.viewModel[FACET_VERSION_KEY].visibleFacetSettings.unshift({
-          value: FACET_LATEST_VERSION_VALUE,
+      if (ctrl.resourceType != 'version' && ctrl.viewModel[DatabusUris.DCT_HAS_VERSION] != undefined) {
+        ctrl.viewModel[DatabusUris.DCT_HAS_VERSION].visibleFacetSettings.unshift({
+          value: DatabusConstants.FACET_LATEST_VERSION_VALUE,
           checked: false,
           isOverride: false
         });
@@ -247,8 +252,8 @@ function FacetsViewController($http, $scope) {
   }
 
   ctrl.getFacetLabel = function (value) {
-    if (value == FACET_LATEST_VERSION_VALUE) {
-      return FACET_LATEST_VERSION_LABEL;
+    if (value == DatabusConstants.FACET_LATEST_VERSION_VALUE) {
+      return DatabusConstants.FACET_LATEST_VERSION_LABEL;
     }
 
     return value;
@@ -262,7 +267,7 @@ function FacetsViewController($http, $scope) {
    */
   ctrl.changeFacetValueState = function (key, value, targetState) {
 
-    if (ctrl.resourceType == 'group' && key == 'http://dataid.dbpedia.org/ns/core#artifact') {
+    if (ctrl.resourceType == 'group' && key == DatabusUris.DATAID_ARTIFACT_PROPERTY) {
 
       var childUri = ctrl.node.uri + '/' + value;
 
@@ -397,4 +402,4 @@ function FacetsViewController($http, $scope) {
   }
 }
 
-
+module.exports = FacetsViewController;
