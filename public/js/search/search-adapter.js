@@ -18,12 +18,17 @@ class SearchAdapter {
         }
         */
     ];
+
+    static inferResourceTypes(response) {
+        
+    }
     
 
     static lookup($http, endpoint) {
         return new SearchAdapter($http, endpoint, function(query) {
             return `?query=${query}&format=json`;
         }, function(response) {
+            inferResourceTypes(response);
             return response;
         });
     }

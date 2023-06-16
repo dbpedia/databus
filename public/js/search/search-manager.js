@@ -7,9 +7,31 @@ class SearchManager {
         this.http = $http;
         this.searchExtensions = [];
 
+        var baseAdapter = SearchAdapter.lookup(this.http, `/api/search`);
         this.searchExtensions.push({
-
+            endpointUri: `/api/search`,
+            adapterName: `lookup`,
+            adapter: baseAdapter
         });
+    }
+
+    async search(queryUrl) {
+        for (var searchExtension in this.searchExtensions) {
+
+
+            
+        }
+
+        var url = `/api/search?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
+      $http({
+        method: 'GET',
+        url: url
+      }).then(function successCallback(response) {
+        ctrl.isSearching = false;
+        ctrl.results = response.data;
+      }, function errorCallback(response) {
+        ctrl.isSearching = false;
+      });
     }
 
     async initialize() {
@@ -31,16 +53,17 @@ class SearchManager {
 
         var response = await this.http(options);
         var accountData = AppJsonFormatter.formatAccountData(response.data);
+        var extensions = JSON.parse(JSON.stringify(accountData.searchExtensions));
 
-        this.searchExtensions = JSON.parse(JSON.stringify(accountData.searchExtensions));
-
-        for (var searchExtension of this.searchExtensions) {
+        for (var searchExtension of extensions) {
 
             switch (searchExtension.adapterName) {
                 case 'lookup':
                     searchExtension.adapter = SearchAdapter.lookup(this.http, searchExtension.endpointUri);
                     break;
             }
+
+            this.searchExtensions.push(searchExtension);
 
         }
     }

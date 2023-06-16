@@ -80,7 +80,6 @@ function SearchController($http, $interval, $sce, searchManager) {
     if (ctrl.searchChanged) {
 
       var baseFilters = `&minRelevance=${ctrl.minRelevance}&maxResults=${ctrl.maxResults}`;
-
       var typeFilters = ``;
       var isAnyFilterActive = ctrl.isAnyFilterActive();
 
@@ -101,16 +100,18 @@ function SearchController($http, $interval, $sce, searchManager) {
         }
       }
 
-      var url = `/api/search?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
-      $http({
-        method: 'GET',
-        url: url
-      }).then(function successCallback(response) {
-        ctrl.isSearching = false;
+      var queryUrl = `?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
+
+
+      ctrl.searchManager.search(queryUrl).then(function success(response) {
         ctrl.results = response.data;
-      }, function errorCallback(response) {
-        ctrl.isSearching = false;
+        ctrl.isSearching = true;
+      }, function error(response) {
+        ctrl.isSearching = true;
       });
+
+
+   
 
       ctrl.searchChanged = false;
     };
