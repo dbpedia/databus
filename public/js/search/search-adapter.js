@@ -19,8 +19,15 @@ class SearchAdapter {
         */
     ];
 
-    static inferResourceTypes(response) {
-        
+    constructor($http, endpoint, queryFormatter, resultFormatter) {
+        this.http = $http;
+        this.endpoint = endpoint;
+        this.queryFormatter = queryFormatter;
+        this.resultFormatter = resultFormatter;
+    }
+
+    static inferResourceTypes(docs) {
+        // TODO:
     }
     
 
@@ -28,8 +35,9 @@ class SearchAdapter {
         return new SearchAdapter($http, endpoint, function(query) {
             return `?query=${query}&format=json`;
         }, function(response) {
-            inferResourceTypes(response);
-            return response;
+            var docs = response.data.docs;
+            SearchAdapter.inferResourceTypes(docs);
+            return docs;
         });
     }
 
@@ -45,12 +53,7 @@ class SearchAdapter {
         return virtuosoAdapter;
     }
 
-    constructor($http, endpoint, queryFormatter, resultFormatter) {
-        this.http = $http;
-        this.endpoint = endpoint;
-        this.queryFormatter = queryFormatter;
-        this.resultFormatter = resultFormatter;
-    }
+   
 
     async search(query) {
         try {

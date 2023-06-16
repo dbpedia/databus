@@ -36,7 +36,7 @@
     <div ng-if="!$ctrl.isSearching" style="margin-top: 1em;">
       <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any
           resource.</i></div>
-      <div class="dataset-name" ng-repeat="result in $ctrl.results.docs" style="margin-bottom: 1em;">
+      <div class="dataset-name" ng-repeat="result in $ctrl.results" style="margin-bottom: 1em;">
 
         <entity-card label="result.label[0]" type="result.typeName[0]" uri="result.resource[0]"
           desc="result.comment[0]">

@@ -75,6 +75,10 @@ function SearchController($http, $interval, $sce, searchManager) {
     return false;
   }
 
+  ctrl.baseQueryFormatter = function(query) {
+    return `?query=${query}${ctrl.searchFilter}${ctrl.baseFilters}${ctrl.typeFilters}`
+  }
+
   $interval(function () {
 
     if (ctrl.searchChanged) {
@@ -100,18 +104,16 @@ function SearchController($http, $interval, $sce, searchManager) {
         }
       }
 
-      var queryUrl = `?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
+      ctrl.baseFilters = baseFilters;
+      ctrl.typeFilters = typeFilters;
+      ctrl.searchManager.baseAdapter.queryFormatter = ctrl.baseQueryFormatter;
 
-
-      ctrl.searchManager.search(queryUrl).then(function success(response) {
-        ctrl.results = response.data;
-        ctrl.isSearching = true;
+      ctrl.searchManager.search(ctrl.searchInput).then(function success(results) {
+        ctrl.results = results;
+        ctrl.isSearching = false;
       }, function error(response) {
-        ctrl.isSearching = true;
+        ctrl.isSearching = false;
       });
-
-
-   
 
       ctrl.searchChanged = false;
     };

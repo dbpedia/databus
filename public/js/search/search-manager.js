@@ -7,31 +7,44 @@ class SearchManager {
         this.http = $http;
         this.searchExtensions = [];
 
-        var baseAdapter = SearchAdapter.lookup(this.http, `/api/search`);
+        this.baseAdapter = SearchAdapter.lookup(this.http, `/api/search`);
         this.searchExtensions.push({
             endpointUri: `/api/search`,
             adapterName: `lookup`,
-            adapter: baseAdapter
+            adapter: this.baseAdapter
         });
     }
 
-    async search(queryUrl) {
-        for (var searchExtension in this.searchExtensions) {
-
-
-            
+    mergeResults(results, documents) {
+        for(var document of documents) {
+            results.push(document);
         }
 
-        var url = `/api/search?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
-      $http({
-        method: 'GET',
-        url: url
-      }).then(function successCallback(response) {
-        ctrl.isSearching = false;
-        ctrl.results = response.data;
-      }, function errorCallback(response) {
-        ctrl.isSearching = false;
-      });
+        return results;
+    }
+
+    async search(queryUrl, documentFilter) {
+
+        var results = [];
+
+        for (var searchExtension of this.searchExtensions) {
+
+            try {
+
+                var documents = await searchExtension.adapter.search(queryUrl);
+
+                if(documentFilter != undefined) {
+                    documents = documents.filter(documentFilter);
+                }
+                
+                results = this.mergeResults(results, documents);
+
+            } catch(err) {
+
+            }
+        }
+
+        return results;
     }
 
     async initialize() {
@@ -44,7 +57,7 @@ class SearchManager {
 
         var options = {
             method: 'GET',
-            url: `/${auth.info.accountName}`,
+            url: `/${ auth.info.accountName } `,
             headers: {
                 'Accept': 'application/ld+json',
                 'X-Jsonld-Formatting': 'flatten'
