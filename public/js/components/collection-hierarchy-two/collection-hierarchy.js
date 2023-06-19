@@ -1,5 +1,8 @@
 const DatabusCollectionWrapper = require("../../collections/databus-collection-wrapper");
+const QueryBuilder = require("../../query-builder/query-builder");
 const QueryNode = require("../../query-builder/query-node");
+const QueryTemplates = require("../../query-builder/query-templates");
+const DatabusConstants = require("../../utils/databus-constants");
 const DatabusFacetsCache = require("../../utils/databus-facets-cache");
 const DatabusUtils = require("../../utils/databus-utils");
 
@@ -688,7 +691,7 @@ SELECT ?file WHERE {
 
       var req = {
         method: 'POST',
-        url: DATABUS_SPARQL_ENDPOINT_URL,
+        url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
         data: "format=json&query=" + encodeURIComponent(query),
         headers: {
           "Content-type": "application/x-www-form-urlencoded"

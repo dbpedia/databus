@@ -72,7 +72,7 @@ class DatabusCollectionWrapper {
 
   static createNew(title, description, source) {
     var data = {};
-    data.uuid = DatabusCollectionUtils.uuidv4();
+    data.uuid = DatabusUtils.uuidv4();
     data.title = title;
     data.description = description;
     data.abstract = description;

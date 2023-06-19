@@ -20,4 +20,5 @@ git add ../docs/artifact.md
 git add ../docs/dataid.md
 git add ../docs/distribution.md
 git add ../docs/artifact.md
+git add ../docs/collection.md
 git add generated/

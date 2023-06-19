@@ -1,3 +1,4 @@
+const DatabusUris = require("../utils/databus-uris");
 const DatabusCollectionUtils = require("./databus-collection-utils");
 const DatabusCollectionWrapper = require("./databus-collection-wrapper");
 
@@ -563,11 +564,11 @@ class DatabusCollectionManager {
 
       // Format collection as json-ld
       let collectionJsonLd = {
-        "@context": JSONLD_CONTEXT,
+        "@context": DATABUS_CONTEXT[DatabusUris.JSONLD_CONTEXT],
         "@graph": [
           {
             "@id": collectionUri,
-            "@type": "dataid:Collection",
+            "@type": "Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.title,
             "abstract": this.activeCollection.abstract,
