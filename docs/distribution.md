@@ -12,32 +12,31 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dcat:Distribution
-	a owl:Class ;
-	rdfs:label "Distribution"@en ;
-	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;
+databus:Part  a owl:Class ;
+    rdfs:label "Part"@en ;
+    rdfs:comment """A Part represents a single file (i.e. distribution) which is referenced from a particular Version.
+    Typically a dataset consists of several files, e.g. same (or similar) files but in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail. Artifacts are packaged compositionally, i.e. each Part adds to the dataset, which is the sum of information."""@en ;
+    rdfs:subClassOf dcat:Distribution ; # todo: , dataid:XXX ;
+    rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> .
 ```
 ```turtle
 <#part-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Part ;
+	sh:targetNode databus:Part ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
-	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	  sh:message "At least one subject with an rdf:type of databus:Part must occur for each databus:Version."@en ;
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}#[a-zA-Z0-9\\-_\\.=]{3,}$" ;
-    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3"@en ;
+    sh:message "IRI for databus:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3"@en ;
     ] . 
 ```
 ```javascript
-"Part": 	"dataid:Part" 
+"Part": 	"databus:Part" 
 ```
 
 
@@ -64,7 +63,7 @@ dct:issued
 ```turtle
 <#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -91,10 +90,10 @@ missing
 ```turtle
 <#has-file>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
-	sh:path dataid:file;
+	sh:message "A databus:Part MUST have exactly one databus:file of type IRI"@en ;
+	sh:path databus:file;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
@@ -102,7 +101,7 @@ missing
 ```
 ```javascript
 "file": {
-      "@id": "dataid:file",
+      "@id": "databus:file",
       "@type": "@id"
     }
 ```
@@ -129,16 +128,16 @@ missing
 ```turtle
 <#has-formatExtension>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
-	sh:path dataid:formatExtension;
+	sh:message "Required property databus:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path databus:formatExtension;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
 ```javascript
-"formatExtension": 	{"@id": "dataid:formatExtension"}
+"formatExtension": 	{"@id": "databus:formatExtension"}
 ```
 
 
@@ -159,17 +158,17 @@ missing
 ```turtle
 <#has-compression>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:message """Required property databus:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
 	sh:pattern "^[a-z0-9]{1,8}$" ;
-	sh:path dataid:compression;
+	sh:path databus:compression;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 ```
 ```javascript
-"compression": 	{"@id": "dataid:compression"}
+"compression": 	{"@id": "databus:compression"}
 ```
 
 
@@ -195,9 +194,9 @@ dcat:downloadURL
 ```turtle
 <#has-downloadURL>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:message "A databus:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
 	sh:path dcat:downloadURL ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
@@ -244,9 +243,9 @@ dcat:byteSize
 ```turtle
 <#has-bytesize>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dcat:byteSize of type xsd:decimal"@en ;
+	sh:message "A databus:Part MUST have exactly one dcat:byteSize of type xsd:decimal"@en ;
 	sh:path dcat:byteSize ;
 	sh:datatype xsd:decimal ;
 	sh:maxCount 1 ;
@@ -277,18 +276,18 @@ missing
 ```turtle
 <#has-sha256sum>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
-	sh:path dataid:sha256sum;
+	sh:message "Required property databus:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path databus:sha256sum;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string ;
-	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	#   databus:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
 	sh:pattern "^[a-f0-9]{64}$" .
 ```
 ```javascript
-"sha256sum": 		{"@id": "dataid:sha256sum"}
+"sha256sum": 		{"@id": "databus:sha256sum"}
 ```
 
 ## hasVersion (Distribution)
@@ -315,7 +314,7 @@ dct:hasVersion
 ```turtle
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
 	sh:path dct:hasVersion ;
@@ -329,11 +328,11 @@ TODO ??
 
 ```
 <#signature-violation>
-#   dataid:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
+#   sec:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
     a sh:PropertyShape ;
     sh:severity sh:Violation ;
-    sh:message " TODO Optional property dataid:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
-    sh:path dataid:signature;
+    sh:message " TODO Optional property sec:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
+    sh:path sec:signature;
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
     sh:pattern "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" .
@@ -364,20 +363,20 @@ missing
 	a sh:PropertyShape ;
 	sh:targetClass rdf:Property ;
 	sh:path rdfs:subPropertyOf ;
-	sh:hasValue dataid:contentVariant ;
-	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+	sh:hasValue databus:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf databus:contentVariant."@en .
 
   <#is-part-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "Part URI must contain the version URI of the associated version." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?value .
-				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+				$this <http://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -385,16 +384,16 @@ missing
 
   <#is-file-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "File URI must contain the version URI of the associated version." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
-        ?dist <http://dataid.dbpedia.org/ns/core#file> ?value .
-				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        ?dist <http://dataid.dbpedia.org/databus#file> ?value .
+				$this <http://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
