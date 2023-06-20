@@ -15,21 +15,21 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 *An example of valid account URI:* https://databus.example.org/john
 
 
-### Group URI Rules *(dataid:Group)*
+### Group URI Rules *(databus:Group)*
 
 * A group URI contains exactly two path segments.
 * The first path segment is the publisher name (i.e. account name), while the second path segment identifis the group.
 
 *An example of a valid group URI:* https://databus.example.org/john/animals
 
-### Artifact URI Rules *(dataid:Artifact)*
+### Artifact URI Rules *(databus:Artifact)*
 
 * An artifact URI has exactly three path segments.
 * The first path segment identifiees the publisher, the second segment the group, while the third segment the published artifact.  
 
 * An example of a valid artifact URI:* https://databus.example.org/john/animals/cats
 
-### Version URI Rules *(dataid:Version)*
+### Version URI Rules *(databus:Version)*
 
 * A version URI has exactly four path segments.
 * A version URI in addition to the artifact URI includes a segment identifying the version of the specific artifact.
@@ -38,7 +38,7 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 
 _Note:_ While the version segment in the example above indicates a _date_, there is no restriction on the version format, it can be any artbitrary string. The versioning approach is not strict and the publisher can freely choose the way of versioning artifacts.
 
-### Dataset URI Rules *(dataid:Dataset)*
+### Dataset URI Rules *(databus:Dataset)*
 
 * A dataset URI has exactly four path segments
 * A dataset URI contains the URI of the publisher, group, artifact and its associated version
@@ -46,7 +46,7 @@ _Note:_ While the version segment in the example above indicates a _date_, there
 
 * An example of a valid dataset URI:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
 
-### Distribution URI Rules *(dataid:SingleFile)*
+### Distribution URI Rules *(databus:Part)*
 
 * A distribution URI has exactly four path segments.
 * A distribution URI contains the URI of its publisher, group, artifact and its associated version.
@@ -56,7 +56,7 @@ _Note:_ While the version segment in the example above indicates a _date_, there
 
 _Note:_ the content variant of the _cats_ artifact is "lang=en". In this example, there is one specific content variant: lang=en.
 
-### File URI Rules *(dataid:file)*
+### File URI Rules *(databus:file)*
 
 * A file URI has exactly five path segments identifying a physical file.
 * A file URI provides the download location of the file for the specific artifact (with a specific content variant) which belongs to a particular group published by a particular publisher.
