@@ -1,6 +1,7 @@
 const DatabusCollectionUtils = require("../collections/databus-collection-utils");
 var markdownit = require('markdown-it');
 const moment = require("moment/moment");
+const DatabusUris = require("./databus-uris");
 
 class DatabusUtils {
 
@@ -325,7 +326,7 @@ class DatabusUtils {
     for (var quad of parsedData.quads) {
 
       if (quad.predicate.id == `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-        && quad.object.id == `http://dataid.dbpedia.org/ns/core#Databus`) {
+        && quad.object.id == DatabusUris.DATBAUS_DATABUS) {
 
         return {
           uri: quad.subject.id
@@ -423,11 +424,11 @@ class DatabusUtils {
           error.downloadURLs.push(distribution[DatabusUris.DCAT_DOWNLOAD_URL][0][DatabusUris.JSONLD_ID]);
         }
 
-        error[DatabusUris.DATAID_FORMAT_EXTENSION] =
-          distributionGraphs[0][DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
+        error[DatabusUris.DATABUS_FORMAT_EXTENSION] =
+          distributionGraphs[0][DatabusUris.DATABUS_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
 
-        error[DatabusUris.DATAID_COMPRESSION] =
-          distributionGraphs[0][DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
+        error[DatabusUris.DATABUS_COMPRESSION] =
+          distributionGraphs[0][DatabusUris.DATABUS_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
 
         for (var contentVariantUri of contentVariantUris) {
           error[contentVariantUri] = distributionGraphs[0][contentVariantUri] != null ?

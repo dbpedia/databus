@@ -12,13 +12,7 @@ var GstoreHelper = require('../../common/utils/gstore-helper');
 var requestRdf = require('../../common/request-rdf');
 
 var tractateConfig = {
-  header: 'Databus Tractate Version 1.0',
-  publisherProperty: 'http://purl.org/dc/terms/publisher',
-  licenseProperty: 'http://purl.org/dc/terms/license',
-  distributionProperty: 'http://www.w3.org/ns/dcat#distribution',
-  sha256sumProperty: 'http://dataid.dbpedia.org/ns/core#sha256sum',
-  proofProperty: 'https://w3id.org/security#proof',
-  signatureProperty: 'https://w3id.org/security#signature'
+  header: 'Databus Tractate Version 1.0'
 }
 
 // Signature (and tractate?) generation
@@ -36,11 +30,11 @@ signer.init = function () {
 }
 
 signer.tryAnalyzeParts = async function (expandedGraph) {
-  var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+  var distributions = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_PART);
 
   for (var distribution of distributions) {
 
-    if (distribution[DatabusUris.DATAID_SHASUM] != undefined) {
+    if (distribution[DatabusUris.DATABUS_SHASUM] != undefined) {
       continue;
     }
 
@@ -53,8 +47,8 @@ signer.tryAnalyzeParts = async function (expandedGraph) {
       throw analyzeResult;
     }
 
-    distribution[DatabusUris.DATAID_SHASUM] = [{}];
-    distribution[DatabusUris.DATAID_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
+    distribution[DatabusUris.DATABUS_SHASUM] = [{}];
+    distribution[DatabusUris.DATABUS_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
   }
 }
 
@@ -69,21 +63,21 @@ signer.expandAndCanonicalize = async function (graph) {
 signer.canonicalize = function (expandedGraph) {
 
   try {
-    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
+    var datasetGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_VERSION);
 
     var tractate = '';
     tractate += `${tractateConfig.header}\n`;
     tractate += `${datasetGraph[DatabusUris.JSONLD_ID]}\n`;
-    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.publisherProperty)}\n`;
-    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, tractateConfig.licenseProperty)}\n`;
+    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_PUBLISHER)}\n`;
+    tractate += `${JsonldUtils.getFirstObjectUri(datasetGraph, DatabusUris.DCT_LICENSE)}\n`;
 
     var shasums = [];
 
-    var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+    var distributionGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_PART);
 
     for (var d in distributionGraphs) {
       var distributionGraph = distributionGraphs[d];
-      var shasum = JsonldUtils.getFirstObject(distributionGraph, DatabusUris.DATAID_SHASUM);
+      var shasum = JsonldUtils.getFirstObject(distributionGraph, DatabusUris.DATABUS_SHASUM);
 
       if (shasum != null) {
         shasums.push(shasum['@value']);

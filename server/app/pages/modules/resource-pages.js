@@ -220,7 +220,7 @@ module.exports = function (router, protector) {
         return;
       }
 
-      var versionGraph = JsonldUtils.getTypedGraph(versionGraphs, DatabusUris.DATAID_VERSION);
+      var versionGraph = JsonldUtils.getTypedGraph(versionGraphs, DatabusUris.DATABUS_VERSION);
       var versionTitle = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
 
       res.render('version', {
@@ -239,7 +239,7 @@ module.exports = function (router, protector) {
     /*
 
     // Only deliver the version graph
-    var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
+    var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATABUS_VERSION);
     data.version = [versionGraph];
 
     try {

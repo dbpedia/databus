@@ -11,7 +11,7 @@ indexFields:
     query: >
       SELECT DISTINCT ?resource ?label WHERE {
         GRAPH ?g1 {
-          ?resource a <http://dataid.dbpedia.org/ns/core#Collection> .
+          ?resource a <https://dataid.dbpedia.org/databus#Collection> .
         }
         GRAPH ?g2 {
           ?resource <http://purl.org/dc/terms/title> ?label.
@@ -22,7 +22,7 @@ indexFields:
     query: >
       SELECT DISTINCT ?resource ?label WHERE {
         GRAPH ?g1 {
-          ?resource a <http://dataid.dbpedia.org/ns/core#Group>.
+          ?resource a <https://dataid.dbpedia.org/databus#Group>.
         }
         GRAPH ?g2 {
           ?resource <http://purl.org/dc/terms/title> ?label.
@@ -33,7 +33,7 @@ indexFields:
     query: >
       SELECT DISTINCT ?resource ?label WHERE {
         GRAPH ?g1 {
-          ?resource a <http://dataid.dbpedia.org/ns/core#Artifact>.
+          ?resource a <https://dataid.dbpedia.org/databus#Artifact>.
         }
         GRAPH ?g2 {
           ?resource <http://purl.org/dc/terms/title> ?label.
@@ -46,14 +46,14 @@ indexFields:
         {
           SELECT ?artifact (max(?version) as ?maxVersion) WHERE {
             GRAPH ?g2 {
-              ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact.
+              ?dataset <https://dataid.dbpedia.org/databus#artifact> ?artifact.
               ?dataset <http://purl.org/dc/terms/hasVersion> ?version .
             }
           }
           GROUP BY ?artifact
         }
         GRAPH ?g1 {
-          ?dataset <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+          ?dataset <https://dataid.dbpedia.org/databus#artifact> ?artifact .
           ?dataset <http://purl.org/dc/terms/hasVersion> ?maxVersion .
           ?dataset <http://purl.org/dc/terms/title> ?label.
         }
@@ -75,7 +75,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
+              ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
             }
           }
         }
@@ -88,7 +88,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
+              ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
             }
           }
         }
@@ -101,7 +101,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact>.
+              ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
             }
           }
         }
@@ -114,7 +114,7 @@ indexFields:
         {
           SELECT DISTINCT ?group WHERE {
             GRAPH ?g {
-              ?group a <http://dataid.dbpedia.org/ns/core#Group>.
+              ?group a <https://dataid.dbpedia.org/databus#Group>.
             }
           }
         }
@@ -127,7 +127,7 @@ indexFields:
         {
           SELECT DISTINCT ?group WHERE {
             GRAPH ?g {
-              ?group a <http://dataid.dbpedia.org/ns/core#Group>.
+              ?group a <https://dataid.dbpedia.org/databus#Group>.
             }
           }
         }
@@ -141,7 +141,7 @@ indexFields:
         {
           SELECT DISTINCT ?collection WHERE {
             GRAPH ?g {
-              ?collection a <http://dataid.dbpedia.org/ns/core#Collection> .
+              ?collection a <https://dataid.dbpedia.org/databus#Collection> .
             }
           }
         }
@@ -163,7 +163,7 @@ indexFields:
       SELECT DISTINCT ?resource (REPLACE(STR(?type), "(.*)(/|#)", "") AS ?typeName) WHERE {
         GRAPH ?g {
           ?resource a ?type.
-          VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+          VALUES ?type { <https://dataid.dbpedia.org/databus#Artifact> <https://databus.dbpedia.org/system/voc/Service> <https://dataid.dbpedia.org/databus#Group> <https://dataid.dbpedia.org/databus#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
         }
       }
   - fieldName: publisher
@@ -175,7 +175,7 @@ indexFields:
           SELECT DISTINCT ?resource WHERE {
             GRAPH ?g {
               ?resource a ?type.
-              VALUES ?type { <http://dataid.dbpedia.org/ns/core#Artifact> <https://databus.dbpedia.org/system/voc/Service> <http://dataid.dbpedia.org/ns/core#Group> <http://dataid.dbpedia.org/ns/core#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
+              VALUES ?type { <https://dataid.dbpedia.org/databus#Artifact> <https://databus.dbpedia.org/system/voc/Service> <https://dataid.dbpedia.org/databus#Group> <https://dataid.dbpedia.org/databus#Collection> <http://xmlns.com/foaf/0.1/PersonalProfileDocument> }
             }
           }
         }
@@ -191,7 +191,7 @@ indexFields:
         {
           SELECT DISTINCT ?artifact WHERE {
             GRAPH ?g {
-              ?artifact a <http://dataid.dbpedia.org/ns/core#Artifact> .
+              ?artifact a <https://dataid.dbpedia.org/databus#Artifact> .
             }
           }
         }

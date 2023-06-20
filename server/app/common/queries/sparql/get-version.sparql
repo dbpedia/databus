@@ -1,5 +1,5 @@
 
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -19,12 +19,12 @@ SELECT DISTINCT ?version ?name ?title ?artifactTitle ?abstract ?description
     ?version dct:abstract ?abstract.
     ?version dct:description ?description.
     ?version dct:issued ?date.
-    ?version dataid:group ?group .
-    ?version dataid:artifact ?artifact.
+    ?version databus:group ?group .
+    ?version databus:artifact ?artifact.
     ?version dct:publisher ?publisher.
     ?version dct:license ?license.
     OPTIONAL { ?artifact dct:title ?artifactTitle . }
-    OPTIONAL { ?version dataid:attribution ?attribution . }
+    OPTIONAL { ?version databus:attribution ?attribution . }
     OPTIONAL { ?version dataiddebug:codeReference ?codeReference . }
     OPTIONAL { ?version dataiddebug:documentationLocation ?documentationLocation . }
     OPTIONAL { ?version dataiddebug:feedbackChannel ?feedbackChannel . }

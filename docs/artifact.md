@@ -11,35 +11,35 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dataid:Artifact a owl:Class ;
+databus:Artifact a owl:Class ;
 	rdfs:label "Databus Artifact"@en ;
 	rdfs:comment "A Databus Artifact is a logical dataset on the Databus"@en ; 
 	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . #TODO ontology ID
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . #TODO ontology ID
 
 ```
 ```turtle
 <#artifact-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Artifact ;
+	sh:targetNode databus:Artifact ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Artifact must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Artifact must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
-      sh:message "IRI for dataid:Artifact must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:message "IRI for databus:Artifact must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
 	] .
 ```
 ```javascript
-"Artifact": 	"dataid:Artifact",
+"Artifact": 	"databus:Artifact",
 
 "artifact": {
-	"@id": "dataid:artifact",
+	"@id": "databus:artifact",
 	"@type": "@id"
 	}
 ```
@@ -67,7 +67,7 @@ dct:title
 ```turtle
 <#title-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -106,7 +106,7 @@ dct:abstract
 ```turtle
 <#abstract-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -145,7 +145,7 @@ dct:description
 ```turtle
 <#description-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;

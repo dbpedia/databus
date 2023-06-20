@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -11,9 +11,9 @@ CONSTRUCT
 {
   ?dataset a dataid:Dataset .
   ?dataset ?datasetProperty ?datasetObject .
-  ?version a dataid:Version .
-  ?artifact a dataid:Artifact .
-  ?distribution a dataid:Part .
+  ?version a databus:Version .
+  ?artifact a databus:Artifact .
+  ?distribution a databus:Part .
   ?distribution ?distributionProperty ?distributionObject .
   ?contentVariant ?contentVariantProperty ?contentVariantObject .
   ?proof ?proofProperty ?proofObject .
@@ -27,18 +27,18 @@ WHERE
   }
   UNION
   {
-    ?distribution a dataid:Part .
+    ?distribution a databus:Part .
     ?distribution ?distributionProperty ?distributionObject .
   }
   UNION
   {
     ?dataset dataid:version ?version .
-    ?version a dataid:Version .
+    ?version a databus:Version .
   }
   UNION
   {
-    ?dataset dataid:artifact ?artifact .
-    ?artifact a dataid:Artifact .
+    ?dataset databus:artifact ?artifact .
+    ?artifact a databus:Artifact .
   }
   UNION
   {
@@ -49,6 +49,6 @@ WHERE
   {
     ?distribution ?contentVariant ?contentVariantLiteral .
     ?contentVariant ?contentVariantProperty ?contentVariantObject .
-    ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+    ?contentVariant rdfs:subPropertyOf databus:contentVariant .
   }
 }

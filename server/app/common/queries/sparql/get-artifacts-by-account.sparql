@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -8,7 +8,7 @@ PREFIX databus: <https://databus.dbpedia.org/>
 SELECT DISTINCT ?artifact WHERE
 {
   GRAPH ?g {
-    ?artifact a dataid:Artifact .
+    ?artifact a databus:Artifact .
     FILTER(STRSTARTS(STR(?artifact), "%ACCOUNT_URI%/"))
   }
 }

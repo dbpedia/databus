@@ -49,10 +49,10 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '12%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '12%' });
 
-  $scope.artifactNode = new QueryNode($scope.artifact.uri, 'dataid:artifact');
+  $scope.artifactNode = new QueryNode($scope.artifact.uri, 'databus:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
 
-  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.artifact.uri), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.artifact.uri), 'databus:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};

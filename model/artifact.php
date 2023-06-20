@@ -11,35 +11,35 @@ init();
 $section="artifact";
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx";
 $owl=
-'dataid:Artifact a owl:Class ;
+'databus:Artifact a owl:Class ;
 	rdfs:label "Databus Artifact"@en ;
 	rdfs:comment "A Databus Artifact is a logical dataset on the Databus"@en ; 
 	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . #TODO ontology ID
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . #TODO ontology ID
 ';
 
 $shacl='<#artifact-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Artifact ;
+	sh:targetNode databus:Artifact ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Artifact must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Artifact must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
-      sh:message "IRI for dataid:Artifact must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
+      sh:message "IRI for databus:Artifact must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
 	] .';
 
 $example='"@type": "Artifact",';
 
-$context='"Artifact": 	"dataid:Artifact",
+$context='"Artifact": 	"databus:Artifact",
 
 "artifact": {
-	"@id": "dataid:artifact",
+	"@id": "databus:artifact",
 	"@type": "@id"
 	}';
 
@@ -59,7 +59,7 @@ $owl='dct:title
 
 $shacl='<#title-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -94,7 +94,7 @@ $owl='dct:abstract
 
 $shacl='<#abstract-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -129,7 +129,7 @@ $owl='dct:description
 
 $shacl='<#description-artifact>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Artifact ;
+	sh:targetClass databus:Artifact ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;

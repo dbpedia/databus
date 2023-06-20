@@ -282,7 +282,7 @@ class DatabusCollectionManager {
 
     for (var g in collection.content.groups) {
       var group = collection.content.groups[g];
-      var groupNode = new QueryNode(group.uri, 'dataid:group');
+      var groupNode = new QueryNode(group.uri, 'databus:group');
 
       // add group facets
       for (var s in group.settings) {
@@ -301,7 +301,7 @@ class DatabusCollectionManager {
       for (var a in group.artifacts) {
         var artifact = group.artifacts[a];
 
-        var artifactNode = new QueryNode(artifact.uri, 'dataid:artifact');
+        var artifactNode = new QueryNode(artifact.uri, 'databus:artifact');
 
         // add artifact facets
 
@@ -573,7 +573,7 @@ class DatabusCollectionManager {
             "title": this.activeCollection.title,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "dataid:content": contentString,
+            "databus:collectionContent": contentString,
           }
         ]
       };

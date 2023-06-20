@@ -12,18 +12,18 @@ read -r -d '' DATAID_DATA << _EOT_
   "@graph" : [
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
-      "@type": "dataid:Group",
+      "@type": "databus:Group",
       "title": { "@value" : "Example Group", "@language" : "en" },
       "abstract": { "@value" : "This is an example group for API testing.", "@language" : "en" },
       "description": { "@value" : "This is an example group for API testing.", "@language" : "en" }
     },
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example",
-      "@type": "dataid:Artifact"
+      "@type": "databus:Artifact"
     },
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%",
-      "@type": "dataid:Version"
+      "@type": "databus:Version"
     },
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples/dbpedia-ontology-example/%VERSION%#Dataset",

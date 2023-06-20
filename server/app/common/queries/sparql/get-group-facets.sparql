@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -8,16 +8,16 @@ SELECT DISTINCT ?property ?value WHERE {
 
   {
     GRAPH ?g {
-      ?dataset dataid:group <%GROUP_URI%> .
+      ?dataset databus:group <%GROUP_URI%> .
       ?dataset dcat:distribution ?distribution .
-      ?dataset dataid:artifact ?value .
-      BIND(dataid:artifact AS ?property)
+      ?dataset databus:artifact ?value .
+      BIND(databus:artifact AS ?property)
     }
   }
   UNION
   {
     GRAPH ?g {
-      ?dataset dataid:group <%GROUP_URI%> .
+      ?dataset databus:group <%GROUP_URI%> .
       ?dataset dcat:distribution ?distribution . 
       ?distribution dct:hasVersion ?value .
       BIND(dct:hasVersion AS ?property)
@@ -26,28 +26,28 @@ SELECT DISTINCT ?property ?value WHERE {
   UNION
   {
     GRAPH ?g {
-      ?dataset dataid:group <%GROUP_URI%> .
+      ?dataset databus:group <%GROUP_URI%> .
       ?dataset dcat:distribution ?distribution . 
-      ?distribution dataid:formatExtension ?value .
-      BIND(dataid:formatExtension AS ?property)
+      ?distribution databus:formatExtension ?value .
+      BIND(databus:formatExtension AS ?property)
     }
   }
   UNION
   {
     GRAPH ?g {
-      ?dataset dataid:group <%GROUP_URI%> .
+      ?dataset databus:group <%GROUP_URI%> .
       ?dataset dcat:distribution ?distribution . 
-      ?distribution dataid:compression ?value .
-      BIND(dataid:compression AS ?property)
+      ?distribution databus:compression ?value .
+      BIND(databus:compression AS ?property)
     }
   }
   UNION
   {
     GRAPH ?g {
-      ?dataset dataid:group <%GROUP_URI%> .
+      ?dataset databus:group <%GROUP_URI%> .
       ?dataset dcat:distribution ?distribution . 
       ?distribution ?property ?value .
-      ?property rdfs:subPropertyOf dataid:contentVariant .
+      ?property rdfs:subPropertyOf databus:contentVariant .
     }
   }
 }

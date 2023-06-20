@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -8,21 +8,21 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 # Creates a collection
 CONSTRUCT
 {
-  ?collection a dataid:Collection .
+  ?collection a databus:Collection .
   ?collection dct:title ?title .
   ?collection dct:abstract ?abstract .
   ?collection dct:description ?description .
   ?collection dct:publisher ?publisher .
-  ?collection dataid:content ?content .
+  ?collection databus:collectionContent ?content .
   ?collection dct:issued ?issued .
 }
 WHERE
 {
-  ?collection a dataid:Collection .
+  ?collection a databus:Collection .
   ?collection dct:title ?title .
   ?collection dct:abstract ?abstract .
   ?collection dct:description ?description .
   ?collection dct:publisher ?publisher .
-  ?collection dataid:content ?content .
+  ?collection databus:collectionContent ?content .
   OPTIONAL { ?collection dct:issued ?issued . }
 }

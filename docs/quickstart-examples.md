@@ -59,7 +59,7 @@ This gives a quick overview on what to put in for the different keys. In which e
 Example Query for retrieving all files, the format and their size from a certain dataset (by knowing group, artifact and version)
 
 ```sparql
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
@@ -70,7 +70,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
   GRAPH ?g {
     ?dataset dataid:version <https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology/2023-03-14> .
     ?dataset dcat:distribution ?distribution .
-    ?distribution dataid:file ?file .
+    ?distribution databus:file ?file .
     ?distribution dataid:format ?format .
     ?distribution dataid:byteSize ?byteSize .
   }
@@ -80,7 +80,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
 Example Query for retrieving the same information for the latest version of an artifact:
 
 ```sparql
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
@@ -88,15 +88,15 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?file ?format ?byteSize WHERE {
-    ?dataset dataid:artifact <https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology> .
+    ?dataset databus:artifact <https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology> .
     ?dataset dcat:distribution ?distribution .
     ?distribution dct:hasVersion ?version .
-    ?distribution dataid:file ?file .
+    ?distribution databus:file ?file .
     ?distribution dataid:format ?format .
     ?distribution dataid:byteSize ?byteSize .
     {
       SELECT (?v as ?version) { 
-        ?dataset dataid:artifact <https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology> . 
+        ?dataset databus:artifact <https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology> . 
         ?dataset dct:hasVersion ?v . 
       } ORDER BY DESC (?version) LIMIT 1 
     }

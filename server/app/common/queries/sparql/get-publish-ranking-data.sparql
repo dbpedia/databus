@@ -1,5 +1,5 @@
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -12,8 +12,8 @@ SELECT DISTINCT ?accountUri ?numUploads ?uploadSize WHERE {
   {
     SELECT ?publisher (count(?version) as ?numUploads) WHERE {
       GRAPH ?g2 {
-        ?dataset dct:publisher ?publisher.
-        ?dataset dataid:version ?version .
+        ?version dct:publisher ?publisher.
+        ?version a databus:Version .
       }
     }
     GROUP BY ?publisher
@@ -21,8 +21,8 @@ SELECT DISTINCT ?accountUri ?numUploads ?uploadSize WHERE {
   {
     SELECT ?publisher (sum(?size) as ?uploadSize) WHERE {
       GRAPH ?g3 {
-        ?dataset dct:publisher ?publisher.
-        ?dataset dcat:distribution ?distribution .
+        ?version dct:publisher ?publisher.
+        ?version dcat:distribution ?distribution .
         ?distribution dcat:byteSize ?size .
       }
     }

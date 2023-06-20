@@ -117,7 +117,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
       });
 
       var graphs = response.data;
-      var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATAID_VERSION);
+      var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_VERSION);
 
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING,
         $scope.formData.version.title);
@@ -126,7 +126,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
         $scope.formData.version.description);
       JsonldUtils.setLink(versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
-      JsonldUtils.setLiteral(versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DATABUS_ATTRIBUTION, DatabusUris.XSD_STRING,
         $scope.formData.version.attribution);
 
       if ($scope.formData.version.wasDerivedFrom) {
@@ -171,10 +171,10 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '15%' });
 
-  $scope.artifactNode = new QueryNode($scope.version.artifact, 'dataid:artifact');
+  $scope.artifactNode = new QueryNode($scope.version.artifact, 'databus:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.version.name, true);
 
-  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.version.artifact), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.version.artifact), 'databus:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};

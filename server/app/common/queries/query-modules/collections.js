@@ -1,11 +1,5 @@
 var exec = require('../../execute-query');
 var crypto = require('crypto');
-var constants = require('../../constants');
-var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
-var DatabusResponse = require('../../../../../public/js/utils/databus-response');
-var QueryBuilder = require('../../../../../public/js/query-builder/query-builder');
-var QueryNode = require('../../../../../public/js/query-builder/query-node');
-const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
 const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
 const QueryTemplates = require('../../../../../public/js/query-builder/query-templates');
@@ -15,7 +9,7 @@ var instance = {};
 /**
  * Collection GET. Retrieves a collection with formatted fields
  * @param  {} collectionUri
- */
+
 instance.getCollection = async function (account, id) {
   let queryOptions = {
     COLLECTION_URI: UriUtils.createResourceUri([account, 'collections', id]),
@@ -37,6 +31,7 @@ instance.getCollection = async function (account, id) {
   return entry[0];
 }
 
+/*
 instance.getCollectionStatistics = async function (collectionUri) {
 
   let queryOptions = {
@@ -87,6 +82,7 @@ instance.getCollectionStatistics = async function (collectionUri) {
 
   return result;
 }
+*/
 
 instance.getCollectionQuery = async function (account, id) {
 
@@ -146,6 +142,7 @@ instance.getCollectionShasum = async function (collectionUri) {
   return crypto.createHash('md5').update(checkString).digest("hex");
 }
 
+/*
 instance.hasCollectionContent = function (content) {
   if (content.customQueries != undefined && content.customQueries.length > 0) {
     return true;
@@ -160,6 +157,8 @@ instance.hasCollectionContent = function (content) {
 
   return false;
 }
+*/ 
+
 /**
  * Returns all the collections published by a specified account
  * @param  {} publisher

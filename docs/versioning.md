@@ -13,7 +13,7 @@ Although the definition of the version ID is quite free and left to the user, th
 	You can also switch the versioning (e.g. to `YYYY.MM.DD`) and the sorting still stays intact.
 * 	This query provides an example how this can be used on the Databus to find DBpedia long abstracts later then 2021 and then order them chronologically:
 ```
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
@@ -22,8 +22,8 @@ PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?file ?version WHERE {
 	GRAPH ?g {
 		?dataset dcat:distribution ?distribution .
-		?distribution dataid:file ?file .
-		?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/text/long-abstracts> .
+		?distribution databus:file ?file .
+		?dataset databus:artifact <https://databus.dbpedia.org/dbpedia/text/long-abstracts> .
     	?dataset dct:hasVersion ?version .
     	FILTER(str(?version) > "2021.01.01")
 	}

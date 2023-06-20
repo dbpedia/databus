@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -21,11 +21,10 @@ SELECT DISTINCT
 WHERE { 
   %COLLECTION_QUERY%
   ?distribution dcat:downloadURL ?file .
-  ?distribution dataid:formatExtension ?format .
-  OPTIONAL { ?distribution dataid:contentVariant ?var . }
+  ?distribution databus:formatExtension ?format .
+  OPTIONAL { ?distribution databus:contentVariant ?var . }
   OPTIONAL { ?distribution dct:license ?license . }
   OPTIONAL { ?distribution dcat:byteSize ?size . }
-  OPTIONAL { ?distribution dataid:preview ?preview . }
   ?distribution dct:hasVersion ?version .
   ?dataset dcat:distribution ?distribution .
   ?dataset dataid:version ?versionUri .

@@ -22,7 +22,7 @@ function autocompleteResourceEntry(expandedGraph, prop, navUpAmount) {
     return;
   }
 
-  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
+  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_VERSION);
   var resourceUri = UriUtils.navigateUp(versionGraph['@id'], navUpAmount);
 
   expandedGraph.push({
@@ -38,7 +38,7 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
   var artifactName = UriUtils.uriToName(artifactUri);
 
   for (var property in fileGraph) {
-    if (property.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
+    if (property.startsWith(DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX)) {
       contentVariants.push({ key: property, value: fileGraph[property][0][DatabusUris.JSONLD_VALUE] });
     }
   }
@@ -53,12 +53,12 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
   var format = undefined;
   var compression = undefined;
 
-  if (fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION] != undefined) {
-    format = fileGraph[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
+  if (fileGraph[DatabusUris.DATABUS_FORMAT_EXTENSION] != undefined) {
+    format = fileGraph[DatabusUris.DATABUS_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE];
   }
 
-  if (fileGraph[DatabusUris.DATAID_COMPRESSION] != undefined) {
-    compression = fileGraph[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
+  if (fileGraph[DatabusUris.DATABUS_COMPRESSION] != undefined) {
+    compression = fileGraph[DatabusUris.DATABUS_COMPRESSION][0][DatabusUris.JSONLD_VALUE];
   }
 
   if (format != undefined && format != 'none' && format != '') {
@@ -69,21 +69,21 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
     segment += `.${compression}`;
   }
 
-  fileGraph[DatabusUris.DATAID_FILE] = [];
-  fileGraph[DatabusUris.DATAID_FILE].push({ '@id': `${baseUri}/${segment}` });
+  fileGraph[DatabusUris.DATABUS_FILE] = [];
+  fileGraph[DatabusUris.DATABUS_FILE].push({ '@id': `${baseUri}/${segment}` });
   fileGraph[DatabusUris.JSONLD_ID] = `${baseUri}#${segment}`;
 }
 
 autocompleter.autocomplete = function (expandedGraph, logger) {
 
-  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATAID_VERSION);
+  var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_VERSION);
 
   if(versionGraph == null) {
     return expandedGraph;
   }
 
   var datasetUri = versionGraph[DatabusUris.JSONLD_ID];
-  versionGraph[DatabusUris.JSONLD_TYPE] = [ DatabusUris.DATAID_VERSION, DatabusUris.DATAID_DATASET ];
+  versionGraph[DatabusUris.JSONLD_TYPE] = [ DatabusUris.DATABUS_VERSION, DatabusUris.DATABUS_DATASET ];
 
   // Auto-generate publisher entry
   var publisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
@@ -95,9 +95,9 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   }
 
   // Auto-generate resource references
-  autocompleteResourceUri(versionGraph, DatabusUris.DATAID_GROUP_PROPERTY, 2);
-  autocompleteResourceUri(versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY, 1);
-  // autocompleteResourceUri(versionGraph, DatabusUris.DATAID_VERSION_PROPERTY, 0);
+  autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_GROUP_PROPERTY, 2);
+  autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_ARTIFACT_PROPERTY, 1);
+  // autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_VERSION_PROPERTY, 0);
 
 
 
@@ -130,11 +130,11 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   versionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
 
   // Auto-generate resource entries
-  // autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_VERSION, 0);
-  autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_ARTIFACT, 1);
-  autocompleteResourceEntry(expandedGraph, DatabusUris.DATAID_GROUP, 2);
+  // autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_VERSION, 0);
+  autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_ARTIFACT, 1);
+  autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_GROUP, 2);
 
-  var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_PART);
+  var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_PART);
 
   var contentVariantProperties = [];
 
@@ -157,7 +157,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     autofillFileIdentifiers(datasetUri, fileGraph);
 
     for (var propertyUri in fileGraph) {
-      if (propertyUri.startsWith(DatabusUris.DATAID_CONTENT_VARIANT_PREFIX)) {
+      if (propertyUri.startsWith(DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX)) {
         contentVariantProperties.push(propertyUri);
       }
     }
@@ -179,7 +179,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     propertyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.RDF_PROPERTY;
     propertyGraph[DatabusUris.RDFS_SUB_PROPERTY_OF] = [{}];
     propertyGraph[DatabusUris.RDFS_SUB_PROPERTY_OF][0][DatabusUris.JSONLD_ID]
-      = DatabusUris.DATAID_CONTENT_VARIANT;
+      = DatabusUris.DATABUS_CONTENT_VARIANT;
     expandedGraph.push(propertyGraph);
   }
 
@@ -206,14 +206,14 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 
 autocompleter.autocompleteArtifact = function (expandedGraphs) {
 
-  var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_ARTIFACT);
+  var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_ARTIFACT);
   var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
 
-  expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATAID_GROUP });
+  expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATABUS_GROUP });
 
-  artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY] = [ {} ];
-  artifactGraph[DatabusUris.DATAID_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
+  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = [ {} ];
+  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
 
   if (artifactGraph[DatabusUris.DCT_TITLE] == undefined) {
     artifactGraph[DatabusUris.DCT_TITLE] = [{}];
@@ -231,7 +231,7 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
 
 autocompleter.autocompleteGroup = function (expandedGraphs) {
 
-  var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_GROUP);
+  var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_GROUP);
   var groupUri = groupGraph[DatabusUris.JSONLD_ID];
 
   if (groupGraph[DatabusUris.DCT_TITLE] == undefined) {

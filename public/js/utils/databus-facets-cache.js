@@ -1,3 +1,5 @@
+const { DATABUS_CONTENT_VARIANT_PREFIX } = require("./databus-uris");
+const DatabusUris = require("./databus-uris");
 const DatabusUtils = require("./databus-utils");
 
 class DatabusFacetsCache {
@@ -12,14 +14,15 @@ class DatabusFacetsCache {
       3: DatabusFacetsCache.GET_ARTIFACT_FACETS
     }
 
-    this._facetMetadata = { 
-      "http://purl.org/dc/terms/hasVersion" : "Version",
-      "http://dataid.dbpedia.org/ns/core#formatExtension" : "Format",
-      "http://dataid.dbpedia.org/ns/cv#lang" : "Language",
-      "http://dataid.dbpedia.org/ns/cv#domain" : "Domain",
-      "http://dataid.dbpedia.org/ns/cv#tag" : "Tag",
-      "http://dataid.dbpedia.org/ns/core#compression" : "Compression"
-    };
+    this._facetMetadata = {};
+    
+    this._facetMetadata[DatabusUris.DCT_HAS_VERSION] = "Version";
+    this._facetMetadata[DatabusUris.DATABUS_FORMAT_EXTENSION] = "Format";
+    this._facetMetadata[DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX + "lang"] = "Language";
+    this._facetMetadata[DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX + "domain"] = "Domain";
+    this._facetMetadata[DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX + "tag"] = "Tag";
+    this._facetMetadata[DatabusUris.DATABUS_COMPRESSION] = "Compression";
+    
   }
 
   async get(resource) {
@@ -84,7 +87,7 @@ class DatabusFacetsCache {
 
 
   static GET_GROUP_FACETS = `
-  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+  PREFIX databus: <http://dataid.dbpedia.org/databus#>
   PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
   PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -93,7 +96,7 @@ class DatabusFacetsCache {
   SELECT DISTINCT ?property ?value WHERE {
     {
       GRAPH ?g {
-        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset databus:group <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution dct:hasVersion ?value .
         BIND(dct:hasVersion AS ?property)
@@ -102,35 +105,35 @@ class DatabusFacetsCache {
     UNION
     {
       GRAPH ?g {
-        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset databus:group <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
-        ?distribution dataid:formatExtension ?value .
-        BIND(dataid:formatExtension AS ?property)
+        ?distribution databus:formatExtension ?value .
+        BIND(databus:formatExtension AS ?property)
       }
     }
     UNION
     {
       GRAPH ?g {
-        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset databus:group <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
-        ?distribution dataid:compression ?value .
-        BIND(dataid:compression AS ?property)
+        ?distribution databus:compression ?value .
+        BIND(databus:compression AS ?property)
       }
     }
     UNION
     {
       GRAPH ?g {
-        ?dataset dataid:group <%RESOURCE_URI%> .
+        ?dataset databus:group <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution ?property ?value .
-        ?property rdfs:subPropertyOf dataid:contentVariant .
+        ?property rdfs:subPropertyOf databus:contentVariant .
       }
     }
   }
   `;
 
   static GET_ARTIFACT_FACETS = `
-  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+  PREFIX databus: <http://dataid.dbpedia.org/databus#>
   PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
   PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -140,30 +143,30 @@ class DatabusFacetsCache {
     GRAPH ?g {
     {
         BIND(dct:hasVersion AS ?property)
-        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        ?dataset databus:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution dct:hasVersion ?value .
     }
     UNION
     {
-        BIND(dataid:formatExtension AS ?property)
-        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        BIND(databus:formatExtension AS ?property)
+        ?dataset databus:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
-        ?distribution dataid:formatExtension ?value .
+        ?distribution databus:formatExtension ?value .
     }
     UNION
     {
-        BIND(dataid:compression AS ?property)
-        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        BIND(databus:compression AS ?property)
+        ?dataset databus:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
-        ?distribution dataid:compression ?value .
+        ?distribution databus:compression ?value .
     }
     UNION
     {
-        ?dataset dataid:artifact <%RESOURCE_URI%> .
+        ?dataset databus:artifact <%RESOURCE_URI%> .
         ?dataset dcat:distribution ?distribution . 
         ?distribution ?property ?value .
-        ?property rdfs:subPropertyOf dataid:contentVariant .
+        ?property rdfs:subPropertyOf databus:contentVariant .
       }
     }
   }`;

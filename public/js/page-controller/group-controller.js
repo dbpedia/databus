@@ -124,7 +124,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '9%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '6%' });
 
-  $scope.groupNode = new QueryNode($scope.group.uri, 'dataid:group');
+  $scope.groupNode = new QueryNode($scope.group.uri, 'databus:group');
   $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
 
   $scope.onFacetSettingsChanged = function () {

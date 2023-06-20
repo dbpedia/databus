@@ -1,4 +1,4 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
@@ -9,7 +9,7 @@ PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
 # Creates an artifact
 CONSTRUCT
 {
-  ?artifact a dataid:Artifact .
+  ?artifact a databus:Artifact .
   ?artifact ?p ?o .
 }
 WHERE

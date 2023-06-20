@@ -177,14 +177,14 @@ function CollectionHierarchyController($http, $location, $sce) {
   }
 
   ctrl.addCustomNode = function() {
-    ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n\
+    ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX databus: <http://dataid.dbpedia.org/databus#>\n\
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n\
 PREFIX dct: <http://purl.org/dc/terms/>\n\
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\
 \n\
 # Get all files\n\
 SELECT DISTINCT ?file WHERE {\n\
-  ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
+  ?dataset databus:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
   ?dataset dcat:distribution ?distribution .\n\
   ?distribution dcat:downloadURL ?file .\n\
 }');

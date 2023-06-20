@@ -4,6 +4,7 @@ const QueryNode = require("../../query-builder/query-node");
 const QueryTemplates = require("../../query-builder/query-templates");
 const DatabusConstants = require("../../utils/databus-constants");
 const DatabusFacetsCache = require("../../utils/databus-facets-cache");
+const DatabusUris = require("../../utils/databus-uris");
 const DatabusUtils = require("../../utils/databus-utils");
 
 // hinzufügen eines Controllers zum Modul
@@ -20,7 +21,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collec
     ctrl.previousCollectionId = null;
   }
 
-  ctrl.defaultQuery = `PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+  ctrl.defaultQuery = `PREFIX databus: <http://dataid.dbpedia.org/databus#>
 PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
@@ -30,8 +31,8 @@ SELECT ?file WHERE {
   # Replace this with your custom query:
   ?file <matches> <condition> .
 } LIMIT 0`;
-  const DATAID_ARTIFACT_PROPERTY = 'dataid:artifact';
-  const DATAID_GROUP_PROPERTY = 'dataid:group';
+  const DATAID_ARTIFACT_PROPERTY = 'databus:artifact';
+  const DATAID_GROUP_PROPERTY = 'databus:group';
   const KEY_LATEST_VERSION = "$latest";
 
 
@@ -384,7 +385,7 @@ SELECT ?file WHERE {
         if (DatabusUtils.isValidHttpUrl(groupNode.uri)) {
 
           ctrl.facets.get(groupNode.uri).then(function (res) {
-            delete res.facets["http://dataid.dbpedia.org/ns/core#artifact"];
+            delete res.facets[DatabusUris.DATABUS_ARTIFACT_PROPERTY];
             ctrl.view.groups[res.uri].facets = res.facets;
 
             var hasVersionFacets = ctrl.view.groups[res.uri].facets[DatabusUris.DCT_HAS_VERSION];

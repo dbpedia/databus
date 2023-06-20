@@ -5,6 +5,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix databus: <http://dataid.dbpedia.org/databus#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
 @prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
@@ -12,23 +13,23 @@
 
 <#group-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Group ;
+	sh:targetNode databus:Group ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Group must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
-      sh:message "IRI for dataid:Group must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:message "IRI for databus:Group must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
 	] .
 
 <#title-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -45,7 +46,7 @@
 
 <#abstract-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -63,7 +64,7 @@
 
 <#description-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;

@@ -14,20 +14,20 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 
 *Example:* https://databus.example.org/john
 
-### Group URI Rules *(dataid:Group)*
+### Group URI Rules *(databus:Group)*
 
 * A group URI has exactly two path segments
 
 *Example:* https://databus.example.org/john/animals
 
-### Artifact URI Rules *(dataid:Artifact)*
+### Artifact URI Rules *(databus:Artifact)*
 
 * An artifact URI has exactly three path segments.
 * An artifact URI contains the URI of its associated group
 
 *Example:* https://databus.example.org/john/animals/cats
 
-### Version URI Rules *(dataid:Version)*
+### Version URI Rules *(databus:Version)*
 
 * A version URI has exactly four path segments
 * A version URI contains the URI of its associated artifact
@@ -42,7 +42,7 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#Dataset
 
-### Part URI Rules *(dataid:Part)*
+### Part URI Rules *(databus:Part)*
 
 * A part URI has exactly four path segments
 * A part URI contains the URI of its associated version
@@ -50,7 +50,7 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 
 *Example:* https://databus.example.org/john/animals/cats/2021-11-11#video_library.ttl
 
-### File URI Rules (dataid:file)
+### File URI Rules (databus:file)
 
 * A file URI has exactly five path segments
 * A file URI contains the URI of its associated version

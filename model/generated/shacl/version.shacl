@@ -5,6 +5,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix databus: <http://dataid.dbpedia.org/databus#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
 @prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
@@ -12,23 +13,23 @@
 
 <#dataset-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Dataset ;
+	sh:targetNode databus:Version ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1 ;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Version must occur."@en ;
 	] ;
 	sh:property [
 		sh:path [ sh:inversePath rdf:type ] ;
 		  sh:nodekind sh:IRI ;
 		sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" ;
-		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+		sh:message "IRI for databus:Version must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
   ] . 
 
 <#title-dataid>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Version ;
+	sh:targetClass databus:Version ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -46,7 +47,7 @@
 
 <#abstract-dataid>
 	a sh:NodeShape ;
-    sh:targetClass dataid:Dataset ;
+    sh:targetClass databus:Version ;
     sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -65,7 +66,7 @@
 
 <#description-dataid>
 	a sh:NodeShape ;
-    sh:targetClass dataid:Dataset ;
+    sh:targetClass databus:Version ;
     sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
@@ -83,7 +84,7 @@
 
 <#has-publisher>
 	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
+  sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:publisher;
@@ -93,7 +94,7 @@
 
 <#has-license>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:license;
@@ -107,10 +108,10 @@
 
 <#has-group>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
-	sh:path dataid:group ;
+	sh:message "Required property databus:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
+	sh:path databus:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
@@ -118,14 +119,14 @@
 
 <#is-group-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "Dataset URI must contain the group URI of the associated group." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?group
 			WHERE {
-				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+				$this <http://dataid.dbpedia.org/databus#group> ?group .
         FILTER(!strstarts(str($this), str(?group)))
 			}
 			""" ;
@@ -133,10 +134,10 @@
 
 <#has-artifact>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
-	sh:path dataid:artifact ;
+	sh:message "Required property databus:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
+	sh:path databus:artifact ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
@@ -144,14 +145,14 @@
 
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?artifact
 			WHERE {
-				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+				$this <http://dataid.dbpedia.org/databus#artifact> ?artifact .
         FILTER(!strstarts(str($this), str(?artifact)))
 			}
 			""" ;
@@ -159,7 +160,7 @@
 
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
 	sh:path dct:hasVersion ;
@@ -169,7 +170,7 @@
 
 <#has-distribution>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
 	sh:path dcat:distribution;
@@ -178,7 +179,7 @@
 
 <#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -188,7 +189,7 @@
 
 <#has-modified>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:modified;

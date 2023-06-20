@@ -11,36 +11,36 @@ init();
 $section="group";
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx";
 $owl=
-'dataid:Group a owl:Class ;
+'databus:Group a owl:Class ;
 	rdfs:label "Databus Group"@en ;
 	rdfs:comment "A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit"@en ; 
 	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . #TODO ontology ID
+	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . #TODO ontology ID
 
 ';
 
 $shacl='<#group-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Group ;
+	sh:targetNode databus:Group ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Group must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$" ;
-      sh:message "IRI for dataid:Group must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
+      sh:message "IRI for databus:Group must match /[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
 	] .';
 
 $example='"@type": "Group",';
 
-$context='"Group": 	"dataid:Group",
+$context='"Group": 	"databus:Group",
 
 "group": {
-	"@id": "dataid:group",
+	"@id": "databus:group",
 	"@type": "@id"
 	}';
 
@@ -60,7 +60,7 @@ $owl='dct:title
 
 $shacl='<#title-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -96,7 +96,7 @@ $owl='dct:abstract
 
 $shacl='<#abstract-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -132,7 +132,7 @@ $owl='dct:description
 
 $shacl='<#description-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;

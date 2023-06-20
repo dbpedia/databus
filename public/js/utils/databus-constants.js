@@ -16,7 +16,7 @@ class DatabusConstants {
         "\n\t\t?distribution dct:hasVersion ?latestVersion " +
         "\n\t\t{" +
         "\n\t\t\tSELECT (?version as ?latestVersion) WHERE { " +
-        "\n\t\t\t\t?dataset dataid:artifact <%ARTIFACT_URI%> . " +
+        "\n\t\t\t\t?dataset databus:artifact <%ARTIFACT_URI%> . " +
         "\n\t\t\t\t?dataset dct:hasVersion ?version . " +
         "\n\t\t\t} ORDER BY DESC (?version) LIMIT 1 " +
         "\n\t\t} " +
@@ -27,7 +27,7 @@ class DatabusConstants {
         "\n\t\t?distribution dct:hasVersion ?latestVersion " +
         "\n\t\t{" +
         "\n\t\t\tSELECT (?version as ?latestVersion) WHERE { " +
-        "\n\t\t\t\t?dataset dataid:group <%ARTIFACT_URI%> . " +
+        "\n\t\t\t\t?dataset databus:group <%ARTIFACT_URI%> . " +
         "\n\t\t\t\t?dataset dct:hasVersion ?version . " +
         "\n\t\t\t} ORDER BY DESC (?version) LIMIT 1 " +
         "\n\t\t} " +

@@ -31,14 +31,14 @@ paths:
                 type: string
                 example: |
                   @base <%DATABUS_RESOURCE_BASE_URL%> .
-                  @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+                  @prefix databus: <http://dataid.dbpedia.org/databus#> .
                   @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                   @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
                   @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
                   @prefix dcat:  <http://www.w3.org/ns/dcat#> .
                   @prefix dct:   <http://purl.org/dc/terms/> .
 
-                  <> a dataid:Databus . 
+                  <> a databus:Databus . 
                   <> dct:hasVersion "<2.1.0-rc.1>" .
   /sparql:
     post:
@@ -127,7 +127,7 @@ paths:
           in: query
           schema:
             type: boolean
-          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *databus:Part*. Default value is *true*."
           required: false
           example: "true"
         - name: log-level
@@ -870,7 +870,7 @@ paths:
                       },
                       {
                         "@id": "20617c91ba3780bb0141bc9357f57ad3",
-                        "@type": "dataid:DatabusTractateV1",
+                        "@type": "databus:DatabusTractateV1",
                         "signature": "UuNw/KHoZfWkHxSo7bNTBwBhVpTY3wl1xOkI2fsSy/iDgzV8iUjlmfyAXgDaTschevGtPmPA4x2LsYRSeQbP5oJ4dnww6pqPzuBLu8Qpanuq40bJS1mAC1Cg58yuR5Zw3tmtn6Yxpoujolxqo5toD1IH1P2L6KfGdXM6HfJb+BR8uxIMiEB0yrRYRSuMKi2mkm6CqCbRaRHTL70DMO8lqoc9nOq/KHcm2Kat0kBeluLciBjPUdrIeepQMwNt4Lk6iXVkB6xHEUros45p3xXGb0+obHnkYdEQpNzPCXIR6Ou1LvuAFgfzmpuYg0yQUjJSKshsiPf91NLJTGLzfEvgDA=="
                       },
                       {
@@ -1070,7 +1070,7 @@ paths:
                 "@graph": [
                     {
                       "@id": "_:b0",
-                      "@type": "dataid:DatabusTractateV1",
+                      "@type": "databus:DatabusTractateV1",
                       "signature": {
                           "@type": "xsd:string",
                           "@value": "ydUqnbsw4JZaiuJ7n9vsIIAIhU1to0Dlr85KVGAFEYGOiAvx22ruwWfgeGOeRC2Dwkwcnq1QdgnAZnAkxiAu1XqmRMlGtwUtkn7XyeSQBQfbuiaL/Vsq7iQWd7YyD9C5PMXcP6T7F21mqW8oZcFso/JDemhNu//dC+o/XWsGM6Vf7teBaXuWUFTrg39c0Rf9X/7MxQN6TQ6Na0+C/vjQO5nM55B7kJyfGaO8PUez8zShA3uYoCHbeJgd8MIvM04S3ia6itg+w+CaEhN9OZNKRm8I7Kxd67c+3hBaijqYROswC4+5O+fEWIqCUdKnPu11/DFSUP5I0gSBgx1gVdx+aA=="
@@ -1078,11 +1078,11 @@ paths:
                     },
                     {
                       "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
-                      "@type": "dataid:Artifact"
+                      "@type": "databus:Artifact"
                     },
                     {
                       "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
-                      "@type": "dataid:Version"
+                      "@type": "databus:Version"
                     },
                     {
                       "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
@@ -1165,11 +1165,11 @@ paths:
                 "@graph": [
                   {
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/collections/%GROUP%-%ARTIFACT%",
-                    "@type": "dataid:Collection",
+                    "@type": "databus:Collection",
                     "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
                     "title": "%GROUP% %ARTIFACT%",
                     "description": "%GROUP% %ARTIFACT% Data (latest version) from DBpedia.",
-                    "dataid:content": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%2F%ARTIFACT%%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%22%VERSION%%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
+                    "databus:collectionContent": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%2F%ARTIFACT%%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%22%VERSION%%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
                   }
                 ]
               }'
@@ -1252,20 +1252,20 @@ paths:
                   PREFIX dcat:   <http://www.w3.org/ns/dcat#>
                   PREFIX dct:    <http://purl.org/dc/terms/>
                   PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
-                  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                  PREFIX databus: <http://dataid.dbpedia.org/databus#>
                   SELECT ?file WHERE
                   {
                   	{
                   		GRAPH ?g
                   		{
                   			{
-                  				?dataset dataid:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection> .
+                  				?dataset databus:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection> .
                   				{
-                  					?dataset dataid:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection/first> .
+                  					?dataset databus:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection/first> .
                   				}
                   			}
                   			?dataset dcat:distribution ?distribution .
-                  			?distribution dataid:file ?file .
+                  			?distribution databus:file ?file .
                   		}
                   	}
                   }"
@@ -1274,7 +1274,7 @@ paths:
                 type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
-                  "@type": "dataid:Group",
+                  "@type": "databus:Group",
                   "description": "%GROUP% datasets from DBpedia",
                   "title": "%GROUP% Data",
                   "@context": {

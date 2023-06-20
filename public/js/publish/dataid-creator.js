@@ -1,3 +1,4 @@
+const DatabusUris = require("../utils/databus-uris");
 const DatabusUtils = require("../utils/databus-utils");
 
 class DataIdCreator {
@@ -132,7 +133,7 @@ class DataIdCreator {
 
     if (!this.formData.signature.autoGenerateSignature) {
       graph["proof"] = {
-        '@type': "dataid:DatabusTractateV1",
+        '@type': "DatabusTractateV1",
         'signature': this.formData.signature.userSignature
       };
     }

@@ -1,15 +1,15 @@
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <http://dataid.dbpedia.org/databus#>
 
 SELECT * WHERE
 {
-   ?uri a dataid:Collection .
+   ?uri a databus:Collection .
    ?uri dct:publisher <%ACCOUNT_URI%> .
    ?uri dct:title ?title .
    ?uri dct:abstract ?abstract .
    ?uri dct:description ?description .
-   ?uri dataid:content ?content .
+   ?uri databus:collectionContent ?content .
    OPTIONAL { ?uri dct:issued ?issued . }
    OPTIONAL { ?uri dct:created ?created . }
 }

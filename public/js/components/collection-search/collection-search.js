@@ -67,7 +67,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     }
     else {
       if (result.typeName[0].value == 'Group') {
-        let node = new QueryNode(result.resource[0].value, 'dataid:group');
+        let node = new QueryNode(result.resource[0].value, 'databus:group');
 
         sourceNode.addChild(node);
         ctrl.onComponentAdded();
@@ -80,11 +80,11 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 
         if (groupNode == null) {
-          groupNode = new QueryNode(groupUri, 'dataid:group');
+          groupNode = new QueryNode(groupUri, 'databus:group');
           sourceNode.addChild(groupNode);
         }
 
-        let node = new QueryNode(artifactUri, 'dataid:artifact');
+        let node = new QueryNode(artifactUri, 'databus:artifact');
         groupNode.addChild(node);
 
         ctrl.onComponentAdded();
@@ -93,7 +93,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
     // check if a group has no children left, if yes, remove it as well
     //for(let r in ctrl.root.childNodes) {
-    //  if (ctrl.root.childNodes[r].property === "dataid:group" && ctrl.root.childNodes[r].childNodes.length === 0) {
+    //  if (ctrl.root.childNodes[r].property === "databus:group" && ctrl.root.childNodes[r].childNodes.length === 0) {
     //    QueryNode.removeChildByUri(ctrl.root, ctrl.root.childNodes[r].uri);
     //  }
     // }

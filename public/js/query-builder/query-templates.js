@@ -11,7 +11,8 @@
  class QueryTemplates {
 
   static DEFAULT_PREFIXES = [
-    `PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>`,
+    `PREFIX databus: <http://dataid.dbpedia.org/databus#>`,
+    `PREFIX databus: <http://dataid.dbpedia.org/databus#>`,
     `PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>`,
     `PREFIX dct:    <http://purl.org/dc/terms/>`,
     `PREFIX dcat:   <http://www.w3.org/ns/dcat#>`,
@@ -29,7 +30,7 @@
       `{`,
       `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
-      `\t?distribution dataid:file ?file .`,
+      `\t?distribution databus:file ?file .`,
       `\tOPTIONAL { ?dataset dct:license ?license . }`,
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
       `}`
@@ -44,12 +45,11 @@
       `GRAPH ?g`,
       `{`,
       `%QUERY%`,
-      `\t?distribution dataid:file ?file .`,
-      `\t?distribution dataid:formatExtension ?format .`,
-      `\tOPTIONAL { ?distribution ?p  ?var. ?p rdfs:subPropertyOf dataid:contentVariant . }`,
+      `\t?distribution databus:file ?file .`,
+      `\t?distribution databus:formatExtension ?format .`,
+      `\tOPTIONAL { ?distribution ?p  ?var. ?p rdfs:subPropertyOf databus:contentVariant . }`,
       `\tOPTIONAL { ?dataset dct:license ?license . }`,
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
-      `\tOPTIONAL { ?distribution dataid:preview ?preview . }`,
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?dataset dct:hasVersion ?version .`,
       `\t?dataset dct:title ?title .`,
@@ -72,15 +72,14 @@
       `{`,
       `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
-      `\t?distribution dataid:file ?file .`,
-      `\t?distribution dataid:formatExtension ?format .`,
-      `\t?distribution dataid:compression ?compression .`,
+      `\t?distribution databus:file ?file .`,
+      `\t?distribution databus:formatExtension ?format .`,
+      `\t?distribution databus:compression ?compression .`,
       `\t?dataset dct:license ?license .`,
       `\t?dataset dct:hasVersion ?version .`,
-      `\t?dataset dataid:artifact ?artifact .`,
-      `\tOPTIONAL { ?distribution ?p ?var. ?p rdfs:subPropertyOf dataid:contentVariant . }`,
+      `\t?dataset databus:artifact ?artifact .`,
+      `\tOPTIONAL { ?distribution ?p ?var. ?p rdfs:subPropertyOf databus:contentVariant . }`,
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
-      `\tOPTIONAL { ?distribution dataid:preview ?preview . }`,
       `}`
     ],
     aggregate: `GROUP BY ?file ?version ?artifact ?license ?size ?format ?compression ?preview`
@@ -99,13 +98,12 @@
       `{`,
       `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
-      `\t?distribution dataid:file ?file .`,
-      `\t?distribution dataid:formatExtension ?format .`,
-      `\t?distribution dataid:compression ?compression .`,
+      `\t?distribution databus:file ?file .`,
+      `\t?distribution databus:formatExtension ?format .`,
+      `\t?distribution databus:compression ?compression .`,
       `\t?dataset dct:license ?license .`,
-      `\tOPTIONAL { ?distribution ?p ?var. ?p rdfs:subPropertyOf dataid:contentVariant . }`,
+      `\tOPTIONAL { ?distribution ?p ?var. ?p rdfs:subPropertyOf databus:contentVariant . }`,
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
-      `\tOPTIONAL { ?distribution dataid:preview ?preview . }`,
       `}`
     ],
     aggregate: `GROUP BY ?file ?license ?size ?format ?compression ?preview`
@@ -123,7 +121,7 @@
       `{`,
       `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
-      `\t?distribution dataid:file ?file .`,
+      `\t?distribution databus:file ?file .`,
       `}`,
     ]
   };

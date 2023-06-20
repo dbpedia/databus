@@ -8,16 +8,6 @@ const defaultContext = require('../../context.json');
 
 let instance = {};
 
-instance.getGroupByUri = async function (groupUri) {
-
-  // Create the query and insert the account uri
-  let queryOptions = { GROUP_URI: groupUri };
-  let query = exec.formatQuery(require('../sparql/get-group.sparql'), queryOptions);
-  let bindings = await exec.executeSelect(query);
-
-  return bindings.length !== 0 ? bindings[0] : null;
-}
-
 /**
  * Get information about a databus group
  */
@@ -45,7 +35,7 @@ instance.getGroup = async function (accountName, group) {
  */
 instance.hasGroup = async function (accountName, groupName) {
   let groupUri = UriUtils.createResourceUri([accountName, groupName]);
-  return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATAID_GROUP}> }`);
+  return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATABUS_GROUP}> }`);
 }
 
 /**
@@ -116,7 +106,7 @@ instance.getArtifact = async function (accountName, groupName, artifactName) {
  */
 instance.hasArtifact = async function (accountName, groupName, artifactName) {
   let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
-  return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATAID_ARTIFACT}> }`);
+  return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATABUS_ARTIFACT}> }`);
 }
 
 /**
@@ -334,7 +324,7 @@ instance.getVersion = async function (account, group, artifact, version) {
 
 instance.hasVersion = async function (accountName, groupName, artifactName, versionName) {
   let versionUri = UriUtils.createResourceUri([accountName, groupName, artifactName, versionName]);
-  return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATAID_VERSION}> }`);
+  return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATABUS_VERSION}> }`);
 }
 
 instance.getVersionByUri = async function (versionUri) {

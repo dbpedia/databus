@@ -9,27 +9,34 @@ class DatabusUris {
   static JSONLD_CONTEXT = '@context';
   static JSONLD_GRAPH = '@graph';
 
-  // DATAID
-  static DATAID_DATASET = 'http://dataid.dbpedia.org/ns/core#Dataset';
-  static DATAID_PART = 'http://dataid.dbpedia.org/ns/core#Part';
-  static DATAID_VERSION = 'http://dataid.dbpedia.org/ns/core#Version';
-  static DATAID_GROUP = 'http://dataid.dbpedia.org/ns/core#Group';
-  static DATAID_ARTIFACT = 'http://dataid.dbpedia.org/ns/core#Artifact';
-  static DATAID_VERSION_PROPERTY = 'http://dataid.dbpedia.org/ns/core#version';
-  static DATAID_GROUP_PROPERTY = 'http://dataid.dbpedia.org/ns/core#group';
-  static DATAID_ARTIFACT_PROPERTY = 'http://dataid.dbpedia.org/ns/core#artifact';
-  static DATAID_FORMAT = 'http://dataid.dbpedia.org/ns/core#format';
-  static DATAID_FORMAT_EXTENSION = 'http://dataid.dbpedia.org/ns/core#formatExtension';
-  static DATAID_CONTENT_VARIANT = 'http://dataid.dbpedia.org/ns/core#contentVariant';
-  static DATAID_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
-  static DATAID_SHASUM = 'http://dataid.dbpedia.org/ns/core#sha256sum';
-  static DATAID_COLLECTION = 'http://dataid.dbpedia.org/ns/core#Collection';
-  static DATAID_FILE = 'http://dataid.dbpedia.org/ns/core#file';
-  static DATAID_COMPRESSION = 'http://dataid.dbpedia.org/ns/core#compression';
-  static DATAID_ATTRIBUTION = 'http://dataid.dbpedia.org/ns/core#attribution';
-  static DATAID_PREVIEW = 'http://dataid.dbpedia.org/ns/core#preview';
-  static DATAID_CONTENT = 'http://dataid.dbpedia.org/ns/core#content';
-
+  // Databus
+  static DATABUS_DATABUS = 'http://dataid.dbpedia.org/databus#Databus';
+  static DATABUS_DATASET = 'https://dataid.dbpedia.org/databus#Dataset';
+  static DATABUS_PART = 'https://dataid.dbpedia.org/databus#Part';
+  static DATABUS_VERSION = 'https://dataid.dbpedia.org/databus#Version';
+  static DATABUS_GROUP = 'https://dataid.dbpedia.org/databus#Group';
+  static DATABUS_ARTIFACT = 'https://dataid.dbpedia.org/databus#Artifact';
+  static DATABUS_VERSION_PROPERTY = 'https://dataid.dbpedia.org/databus#version';
+  static DATABUS_GROUP_PROPERTY = 'https://dataid.dbpedia.org/databus#group';
+  static DATABUS_ARTIFACT_PROPERTY = 'https://dataid.dbpedia.org/databus#artifact';
+  static DATABUS_FORMAT = 'https://dataid.dbpedia.org/databus#format';
+  static DATABUS_FORMAT_EXTENSION = 'https://dataid.dbpedia.org/databus#formatExtension';
+  static DATABUS_CONTENT_VARIANT = 'https://dataid.dbpedia.org/databus#contentVariant';
+  static DATABUS_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
+  static DATABUS_SHASUM = 'https://dataid.dbpedia.org/databus#sha256sum';
+  static DATABUS_COLLECTION = 'https://dataid.dbpedia.org/databus#Collection';
+  static DATABUS_FILE = 'https://dataid.dbpedia.org/databus#file';
+  static DATABUS_COMPRESSION = 'https://dataid.dbpedia.org/databus#compression';
+  static DATABUS_ATTRIBUTION = 'https://dataid.dbpedia.org/databus#attribution';
+  static DATABUS_PREVIEW = 'https://dataid.dbpedia.org/databus#preview';
+  static DATABUS_COLLECTION_CONTENT = 'https://dataid.dbpedia.org/databus#collectionContent';
+  static DATABUS_TRACTATE_V1 = 'https://dataid.dbpedia.org/databus#DatabusTractateV1';
+  static DATABUS_PLUGIN = 'https://dataid.dbpedia.org/databus#Plugin';
+  static DATABUS_SEARCH_EXTENSION = 'https://dataid.dbpedia.org/databus#SearchExtension';
+  static DATABUS_SEARCH_EXTENSION_ADAPTER = 'https://dataid.dbpedia.org/databus#searchExtensionAdapter';
+  static DATABUS_SEARCH_EXTENSION_ENDPOINT = 'https://dataid.dbpedia.org/databus#searchExtensionEndpoint';
+  static DATABUS_EXTENDS = 'https://dataid.dbpedia.org/databus#extends';
+  
   // DCT
   static DCT_PUBLISHER = 'http://purl.org/dc/terms/publisher';
   static DCT_HAS_VERSION = 'http://purl.org/dc/terms/hasVersion';
@@ -53,14 +60,6 @@ class DatabusUris {
   // SEC
   static SEC_PROOF = 'https://w3id.org/security#proof';
   static SEC_SIGNATURE = 'https://w3id.org/security#signature';
-
-  // DATABUS
-  static DATABUS_TRACTATE_V1 = 'http://dataid.dbpedia.org/ns/core#DatabusTractateV1';
-  static DATABUS_PLUGIN = 'http://dataid.dbpedia.org/ns/core#Plugin';
-  static DATABUS_SEARCH_EXTENSION = 'http://dataid.dbpedia.org/ns/core#SearchExtension';
-  static DATABUS_SEARCH_EXTENSION_ADAPTER = 'http://dataid.dbpedia.org/ns/core#searchExtensionAdapter';
-  static DATABUS_SEARCH_EXTENSION_ENDPOINT = 'http://dataid.dbpedia.org/ns/core#searchExtensionEndpoint';
-  static DATABUS_EXTENDS = 'http://dataid.dbpedia.org/ns/core#extends';
 
   // RDF
   static RDF_PROPERTY = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property';

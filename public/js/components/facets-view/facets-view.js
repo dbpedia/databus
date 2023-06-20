@@ -126,7 +126,7 @@ function FacetsViewController($http, $scope) {
     }
 
     var queryUri = ctrl.resourceType == 'version' ?
-      ctrl.node.uri + '/' + ctrl.node.facetSettings['http://purl.org/dc/terms/hasVersion'][0].value
+      ctrl.node.uri + '/' + ctrl.node.facetSettings[DatabusUris.DCT_HAS_VERSION][0].value
       : ctrl.node.uri;
 
     // Load the available resource facets
@@ -137,10 +137,10 @@ function FacetsViewController($http, $scope) {
 
       // Facets data has been loaded
       // Fix artifact facet values for groups
-      if (ctrl.resourceType == 'group' && result.data["http://dataid.dbpedia.org/ns/core#artifact"] != undefined) {
-        for (var i in result.data["http://dataid.dbpedia.org/ns/core#artifact"].values) {
-          var value = result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i];
-          result.data["http://dataid.dbpedia.org/ns/core#artifact"].values[i]
+      if (ctrl.resourceType == 'group' && result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY] != undefined) {
+        for (var i in result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values) {
+          var value = result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values[i];
+          result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values[i]
             = DatabusUtils.uriToName(value);
         }
       }
@@ -227,7 +227,7 @@ function FacetsViewController($http, $scope) {
             var artifactNode = ctrl.node.childNodes[i];
             var facetValue = DatabusUtils.uriToName(artifactNode.uri)
             var visibleFacetSetting =
-              ctrl.getOrCreateVisibleFacetSetting('http://dataid.dbpedia.org/ns/core#artifact', facetValue);
+              ctrl.getOrCreateVisibleFacetSetting(DatabusUris.DATABUS_ARTIFACT_PROPERTY, facetValue);
             visibleFacetSetting.checked = true;
             visibleFacetSetting.isOverride = true;
           }
@@ -235,9 +235,9 @@ function FacetsViewController($http, $scope) {
           if (ctrl.node.childNodes.length == 0) {
 
             // Add artifact nodes per default
-            for (var v of ctrl.viewModel[DatabusUris.DATAID_ARTIFACT_PROPERTY].visibleFacetSettings) {
+            for (var v of ctrl.viewModel[DatabusUris.DATABUS_ARTIFACT_PROPERTY].visibleFacetSettings) {
               var childUri = ctrl.node.uri + '/' + v.value;
-              var artifactNode = new QueryNode(childUri, 'dataid:artifact');
+              var artifactNode = new QueryNode(childUri, 'databus:artifact');
               QueryNode.addChild(ctrl.node, artifactNode);
             }
           }
@@ -267,12 +267,12 @@ function FacetsViewController($http, $scope) {
    */
   ctrl.changeFacetValueState = function (key, value, targetState) {
 
-    if (ctrl.resourceType == 'group' && key == DatabusUris.DATAID_ARTIFACT_PROPERTY) {
+    if (ctrl.resourceType == 'group' && key == DatabusUris.DATABUS_ARTIFACT_PROPERTY) {
 
       var childUri = ctrl.node.uri + '/' + value;
 
       if (targetState) {
-        var artifactNode = new QueryNode(childUri, 'dataid:artifact');
+        var artifactNode = new QueryNode(childUri, 'databus:artifact');
         QueryNode.addChild(ctrl.node, artifactNode);
       } else {
         QueryNode.removeChildByUri(ctrl.node, childUri);

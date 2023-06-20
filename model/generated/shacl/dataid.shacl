@@ -5,6 +5,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix databus: <http://dataid.dbpedia.org/databus#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
 @prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
@@ -12,22 +13,22 @@
 
 <#part-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Part ;
+	sh:targetNode databus:Part ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
-	  sh:message "At least one subject with an rdf:type of dataid:Part must occur for each dataid:Dataset."@en ;
+	  sh:message "At least one subject with an rdf:type of databus:Part must occur for each databus:Version."@en ;
 	] ;
 	sh:property [
     sh:path [ sh:inversePath rdf:type ] ;
     sh:nodekind sh:IRI ;
     sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}#[a-zA-Z0-9\\-_\\.=]{3,}$" ;
-    sh:message "IRI for dataid:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3"@en ;
+    sh:message "IRI for databus:Part must match /USER/GROUP/ARTIFACT/VERSION#PART , |USER|>3"@en ;
     ] . 
 
 <#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -37,10 +38,10 @@
 
 <#has-file>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dataid:file of type IRI"@en ;
-	sh:path dataid:file;
+	sh:message "A databus:Part MUST have exactly one databus:file of type IRI"@en ;
+	sh:path databus:file;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI .
@@ -48,30 +49,30 @@
 
 <#has-formatExtension>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
-	sh:path dataid:formatExtension;
+	sh:message "Required property databus:formatExtension MUST occur exactly once AND have xsd:string as value"@en ;
+	sh:path databus:formatExtension;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 
 <#has-compression>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message """Required property dataid:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
+	sh:message """Required property databus:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a '.' in front """@en ;
 	sh:pattern "^[a-z0-9]{1,8}$" ;
-	sh:path dataid:compression;
+	sh:path databus:compression;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string .
 
 <#has-downloadURL>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
+	sh:message "A databus:Part MUST have exactly one dcat:downloadURL of type IRI"@en ;
 	sh:path dcat:downloadURL ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
@@ -80,9 +81,9 @@
 
 <#has-bytesize>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "A dataid:Part MUST have exactly one dcat:byteSize of type xsd:decimal"@en ;
+	sh:message "A databus:Part MUST have exactly one dcat:byteSize of type xsd:decimal"@en ;
 	sh:path dcat:byteSize ;
 	sh:datatype xsd:decimal ;
 	sh:maxCount 1 ;
@@ -90,19 +91,19 @@
 
 <#has-sha256sum>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
-	sh:path dataid:sha256sum;
+	sh:message "Required property databus:sha256sum MUST occur exactly once AND have xsd:string as value AND match pattern ^[a-f0-9]{64}$"@en ;
+	sh:path databus:sha256sum;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:datatype xsd:string ;
-	#   dataid:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
+	#   databus:sha256sum         "49b0f2dd5bb6c1dcdbbb935dbc4463218d570b4b4499da081e07a2d52c60ceab"^^xsd:string ;
 	sh:pattern "^[a-f0-9]{64}$" .
 
 <#has-hasVersion-part>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
 	sh:path dct:hasVersion ;
@@ -114,20 +115,20 @@
 	a sh:PropertyShape ;
 	sh:targetClass rdf:Property ;
 	sh:path rdfs:subPropertyOf ;
-	sh:hasValue dataid:contentVariant ;
-	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf dataid:contentVariant."@en .
+	sh:hasValue databus:contentVariant ;
+	sh:message "All rdf:Properties MUST be an rdfs:subPropertyOf databus:contentVariant."@en .
 
   <#is-part-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "Part URI must contain the version URI of the associated version." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?value .
-				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+				$this <http://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -135,16 +136,16 @@
 
   <#is-file-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "File URI must contain the version URI of the associated version." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
-        ?dist <http://dataid.dbpedia.org/ns/core#file> ?value .
-				$this <http://dataid.dbpedia.org/ns/core#version> ?version .
+        ?dist <http://dataid.dbpedia.org/databus#file> ?value .
+				$this <http://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;

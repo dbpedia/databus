@@ -50,9 +50,9 @@ class AppJsonFormatter {
     version.title = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
     version.abstract = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_ABSTRACT);
     version.description = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_DESCRIPTION);
-    version.artifact = JsonldUtils.getProperty(versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
+    version.artifact = JsonldUtils.getProperty(versionGraph, DatabusUris.DATABUS_ARTIFACT_PROPERTY);
     version.license = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_LICENSE);
-    version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATAID_ATTRIBUTION);
+    version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATABUS_ATTRIBUTION);
     version.wasDerivedFrom = JsonldUtils.getProperty(versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
     version.issued = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_ISSUED);
     version.name = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_HAS_VERSION);
@@ -61,7 +61,7 @@ class AppJsonFormatter {
   }
 
   static formatCollectionData(graphs) {
-    var collectionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATAID_COLLECTION);
+    var collectionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_COLLECTION);
 
     var result = {};
 
@@ -72,7 +72,7 @@ class AppJsonFormatter {
     result.issued = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_ISSUED);
     result.publisher = JsonldUtils.getProperty(collectionGraph, DatabusUris.DCT_PUBLISHER);
 
-    var content = JsonldUtils.getProperty(collectionGraph, DatabusUris.DATAID_CONTENT)
+    var content = JsonldUtils.getProperty(collectionGraph, DatabusUris.DATABUS_COLLECTION_CONTENT)
     result.content = DatabusUtils.tryParseJson(unescape(content));
 
     return result;

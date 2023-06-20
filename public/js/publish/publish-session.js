@@ -126,13 +126,13 @@ class PublishSession {
                 version.isLoading = false;
 
                 var versionData = response.data;
-                var versionGraph = JsonldUtils.getTypedGraph(versionData, DatabusUris.DATAID_VERSION);
+                var versionGraph = JsonldUtils.getTypedGraph(versionData, DatabusUris.DATABUS_VERSION);
 
                 version.name = DatabusUtils.uriToName(versionGraph[DatabusUris.JSONLD_ID]);
                 version.title = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
                 version.abstract = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_ABSTRACT);
                 version.description = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_DESCRIPTION);
-                version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATAID_ATTRIBUTION);
+                version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATABUS_ATTRIBUTION);
                 version.license = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_LICENSE);
                 version.derivedFrom = JsonldUtils.getProperty(versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
 

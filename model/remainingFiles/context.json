@@ -52,13 +52,13 @@
     "@id": "dct:modified",
     "@type": "xsd:dateTime"
   },
-  "Artifact": "dataid:Artifact",
+  "Artifact": "databus:Artifact",
   "format": {
-    "@id": "dataid:formatExtension",
+    "@id": "databus:formatExtension",
     "@type": "xsd:string"
   },
   "signature": {
-    "@id": "dataid:signature",
+    "@id": "databus:signature",
     "@type": "xsd:string"
   },
   "tractate": {

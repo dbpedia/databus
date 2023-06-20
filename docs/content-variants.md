@@ -9,7 +9,7 @@ The main rule for content variant setup is the following:
 
 This ensures that each file in the dataid:Dataset can be selected individually by querying for its unique tuple of *format*, *compression type* and *content variants*.
 
-A content variant is a key-value pair with the key being a sub-property of `dataid:contentVariant` and the value being a (preferrably short) string that can be chosen freely. Content variants could describe either a property of the file or its content.
+A content variant is a key-value pair with the key being a sub-property of `databus:contentVariant` and the value being a (preferrably short) string that can be chosen freely. Content variants could describe either a property of the file or its content.
 
 
 **Examples:**
@@ -63,7 +63,7 @@ The above example shows two dataid:Parts of a dataid:Dataset. The two parts are 
 {
   "@type": "rdf:Property",
   "@id": "http://dataid.dbpedia.org/ns/cv#size",
-  "rdfs:subPropertyOf": "dataid:contentVariant"
+  "rdfs:subPropertyOf": "databus:contentVariant"
 }
 ```
 
