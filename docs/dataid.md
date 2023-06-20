@@ -1,8 +1,8 @@
 # Dataset Version - the DataId
 *auto-generated from model/*.php via [pre-commit hook](https://github.com/dbpedia/databus/blob/master/model/README.md)*
-## Dataset
+## Version
 
-A DataId dataset is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
 
 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
@@ -17,39 +17,37 @@ Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
-	"@type": "dataid:Dataset",
+	"@type": "databus:Version",
 }
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-#copied from DataId ontology
-dataid:Dataset
-	a owl:Class ;
-	rdfs:label "Databus Dataset"@en ;
-	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
-	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+databus:Version  a owl:Class ;
+    rdfs:label "Version"@en ;
+    rdfs:comment "Dataset Version"@en ; 
+    rdfs:subClassOf dcat:Dataset , dataid:Dataset ;
+    rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ```
 ```turtle
 <#dataset-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Dataset ;
+	sh:targetNode databus:Version ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1 ;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Dataset must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Version must occur."@en ;
 	] ;
 	sh:property [
 		sh:path [ sh:inversePath rdf:type ] ;
 		  sh:nodekind sh:IRI ;
 		sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}/[a-zA-Z0-9\\-_\\.]{1,}$" ;
-		sh:message "IRI for dataid:Dataset must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+		sh:message "IRI for databus:Version must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
   ] . 
 ```
 ```javascript
-"Dataset": 	"dataid:Dataset" 
+"Version": 	"databus:Version" 
 ```
 
 ## 1. General Metadata
@@ -78,7 +76,7 @@ dct:title
 ```turtle
 <#title-dataid>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Version ;
+	sh:targetClass databus:Version ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -120,7 +118,7 @@ dct:abstract
 ```turtle
 <#abstract-dataid>
 	a sh:NodeShape ;
-    sh:targetClass dataid:Dataset ;
+    sh:targetClass databus:Version ;
     sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -163,7 +161,7 @@ dct:description
 ```turtle
 <#description-dataid>
 	a sh:NodeShape ;
-    sh:targetClass dataid:Dataset ;
+    sh:targetClass databus:Version ;
     sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
@@ -205,7 +203,7 @@ dct:publisher
 ```turtle
 <#has-publisher>
 	a sh:PropertyShape ;
-  sh:targetClass dataid:Dataset ;
+  sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:publisher MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:publisher;
@@ -257,7 +255,7 @@ dct:license
 ```turtle
 <#has-license>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass void:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:license;
@@ -348,7 +346,7 @@ Spec (OWL, SHACL, JSON-LD Context)
 dataid:attribution a owl:DataTypeProperty; 
 	rdfs:label "attribution"@en ;
 	rdfs:comment "TODO"@en ;
-	rdfs:domain dataid:Artifact, dataid:Dataset, dataid:Group ;
+	rdfs:domain databus:Artifact, databus:Version, databus:Group ;
 	rdfs:range xsd:string ;
 	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
 ```
@@ -376,22 +374,21 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dataid:group a owl:ObjectProperty; 
-	rdfs:label "has parent Group"@en ;
-	rdfs:comment "Defines the Databus Group a Databus Artifact belongs to"@en ;
-	rdfs:domain dataid:Artifact ;
-	rdfs:range dataid:Group ;
-	rdfs:subPropertyOf dct:isPartOf ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+databus:group rdf:type owl:ObjectProperty ;
+    rdfs:label "group"@en ;
+    rdfs:comment "Refers to a group or collection of resources."@en ;
+    rdfs:domain databus:Version ;
+    rdfs:range databus:Group ;
+    rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ```
 ```turtle
 <#has-group>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
-	sh:path dataid:group ;
+	sh:message "Required property databus:group MUST occur exactly once AND be of type IRI AND must match /USER/GROUP , |USER|>3"@en ;
+	sh:path databus:group ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI ;
@@ -399,14 +396,14 @@ dataid:group a owl:ObjectProperty;
 
 <#is-group-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
 		sh:message "Dataset URI must contain the group URI of the associated group." ;
-		sh:prefixes dataid: ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?group
 			WHERE {
-				$this <http://dataid.dbpedia.org/ns/core#group> ?group .
+				$this <http://dataid.dbpedia.org/databus#group> ?group .
         FILTER(!strstarts(str($this), str(?group)))
 			}
 			""" ;
@@ -427,21 +424,20 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dataid:artifact a owl:ObjectProperty; 
-	rdfs:label "has parent Artifact"@en ;
-	rdfs:comment "Defines the Databus Artifact a Databus Dataset belongs to"@en ;
-	rdfs:domain dataid:Dataset ;
-	rdfs:range dataid:Artifact ;
-	rdfs:subPropertyOf dct:isPartOf ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+databus:artifact a rdf:ObjectProperty ;
+    rdfs:label "artifact"@en ;
+    rdfs:comment "Specifies an artifact associated with a dataset in the DataID vocabulary."@en ;
+    rdfs:domain databus:Version ;
+    rdfs:range databus:Artifact ;
+    rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 ```
 ```turtle
 <#has-artifact>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
-	sh:message "Required property dataid:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
-	sh:path dataid:artifact ;
+	sh:message "Required property databus:artifact MUST occur exactly once AND be of type IRI AND must match /USER/GROUP/ARTIFACT , |USER|>3"@en ;
+	sh:path databus:artifact ;
 	sh:minCount 1 ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:IRI  ;
@@ -449,14 +445,14 @@ dataid:artifact a owl:ObjectProperty;
 
 <#is-artifact-uri-correct>
 	a sh:NodeShape;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:sparql [
-		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
-		sh:prefixes dataid: ;
+		sh:message "Version URI must contain the artifact URI of the associated artifact." ;
+		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?artifact
 			WHERE {
-				$this <http://dataid.dbpedia.org/ns/core#artifact> ?artifact .
+				$this <http://dataid.dbpedia.org/databus#artifact> ?artifact .
         FILTER(!strstarts(str($this), str(?artifact)))
 			}
 			""" ;
@@ -488,7 +484,7 @@ dct:hasVersion
 ```turtle
 <#has-hasVersion-dataset>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:hasVersion MUST occur exactly once AND be of type Literal"@en ;
 	sh:path dct:hasVersion ;
@@ -508,7 +504,7 @@ Example (JSON-LD):
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 	"distribution": [{
           		"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt",
-          		"@type": "dataid:Part",
+          		"@type": "databus:Part",
           		"file": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06/ontology--DEV_type=parsed_sorted.nt",
           		"format": "nt",
           		"compression": "none",
@@ -535,7 +531,7 @@ dcat:distribution
 ```turtle
 <#has-distribution>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dcat:distribution MUST occur at least once AND have URI/IRI as value"@en ;
 	sh:path dcat:distribution;
@@ -577,7 +573,7 @@ dct:issued
 ```turtle
 <#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass void:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -617,7 +613,7 @@ dct:modified
 ```turtle
 <#has-modified>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Dataset ;
+	sh:targetClass void:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:modified;

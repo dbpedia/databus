@@ -13,10 +13,10 @@
 	"sec": "https://w3id.org/security#",
 
 
-"Group": 	"dataid:Group",
+"Group": 	"databus:Group",
 
 "group": {
-	"@id": "dataid:group",
+	"@id": "databus:group",
 	"@type": "@id"
 	},
 
@@ -26,14 +26,14 @@
 
 "description": { "@id": "dct:description" },
 
-"Artifact": 	"dataid:Artifact",
+"Artifact": 	"databus:Artifact",
 
 "artifact": {
-	"@id": "dataid:artifact",
+	"@id": "databus:artifact",
 	"@type": "@id"
 	},
 
-"Dataset": 	"dataid:Dataset" ,
+"Version": 	"databus:Version" ,
 
 "publisher": {
       "@id": "dct:publisher",
@@ -73,16 +73,16 @@
 "signature":	{"@id": "sec:signature"},
 "proof":	{"@id": "sec:proof"},
 
-"Part": 	"dataid:Part" ,
+"Part": 	"databus:Part" ,
 
 "file": {
-      "@id": "dataid:file",
+      "@id": "databus:file",
       "@type": "@id"
     },
 
-"formatExtension": 	{"@id": "dataid:formatExtension"},
+"formatExtension": 	{"@id": "databus:formatExtension"},
 
-"compression": 	{"@id": "dataid:compression"},
+"compression": 	{"@id": "databus:compression"},
 
 "downloadURL": {
       "@id": "dcat:downloadURL",
@@ -94,7 +94,7 @@
     "@type": "xsd:decimal"
   },
 
-"sha256sum": 		{"@id": "dataid:sha256sum"},
+"sha256sum": 		{"@id": "databus:sha256sum"},
 
 "subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",

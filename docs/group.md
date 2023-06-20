@@ -11,18 +11,17 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dataid:Group a owl:Class ;
-	rdfs:label "Databus Group"@en ;
-	rdfs:comment "A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit"@en ; 
-	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . #TODO ontology ID
-
+databus:Group a owl:Class ;
+    rdfs:label "Databus Group"@en ;
+    rdfs:comment """A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit."""@en ; 
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ```
 ```turtle
 <#group-exists>
 	a sh:NodeShape ;
-	sh:targetNode dataid:Group ;
+	sh:targetNode databus:Group ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
@@ -33,14 +32,14 @@ dataid:Group a owl:Class ;
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
       sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
-      sh:message "IRI for dataid:Group must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:message "IRI for databus:Group must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
 	] .
 ```
 ```javascript
-"Group": 	"dataid:Group",
+"Group": 	"databus:Group",
 
 "group": {
-	"@id": "dataid:group",
+	"@id": "databus:group",
 	"@type": "@id"
 	}
 ```
@@ -68,7 +67,7 @@ dct:title
 ```turtle
 <#title-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -108,7 +107,7 @@ dct:abstract
 ```turtle
 <#abstract-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -150,7 +149,7 @@ dct:description
 ```turtle
 <#description-group>
 	a sh:NodeShape ;
-	sh:targetClass dataid:Group ;
+	sh:targetClass databus:Group ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
