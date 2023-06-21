@@ -11,6 +11,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const { dataid } = require('../../common/queries/sparql');
 const getJsonLd = require('../../common/get-jsonld');
 const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
+const groupQueryTemplate = require("../../common/queries/constructs/ld/construct-group.sparql");
 const collectionQueryTemplate = require("../../common/queries/constructs/ld/construct-collection.sparql");
 const versionQueryTemplate = require("../../common/queries/constructs/ld/construct-version.sparql");
 
@@ -20,8 +21,6 @@ const DatabusConstants = require('../../../../public/js/utils/databus-constants'
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(10);
-
-  var licenseCache = new DatabusCache(3600, 100000);
 
   router.get('/:account', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -89,32 +88,32 @@ module.exports = function (router, protector) {
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
-      // let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var groupUri = `${UriUtils.createResourceUri([req.params.account, req.params.group])}`;
 
-      let cacheKey = `cache_key_${req.params.account}_${req.params.group}`;
-      let data = await cache.get(cacheKey, async () => {
-        return {
-          group: await sparql.dataid.getGroup(req.params.account, req.params.group)
-        };
-      });
+      var groupJsonLd = await getJsonLd(groupUri, groupQueryTemplate, 'flatten');
 
-      if (data.group == null) {
+      if (groupJsonLd == null) {
         next('route');
         return;
       }
 
-      data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      var title = data.group.title != null ? data.group.title : UriUtils.uriToLabel(data.group.uri);
+      var groupData = AppJsonFormatter.formatGroupData(groupJsonLd);
 
       res.render('group', {
-        title: title,
-        data: data,
+        title: groupData.title,
+        data: {
+          auth: auth,
+          group: groupData
+        }
       });
+
 
     } catch (err) {
       console.log(err);
-      res.status(500).send(err);
+      next('route');
     }
+
   });
 
   router.get('/:account/collections/:collection', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {

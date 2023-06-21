@@ -144,7 +144,10 @@ class DatabusUtils {
     }
 
     var result = uri.substr(uri.lastIndexOf('/') + 1);
-    result = result.substr(result.lastIndexOf('#') + 1);
+
+    if(result.includes('#')) {
+      result = result.substr(0, result.indexOf('#'));
+    }
 
     return result;
   }
@@ -326,7 +329,7 @@ class DatabusUtils {
     for (var quad of parsedData.quads) {
 
       if (quad.predicate.id == `http://www.w3.org/1999/02/22-rdf-syntax-ns#type`
-        && quad.object.id == DatabusUris.DATBAUS_DATABUS) {
+        && quad.object.id == DatabusUris.DATABUS_DATABUS) {
 
         return {
           uri: quad.subject.id
@@ -362,6 +365,10 @@ class DatabusUtils {
    * @param {*} description 
    */
   static createAbstractFromDescription(description) {
+
+    if(description == null) {
+      return null;
+    }
 
     try {
       var tokens = this.parseMarkdown(description);

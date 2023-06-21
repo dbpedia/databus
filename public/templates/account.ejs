@@ -56,20 +56,16 @@
         <!--Tabs-->
         <div class="collection-editor-tabs">
           <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
-            ng-click="tabNavigation.navigateTo('home');">
-            <div class="section-label">Overview</div>
-          </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
             ng-click="tabNavigation.navigateTo('data');">
             <div class="section-label">Data</div>
           </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }"
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
             ng-click="tabNavigation.navigateTo('collections');">
             <div class="section-label">Collections</div>
           </div>
           <div style="flex: 1"></div>
           <div ng-if="profileData.isOwn" class="collection-editor-tab"
-            ng-class="{ 'is-active' : tabNavigation.activeTab == 3 }" ng-click="tabNavigation.navigateTo('settings')">
+            ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }" ng-click="tabNavigation.navigateTo('settings')">
             <div class="section-label">
               <databus-icon style="margin-right:12px;" shape="'settings'" size="24">
               </databus-icon>Settings
@@ -221,9 +217,9 @@
 
       .settings-entity {
         border: 1px solid #dbdbdb;
-        padding: 0.5em; 
-        padding-left: 1em; 
-        display: flex; 
+        padding: 0.5em;
+        padding-left: 1em;
+        display: flex;
         margin-bottom: 1em;
         align-items: center;
         min-height: 54px;
@@ -234,8 +230,10 @@
 
     <div class="section" style="min-height: 500px;" ng-if="profileData != undefined">
 
-      <!-- DASHBOARD -->
-      <div class="container" ng-if="tabNavigation.activeTab == 0">
+
+      <!-- DATA -->
+      <div ng-if="tabNavigation.activeTab == 0" class="container account-page-tab">
+
         <div class="columns">
           <div class="column is-3" style="padding-right: 2em;">
 
@@ -248,108 +246,44 @@
               <p>{{ profileData.about }}</p>
             </div>
           </div>
-          <div class="column main" style="padding-left: 2em;">
-
-            <div class="dashboard-card">
-              <div class="dashboard-card-title">Publisher Activity</div>
-              <div ng-if="activityData.isLoading" style="text-align:center">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-              <div ng-if="!activityData.isLoading" style="display: flex;">
-                <activity-chart data="activityData.entries" height="400"></activity-chart>
-
-                <div style="min-width: 40%;">
-                  <div ng-if="recentUploads.isLoading" style="text-align:center">
-                    <div class="lds-ellipsis">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-                  </div>
-                  <div ng-if="recentUploads.length > 0" class="timeline" style="padding: 1em 0.5em;">
-                    <div ng-repeat="dataset in recentUploads">
-
-                      <header class="timeline-header" ng-if="recentUploads[$index - 1] == null">
-                        <span class="tag is-medium is-consumer">Now</span>
-                      </header>
-
-                      <header class="timeline-header"
-                        ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year != dataset.year">
-                        <span class="tag is-consumer">{{ recentUploads[$index - 1].year }}</span>
-                      </header>
-
-                      <header class="timeline-header" ng-if="recentUploads[$index - 1] && recentUploads[$index - 1].year == dataset.year
-                  && recentUploads[$index - 1].month != dataset.month">
-                        <span class="tag is-consumer">{{ recentUploads[$index - 1].month }}</span>
-                      </header>
-
-                      <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                          <p class="has-text-weight-semibold is-4">{{ dataset.title }}</p>
-                          <uri-breadcrumbs class="subtitle is-6 has-text-link" uri="dataset.uri">
-                          </uri-breadcrumbs>
-                          <p style="margin-top: 0.5em" class="subtitle is-6">{{
-                            formatDate(dataset.latestVersionDate)
-                            }}</p>
-                        </div>
-
-                      </div>
-
-                    </div>
+          <div class="column">
 
 
-                  </div>
-                </div>
-              </div>
+
+            <div class="field is-grouped" style="margin-bottom: 1em;">
+              <p class="control" style="flex: 1;">
+                <search search-input="dataSearchInput" settings="dataSearchSettings">
+                </search>
+              </p>
             </div>
 
-          </div>
-        </div>
-      </div>
 
-      <!-- DATA -->
-      <div ng-if="tabNavigation.activeTab == 1" class="container account-page-tab">
+            <div ng-if="dataSearchInput == ''" ng-repeat="group in publishedData.groups">
 
-        <div class="field is-grouped" style="margin-bottom: 2.5em;">
-          <p class="control" style="flex: 1;">
-            <search search-input="dataSearchInput" settings="dataSearchSettings">
-            </search>
-
-          </p>
-
-        </div>
-
-
-        <div ng-if="dataSearchInput == ''" ng-repeat="group in publishedData.groups">
-
-          <div style="display: flex; align-items: center; margin-bottom: 1em;">
-            <div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>
-            <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-            <entity-card label="group.title" uri="group.uri" type="'Group'" style="width: 100%">
-            </entity-card>
-          </div>
-
-          <div ng-if="group.isExpanded && group.artifacts.length > 0" style="margin-left: 74px; padding-left: 24px; margin-bottom: 1em;">
-
-            <div ng-repeat="artifact in group.artifacts" style="margin-bottom: 1em;">
-
-                <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
+              <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                <!--<div style="width: 52px;" ng-if="group.artifacts.length == 0"></div>-->
+                <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
+                <entity-card label="group.title" uri="group.uri" type="'Group'" style="width: 100%">
                 </entity-card>
+              </div>
 
+              <div ng-if="group.isExpanded && group.artifacts.length > 0"
+                style="margin-left: 74px; padding-left: 24px; margin-bottom: 1em;">
+
+                <div ng-repeat="artifact in group.artifacts" style="margin-bottom: 1em;">
+
+                  <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
+                  </entity-card>
+
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- COLLECTIONS -->
-      <div class="container account-page-tab" ng-if="tabNavigation.activeTab == 2">
+      <div class="container account-page-tab" ng-if="tabNavigation.activeTab == 1">
 
         <div class="ce-collection-list-header">
           <div class="search-input control has-icons-left">
@@ -375,7 +309,8 @@
                   ng-click=" collectionSearch.sortVisible=false"></div>
                 <div class="dropdown-content">
 
-                  <div class="dropdown-item" style="display: flex;" ng-repeat="property in collectionSearch.sortProperties"
+                  <div class="dropdown-item" style="display: flex;"
+                    ng-repeat="property in collectionSearch.sortProperties"
                     ng-click="collectionSearch.toggleSort(property.key)">
                     <div style="flex:1;">{{ property.label }}</div>
                     <div>
@@ -453,7 +388,7 @@
       </div>
 
 
-      <div class="container" ng-if="tabNavigation.activeTab == 3">
+      <div class="container" ng-if="tabNavigation.activeTab == 2">
         <% include profile %>
       </div>
 

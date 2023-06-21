@@ -25,35 +25,11 @@ function ProfileController($scope, $http) {
 
   $scope.putProfile = function (accountName) {
 
-
-    var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
-    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
-
-    accountJsonLd = {};
-
-    var personGraph = {};
-    personGraph[DatabusUris.JSONLD_ID] = personUri;
-    personGraph[DatabusUris.JSONLD_TYPE] = [
-      DatabusUris.FOAF_PERSON,
-      DatabusUris.DBP_DBPEDIAN
-    ];
-    personGraph[DatabusUris.FOAF_NAME] = accountName;
-    personGraph[DatabusUris.FOAF_ACCOUNT] = {};
-    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = accountUri;
-
-    var profileGraph = {};
-    profileGraph[DatabusUris.JSONLD_ID] = profileUri;
-    profileGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
-    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = {};
-    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC][DatabusUris.JSONLD_ID] = personUri;
-    profileGraph[DatabusUris.FOAF_MAKER] = {};
-    profileGraph[DatabusUris.FOAF_MAKER][DatabusUris.JSONLD_ID] = personUri;
-
-    accountJsonLd[DatabusUris.JSONLD_GRAPH] = [
-      personGraph,
-      profileGraph
-    ];
+    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
+      accountName,
+      accountName, 
+      null, 
+      null);
 
     $http.put(`/${accountName}`, accountJsonLd).then(function (result) {
       window.location.reload(true);
@@ -208,40 +184,13 @@ function ProfileController($scope, $http) {
       return;
     }
 
-    // Create webId data locally
-    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}`;
-    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
+    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
+      $scope.auth.info.accountName,
+      $scope.editData.label, 
+      $scope.editData.about, 
+      $scope.editData.imageUrl);
 
-    var webIdData =
-    {
-      "@context": JSONLD_CONTEXT,
-      "@graph": [
-        {
-          "@id": profileUri,
-          "@type": "foaf:PersonalProfileDocument",
-          "maker": personUri,
-          "primaryTopic": personUri,
-        },
-        {
-          "@id": personUri,
-          "@type": ["dbo:DBpedian", "foaf:Person"],
-          "name": $scope.editData.label,
-          "rdfs:comment": $scope.editData.about,
-          "account": profileUri,
-          "img": $scope.editData.imageUrl
-        }
-      ]
-    };
-
-    if ($scope.editData.webIdURI != undefined && $scope.editData.webIdURI != '') {
-      webIdData['@graph'].push({
-        "@id": $scope.editData.webIdURI,
-        "account": profileUri
-      });
-    }
-
-
-    $http.put('/' + $scope.auth.info.accountName, webIdData).then(function (result) {
+    $http.put(`/${$scope.auth.info.accountName}`, accountJsonLd).then(function (result) {
       DatabusAlert.alert($scope, true, DatabusMessages.ACCOUT_PROFILE_SAVED);
     }, function (err) {
       console.log(err);

@@ -21,7 +21,7 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collec
     ctrl.previousCollectionId = null;
   }
 
-  ctrl.defaultQuery = `PREFIX databus: <http://dataid.dbpedia.org/databus#>
+  ctrl.defaultQuery = `PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>

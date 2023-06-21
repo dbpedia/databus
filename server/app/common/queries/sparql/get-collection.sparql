@@ -1,5 +1,5 @@
 PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX databus: <http://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 
 SELECT * WHERE
 {

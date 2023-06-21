@@ -10,7 +10,7 @@ class DatabusUris {
   static JSONLD_GRAPH = '@graph';
 
   // Databus
-  static DATABUS_DATABUS = 'http://dataid.dbpedia.org/databus#Databus';
+  static DATABUS_DATABUS = 'https://dataid.dbpedia.org/databus#Databus';
   static DATABUS_DATASET = 'https://dataid.dbpedia.org/databus#Dataset';
   static DATABUS_PART = 'https://dataid.dbpedia.org/databus#Part';
   static DATABUS_VERSION = 'https://dataid.dbpedia.org/databus#Version';
@@ -83,9 +83,11 @@ class DatabusUris {
   static FOAF_PERSONAL_PROFILE_DOCUMENT = 'http://xmlns.com/foaf/0.1/PersonalProfileDocument';
   static FOAF_ACCOUNT = 'http://xmlns.com/foaf/0.1/account';
   static FOAF_NAME = 'http://xmlns.com/foaf/0.1/name';
+  static FOAF_STATUS = 'http://xmlns.com/foaf/0.1/status';
   static FOAF_PERSON = 'http://xmlns.com/foaf/0.1/Person';
   static FOAF_PRIMARY_TOPIC = 'http://xmlns.com/foaf/0.1/primaryTopic';
   static FOAF_MAKER = 'http://xmlns.com/foaf/0.1/maker';
+  static FOAF_IMG = 'http://xmlns.com/foaf/0.1/img';
 
   // S4AC
   static S4AC_ACCESS_POLICY = 'http://ns.inria.fr/s4ac/v2#AccessPolicy';

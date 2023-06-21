@@ -25,7 +25,7 @@ function AccountPageController($scope, $http, $location, collectionManager) {
 
   // Create a tab navigation object for the tab navigation with locato
   $scope.tabNavigation = new TabNavigation($scope, $location, [
-    'home', 'data', 'collections', 'settings'
+    'data', 'collections', 'settings'
   ]);
 
   // Make some util functions available in the template

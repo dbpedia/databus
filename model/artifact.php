@@ -15,7 +15,7 @@ $owl=
 	rdfs:label "Databus Artifact"@en ;
 	rdfs:comment "A Databus Artifact is a logical dataset on the Databus"@en ; 
 	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . #TODO ontology ID
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . #TODO ontology ID
 ';
 
 $shacl='<#artifact-exists>

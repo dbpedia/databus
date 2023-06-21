@@ -347,6 +347,7 @@ instance.getGroupsByAccount = async function (account) {
   let queryOptions = { ACCOUNT_URI: UriUtils.createResourceUri([account]) };
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
 
+  console.log(query);
   let bindings = await exec.executeSelect(query);
   let result = [];
 

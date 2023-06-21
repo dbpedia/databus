@@ -184,6 +184,7 @@
                   </label>
                   <label class="radio">
                     <input type="radio" ng-model="group.generateMetadata" value="existing" name="group-metadata"
+                      ng-disabled="session.accountData.groups.length == 0"
                       ng-change="session.setCreateNewGroup(group.generateMetadata)">
                     Use Existing Group
                   </label>
@@ -578,7 +579,10 @@
                             <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
                               <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
                                 ng-change="filterLicenses(licenseQuery)" />
-                              <div style="padding: 0.5em; color: #888" ng-if="licenseData == undefined">The content of this dropdown relies on the license service provided by <a href="https://dalicc.net" target="_blank">https://dalicc.net</a>. If you are unable to find any licenses, this might be due to the service being temporarily unavailable.</div>
+                              <div style="padding: 0.5em; color: #888" ng-if="licenseData == undefined">The content of
+                                this dropdown relies on the license service provided by <a href="https://dalicc.net"
+                                  target="_blank">https://dalicc.net</a>. If you are unable to find any licenses, this
+                                might be due to the service being temporarily unavailable.</div>
                               <div ng-repeat="license in filteredLicenseList | limitTo: 25"
                                 style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
                                 {{ license.title.value }}
@@ -615,227 +619,241 @@
             </div>
 
             <!-- FILES -->
-            <div class="databus-settings-box-header">FILES INFO</div>
-            <div class="databus-settings-box">
+            <div ng-if="version.generateMetadata != 'none'">
+              <div class="databus-settings-box-header">FILES INFO</div>
+              <div class="databus-settings-box">
 
-              <div class="databus-settings-box-note">
-                <div class="hover-note">
-                  <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown content"
-                    style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
-                    <ul style="margin-top: 0; margin-left: 1.5em;">
-                      <li ng-repeat="hint in hints.files">{{ hint }}</li>
-                    </ul>
+                <div class="databus-settings-box-note">
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown content"
+                      style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
+                      <ul style="margin-top: 0; margin-left: 1.5em;">
+                        <li ng-repeat="hint in hints.files">{{ hint }}</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-             
 
-              <div class="row">
-                <div class="row-label">Add Files</div>
-                <div class="databus-settings-info">
-                  <div>Enter file URLs divided by newlines and click <b>Add URLs</b> to add file entries to your
-                    metadata document.</div>
-                </div>
-                <div class="control" style="width: 100%; margin-bottom: 0.5em;">
-                  <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;" class="input"
-                    type="text-area" placeholder="Enter file URLs (seperated by newline)">
+
+                <div class="row">
+                  <div class="row-label">Add Files</div>
+                  <div class="databus-settings-info">
+                    <div>Enter file URLs divided by newlines and click <b>Add URLs</b> to add file entries to your
+                      metadata document.</div>
+                  </div>
+                  <div class="control" style="width: 100%; margin-bottom: 0.5em;">
+                    <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;" class="input"
+                      type="text-area" placeholder="Enter file URLs (seperated by newline)">
                       </textarea>
-                </div>
-                <div class="control">
-                  <a class="button" ng-click="addFiles(session.addFileInput)">
-                    Add URLs
-                  </a>
-                </div>
-              </div>
-              <div class="row">
-                <div class="row-label">Add Files From Resource Page</div>
-                <div class="databus-settings-info">
-                  <div>Searches the HTML document of the entered URL for links to files and adds them to the version.</div>
-                </div>
-                <div class="field has-addons">
-                  <div class="control" style="width: 100%;">
-                    <input ng-model="session.fetchFilesInput" class="input" type="text"
-                      placeholder="Enter a resource page URL">
                   </div>
                   <div class="control">
-                    <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
-                      Fetch URLs
+                    <a class="button" ng-click="addFiles(session.addFileInput)">
+                      Add URLs
                     </a>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="row-label">
-                  <div>Content Variants</div>
-
-                  <div class="databus-settings-box-note">
-                    <div class="hover-note">
-                      <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
-                      </databus-icon>
-                      <div class="hover-dropdown content"
-                        style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
-                        <ul style="margin-top: 0; margin-left: 1.5em;">
-                          <li ng-repeat="hint in hints.variants">{{ hint }}</li>
-                        </ul>
-                      </div>
+                <div class="row">
+                  <div class="row-label">Add Files From Resource Page</div>
+                  <div class="databus-settings-info">
+                    <div>Searches the HTML document of the entered URL for links to files and adds them to the version.
+                    </div>
+                  </div>
+                  <div class="field has-addons">
+                    <div class="control" style="width: 100%;">
+                      <input ng-model="session.fetchFilesInput" class="input" type="text"
+                        placeholder="Enter a resource page URL">
+                    </div>
+                    <div class="control">
+                      <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
+                        Fetch URLs
+                      </a>
                     </div>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="row-label">
+                    <div>Content Variants</div>
 
-                <div class="databus-settings-info">
-                  <div>Content variants are facets that you can add to your files. This can be helpful when your files exist in multiple languages or your dataset is partitioned into multiple files in any other way. Content variants can help other Databus users to find the correct files for their use case.</div>
-                </div>
-
-                <div class="field has-addons">
-                  <div class="control" style="width: 100%;">
-                    <input ng-model="session.contentVariantInput" class="input" type="text"
-                      placeholder="Enter a content variant tag">
-                  </div>
-                  <div class="control">
-                    <a class="button"
-                      ng-click="session.formData.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
-                      Add Content Variant
-                    </a>
-                  </div>
-                </div>
-                <div class="content-variants-panel">
-                  <div style="border: 1px solid #dbdbdb;" class="content-variant-box" ng-repeat="variant in version.contentVariants">
-                    <div>
-                      <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
-                        variant.label }}</div>
-                      <div style="display: flex; align-items: center; padding: .5em;">
-                        <div style="flex: 1; display: flex; align-items: center;">
-                          <div class="field has-addons" style="margin: 0; margin-right: 0.5em;">
-                            <div class="control">
-                              <input class="input" style="min-width: 400px;" ng-model="variant.fillRegex" type="text"
-                                placeholder="Enter a String or Regex (e.g: .* for full file name)">
-                            </div>
-                            <div class="control">
-                              <div class="button" ng-click="session.formData.fill(variant)">
-                                Fill
-                              </div>
-                            </div>
-                            <div class="control">
-                              <div class="button" ng-click="session.formData.fillByRegex(variant)">
-                                Fill by Regex on Filename
-                              </div>
-                            </div>
-
-                          </div>
-                          <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
-                            name="to lowercase">
-                          <label for="scales">To Lowercase</label>
-
-                          <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
-                            type="checkbox" name="prune">
-                          <label for="scales">Remove Whitespaces</label>
-
-                          <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox" type="checkbox"
-                            name="prune">
-                          <label for="scales">Overwrite</label>
+                    <div class="databus-settings-box-note">
+                      <div class="hover-note">
+                        <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+                        </databus-icon>
+                        <div class="hover-dropdown content"
+                          style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
+                          <ul style="margin-top: 0; margin-left: 1.5em;">
+                            <li ng-repeat="hint in hints.variants">{{ hint }}</li>
+                          </ul>
                         </div>
+                      </div>
+                    </div>
+                  </div>
 
-                        <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
-                          on-click="session.formData.removeContentVariant(variant)" size="24"></databus-icon>
+                  <div class="databus-settings-info">
+                    <div>Content variants are facets that you can add to your files. This can be helpful when your files
+                      exist in multiple languages or your dataset is partitioned into multiple files in any other way.
+                      Content variants can help other Databus users to find the correct files for their use case.</div>
+                  </div>
+
+                  <div class="field has-addons">
+                    <div class="control" style="width: 100%;">
+                      <input ng-model="session.contentVariantInput" class="input" type="text"
+                        placeholder="Enter a content variant tag">
+                    </div>
+                    <div class="control">
+                      <a class="button"
+                        ng-click="session.formData.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
+                        Add Content Variant
+                      </a>
+                    </div>
+                  </div>
+                  <div class="content-variants-panel">
+                    <div style="border: 1px solid #dbdbdb;" class="content-variant-box"
+                      ng-repeat="variant in version.contentVariants">
+                      <div>
+                        <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
+                          variant.label }}</div>
+                        <div style="display: flex; align-items: center; padding: .5em;">
+                          <div style="flex: 1; display: flex; align-items: center;">
+                            <div class="field has-addons" style="margin: 0; margin-right: 0.5em;">
+                              <div class="control">
+                                <input class="input" style="min-width: 400px;" ng-model="variant.fillRegex" type="text"
+                                  placeholder="Enter a String or Regex (e.g: .* for full file name)">
+                              </div>
+                              <div class="control">
+                                <div class="button" ng-click="session.formData.fill(variant)">
+                                  Fill
+                                </div>
+                              </div>
+                              <div class="control">
+                                <div class="button" ng-click="session.formData.fillByRegex(variant)">
+                                  Fill by Regex on Filename
+                                </div>
+                              </div>
+
+                            </div>
+                            <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
+                              name="to lowercase">
+                            <label for="scales">To Lowercase</label>
+
+                            <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
+                              type="checkbox" name="prune">
+                            <label for="scales">Remove Whitespaces</label>
+
+                            <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox" type="checkbox"
+                              name="prune">
+                            <label for="scales">Overwrite</label>
+                          </div>
+
+                          <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
+                            on-click="session.formData.removeContentVariant(variant)" size="24"></databus-icon>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-          
-              <div class="row">
-                <div class="row-label">File Table</div>
-                <table-editor ng-if="utils.objSize(version.files) > 0" model="version" on-remove-file="removeFile(file)">
-                </table-editor>
-                <div ng-if="loadRequestCount == 0 && utils.objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
+
+                <div class="row">
+                  <div class="row-label">File Table</div>
+                  <table-editor ng-if="utils.objSize(version.files) > 0" model="version"
+                    on-remove-file="removeFile(file)">
+                  </table-editor>
+                  <div ng-if="loadRequestCount == 0 && utils.objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
-                  <div class="hint-box">
-                    <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
-                      and clicking the respective button.</div>
+                    <div class="hint-box">
+                      <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
+                        and clicking the respective button.</div>
+                    </div>
                   </div>
+
                 </div>
 
-              </div>
-
-              <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
+                <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
                margin: -0.5em; margin-top: .5em;
                 border-top: solid 1px #dbdbdb;">
-                <div class="loading-rect">
-                  <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                  <div class="loading-rect">
+                    <div class="lds-ellipsis">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
 
-            <!-- ARTIFACT INFO BOX-->
-            <div class="databus-settings-box-header">SIGNATURE</div>
-            <div class="databus-settings-box">
+              <!-- ARTIFACT INFO BOX-->
+              <div class="databus-settings-box-header">SIGNATURE</div>
+              <div class="databus-settings-box">
 
-              <div class="row">
-                <div class="row-label">Publisher</div>
-                <div class="databus-settings-info">
-                  <div>Every dataset on the Databus needs to be signed by the publisher. Databus uses cryptographic keypairs and public keys exposed via WebId to enable decentralized dataset validation. You can either use your Databus account as a WebId and let the Databus sign your metadata or sign it with your own private key and WebId. For more information, please refer to the <a href="https://dbpedia.gitbook.io/databus/usage" target="_blank">Gitbook</a>.</div>
-                </div>
-                <div style="width: 100%;">
-                  <div class="field">
-                    <div class="control">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <button style="justify-content: space-between; min-width: 400px;" class="button"
-                            aria-haspopup="true" aria-controls="dropdown-menu4">
-                            <span>{{ session.formData.signature.selectedPublisherUri}}</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </button>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                            <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
-                              ng-repeat="uri in session.formData.signature.publisherUris">
-                              {{ uri }}
-                            </a>
+                <div class="row">
+                  <div class="row-label">Publisher</div>
+                  <div class="databus-settings-info">
+                    <div>Every dataset on the Databus needs to be signed by the publisher. Databus uses cryptographic
+                      keypairs and public keys exposed via WebId to enable decentralized dataset validation. You can
+                      either use your Databus account as a WebId and let the Databus sign your metadata or sign it with
+                      your own private key and WebId. For more information, please refer to the <a
+                        href="https://dbpedia.gitbook.io/databus/usage" target="_blank">Gitbook</a>.</div>
+                  </div>
+                  <div style="width: 100%;">
+                    <div class="field">
+                      <div class="control">
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button style="justify-content: space-between; min-width: 400px;" class="button"
+                              aria-haspopup="true" aria-controls="dropdown-menu4">
+                              <span>{{ session.formData.signature.selectedPublisherUri}}</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                              <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
+                                ng-repeat="uri in session.formData.signature.publisherUris">
+                                {{ uri }}
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="row">
-                <div class="row-label">Signature</div>
-                <div style="width: 100%;">
-                  <div class="field">
-                    <div class="control">
-                      <label class="checkbox">
-                        <input type="checkbox" ng-disabled="session.formData.signature.autoGenerateSignatureLocked"
-                          ng-model="session.formData.signature.autoGenerateSignature">
-                        Auto-generate Signature
-                      </label>
-                    </div>
-                    <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
-                      <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
-                      <div style="display: flex; margin-bottom: 8px;">
-                        <div style="margin-right: 8px;" class="button" ng-click="createTractate()"
-                          ng-disabled="creatingTractate">Create
-                          Tractate</div>
-                        <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                <div class="row">
+                  <div class="row-label">Signature</div>
+                  <div style="width: 100%;">
+                    <div class="field">
+                      <div class="control">
+                        <label class="checkbox">
+                          <input type="checkbox" ng-disabled="session.formData.signature.autoGenerateSignatureLocked"
+                            ng-model="session.formData.signature.autoGenerateSignature">
+                          Auto-generate Signature
+                        </label>
                       </div>
-                      <div class="databus-settings-info" style="margin-bottom: 10px">
-                        <div>Click the <b>Create Tractate</b> button to generate the tractate for your metadata document. The Databus tractate is a minimal canonicalized form of your document containing the most crucial pieces of information. Sign the tractate with your private key and post the signature into the field below.</div>
+                      <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
+                        <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
+                        <div style="display: flex; margin-bottom: 8px;">
+                          <div style="margin-right: 8px;" class="button" ng-click="createTractate()"
+                            ng-disabled="creatingTractate">Create
+                            Tractate</div>
+                          <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                        </div>
+                        <div class="databus-settings-info" style="margin-bottom: 10px">
+                          <div>Click the <b>Create Tractate</b> button to generate the tractate for your metadata
+                            document. The Databus tractate is a minimal canonicalized form of your document containing
+                            the most crucial pieces of information. Sign the tractate with your private key and post the
+                            signature into the field below.</div>
+                        </div>
+                        <textarea ng-model="session.formData.signature.userSignature" class="textarea"
+                          style="resize: vertical" placeholder="Signature"></textarea>
                       </div>
-                      <textarea ng-model="session.formData.signature.userSignature" class="textarea"
-                        style="resize: vertical" placeholder="Signature"></textarea>
                     </div>
                   </div>
                 </div>
@@ -850,67 +868,67 @@
         <div class="databus-settings-box-header">Publish</div>
         <div class="databus-settings-box" ng-init="artifact=session.formData.artifact">
 
-            <div class="row">
-              <div class="row-label">Group Metadata</div>
-              <pre ng-if="session.formData.group.errors.length == 0"
-                style="width: 100%;">{{ session.inputs.group["@graph"] | json }}</pre>
-              <pre ng-if="session.formData.group.errors.length > 0" style="width: 100%;">
+          <div class="row">
+            <div class="row-label">Group Metadata</div>
+            <pre ng-if="session.formData.group.errors.length == 0"
+              style="width: 100%;">{{ session.inputs.group["@graph"] | json }}</pre>
+            <pre ng-if="session.formData.group.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the metadata
                 </pre>
-            </div>
-            <div class="row">
-              <div class="row-label">Artifact Metadata</div>
-              <pre ng-if="session.formData.artifact.errors.length == 0"
-                style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
-              <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
+          </div>
+          <div class="row">
+            <div class="row-label">Artifact Metadata</div>
+            <pre ng-if="session.formData.artifact.errors.length == 0"
+              style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
+            <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the metadata
                 </pre>
-            </div>
-            <div class="row">
-              <div class="row-label">Version Metadata</div>
-              <pre ng-if="session.formData.version.errors.length == 0"
-                style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
-              <pre ng-if="session.formData.version.errors.length > 0" style="width: 100%;">
+          </div>
+          <div class="row">
+            <div class="row-label">Version Metadata</div>
+            <pre ng-if="session.formData.version.errors.length == 0"
+              style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
+            <pre ng-if="session.formData.version.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
-            </div>
-            <div class="row">
-              <div class="row-label">Full Publish Request Body</div>
-              <pre ng-if="session.isReadyForUpload && session.showFullInput"
-                style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
+          </div>
+          <div class="row">
+            <div class="row-label">Full Publish Request Body</div>
+            <pre ng-if="session.isReadyForUpload && session.showFullInput"
+              style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
                   style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ session.inputs.all | json }}</pre>
-              <pre ng-if="session.isReadyForUpload && !session.showFullInput"
-                style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
-              <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
+            <pre ng-if="session.isReadyForUpload && !session.showFullInput"
+              style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
+            <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the DataId
                 </pre>
-            </div>
+          </div>
 
 
-            <div class="row">
-              <div class="row-label">Publish Consent</div>
-              <div style="width: 100%;">
-                <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
-                  <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
-                    ng-model="agreeCCZero">
-                  <label for="check--agree">
-                    <span>I hereby agree to publish this metadata under the <a
-                        href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
-                      license</span>
-                  </label>
-                </div>
-                <p class="control" style="width: 100%;">
-                  <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
-                    ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary"
-                    ng-click="publish()">
-                    <span>Publish</span>
-                  </button>
-                </p>
+          <div class="row">
+            <div class="row-label">Publish Consent</div>
+            <div style="width: 100%;">
+              <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
+                <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
+                  ng-model="agreeCCZero">
+                <label for="check--agree">
+                  <span>I hereby agree to publish this metadata under the <a
+                      href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
+                    license</span>
+                </label>
               </div>
+              <p class="control" style="width: 100%;">
+                <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                  ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary"
+                  ng-click="publish()">
+                  <span>Publish</span>
+                </button>
+              </p>
             </div>
           </div>
-      <div class="databus-settings-box-header">Result</div>
-      <div class="databus-settings-box">
+        </div>
+        <div class="databus-settings-box-header">Result</div>
+        <div class="databus-settings-box">
 
 
           <div class="box-content">

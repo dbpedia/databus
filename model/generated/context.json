@@ -1,6 +1,6 @@
 { 
 "@context": {
-	"databus": "http://dataid.dbpedia.org/databus#",
+	"databus": "https://dataid.dbpedia.org/databus#",
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
 	"dcv": "http://dataid.dbpedia.org/ns/cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",

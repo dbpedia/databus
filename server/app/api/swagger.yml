@@ -31,7 +31,7 @@ paths:
                 type: string
                 example: |
                   @base <%DATABUS_RESOURCE_BASE_URL%> .
-                  @prefix databus: <http://dataid.dbpedia.org/databus#> .
+                  @prefix databus: <https://dataid.dbpedia.org/databus#> .
                   @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                   @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
                   @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -1252,7 +1252,7 @@ paths:
                   PREFIX dcat:   <http://www.w3.org/ns/dcat#>
                   PREFIX dct:    <http://purl.org/dc/terms/>
                   PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
-                  PREFIX databus: <http://dataid.dbpedia.org/databus#>
+                  PREFIX databus: <https://dataid.dbpedia.org/databus#>
                   SELECT ?file WHERE
                   {
                   	{

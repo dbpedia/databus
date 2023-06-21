@@ -1,8 +1,8 @@
-PREFIX databus: <http://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX databus: <https://databus.dbpedia.org/>
+
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?ym (SUM(?size) as ?filesize) WHERE {

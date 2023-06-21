@@ -266,7 +266,6 @@ module.exports = function (router, protector) {
         }
       }
 
-
       var accountReference = {};
       accountReference[DatabusUris.JSONLD_ID] = accountUri;
 
@@ -276,6 +275,11 @@ module.exports = function (router, protector) {
       expandedGraphs.push(addon);
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+
+      if (process.env.DATABUS_CONTEXT_URL != null) {
+        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      }
+
       await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
 
       res.status(200).send('WebId linked to account.\n');
@@ -427,8 +431,6 @@ module.exports = function (router, protector) {
       res.status(400).send(err.message);
     }
   });
-
-
 
   router.post('/api/account/access/revoke', protector.protect(), async function (req, res, next) {
     try {

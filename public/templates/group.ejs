@@ -58,17 +58,18 @@
         <div>
           <!--Tabs-->
           <div class="collection-editor-tabs">
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }"
-              ng-click="tabs.activeTab=0;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
+              ng-click="tabNavigation.navigateTo('files');">
               <div class="section-label">Files</div>
             </div>
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
-              ng-click="tabs.activeTab=1;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+              ng-click="tabNavigation.navigateTo('artifacts');">
               <div class="section-label">Artifacts</div>
             </div>
             <div style="flex: 1"></div>
             <div class="collection-editor-tab align-right" ng-if="canEdit"
-              ng-class="{ 'is-active' : tabs.activeTab == 2 }" ng-click="tabs.activeTab=2;">
+              ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }" 
+              ng-click="tabNavigation.navigateTo('edit');">
 
               <div class="section-label" style="display: flex;">
                 <databus-icon style="margin-right:12px;" shape="'edit'" size="24">
@@ -82,14 +83,13 @@
     <section class="section">
       <div class="container" style="min-height: 680px">
 
-        <div ng-if="tabs.activeTab == 2 && canEdit">
+        <div ng-if="tabNavigation.activeTab == 2 && canEdit">
 
 
-          <div class="content-box" ng-init="group=session.formData.group">
-
-            <div class="box-header">
-              <h3>EDIT GROUP INFO</h3>
-            </div>
+          <div class="databus-settings-box-header">
+            <h3>EDIT GROUP INFO</h3>
+          </div>
+          <div class="databus-settings-box">
             <div class="box-content">
               <div class="row">
                 <div class="row-label optional">Title</div>
@@ -135,9 +135,9 @@
             </div>
           </div>
         </div>
-        <div ng-if="tabs.activeTab == 0">
+        <div ng-if="tabNavigation.activeTab == 0">
           <div style="padding-top: 0.75rem" ng-if="isLoading">
-            <div class="databus-no-content placeholder-large">
+            <div class="databus-no-content placeholder-medium">
               <div class="lds-ellipsis">
                 <div></div>
                 <div></div>
@@ -148,7 +148,7 @@
           </div>
 
           <div ng-if="!isLoading && !group.hasData">
-            <div class="databus-no-content">
+            <div class="databus-no-content placeholder-medium">
               <p>There are no datasets associated with this group!</p>
             </div>
           </div>
@@ -165,7 +165,7 @@
             </div>
           </div>
         </div>
-        <div ng-if="tabs.activeTab == 1">
+        <div ng-if="tabNavigation.activeTab == 1">
 
           <div style="text-align:center" ng-if="isLoading">
             <div class="loading-rect placeholder-large">
@@ -179,7 +179,7 @@
           </div>
 
           <div ng-if="!isLoading && !group.hasData">
-            <div class="databus-no-content">
+            <div class="databus-no-content placeholder-medium">
               <p>There are no datasets associated with this group!</p>
             </div>
           </div>

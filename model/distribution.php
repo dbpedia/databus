@@ -336,7 +336,7 @@ $shacl='<#properties-are-cvs>
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -352,8 +352,8 @@ $shacl='<#properties-are-cvs>
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
-        ?dist <http://dataid.dbpedia.org/databus#file> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+        ?dist <https://dataid.dbpedia.org/databus#file> ?value .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;

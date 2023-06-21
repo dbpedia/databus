@@ -17,7 +17,7 @@ $owl=
 	rdfs:label "Databus Ceollection"@en ;
 	rdfs:comment "A Databus Collection is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit"@en ; 
 	rdfs:subClassOf prov:Entity ;
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 
 ';
 

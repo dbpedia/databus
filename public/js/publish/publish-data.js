@@ -13,11 +13,12 @@ class PublishData {
     this.version = data != undefined ? data.version : {};
     this.signature = data != undefined ? data.signature : undefined;
 
-    if(data == null) {
-      this.group.createNew = true;
+    if (data == null) {
+      this.group.generateMetadata = 'create';
       this.group.generateAbstract = true;
-      this.artifact.createNew = true;
+      this.artifact.generateMetadata = 'create';
       this.artifact.generateAbstract = true;
+      this.version.generateMetadata = 'create';
       this.version.generateAbstract = true;
       this.version.useArtifactTitle = true;
       this.signature = this.createSignatureData();
@@ -98,47 +99,54 @@ class PublishData {
       return;
     }
 
-    if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
-      this.artifact.errors.push('err_invalid_artifact_name');
-      hasErrors = true;
+    if (this.artifact.generateMetadata != 'none') {
+
+      if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
+        this.artifact.errors.push('err_invalid_artifact_name');
+        hasErrors = true;
+      }
     }
 
-    if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
-      this.version.errors.push('err_invalid_version_name');
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidUrl(this.version.license)) {
-      this.version.errors.push('err_invalid_version_license');
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
-      this.version.errors.push('err_invalid_version_abstract');
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidResourceText(this.version.description, 1)) {
-      this.version.errors.push('err_invalid_version_description');
-      hasErrors = true;
-    }
-
-    if (DatabusUtils.objSize(this.version.files) == 0) {
-      this.version.errors.push('err_no_files');
-      hasErrors = true;
-    }
-
-    if (this.version.isConfigDirty) {
+    if (this.version.generateMetadata != 'none') {
 
 
-      var files = [];
-      for (var f in this.version.files) {
-        this.version.files[f].errors = [];
-        files.push(this.version.files[f]);
+      if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
+        this.version.errors.push('err_invalid_version_name');
+        hasErrors = true;
       }
 
-      this.cvSplit(this.version, files, 0);
-      this.version.isConfigDirty = false;
+      if (!DatabusUtils.isValidUrl(this.version.license)) {
+        this.version.errors.push('err_invalid_version_license');
+        hasErrors = true;
+      }
+
+      if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
+        this.version.errors.push('err_invalid_version_abstract');
+        hasErrors = true;
+      }
+
+      if (!DatabusUtils.isValidResourceText(this.version.description, 1)) {
+        this.version.errors.push('err_invalid_version_description');
+        hasErrors = true;
+      }
+
+      if (DatabusUtils.objSize(this.version.files) == 0) {
+        this.version.errors.push('err_no_files');
+        hasErrors = true;
+      }
+
+      if (this.version.isConfigDirty) {
+
+
+        var files = [];
+        for (var f in this.version.files) {
+          this.version.files[f].errors = [];
+          files.push(this.version.files[f]);
+        }
+
+        this.cvSplit(this.version, files, 0);
+        this.version.isConfigDirty = false;
+      }
     }
 
     this.hasConfigurationError = hasErrors;

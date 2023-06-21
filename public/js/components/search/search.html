@@ -23,8 +23,8 @@
     </div>
   </div>
 
-  <div ng-if="$ctrl.searchInput.length > 0" style="margin-top: 2em;">
-    <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center;">
+  <div ng-if="$ctrl.searchInput.length > 0">
+    <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center; margin-top: 2em;">
       <div class="lds-ellipsis">
         <div></div>
         <div></div>
@@ -34,7 +34,7 @@
     </div>
 
     <div ng-if="!$ctrl.isSearching" style="margin-top: 1em;">
-      <div ng-if="$ctrl.results.docs.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any
+      <div ng-if="$ctrl.results.length == 0" style="color: rgb(150, 147, 147);"><i>Your search did not match any
           resource.</i></div>
       <div class="dataset-name" ng-repeat="result in $ctrl.results" style="margin-bottom: 1em;">
 

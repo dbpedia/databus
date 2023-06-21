@@ -1,19 +1,24 @@
 const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
 const DataIdCreator = require("../publish/dataid-creator");
 const QueryBuilder = require("../query-builder/query-builder");
 const QueryNode = require("../query-builder/query-node");
 const QueryTemplates = require("../query-builder/query-templates");
 const DatabusUtils = require("../utils/databus-utils");
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const TabNavigation = require("../utils/tab-navigation");
 
-function GroupPageController($scope, $http, $sce, $interval, collectionManager) {
+function GroupPageController($scope, $http, $sce, $interval, $location, collectionManager) {
 
   $scope.group = data.group;
-  $scope.group.name = DatabusUtils.uriToResourceName($scope.group.uri);
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
+
   $scope.group.hasData = false;
   $scope.isLoading = true;
   $scope.utils = new DatabusWebappUtils($scope, $sce);
+  $scope.tabNavigation = new TabNavigation($scope, $location, [
+    'files', 'artifacts', 'edit'
+  ]);
 
 
   $http({
@@ -104,8 +109,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.facetsView.resourceUri = $scope.group.uri;
   $scope.facetsView.settings = [];
   $scope.facetsView.parentSettings = null;
-  $scope.tabs = {};
-  $scope.tabs.activeTab = 0;
   $scope.authenticated = data.auth.authenticated;
   $scope.selection = [];
 

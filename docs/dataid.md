@@ -28,7 +28,7 @@ databus:Version
 	rdfs:label "Databus Dataset"@en ;
 	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
 	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 
 ```
 ```turtle
@@ -350,7 +350,7 @@ databus:attribution a owl:DataTypeProperty;
 	rdfs:comment "TODO"@en ;
 	rdfs:domain databus:Artifact, databus:Version, databus:Group ;
 	rdfs:range xsd:string ;
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 ```
 ```turtle
 
@@ -382,7 +382,7 @@ databus:group a owl:ObjectProperty;
 	rdfs:domain databus:Artifact ;
 	rdfs:range databus:Group ;
 	rdfs:subPropertyOf dct:isPartOf ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 
 ```
 ```turtle
@@ -406,7 +406,7 @@ databus:group a owl:ObjectProperty;
     sh:select """
 			SELECT $this ?group
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#group> ?group .
+				$this <https://dataid.dbpedia.org/databus#group> ?group .
         FILTER(!strstarts(str($this), str(?group)))
 			}
 			""" ;
@@ -433,7 +433,7 @@ databus:artifact a owl:ObjectProperty;
 	rdfs:domain databus:Version ;
 	rdfs:range databus:Artifact ;
 	rdfs:subPropertyOf dct:isPartOf ; 
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 ```
 ```turtle
 <#has-artifact>
@@ -456,7 +456,7 @@ databus:artifact a owl:ObjectProperty;
     sh:select """
 			SELECT $this ?artifact
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#artifact> ?artifact .
+				$this <https://dataid.dbpedia.org/databus#artifact> ?artifact .
         FILTER(!strstarts(str($this), str(?artifact)))
 			}
 			""" ;

@@ -59,7 +59,7 @@ This gives a quick overview on what to put in for the different keys. In which e
 Example Query for retrieving all files, the format and their size from a certain dataset (by knowing group, artifact and version)
 
 ```sparql
-PREFIX databus: <http://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
@@ -80,7 +80,7 @@ SELECT DISTINCT ?file ?format ?byteSize WHERE {
 Example Query for retrieving the same information for the latest version of an artifact:
 
 ```sparql
-PREFIX databus: <http://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>

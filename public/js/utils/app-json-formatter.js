@@ -1,3 +1,4 @@
+const DatabusConstants = require("./databus-constants");
 const DatabusUris = require("./databus-uris");
 const DatabusUtils = require("./databus-utils");
 const JsonldUtils = require("./jsonld-utils");
@@ -7,7 +8,69 @@ const JsonldUtils = require("./jsonld-utils");
  */
 class AppJsonFormatter {
 
- 
+  static createAccountData(resourceBaseUrl, accountName, accountLabel, accountStatus, accountImage) {
+
+    var accountUri = `${resourceBaseUrl}/${accountName}`;
+    var profileUri = `${resourceBaseUrl}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
+    var personUri = `${resourceBaseUrl}/${accountName}${DatabusConstants.WEBID_THIS}`;
+
+    var accountJsonLd = {};
+
+    var personGraph = {};
+    personGraph[DatabusUris.JSONLD_ID] = personUri;
+    personGraph[DatabusUris.JSONLD_TYPE] = [
+      DatabusUris.FOAF_PERSON,
+      DatabusUris.DBP_DBPEDIAN
+    ];
+    personGraph[DatabusUris.FOAF_NAME] = accountLabel;
+
+    if (accountStatus != null) {
+      personGraph[DatabusUris.FOAF_STATUS] = accountStatus;
+    }
+
+    personGraph[DatabusUris.FOAF_ACCOUNT] = {};
+    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = accountUri;
+
+    if (accountImage != null) {
+      personGraph[DatabusUris.FOAF_IMG] = {};
+      personGraph[DatabusUris.FOAF_IMG][DatabusUris.JSONLD_ID] = accountImage;
+    }
+
+    var profileGraph = {};
+    profileGraph[DatabusUris.JSONLD_ID] = profileUri;
+    profileGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
+    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = {};
+    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC][DatabusUris.JSONLD_ID] = personUri;
+    profileGraph[DatabusUris.FOAF_MAKER] = {};
+    profileGraph[DatabusUris.FOAF_MAKER][DatabusUris.JSONLD_ID] = personUri;
+
+    accountJsonLd[DatabusUris.JSONLD_GRAPH] = [
+      personGraph,
+      profileGraph
+    ];
+
+    return accountJsonLd;
+  }
+
+  static formatGroupData(graphs) {
+    var result = {};
+
+    // ?uri ?title ?abstract ?description
+    var groupGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_GROUP);
+
+    result.uri = groupGraph[DatabusUris.JSONLD_ID];
+    result.title = JsonldUtils.getProperty(groupGraph, DatabusUris.DCT_TITLE);
+    result.abstract = JsonldUtils.getProperty(groupGraph, DatabusUris.DCT_ABSTRACT);
+    result.description = JsonldUtils.getProperty(groupGraph, DatabusUris.DCT_DESCRIPTION);
+    result.name = DatabusUtils.uriToResourceName(result.uri);
+
+    if(result.title == null) {
+      result.title = DatabusUtils.uriToResourceName(result.uri);
+    }
+
+    return result;
+  }
+
   static formatAccountData(graphs) {
     var result = {};
 
@@ -15,7 +78,7 @@ class AppJsonFormatter {
     var personGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.FOAF_PERSON);
 
     result.uri = profileGraph[DatabusUris.JSONLD_ID];
-    result.accountName = DatabusUtils.uriToName(result.uri);
+    result.accountName = DatabusUtils.uriToResourceName(result.uri);
     result.label = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_NAME);
     result.webIds = [];
     result.searchExtensions = [];

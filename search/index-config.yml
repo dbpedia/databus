@@ -59,11 +59,12 @@ indexFields:
         }
       }
   - fieldName: label
-    resourceName: account
+    resourceName: profile
     query: >
-      SELECT DISTINCT ?account ?label WHERE {
+      SELECT DISTINCT ?profile ?label WHERE {
         GRAPH ?g {
-          ?person <http://xmlns.com/foaf/0.1/account> ?account .
+          ?profile a <http://xmlns.com/foaf/0.1/PersonalProfileDocument> .
+          ?profile <http://xmlns.com/foaf/0.1/primaryTopic> ?person .
           ?person <http://xmlns.com/foaf/0.1/name> ?label.
         }
       }
@@ -152,7 +153,7 @@ indexFields:
   - fieldName: part
     resourceName: profile
     query: >
-      SELECT DISTINCT ?profile (REPLACE(STR(?profile), "(.*)(/|#)", "") AS ?part) WHERE {
+      SELECT DISTINCT ?profile (REPLACE(STR(REPLACE(STR(?profile), "(.*)(/)", "")), "#.*", "") AS ?part) WHERE {
         GRAPH ?g {
           ?profile a <http://xmlns.com/foaf/0.1/PersonalProfileDocument> .
         }
