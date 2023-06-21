@@ -12,10 +12,10 @@ $section="group";
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx";
 $owl=
 'databus:Group a owl:Class ;
-	rdfs:label "Databus Group"@en ;
-	rdfs:comment "A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit"@en ; 
-	rdfs:subClassOf prov:Entity ; #TODO maybe add a Databus Structure Element class
-	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . #TODO ontology ID
+     rdfs:label "Databus Group"@en ;
+     rdfs:comment """A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit."""@en ; 
+     rdfs:subClassOf prov:Entity ;
+     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ';
 

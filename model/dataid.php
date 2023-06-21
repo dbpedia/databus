@@ -8,7 +8,7 @@ init();
 ?>
 ## Dataset
 
-A DataId dataset is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets).
 
 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
@@ -22,6 +22,7 @@ Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it
 $section="version" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06";
 $owl=
+<<<<<<< HEAD
 '#copied from DataId ontology
 databus:Version
 	a owl:Class ;
@@ -29,6 +30,13 @@ databus:Version
 	rdfs:comment "A collection of data, available for access in one or more formats. Dataset resources describe the concept of the dataset, not its manifestation (the data itself), which can be acquired as a Distribution"@en ; 
 	rdfs:subClassOf void:Dataset, dcat:Dataset, prov:Entity ; 
 	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
+=======
+'databus:Version  a owl:Class ;
+     rdfs:label "Version"@en ;
+     rdfs:comment "Dataset Version"@en ; 
+     rdfs:subClassOf dcat:Dataset , dataid:Dataset ;
+     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
+>>>>>>> 02d9d804154d358937ab3388dfdb311dc8de61e0
 ';
 
 $shacl='<#dataset-exists>
@@ -336,6 +344,7 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 
 <?php #TODO single value restriction??
 $owl=
+<<<<<<< HEAD
 'databus:group a owl:ObjectProperty; 
 	rdfs:label "has parent Group"@en ;
 	rdfs:comment "Defines the Databus Group a Databus Artifact belongs to"@en ;
@@ -343,6 +352,14 @@ $owl=
 	rdfs:range databus:Group ;
 	rdfs:subPropertyOf dct:isPartOf ; 
 	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
+=======
+'databus:group rdf:type owl:ObjectProperty ;
+     rdfs:label "group"@en ;
+     rdfs:comment "Refers to a group or collection of resources."@en ;
+     rdfs:domain databus:Version ;
+     rdfs:range databus:Group ;
+     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
+>>>>>>> 02d9d804154d358937ab3388dfdb311dc8de61e0
 ';
 
 $shacl='<#has-group>
@@ -387,6 +404,7 @@ autonote();
 
 
 $owl=
+<<<<<<< HEAD
 'databus:artifact a owl:ObjectProperty; 
 	rdfs:label "has parent Artifact"@en ;
 	rdfs:comment "Defines the Databus Artifact a Databus Dataset belongs to"@en ;
@@ -394,6 +412,14 @@ $owl=
 	rdfs:range databus:Artifact ;
 	rdfs:subPropertyOf dct:isPartOf ; 
 	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . ';
+=======
+'databus:artifact a rdf:ObjectProperty ;
+     rdfs:label "artifact"@en ;
+     rdfs:comment "Specifies an artifact associated with a dataset in the DataID vocabulary."@en ;
+     rdfs:domain databus:Version ;
+     rdfs:range databus:Artifact ;
+     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .';
+>>>>>>> 02d9d804154d358937ab3388dfdb311dc8de61e0
 
 $shacl='<#has-artifact>
 	a sh:PropertyShape ;
@@ -410,7 +436,7 @@ $shacl='<#has-artifact>
 	a sh:NodeShape;
 	sh:targetClass databus:Version ;
 	sh:sparql [
-		sh:message "Dataset URI must contain the artifact URI of the associated artifact." ;
+		sh:message "Version URI must contain the artifact URI of the associated artifact." ;
 		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?artifact

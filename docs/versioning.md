@@ -33,7 +33,7 @@ SELECT DISTINCT ?file ?version WHERE {
 ### General Notes about Versioning
 
 * Generally on the Databus the User has the complete control over its data. So it is possible to resubmit versions with the same version again, for example in the case of link rot or migrated data. 
-Usually in this case the `dataid:version` and `dct:hasVersion` stays the same but `dct:issued` should change (it defaults to *now* if not explicitly set) to make it transparent that this dataset has been modified.
+Usually in this case the `databus:version` and `dct:hasVersion` stays the same but `dct:issued` should change (it defaults to *now* if not explicitly set) to make it transparent that this dataset has been modified.
 * If you plan on further tinkering a specific version of a Dataset (e.g. the first one) it can be helpful to document that by appending `-snapshot` or `-dev` to the version ID to document this and make it clear for the users. 
 This also helps in searching such Datasets with SPARQL.
 
