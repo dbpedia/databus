@@ -100,12 +100,12 @@ For that you can use SPARQL endpoint interface or API method [`POST /sparql`](ht
 
 Example query for retrieving list of all datasets in Databus:
 ```sparql
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT DISTINCT ?dataset WHERE {
   GRAPH ?g {
-    ?dataset rdf:type dataid:Version .
+    ?dataset rdf:type databus:Version .
   }
 }
 ```
@@ -113,15 +113,15 @@ SELECT DISTINCT ?dataset WHERE {
 Example Query for retrieving all files, their download location, format and size from a certain dataset (by knowing group, artifact and version)
 
 ```sparql
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
 SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
   GRAPH ?g {
     <https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2023-06-13> dcat:distribution ?distribution .
-    ?distribution dataid:file ?file .
+    ?distribution databus:file ?file .
     ?distribution dcat:byteSize ?byteSize .
-    ?distribution dataid:formatExtension ?format .
+    ?distribution databus:formatExtension ?format .
     ?distribution dcat:downloadURL ?downloadUrl .
   }
 }
@@ -130,20 +130,20 @@ SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
 Example Query for retrieving the same information for the latest version of an artifact:
 
 ```sparql
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 
 SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
-    ?distribution dataid:file ?file .
+    ?distribution databus:file ?file .
     ?distribution dct:hasVersion ?version .
     ?distribution dcat:byteSize ?byteSize .
-    ?distribution dataid:formatExtension ?format .
+    ?distribution databus:formatExtension ?format .
     ?distribution dcat:downloadURL ?downloadUrl .
 
   {
       SELECT (?v as ?version) { 
-        ?dataset dataid:artifact <https://dev.databus.dbpedia.org/kirikiki/test_group/test_artifact> . 
+        ?dataset databus:artifact <https://dev.databus.dbpedia.org/kirikiki/test_group/test_artifact> . 
         ?dataset dct:hasVersion ?v . 
   } ORDER BY DESC (?version) LIMIT 1 
 }
