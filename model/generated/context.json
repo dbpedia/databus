@@ -34,6 +34,47 @@
 	"@type": "@id"
 	},
 
+"Dataset": 	"databus:Version" ,
+
+"publisher": {
+      "@id": "dct:publisher",
+      "@type": "@id"
+    },
+
+"license": {
+      "@context":{"@base": null },
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+
+"wasDerivedFrom":	{
+	"@id": "prov:wasDerivedFrom", 
+	"@type": "@id"
+},
+
+"attribution":	{"@id": "databus:attribution"},
+
+"hasVersion": 	{"@id": "dct:hasVersion"},
+
+"distribution": {
+      "@type": "@id",
+      "@id": "dcat:distribution"
+},
+
+"issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:dateTime"
+    },
+
+"modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:dateTime"
+    },
+
+"signature":	{"@id": "sec:signature"},
+"proof":	{"@id": "sec:proof"},
+"DatabusTractateV1": "databus:DatabusTractateV1",
+
 "Part": 	"databus:Part" ,
 
 "file": {
