@@ -7,6 +7,7 @@ const getJsonld = require('./get-jsonld');
 
 module.exports = async function getLinkedData(req, res, next, resourceUri, template) {
 
+
   // ASK if the requested resource exists
   var exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
 

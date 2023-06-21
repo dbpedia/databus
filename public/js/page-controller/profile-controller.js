@@ -25,7 +25,9 @@ function ProfileController($scope, $http) {
 
   $scope.putProfile = function (accountName) {
 
-    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+
+    var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
     var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
 
     accountJsonLd = {};
@@ -38,7 +40,7 @@ function ProfileController($scope, $http) {
     ];
     personGraph[DatabusUris.FOAF_NAME] = accountName;
     personGraph[DatabusUris.FOAF_ACCOUNT] = {};
-    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = profileUri;
+    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = accountUri;
 
     var profileGraph = {};
     profileGraph[DatabusUris.JSONLD_ID] = profileUri;

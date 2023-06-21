@@ -124,7 +124,7 @@
          "@id": "foaf:name"
       },
       "account": {
-         "@id": "foaf:account",
+         "@id": "databus:account",
          "@type": "@id"
       },
       "img": {

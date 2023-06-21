@@ -15,6 +15,7 @@ const collectionQueryTemplate = require("../../common/queries/constructs/ld/cons
 const versionQueryTemplate = require("../../common/queries/constructs/ld/construct-version.sparql");
 
 const AppJsonFormatter = require('../../../../public/js/utils/app-json-formatter');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 module.exports = function (router, protector) {
 
@@ -26,8 +27,9 @@ module.exports = function (router, protector) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
-      var accountUri = UriUtils.createResourceUri([req.params.account]);
-      var accountJsonLd = await getJsonLd(accountUri, accountQueryTemplate, 'flatten');
+      var profileUri = `${UriUtils.createResourceUri([req.params.account])}${DatabusConstants.WEBID_DOCUMENT}`;
+
+      var accountJsonLd = await getJsonLd(profileUri, accountQueryTemplate, 'flatten');
 
       if (accountJsonLd == null) {
         next('route');

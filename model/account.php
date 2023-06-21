@@ -64,14 +64,6 @@ $shacl='<#person-exists>
 	sh:path foaf:primaryTopic ;
 	sh:class foaf:Person .
 
-<#foaf-account-target>   
-	a sh:PropertyShape ;
-	sh:targetClass foaf:Person ;
-	sh:severity sh:Violation ;
-	sh:message "Object of foaf:account must be of type foaf:PersonalProfileDocument."@en ;
-	sh:path foaf:account ;
-	sh:class foaf:PersonalProfileDocument .
-
 <#foaf-account>   
 	a sh:PropertyShape ;
 	sh:targetClass foaf:Person ;
@@ -111,7 +103,7 @@ $context='"maker": {
   },
   "name": {"@id": "foaf:name"},
   "account": {
-    "@id": "foaf:account",
+    "@id": "databus:account",
     "@type": "@id"
   },
   "img": {

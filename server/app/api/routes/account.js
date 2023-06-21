@@ -75,6 +75,7 @@ module.exports = function (router, protector) {
       // Expected uris
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
       var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
+      var profileUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
 
       // Compare the specified id to the actual person uri
       var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
@@ -99,8 +100,8 @@ module.exports = function (router, protector) {
       }
 
       // Mismatch gives error
-      if (profileGraph[DatabusUris.JSONLD_ID] != accountUri) {
-        res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${accountUri})\n`);
+      if (profileGraph[DatabusUris.JSONLD_ID] != profileUri) {
+        res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${profileUri})\n`);
         return false;
       }
 
@@ -515,7 +516,7 @@ module.exports = function (router, protector) {
       return;
     }
 
-    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}`;
+    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}${DatabusConstants.WEBID_DOCUMENT}`;
     var template = require('../../common/queries/constructs/ld/construct-account.sparql');
     getLinkedData(req, res, next, resourceUri, template);
   });

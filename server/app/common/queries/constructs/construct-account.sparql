@@ -10,9 +10,9 @@ CONSTRUCT
   ?person foaf:account ?account .
   ?person foaf:img ?image .
   ?person rdfs:comment ?comment .
-  ?account a foaf:PersonalProfileDocument .
-  ?account foaf:maker ?person . 
-  ?account foaf:primaryTopic ?person .
+  ?profile a foaf:PersonalProfileDocument .
+  ?profile foaf:maker ?person . 
+  ?profile foaf:primaryTopic ?person .
   ?webid foaf:account ?account .
 
 }
@@ -23,8 +23,8 @@ WHERE
   ?person foaf:account ?account .
   OPTIONAL { ?person foaf:img ?image . }
   OPTIONAL { ?person rdfs:comment ?comment . }
-  ?account a foaf:PersonalProfileDocument .
-  ?account foaf:maker ?person . 
-  ?account foaf:primaryTopic ?person .
+  ?profile a foaf:PersonalProfileDocument .
+  ?profile foaf:maker ?person . 
+  ?profile foaf:primaryTopic ?person .
   OPTIONAL { ?webid foaf:account ?account . }
 }
