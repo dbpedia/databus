@@ -427,23 +427,8 @@ missing
 missing
 ```
 ```javascript
-"maker": {
-    "@id": "foaf:maker",
-    "@type": "@id"
-  },
-  "primaryTopic": {
-    "@id": "foaf:primaryTopic",
-    "@type": "@id"
-  },
-  "name": {"@id": "foaf:name"},
-  "account": {
-    "@id": "foaf:account",
-    "@type": "@id"
-  },
-  "img": {
-    "@id": "foaf:img",
-    "@type": "@id"
-  },
+
+  "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},
   "exponent":	{"@id": "cert:exponent"}

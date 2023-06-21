@@ -3,6 +3,9 @@ const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const DatabusAlert = require("../components/databus-alert/databus-alert");
 const SearchAdapter = require("../search/search-adapter");
 const DatabusMessages = require("../utils/databus-messages");
+const DatabusConstants = require("../utils/databus-constants");
+const AppJsonFormatter = require("../utils/app-json-formatter");
+const DatabusUris = require("../utils/databus-uris");
 
 function ProfileController($scope, $http) {
 
@@ -18,35 +21,39 @@ function ProfileController($scope, $http) {
   $scope.adapters = SearchAdapter.list;
   $scope.utils = new DatabusWebappUtils($scope);
 
-  $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
+  $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}${DatabusConstants.WEBID_THIS}`;
 
-  $scope.putProfile = function (accountName, foafName) {
+  $scope.putProfile = function (accountName) {
 
     var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
+    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
 
-    var webidGraph = {
-      "@graph": [
-        {
-          "@id": personUri,
-          "@type": [
-            "http://xmlns.com/foaf/0.1/Person",
-            "http://dbpedia.org/ontology/DBpedian"
-          ],
-          "http://xmlns.com/foaf/0.1/account": { "@id": profileUri },
-          "http://xmlns.com/foaf/0.1/img": { "@id": "" },
-          "http://xmlns.com/foaf/0.1/name": foafName
-        },
-        {
-          "@id": profileUri,
-          "@type": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
-          "http://xmlns.com/foaf/0.1/maker": { "@id": personUri },
-          "http://xmlns.com/foaf/0.1/primaryTopic": { "@id": personUri }
-        }
-      ]
-    };
+    accountJsonLd = {};
 
-    $http.put(`/${accountName}`, webidGraph).then(function (result) {
+    var personGraph = {};
+    personGraph[DatabusUris.JSONLD_ID] = personUri;
+    personGraph[DatabusUris.JSONLD_TYPE] = [
+      DatabusUris.FOAF_PERSON,
+      DatabusUris.DBP_DBPEDIAN
+    ];
+    personGraph[DatabusUris.FOAF_NAME] = accountName;
+    personGraph[DatabusUris.FOAF_ACCOUNT] = {};
+    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = profileUri;
+
+    var profileGraph = {};
+    profileGraph[DatabusUris.JSONLD_ID] = profileUri;
+    profileGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
+    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = {};
+    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC][DatabusUris.JSONLD_ID] = personUri;
+    profileGraph[DatabusUris.FOAF_MAKER] = {};
+    profileGraph[DatabusUris.FOAF_MAKER][DatabusUris.JSONLD_ID] = personUri;
+
+    accountJsonLd[DatabusUris.JSONLD_GRAPH] = [
+      personGraph,
+      profileGraph
+    ];
+
+    $http.put(`/${accountName}`, accountJsonLd).then(function (result) {
       window.location.reload(true);
     }, function (err) {
       console.log(err);
@@ -70,9 +77,8 @@ function ProfileController($scope, $http) {
         return;
       }
 
-      var name = accountName;
       $scope.showAccountNameHints = false;
-      $scope.putProfile(accountName, name, '');
+      $scope.putProfile(accountName);
     }
 
     return;

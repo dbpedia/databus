@@ -11,6 +11,9 @@ class DatabusConstants {
     static FACET_LATEST_VERSION_VALUE = "$latest";
     static FACET_LATEST_VERSION_LABEL = "Latest Version";
 
+    static WEBID_THIS = "#this";
+    static WEBID_SHARED_PUBLIC_KEY_LABEL = "Shared Databus Public Key";
+
     static FACET_LASTEST_ARTIFACT_VERSION_SUBQUERY =
         "\n\t{" +
         "\n\t\t?distribution dct:hasVersion ?latestVersion " +

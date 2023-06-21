@@ -13,25 +13,25 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
 
-<#artifact-exists>
+<#collection-exists>
 	a sh:NodeShape ;
-	sh:targetNode databus:Artifact ;
+	sh:targetNode databus:Collection ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of databus:Artifact must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Collection must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
-      sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
-      sh:message "IRI for databus:Artifact must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:pattern "/[a-zA-Z0-9\\-_]{4,}/collections/[a-zA-Z0-9\\-_\\.]{3,}$" ;
+      sh:message "IRI for databus:Collection must match /[a-zA-Z0-9\\-_]{4,}/collections/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
 	] .
 
-<#title-artifact>
+<#title-collection>
 	a sh:NodeShape ;
-	sh:targetClass databus:Artifact ;
+	sh:targetClass databus:Collection ;
 	sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
@@ -42,14 +42,13 @@
         sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
-	    sh:maxLength 100 ;
-		sh:message "dct:title must have less than 100 characters and each language must occure only once."@en ;
+		sh:message "dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . 
 
-<#abstract-artifact>
+<#abstract-collection>
 	a sh:NodeShape ;
-	sh:targetClass databus:Artifact ;
+	sh:targetClass databus:Collection ;
 	sh:property [
 	    sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
@@ -60,14 +59,14 @@
 	sh:property [
 		sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once."@en ;
+	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once. "@en ;
 	    sh:uniqueLang true;
 	    sh:maxLength 300 ;
 	] . 
 
-<#description-artifact>
+<#description-collection>
 	a sh:NodeShape ;
-	sh:targetClass databus:Artifact ;
+	sh:targetClass databus:Collection ;
 	sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
@@ -78,7 +77,19 @@
         sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
-		sh:message "Each language of dct:description must occure only once."@en ;
+		sh:message "dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . 
+
+<#collection-content>
+	a sh:NodeShape ;
+	sh:targetClass databus:Collection ;
+	sh:property [
+		sh:path databus:collectionContent ;
+		sh:severity sh:Violation ;
+		sh:message "A collection needs content."@en ;
+        sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
+		sh:maxCount 1 ;	
+		sh:minCount 1 ;			
+    ] . 
 

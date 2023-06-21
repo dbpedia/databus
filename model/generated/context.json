@@ -103,6 +103,16 @@
     "@type" : "@id"
   },
 
+
+  "RSAPublicKey" : "cert:RSAPublicKey",
+  "key": 	{"@id": "cert:key"},
+  "modulus":	{"@id": "cert:modulus"},
+  "exponent":	{"@id": "cert:exponent"},
+
+"Collection": "databus:Collection",
+
+"databusContent": { "@id": "databus:databusContent" },
+
 "maker": {
     "@id": "foaf:maker",
     "@type": "@id"
@@ -120,7 +130,7 @@
     "@id": "foaf:img",
     "@type": "@id"
   },
-  "key": 	{"@id": "cert:key"},
-  "modulus":	{"@id": "cert:modulus"},
-  "exponent":	{"@id": "cert:exponent"}
+"Person": "foaf:Person",
+"PersonalProfileDocument": "foaf:PersonalProfileDocument",
+"DBpedian": "dbo:DBpedian"
 }}

@@ -66,6 +66,7 @@ class DatabusUris {
 
   // RDFS
   static RDFS_SUB_PROPERTY_OF = 'http://www.w3.org/2000/01/rdf-schema#subPropertyOf';
+  static RDFS_LABEL = 'http://www.w3.org/2000/01/rdf-schema#label';
 
   // XSD
   static XSD_DATE_TIME = 'http://www.w3.org/2001/XMLSchema#dateTime';
@@ -83,6 +84,8 @@ class DatabusUris {
   static FOAF_ACCOUNT = 'http://xmlns.com/foaf/0.1/account';
   static FOAF_NAME = 'http://xmlns.com/foaf/0.1/name';
   static FOAF_PERSON = 'http://xmlns.com/foaf/0.1/Person';
+  static FOAF_PRIMARY_TOPIC = 'http://xmlns.com/foaf/0.1/primaryTopic';
+  static FOAF_MAKER = 'http://xmlns.com/foaf/0.1/maker';
 
   // S4AC
   static S4AC_ACCESS_POLICY = 'http://ns.inria.fr/s4ac/v2#AccessPolicy';
@@ -93,10 +96,13 @@ class DatabusUris {
   static CERT_KEY = 'http://www.w3.org/ns/auth/cert#key';
   static CERT_MODULUS = 'http://www.w3.org/ns/auth/cert#modulus';
   static CERT_EXPONENT = 'http://www.w3.org/ns/auth/cert#exponent';
+  static CERT_RSA_PUBLIC_KEY = 'http://www.w3.org/ns/auth/cert#RSAPublicKey';
 
   // PROV
   static PROV_WAS_DERIVED_FROM = 'http://www.w3.org/ns/prov-o#wasDerivedFrom';
 
+  // DBP
+  static DBP_DBPEDIAN = 'http://dbpedia.org/ontology/DBpedian';
 }
 
 module.exports = DatabusUris;

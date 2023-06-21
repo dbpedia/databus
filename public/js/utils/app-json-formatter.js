@@ -7,6 +7,7 @@ const JsonldUtils = require("./jsonld-utils");
  */
 class AppJsonFormatter {
 
+ 
   static formatAccountData(graphs) {
     var result = {};
 

@@ -19,6 +19,7 @@ var constructAccountQuery = require('../../common/queries/constructs/construct-a
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 module.exports = function (router, protector) {
 
@@ -73,13 +74,18 @@ module.exports = function (router, protector) {
 
       // Expected uris
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
+      var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
 
       // Compare the specified id to the actual person uri
       var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
 
+      if(personGraph == undefined) {
+        res.status(400).send(`No person graph found`);
+        return false;
+      }
+
       // Mismatch gives error
-      if (personGraph['@id'] != personUri) {
+      if (personGraph[DatabusUris.JSONLD_ID] != personUri) {
         res.status(400).send(`The specified uri of the foaf:Person does not match the expected value. (specified: ${personGraph['@id']}, expected: ${personUri})\n`);
         return false;
       }
@@ -87,27 +93,37 @@ module.exports = function (router, protector) {
       // Compare the specified id to the actual person uri
       var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT);
 
+      if(profileGraph == undefined) {
+        res.status(400).send(`No person graph found`);
+        return false;
+      }
+
       // Mismatch gives error
-      if (profileGraph['@id'] != accountUri) {
+      if (profileGraph[DatabusUris.JSONLD_ID] != accountUri) {
         res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${accountUri})\n`);
         return false;
       }
 
-      personGraph['http://www.w3.org/ns/auth/cert#key'] = [{
-        "@type": "http://www.w3.org/ns/auth/cert#RSAPublicKey",
-        "http://www.w3.org/2000/01/rdf-schema#label": "Shared Databus Public Key",
-        "http://www.w3.org/ns/auth/cert#modulus": modulus,
-        "http://www.w3.org/ns/auth/cert#exponent": exponent
-      }];
+      var rsaKeyGraph = {};
+      rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
+      rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
+      rsaKeyGraph[DatabusUris.CERT_MODULUS] = modulus;
+      rsaKeyGraph[DatabusUris.CERT_EXPONENT] = exponent;
+
+      personGraph[DatabusUris.CERT_KEY] = [ rsaKeyGraph ];
+    
 
       var insertGraphs = expandedGraphs;
-
       var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
+
+      if (process.env.DATABUS_CONTEXT_URL != null) {
+        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      }
 
       var targetPath = Constants.DATABUS_FILE_WEBID;
 
-      // console.log(`Target path: ${targetPath}`);
-      // console.log(JSON.stringify(compactedGraph));
+      console.log(`Target path: ${targetPath}`);
+      console.log(JSON.stringify(compactedGraph));
 
       // Save the data using the database manager
       var result = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);
