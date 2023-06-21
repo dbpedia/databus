@@ -24,9 +24,9 @@
 * [Usage](docs/usage/README.md)
   * [Web Interface](docs/usage/web-interface/README.md)
     * [Publish](docs/usage/web-interface/publish.md)
-    * [Auto-Completion](docs/auto-completion.md)
-    * [Browsing Data](docs/usage/web-interface/browsing-data.md)
     * [Collections](docs/usage/web-interface/collections.md)
+    * [Auto-Completion](docs/auto-completion.md)
+
   * [API](docs/usage/api/README.md)
     * [API Docs](docs/usage/api/api-docs.md)
     * [Quickstart Examples (Publish, Download)](docs/usage/api/quickstart-examples.md)
