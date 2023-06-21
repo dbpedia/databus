@@ -73,6 +73,7 @@
 
 "signature":	{"@id": "sec:signature"},
 "proof":	{"@id": "sec:proof"},
+"DatabusTractateV1": "databus:DatabusTractateV1",
 
 "Part": 	"databus:Part" ,
 

@@ -636,9 +636,6 @@ dct:modified
 
 
 
-### proof
-
-
 Example (JSON-LD):
 ```javascript
 {	
@@ -660,9 +657,17 @@ sec:proof a owl:ObjectProperty;
 
 ```
 ```turtle
-
+<#has-proof>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Version ;
+	sh:severity sh:Violation ;
+	sh:message "Required property sec:proof MUST occur exactly once"@en ;
+	sh:path sec:proof;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
 ```
 ```javascript
 "signature":	{"@id": "sec:signature"},
-"proof":	{"@id": "sec:proof"}
+"proof":	{"@id": "sec:proof"},
+"DatabusTractateV1": "databus:DatabusTractateV1"
 ```

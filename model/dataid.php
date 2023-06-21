@@ -572,10 +572,10 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 
 
 
+<?php
 
 ### proof
 
-<?php
 $owl=
 'sec:proof a owl:ObjectProperty; 
 	rdfs:label "has cryptographic proof"@en ;
@@ -585,8 +585,14 @@ $owl=
 	rdfs:isDefinedBy <https://w3id.org/security#> . 
 ';
 
-
-$shacl='';
+$shacl='<#has-proof>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Version ;
+	sh:severity sh:Violation ;
+	sh:message "Required property sec:proof MUST occur exactly once"@en ;
+	sh:path sec:proof;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;';
 
 $example='"proof": {
   "@type": "databus:DatabusTractateV1",
@@ -594,7 +600,8 @@ $example='"proof": {
 }';
 
 $context='"signature":	{"@id": "sec:signature"},
-"proof":	{"@id": "sec:proof"}';
+"proof":	{"@id": "sec:proof"},
+"DatabusTractateV1": "databus:DatabusTractateV1"';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
