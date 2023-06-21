@@ -1,6 +1,5 @@
 {
-    "version" : "2.1.0-rc.6",
-    "minifyJs" : false,
+    "version" : "2.1.0-rc.8",
     "loadExternalJsonldContext" : true,
     "runStartupTests": true,
     "defaultColors":  {

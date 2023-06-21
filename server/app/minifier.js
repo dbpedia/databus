@@ -1,6 +1,5 @@
 var fs = require('fs');
 var glob = require("glob-promise");
-var { minify } = require("terser");
 
 
 var instance = {};

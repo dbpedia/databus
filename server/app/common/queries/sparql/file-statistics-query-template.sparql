@@ -25,11 +25,11 @@ WHERE {
   OPTIONAL { ?distribution databus:contentVariant ?var . }
   OPTIONAL { ?distribution dct:license ?license . }
   OPTIONAL { ?distribution dcat:byteSize ?size . }
-  ?distribution dct:hasVersion ?version .
-  ?dataset dcat:distribution ?distribution .
-  ?dataset dataid:version ?versionUri .
-  ?dataset dct:title ?title .
-  ?dataset dct:abstract ?abstract .
-  ?dataset dct:description ?description.
+  ?distribution dct:hasVersion ?versionName .
+  ?version dcat:distribution ?distribution .
+  ?version a databus:Version .
+  ?version dct:title ?title .
+  ?version dct:abstract ?abstract .
+  ?version dct:description ?description.
 }
-GROUP BY ?versionUri ?dataset ?distribution ?title ?description ?license ?size ?version ?format ?preview
+GROUP BY ?version ?distribution ?title ?description ?license ?size ?versionName ?format ?preview

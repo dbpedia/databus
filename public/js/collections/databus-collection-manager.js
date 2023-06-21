@@ -46,6 +46,10 @@ class DatabusCollectionManager {
 
   async tryInitialize(accountName, loadFromServer) {
 
+    if(accountName == undefined) {
+      return;
+    }
+
     this.sessionInfo.accountName = accountName;
     window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
 

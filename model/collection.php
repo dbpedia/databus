@@ -37,7 +37,6 @@ $shacl='<#collection-exists>
       sh:message "IRI for databus:Collection must match /[a-zA-Z0-9\\\\-_]{4,}/collections/[a-zA-Z0-9\\\\-_\\\\.]{3,}$"@en ;
 	] .';
 
-
 $example='"@type": "Collection",';
 
 $context='"Collection": "databus:Collection"';

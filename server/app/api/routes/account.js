@@ -76,7 +76,7 @@ module.exports = function (router, protector) {
       var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
 
       // Compare the specified id to the actual person uri
-      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/Person');
+      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
 
       // Mismatch gives error
       if (personGraph['@id'] != personUri) {
@@ -85,7 +85,7 @@ module.exports = function (router, protector) {
       }
 
       // Compare the specified id to the actual person uri
-      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/PersonalProfileDocument');
+      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT);
 
       // Mismatch gives error
       if (profileGraph['@id'] != accountUri) {
@@ -233,7 +233,7 @@ module.exports = function (router, protector) {
       }
 
       if (!canConnect) {
-        res.status(403).send('Unable to find valid backlink in WebId document.');
+        res.status(403).send('Unable to find valid backlink in WebId document. Make sure that the URI targets the foaf:Person of your WebId document.');
         return;
       }
 
@@ -391,7 +391,7 @@ module.exports = function (router, protector) {
       }
 
       var policy = {};
-      policy['@type'] = [DatabusUris.S4AC_ACCESS_POLICY];
+      policy[DatabusUris.JSONLD_TYPE] = [DatabusUris.S4AC_ACCESS_POLICY];
       policy[DatabusUris.S4AC_HAS_ACCESS_PRIVILEGE] = [DatabusUris.S4AC_ACCESS_CREATE];
       policy[DatabusUris.DCT_CREATOR] = { '@id': accountUri };
       policy[DatabusUris.DCT_SUBJECT] = { '@id': grantUri };

@@ -22,6 +22,7 @@ function HeaderController($scope, $http, collectionManager, searchManager) {
     $scope.collectionManager = collectionManager;
     // Collection Manager Init
     var loadCollectionsFromServer = $scope.collectionManager.accountName != $scope.auth.info.accountName;
+
     $scope.collectionManager.tryInitialize($scope.auth.info.accountName, loadCollectionsFromServer);
 
     // Initialize search manager

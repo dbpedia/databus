@@ -2,6 +2,7 @@ const DatabusUtils = require("../utils/databus-utils");
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const DatabusAlert = require("../components/databus-alert/databus-alert");
 const SearchAdapter = require("../search/search-adapter");
+const DatabusMessages = require("../utils/databus-messages");
 
 function ProfileController($scope, $http) {
 
@@ -46,9 +47,7 @@ function ProfileController($scope, $http) {
     };
 
     $http.put(`/${accountName}`, webidGraph).then(function (result) {
-      if (result.data.code == DatabusResponse.USER_PROFILE_CREATED) {
-        window.location.reload(true);
-      }
+      window.location.reload(true);
     }, function (err) {
       console.log(err);
       $scope.createAccountError = err.data;
@@ -104,6 +103,8 @@ function ProfileController($scope, $http) {
       if (result.data != null) {
         $scope.apiKeys.push(result.data);
       }
+
+      DatabusAlert.alert($scope, true, DatabusMessages.ACCOUNT_API_KEY_CREATED);
 
     }, function (err) {
       console.log(err);
@@ -170,6 +171,7 @@ function ProfileController($scope, $http) {
 
     $http.post(`/api/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
       $scope.profileData.webIds.push($scope.addWebIdUri);
+      DatabusAlert.alert($scope, true, DatabusMessages.ACCOUNT_WEBID_LINKED);
 
     }, function (err) {
       console.log(err);

@@ -31,7 +31,6 @@
     "jsonld": "^5.2.0",
     "jsonld-signatures": "^9.0.2",
     "memorystore": "^1.6.6",
-    "minify": "~7.0.2",
     "morgan": "~1.9.1",
     "node-cache": "^4.2.0",
     "node-rsa": "^1.1.1",

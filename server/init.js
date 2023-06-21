@@ -39,11 +39,6 @@ function writeManifest() {
 
 }
 
-async function minifyClientJS() {
-  console.log(`Minifying client-side javascript...`);
-  await minifier.minify('../../public/js', 'js', '../min/databus.min.js', '../min/databus.min.js.map');
-}
-
 function tryCreateKeyPair() {
 
   console.log(`Creating or loading PEM key-pair...`);
@@ -152,10 +147,6 @@ module.exports = async function () {
   await initializeContext();
 
   writeManifest();
-
-  if (config.minifyJs) {
-    await minifyClientJS();
-  }
 
   tryCreateKeyPair();
   console.log(`Done initializing.`);

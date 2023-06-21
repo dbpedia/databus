@@ -55,6 +55,10 @@ class SearchManager {
             return;
         }
 
+        if(auth.info.accountName == undefined) {
+            return;
+        }
+
         var options = {
             method: 'GET',
             url: `/${ auth.info.accountName } `,

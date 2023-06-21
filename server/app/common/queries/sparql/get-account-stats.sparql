@@ -13,15 +13,15 @@ SELECT DISTINCT ?account ?numUploads ?uploadSize WHERE {
   OPTIONAL {
     SELECT (count(?version) as ?numUploads) WHERE {
       ?account foaf:account <%ACCOUNT_URI%> .
-      ?dataset dataid:maintainer|dct:publisher ?account.
-      ?dataset dataid:version ?version .
+      ?version dct:publisher ?account.
+      ?version a databus:Version .
     }
   }
   OPTIONAL {
     SELECT (sum(?size) as ?uploadSize) WHERE {
       ?account foaf:account <%ACCOUNT_URI%> .
-      ?dataset dataid:maintainer|dct:publisher ?account.
-      ?dataset dcat:distribution ?distribution .
+      ?version dct:publisher ?account.
+      ?version dcat:distribution ?distribution .
       ?distribution dcat:byteSize ?size .
     }
   }

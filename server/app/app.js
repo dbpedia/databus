@@ -36,9 +36,6 @@ app.locals = {
     defaultContextUrl: process.env.DATABUS_DEFAULT_CONTEXT_URL,
     resourceBaseUrl: process.env.DATABUS_RESOURCE_BASE_URL
   },
-  site: {
-    minifyJs: config.minifyJs,
-  },
   author: {
     name: 'Jan Forberg',
     contact: 'forberg@infai.org'

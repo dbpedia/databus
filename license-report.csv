@@ -45,7 +45,6 @@ kessler,stuff,js-sha256,perpetual,material,MIT,git+https://github.com/emn178/js-
 kessler,stuff,jsonld,perpetual,material,BSD-3-Clause,git+https://github.com/digitalbazaar/jsonld.js.git,5.2.0,5.2.0,^5.2.0,Digital Bazaar Inc. support@digitalbazaar.com https://digitalbazaar.com/
 kessler,stuff,jsonld-signatures,perpetual,material,BSD-3-Clause,git+https://github.com/digitalbazaar/jsonld-signatures.git,9.3.1,9.3.0,^9.0.2,Digital Bazaar Inc. support@digitalbazaar.com https://digitalbazaar.com/
 kessler,stuff,memorystore,perpetual,material,MIT,git+https://github.com/roccomuso/memorystore.git,1.6.7,1.6.6,^1.6.6,Rocco Musolino roccomuso
-kessler,stuff,minify,perpetual,material,MIT,git+ssh://git@github.com/coderaiser/minify.git,7.0.2,7.0.2,~7.0.2,coderaiser mnemonic.enemy@gmail.com https://github.com/coderaiser
 kessler,stuff,morgan,perpetual,material,MIT,git+https://github.com/expressjs/morgan.git,1.9.1,1.9.1,~1.9.1,
 kessler,stuff,node-cache,perpetual,material,MIT,git://github.com/mpneuried/nodecache.git,4.2.1,4.2.1,^4.2.0,mpneuried mp@tcs.de
 kessler,stuff,node-rsa,perpetual,material,MIT,git+https://github.com/rzcoder/node-rsa.git,1.1.1,1.1.1,^1.1.1,rzcoder

@@ -4,7 +4,6 @@ const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
 const jsonld = require('jsonld');
 const rp = require('request-promise');
-const defaultContext = require('../../context.json');
 
 let instance = {};
 

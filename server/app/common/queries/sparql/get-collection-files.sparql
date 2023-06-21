@@ -28,7 +28,7 @@ WHERE
     OPTIONAL { ?distribution dcat:byteSize ?size . }
     ?distribution dct:hasVersion ?version .
     ?dataset dcat:distribution ?distribution .
-    ?dataset dataid:version ?versionUri .
+    ?dataset a databus:Version .
     ?dataset rdfs:label ?label .
     ?dataset rdfs:comment ?comment.
-} GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview
+} GROUP BY ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview
