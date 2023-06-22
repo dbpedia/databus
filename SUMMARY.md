@@ -1,7 +1,6 @@
 # Table of contents
 
 * [Overview](README.md)
-  * [Roadmap](docs/roadmap.md)
 * [Use Cases](docs/usecases.md) 
   * [🚀 Unique Features (Draft)](docs/uniquesellingpoints.md)
   * [Data Version Control Recipe](docs/maven-for-data-manage-data-dependencies-like-code.md)
@@ -22,6 +21,7 @@
   * [Content Variants](docs/content-variants.md)
   * [Persistence (HowTo)](docs/model/persistence-howto.md)
 * [Usage](docs/usage/README.md)
+  * [Quickstart Examples (Publish, Download)](docs/usage/quickstart-examples.md)
   * [Web Interface](docs/usage/web-interface/README.md)
     * [Publish](docs/usage/web-interface/publish.md)
     * [Collections](docs/usage/web-interface/collections.md)
@@ -29,7 +29,6 @@
 
   * [API](docs/usage/api/README.md)
     * [API Docs](docs/usage/api/api-docs.md)
-    * [Quickstart Examples (Publish, Download)](docs/usage/api/quickstart-examples.md)
   * [Databus Mods](docs/mods.md)
   * [Databus Client](docs/databus-client.md)
 * [Running Your Own Databus Server](docs/running-your-own-databus-server/running-own-server.md)

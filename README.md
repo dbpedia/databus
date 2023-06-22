@@ -121,7 +121,7 @@ mechanisms for that: a SPARQL endpoint and Collections.
 Collections allow to flexibly combine files and artifacts together. 
 Read more [here](docs/collections.md).
 
-SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/api/quickstart-examples.md).
+SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/quickstart-examples.md).
 ### Mods
 Databus offers metadata extensions using Mods. 
 You can read about them more in detail [here](docs/mods.md).

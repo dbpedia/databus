@@ -1,16 +1,16 @@
 # Quickstart Examples
 
-The API contains many methods for fine-grained data updates, in this chapter we will focus only on the main api which consists of publishing a dataset and querying metadata stored with SPARQL. Please refer to [API Docs](api-docs.md) for details.
+In this chapter we will focus only on the main api which consists of publishing a dataset and querying metadata stored with SPARQL. Please refer to [API Docs](api/api-docs.md) for details.
 
 ## Creating an API Token
 
 Once the Databus has been started with the correct configuration, you can use the login button on the web interface to log in to your OIDC provider account. Once you are successfully logged in, you can navigate to your account page by using the 'My Account' button on the landing page or using the dropdown in the upper right corner of the screen.
 
-![img.png](../../captions/my-account.png)
+![img.png](../captions/my-account.png)
 
 You will be asked to specify a namespace. Choose this namespace carefully, as it will be visible in all your databus URIs. The namespace can only be changed by an admin later.
 
-![settings-tab.png](../../captions/settings-tab.png)
+![settings-tab.png](../captions/settings-tab.png)
 
 Navigate to the settings tab on your account page and scroll to the 'API Keys' section. Enter a display name for your API key (this is only for better distinguishability) and click 'Create' to create the key. You can use the copy icon on the API key to copy the key value to your clipboard.
 
@@ -21,7 +21,7 @@ Use the API key in the `x-api-key` HTTP-header of your API calls to authenticate
 Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
 
 You can generate your own example inputs by using the Web-UI of Publish Wizard, for example in our [dev Databus](https://dev.databus.dbpedia.org). **NOTE! In case you use you own Databus server, you will need to change all the URI prefixes in the generated Json-LD to yours, i.e. `https://dev.databus.dbpedia.org` -> `https://<your server>`!**
-![publish.png](../../captions/publish.png)
+![publish.png](../captions/publish.png)
 
 Before saving your inputs to the database, they will be validated in 2 steps:
 1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information.
@@ -72,7 +72,7 @@ curl -X 'POST' \
 }'
 ```
 
-If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abtract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria). For a full list of inferrable properties check out the [autocompletion page](../../auto-completion.md)
+If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abtract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria). For a full list of inferrable properties check out the [autocompletion page](../auto-completion.md)
 
 #### Property Description
 
@@ -81,7 +81,7 @@ This gives a quick overview on what to put in for the different keys. In which e
 | Key          | Value                                                                                                                                                                                                                                                     | 
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | @type        | The type of the graph. For the databus the types `Group`, `Artifact`, `Version`, `Dataset` and `Part` are permitted.                                                                                                                                      |
-| @id          | This represents the `id` (subject) of the triples. In the case of a `Dataset` this is the identifier consists of `${DATABUS_BASE_URL}/user/group/artifact/version`. What those are exactly can be see at the [model documentation](../../model/README.md) |
+| @id          | This represents the `id` (subject) of the triples. In the case of a `Dataset` this is the identifier consists of `${DATABUS_BASE_URL}/user/group/artifact/version`. What those are exactly can be see at the [model documentation](../model/README.md) |
 | title        | This is a short title for the Dataset                                                                                                                                                                                                                     |
 | description  | A longer description for the content of the dataset. Markdown syntax is supported.                                                                                                                                                                        |
 | license      | The license of the dataset. Currently only one license as a URI is supported                                                                                                                                                                              |
@@ -95,7 +95,7 @@ After you have some data in Databus published you can execute SPARQL queries to 
 
 For that you can use SPARQL endpoint interface or API method [`POST /sparql`](https://dev.databus.dbpedia.org/api/#/general/sparql-post).
 
-![img.png](../../captions/SPARQL-endpoint.png)
+![img.png](../captions/SPARQL-endpoint.png)
 
 
 Example query for retrieving list of all datasets in Databus:
