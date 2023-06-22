@@ -7,7 +7,7 @@ This guide walks you through the process of downloading data from the Databus.
 You will learn different ways and techniques of downloading data from the Databus. We will cover how to:
 
 * Technique 1: Use the Databus UI do download data
-* Technique 2: Query Databus data download links using SPARQL (todo)
+* Technique 2: Query Databus data download links using SPARQL
 * Technique 3: Access data on the Databus via Linked Data
 * Technique 4: Access Databus data via Collections and SPARQL
 * Technique 5: Download data using the Databus client (todo)
