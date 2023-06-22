@@ -28,13 +28,13 @@ The main Databus endpoint is running at https://databus.dbpedia.org  which hosts
 
 For example, you can navigate to “instance types” dataset https://databus.dbpedia.org/dbpedia/mappings/instance-types/ 
 
-todo: image
+<figure><img src="databus-ui.png" alt=""><figcaption></figcaption></figure>
 
 Next, using the filters on the left side, you can narrow the results, by selecting a specific version or language. Lets select version 2021.12.01 and language “en”. This will provide two distributions (i.e. files) which satisfy our criteria.
 
-todo: image
+<figure><img src="databus-ui-filter.png" alt=""><figcaption></figcaption></figure>
 
-To download the particular file,  just click on the download link todo: image.
+To download the particular file,  just click on the download link logo
 
 You're done, now you should have the data on your machine and you start using it.
 
@@ -81,7 +81,7 @@ This collection groups together all the datasets published as part of the DBpedi
 
 The datasets associated with the collection can be retrieved using SPARQL. Each collection is described with a SPARQL query. The SPARQL query for the dbpedia-snapshot-2022-03 collection can be retrieved by opening the QUERY tab. The SPARQL query is rather long so we don't provide it here due to space constraints but you can easily find it at the collection page.
 
-todo: image
+<figure><img src="databus-sparql.png" alt=""><figcaption></figcaption></figure>
 
 Now when you have the SPARQL query in hands, you can submit it using the Databus SPARQL endpoint at https://databus.dbpedia.org/repo/sparql and retrieve all download links for the datasets associated with this collection.
 
