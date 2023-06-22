@@ -198,6 +198,10 @@ class PublishSession {
         }
     }
 
+    addFile(file) {
+        this.formData.addFile(file);
+    }
+
 
     setCreateNewGroup(value) {
         this.formData.group.generateMetadata = value;
