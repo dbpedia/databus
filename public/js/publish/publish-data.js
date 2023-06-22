@@ -11,6 +11,7 @@ class PublishData {
     this.group = data != undefined ? data.group : {};
     this.artifact = data != undefined ? data.artifact : {};
     this.version = data != undefined ? data.version : {};
+    this.files = data != undefined ? data.files : {};
     this.signature = data != undefined ? data.signature : undefined;
 
     if (data == null) {
@@ -51,9 +52,11 @@ class PublishData {
     this.group.errors = [];
     this.artifact.errors = [];
     this.version.errors = [];
+    this.files.errors = [];
     this.group.warnings = [];
     this.artifact.warnings = [];
     this.version.warnings = [];
+
 
     if (!DatabusUtils.isValidGroupName(this.group.name)) {
       this.group.errors.push('err_invalid_group_name');
@@ -66,7 +69,7 @@ class PublishData {
       return value.name == self.group.name;
     });
 
-    if (existingGroup.length > 0 && this.group.createNew) {
+    if (existingGroup.length > 0 && this.group.generateMetadata == 'create') {
       this.group.warnings.push('warning_group_exists');
     }
 
@@ -74,7 +77,7 @@ class PublishData {
       return value.groupName == self.group.name && value.name == self.artifact.name;
     });
 
-    if (existingArtifact.length > 0 && this.artifact.createNew) {
+    if (existingArtifact.length > 0 && this.artifact.generateMetadata == 'create') {
       this.artifact.warnings.push('warning_artifact_exists');
     }
 
@@ -100,15 +103,23 @@ class PublishData {
     }
 
     if (this.artifact.generateMetadata != 'none') {
-
       if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
         this.artifact.errors.push('err_invalid_artifact_name');
         hasErrors = true;
       }
     }
 
-    if (this.version.generateMetadata != 'none') {
+    var versionUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountData.accountName}/${this.group.name}/${this.artifact.name}/${this.version.name}`;
 
+    var existingVersion = this.accountData.versions.filter(function (value) {
+      return value == versionUri;
+    });
+
+    if (existingVersion.length > 0) {
+      this.version.warnings.push('warning_version_exists');
+    }
+
+    if (this.version.generateMetadata != 'none') {
 
       if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
         this.version.errors.push('err_invalid_version_name');
@@ -130,8 +141,9 @@ class PublishData {
         hasErrors = true;
       }
 
+
       if (DatabusUtils.objSize(this.version.files) == 0) {
-        this.version.errors.push('err_no_files');
+        this.files.errors.push('err_no_files');
         hasErrors = true;
       }
 
@@ -183,11 +195,10 @@ class PublishData {
       id: uri,
       uri: file.url,
       name: name,
-      contentVariants: {},
+      contentVariants: file.contentVariants,
       compression: file.compression,
       formatExtension: file.formatExtension,
-      artifactId: undefined,
-      groupId: undefined,
+      rowspan: 1,
     });
 
     this.version.files.sort(function (a, b) {

@@ -11,15 +11,26 @@ const TabNavigation = require("../utils/tab-navigation");
 function GroupPageController($scope, $http, $sce, $interval, $location, collectionManager) {
 
   $scope.group = data.group;
-  $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
+  $scope.accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
 
-  $scope.group.hasData = false;
-  $scope.isLoading = true;
   $scope.utils = new DatabusWebappUtils($scope, $sce);
   $scope.tabNavigation = new TabNavigation($scope, $location, [
     'files', 'artifacts', 'edit'
   ]);
 
+  $scope.dataSearchInput = "";
+  $scope.dataSearchSettings = {
+    minRelevance: 0.01,
+    maxResults: 10,
+    placeholder: `Search ${$scope.accountName}'s data...`,
+    resourceTypes: [ 'Artifact'],
+    filter: `&publisher=${$scope.accountName}&typeNameWeight=0&group=${$scope.group.name}`
+  };
+
+
+  $scope.group.hasData = false;
+  $scope.group.hasArtifacts = false;
+  $scope.isLoading = true;
 
   $http({
     method: 'GET',
@@ -38,7 +49,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
       artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
     }
 
-    $scope.group.hasData = $scope.artifacts.length > 0;
+    $scope.group.hasArtifacts = $scope.artifacts.length > 0;
     $scope.isLoading = false;
   }, function errorCallback(response) {
     $scope.isLoading = false;
@@ -49,12 +60,11 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
     DatabusUtils.uriToTitle($scope.group.uri));
 
 
-  $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
+  $scope.canEdit = $scope.accountName == data.auth.info.accountName;
 
   if (data.auth.authenticated && $scope.canEdit) {
 
     var abstract = DatabusUtils.createAbstractFromDescription($scope.group.description);
-
     $scope.formData = {};
     $scope.formData.group = {};
     $scope.formData.group.generateAbstract = abstract == $scope.group.abstract;
@@ -277,11 +287,13 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
     artifact.isSelected = artifact.alreadyAdded || $scope.selection.includes(artifact.uri);
   }
 
+
+
   $scope.search = function () {
 
     $scope.searchResult = [];
 
-    var typeFilters = `&publisher=${$scope.publisherName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
+    var typeFilters = `&publisher=${$scope.accountName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
 
     $http({
       method: 'GET',

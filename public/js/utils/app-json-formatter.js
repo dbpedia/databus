@@ -63,12 +63,22 @@ class AppJsonFormatter {
     result.abstract = JsonldUtils.getProperty(groupGraph, DatabusUris.DCT_ABSTRACT);
     result.description = JsonldUtils.getProperty(groupGraph, DatabusUris.DCT_DESCRIPTION);
     result.name = DatabusUtils.uriToResourceName(result.uri);
-
-    if(result.title == null) {
-      result.title = DatabusUtils.uriToResourceName(result.uri);
-    }
-
     return result;
+  }
+
+  static formatArtifactData(graphs) {
+    var result = {};
+    // ?uri ?title ?abstract ?description
+    var artifactGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_ARTIFACT);
+
+    result.uri = artifactGraph[DatabusUris.JSONLD_ID];
+    result.title = JsonldUtils.getProperty(artifactGraph, DatabusUris.DCT_TITLE);
+    result.abstract = JsonldUtils.getProperty(artifactGraph, DatabusUris.DCT_ABSTRACT);
+    result.description = JsonldUtils.getProperty(artifactGraph, DatabusUris.DCT_DESCRIPTION);
+    result.name = DatabusUtils.uriToResourceName(result.uri);
+    return result;
+
+
   }
 
   static formatAccountData(graphs) {

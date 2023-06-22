@@ -34,6 +34,7 @@
         "err_no_files": "You have to upload at least one file.",
         "err_not_analyzed": "This file has not been analzyed yet.",
         "warning_group_exists": "A group with this name already exits. Publishing will overwrite its metadata.",
-        "warning_artifact_exists": "An artifact with this name already exits. Publishing will overwrite its metadata."
+        "warning_artifact_exists": "An artifact with this name already exits. Publishing will overwrite its metadata.",
+        "warning_version_exists": "A version with this name already exits. Publishing will overwrite its metadata. This is not recommended, as other users might use your version identifier as a data dependency."
     }
 }

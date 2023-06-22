@@ -171,9 +171,9 @@ $shacl='<#collection-content>
 		sh:minCount 1 ;			
     ] . ';
 
-$example='"databusContent": "{ }",';
+$example='"collectionContent": "{ }",';
 
-$context='"databusContent": { "@id": "databus:databusContent" }';
+$context='"collectionContent": { "@id": "databus:collectionContent" }';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>

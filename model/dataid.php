@@ -47,8 +47,8 @@ $shacl='<#dataset-exists>
 
 $example='"@type": "databus:Version",';
 
-$context='"Dataset": 	"databus:Version" ';
-
+$context='"Version": 	"databus:Version" ';
+		
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 

@@ -11,13 +11,13 @@ class DatabusUris {
 
   // Databus
   static DATABUS_DATABUS = 'https://dataid.dbpedia.org/databus#Databus';
-  static DATABUS_DATASET = 'https://dataid.dbpedia.org/databus#Dataset';
   static DATABUS_PART = 'https://dataid.dbpedia.org/databus#Part';
   static DATABUS_VERSION = 'https://dataid.dbpedia.org/databus#Version';
   static DATABUS_GROUP = 'https://dataid.dbpedia.org/databus#Group';
   static DATABUS_ARTIFACT = 'https://dataid.dbpedia.org/databus#Artifact';
   static DATABUS_VERSION_PROPERTY = 'https://dataid.dbpedia.org/databus#version';
   static DATABUS_GROUP_PROPERTY = 'https://dataid.dbpedia.org/databus#group';
+  static DATABUS_ACCOUNT_PROPERTY = 'https://dataid.dbpedia.org/databus#account';
   static DATABUS_ARTIFACT_PROPERTY = 'https://dataid.dbpedia.org/databus#artifact';
   static DATABUS_FORMAT = 'https://dataid.dbpedia.org/databus#format';
   static DATABUS_FORMAT_EXTENSION = 'https://dataid.dbpedia.org/databus#formatExtension';
@@ -50,6 +50,9 @@ class DatabusUris {
   static DCT_ABSTRACT = 'http://purl.org/dc/terms/abstract'
   static DCT_DESCRIPTION = 'http://purl.org/dc/terms/description'
   static DCT_LICENSE = 'http://purl.org/dc/terms/license';
+
+  // DATAID
+  static DATAID_DATASET = 'http://dataid.dbpedia.org/ns/core#Dataset';
 
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';

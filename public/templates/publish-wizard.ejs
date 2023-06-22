@@ -151,13 +151,9 @@
             <p>This form will help you set up a DataId. A DataId is a metadata document containing
               important information about your files. This metadata document will make your data more understandable and
               reusable for you and other users.</p>
-            <p>Please fill out the form below and follow the instructions in the infoboxes. You can read
-              the infoboxes by hovering the info icons. Also make sure to fix all errors (denoted by a red explamation
-              mark). You can read the error description by hovering the red error icons.</p>
           </div>
 
           <!-- GROUP BOX-->
-
           <div class="databus-settings-box-header">GROUP INFO</div>
           <div class="databus-settings-box" ng-init="group=session.formData.group">
 
@@ -406,22 +402,11 @@
                 <div class="hover-note" ng-if="version.errors.length > 0">
                   <databus-icon shape="'error'" color="'red'" size="24">
                   </databus-icon>
-                  <div class="hover-dropdown has-error content">
-                    <ul>
-                      <li ng-repeat="error in version.errors">
-                        {{ texts.errors[error] }}
-                      </li>
-                    </ul>
-                  </div>
                 </div>
+                <!-- TODO: Link to docu! -->
                 <div class="hover-note">
                   <databus-icon shape="'info'" size="24">
                   </databus-icon>
-                  <div class="hover-dropdown content">
-                    <ul>
-                      <li ng-repeat="hint in texts.hints.version">{{ hint }}</li>
-                    </ul>
-                  </div>
                 </div>
               </div>
 
@@ -477,6 +462,8 @@
                       </div>
                     </div>
                   </div>
+                  <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83" class="help">{{
+                    texts.errors['warning_version_exists'] }}</span>
                   <span ng-if="hasError(version.errors, 'err_invalid_version_name')" class="help is-danger">{{
                     texts.errors['err_invalid_version_name'] }}</span>
                 </div>
@@ -505,6 +492,8 @@
                     </div>
                   </div>
                 </div>
+                <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83" class="help">{{
+                  texts.errors['warning_version_exists'] }}</span>
               </div>
 
               <!-- VERSION TITLE -->
@@ -619,25 +608,26 @@
             </div>
 
             <!-- FILES -->
-            <div ng-if="version.generateMetadata != 'none'">
+            <div ng-if="version.generateMetadata != 'none'" ng-init="files=session.formData.files">
               <div class="databus-settings-box-header">FILES INFO</div>
               <div class="databus-settings-box">
 
                 <div class="databus-settings-box-note">
-                  <div class="hover-note">
-                    <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
+
+                  <div class="hover-note" ng-if="files.errors.length == 0">
+                    <databus-icon shape="'check'" color="'#65bdb2'" size="24">
                     </databus-icon>
-                    <div class="hover-dropdown content"
-                      style="transform: translateX(-315px) translateY(35px); top: initial; right: initial;">
-                      <ul style="margin-top: 0; margin-left: 1.5em;">
-                        <li ng-repeat="hint in hints.files">{{ hint }}</li>
-                      </ul>
-                    </div>
+                  </div>
+                  <div class="hover-note" ng-if="files.errors.length > 0">
+                    <databus-icon shape="'error'" color="'red'" size="24">
+                    </databus-icon>
+                  </div>
+                  <!-- TODO: Link to docu! -->
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" size="24">
+                    </databus-icon>
                   </div>
                 </div>
-
-
-
                 <div class="row">
                   <div class="row-label">Add Files</div>
                   <div class="databus-settings-info">
@@ -758,6 +748,10 @@
 
                 <div class="row">
                   <div class="row-label">File Table</div>
+
+                  <span ng-if="hasError(files.errors, 'err_no_files')" class="help is-danger">{{
+                    texts.errors['err_no_files'] }}</span>
+
                   <table-editor ng-if="utils.objSize(version.files) > 0" model="version"
                     on-remove-file="removeFile(file)">
                   </table-editor>
@@ -831,11 +825,15 @@
                   <div style="width: 100%;">
                     <div class="field">
                       <div class="control">
-                        <label class="checkbox">
-                          <input type="checkbox" ng-disabled="session.formData.signature.autoGenerateSignatureLocked"
-                            ng-model="session.formData.signature.autoGenerateSignature">
-                          Auto-generate Signature
-                        </label>
+                          <div class="field override-checkbox"  ng-class="{ 'is-override' : session.formData.signature.autoGenerateSignature }">
+                            <input id="check--autogeneratesignature" name="check--autogeneratesignature" 
+                              class="is-checkradio" type="checkbox"
+                              ng-model="session.formData.signature.autoGenerateSignature">
+                            <label for="check--autogeneratesignature">
+                              <span>Auto-generate Signature</span>
+                            </label>
+                          </div>
+
                       </div>
                       <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
                         <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
@@ -876,20 +874,20 @@
                   Fix all errors to preview the metadata
                 </pre>
           </div>
-          <div class="row">
+          <div class="row" ng-if="session.formData.artifact.generateMetadata != 'none'">
             <div class="row-label">Artifact Metadata</div>
             <pre ng-if="session.formData.artifact.errors.length == 0"
               style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
             <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
-                  Fix all errors to preview the metadata
+                  Fix all errors to preview the artifact metadata
                 </pre>
           </div>
-          <div class="row">
+          <div class="row" ng-if="session.formData.version.generateMetadata != 'none'">
             <div class="row-label">Version Metadata</div>
-            <pre ng-if="session.formData.version.errors.length == 0"
+            <pre ng-if="session.formData.version.errors.length == 0 && session.formData.files.errors.length == 0"
               style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
-            <pre ng-if="session.formData.version.errors.length > 0" style="width: 100%;">
-                  Fix all errors to preview the DataId
+            <pre ng-if="session.formData.version.errors.length > 0 || session.formData.files.errors.length > 0" style="width: 100%;">
+                  Fix all errors to preview the version metatdata
                 </pre>
           </div>
           <div class="row">
@@ -900,7 +898,7 @@
             <pre ng-if="session.isReadyForUpload && !session.showFullInput"
               style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
             <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
-                  Fix all errors to preview the DataId
+                  Fix all errors to preview the full request body
                 </pre>
           </div>
 

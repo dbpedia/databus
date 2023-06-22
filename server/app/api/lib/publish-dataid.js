@@ -24,8 +24,6 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
   var distributions = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATABUS_PART);
 
   for (var distribution of distributions) {
-
-
     // Only fetch when there is something missing!
     if (!alwaysFetch) {
       var needsFetching = false;
@@ -221,6 +219,8 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
   console.log(proofGraph);
   // Validate the proof 
+  console.log(dataidGraphs);
+  
   var validationSuccess = await signer.validate(signer.canonicalize(dataidGraphs), proofGraph);
 
   if (!validationSuccess) {
@@ -242,7 +242,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
   try {
 
     var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
-    logger.debug(versionGraphUri, `Processing dataset <${versionGraphUri}>`, versionGraph);
+    logger.debug(versionGraphUri, `Processing version <${versionGraphUri}>`, versionGraph);
 
 
     // Run construct query

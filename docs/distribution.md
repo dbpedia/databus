@@ -402,7 +402,8 @@ missing
 
 ```
 ```javascript
-"subPropertyOf" : {
+"contentVariant": "databus:contentVariant",
+	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
   }
@@ -428,6 +429,7 @@ missing
 ```
 ```javascript
 
+  "Dataset": "dataid:Dataset",
   "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},

@@ -34,7 +34,7 @@
 	"@type": "@id"
 	},
 
-"Dataset": 	"databus:Version" ,
+"Version": 	"databus:Version" ,
 
 "publisher": {
       "@id": "dct:publisher",
@@ -98,12 +98,14 @@
 
 "sha256sum": 		{"@id": "databus:sha256sum"},
 
-"subPropertyOf" : {
+"contentVariant": "databus:contentVariant",
+	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
   },
 
 
+  "Dataset": "dataid:Dataset",
   "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},
@@ -111,7 +113,7 @@
 
 "Collection": "databus:Collection",
 
-"databusContent": { "@id": "databus:databusContent" },
+"collectionContent": { "@id": "databus:collectionContent" },
 
 "maker": {
     "@id": "foaf:maker",

@@ -6,17 +6,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 
-# Creates an artifact
 CONSTRUCT
 {
-  ?artifact a databus:Artifact .
   ?artifact ?p ?o .
 }
 WHERE
 {
   GRAPH ?g 
   {
-    <%RESOURCE_URI%> ?p ?o .
+    VALUES ?artifact { <%RESOURCE_URI%> }
     ?artifact ?p ?o .
   }
 }

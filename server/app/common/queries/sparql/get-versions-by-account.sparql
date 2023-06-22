@@ -7,12 +7,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?version WHERE
 {
-  GRAPH ?g1 {
-    ?publisher foaf:account <%ACCOUNT_URI%> .
-  }
-
-  GRAPH ?g2 {
+  GRAPH ?g {
     ?version a databus:Version .
-    ?version dct:publisher ?publisher .
+    ?version databus:account <%ACCOUNT_URI%> .
   }
 }

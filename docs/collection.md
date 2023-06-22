@@ -157,7 +157,7 @@ Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/collections/projectx-inputs",
-	"databusContent": "{ }",
+	"collectionContent": "{ }",
 }
 ```
 Spec (OWL, SHACL, JSON-LD Context)
@@ -183,7 +183,7 @@ databus:collectionContent
     ] . 
 ```
 ```javascript
-"databusContent": { "@id": "databus:databusContent" }
+"collectionContent": { "@id": "databus:collectionContent" }
 ```
 
 

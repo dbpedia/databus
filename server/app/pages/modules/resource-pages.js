@@ -12,6 +12,7 @@ const { dataid } = require('../../common/queries/sparql');
 const getJsonLd = require('../../common/get-jsonld');
 const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
 const groupQueryTemplate = require("../../common/queries/constructs/ld/construct-group.sparql");
+const artifactQueryTemplate = require("../../common/queries/constructs/ld/construct-artifact.sparql");
 const collectionQueryTemplate = require("../../common/queries/constructs/ld/construct-collection.sparql");
 const versionQueryTemplate = require("../../common/queries/constructs/ld/construct-version.sparql");
 
@@ -84,6 +85,7 @@ module.exports = function (router, protector) {
       res.status(400).send("Bad query");
     }
   });
+
 
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -175,6 +177,36 @@ module.exports = function (router, protector) {
     }
 
     try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var artifactUri = `${UriUtils.createResourceUri([req.params.account, req.params.group, req.params.artifact])}`;
+      var artifactJsonLd = await getJsonLd(artifactUri, artifactQueryTemplate, 'flatten');
+
+      if (artifactJsonLd == null) {
+        next('route');
+        return;
+      }
+
+      var artifactData = AppJsonFormatter.formatArtifactData(artifactJsonLd);
+      var versions = await sparql.dataid.getVersionsByArtifact(artifactUri);
+
+      res.render('artifact', {
+        title: artifactData.title != undefined ? artifactData.title : artifactData.name,
+        data: {
+          auth: auth,
+          artifact: artifactData,
+          versions: versions
+        }
+      });
+
+
+    } catch (err) {
+      console.log(err);
+      next('route');
+    }
+
+    /*
+
+    try {
 
       let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}`;
       let data = await cache.get(cacheKey, async () => {
@@ -200,7 +232,7 @@ module.exports = function (router, protector) {
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
-    }
+    }*/
   });
 
   router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {

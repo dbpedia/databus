@@ -53,9 +53,19 @@ class PublishSession {
         this.isVersionLoading = false;
 
         if (session != null) {
-            this.selectGroup(session.currentGroup);
-            this.selectArtifact(session.currentArtifact);
+
+            if (session.currentGroup != null) {
+                var group = accountData.groups.find(g => g.uri == session.currentGroup.uri);
+                this.selectGroup(group);
+            }
+
+            if (session.currentArtifact != null) {
+                var artifact = accountData.artifacts.find(a => a.uri == session.currentArtifact.uri);
+                this.selectArtifact(artifact);
+            }
         }
+
+
         this.dataIdCreator = new DataIdCreator(this.formData, this.accountData.accountName);
         this.inputs = this.dataIdCreator.createInputs();
 
@@ -135,6 +145,47 @@ class PublishSession {
                 version.attribution = JsonldUtils.getProperty(versionGraph, DatabusUris.DATABUS_ATTRIBUTION);
                 version.license = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_LICENSE);
                 version.derivedFrom = JsonldUtils.getProperty(versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
+                version.contentVariants = [];
+
+                var contentVariantGraphs = JsonldUtils.getTypedGraphs(versionData, DatabusUris.RDF_PROPERTY);
+
+                for(var contentVariantGraph of contentVariantGraphs) {
+
+                    var variantName = DatabusUtils.uriToName(contentVariantGraph[DatabusUris.JSONLD_ID]);
+                    self.formData.addContentVariant(variantName);
+                }
+
+                // Add Files!
+                var fileGraphs = JsonldUtils.getTypedGraphs(versionData, DatabusUris.DATABUS_PART);
+                version.files = [];
+
+                for (var fileGraph of fileGraphs) {
+
+                    var fileUri = JsonldUtils.getProperty(fileGraph, DatabusUris.DCAT_DOWNLOAD_URL);
+
+                  
+
+                    var file = {
+                        id: fileUri,
+                        url: fileUri,
+                        name: DatabusUtils.uriToName(fileUri),
+                        compression: JsonldUtils.getProperty(fileGraph, DatabusUris.DATABUS_COMPRESSION),
+                        formatExtension: JsonldUtils.getProperty(fileGraph, DatabusUris.DATABUS_FORMAT_EXTENSION),
+                        contentVariants: {}
+                    }
+
+                    for(var contentVariant of version.contentVariants) {
+                        var variantUri = `${DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX}${contentVariant.id}`;
+                        var variantValue = JsonldUtils.getProperty(fileGraph, variantUri);
+
+                        if(variantValue != null) {
+                            file.contentVariants[contentVariant.id] = variantValue;
+                        }
+                    }
+
+                    self.formData.addFile(file);
+                }
+
 
                 // Save the preset values
                 delete version.preset;
@@ -256,10 +307,6 @@ class PublishSession {
         }
     }
 
-    addFile(file) {
-        this.formData.addFile(file);
-    }
-
     static resume($http, accountData) {
 
         var sessionData = JSON.parse(window.sessionStorage.getItem(PublishSession.sessionStorageKey));
@@ -288,7 +335,8 @@ class PublishSession {
             this.isReadyForUpload =
                 !this.formData.artifact.errors.length > 0 &&
                 !this.formData.group.errors.length > 0 &&
-                !this.formData.version.errors.length > 0;
+                !this.formData.version.errors.length > 0 &&
+                !this.formData.files.errors.length > 0;
         }
     }
 }

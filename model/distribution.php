@@ -362,7 +362,8 @@ $shacl='<#properties-are-cvs>
 
 $example='missing';
 
-$context='"subPropertyOf" : {
+$context='"contentVariant": "databus:contentVariant",
+	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
   }';
@@ -381,6 +382,7 @@ $shacl='missing';
 $example='missing';
 
 $context='
+  "Dataset": "dataid:Dataset",
   "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},

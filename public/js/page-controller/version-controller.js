@@ -1,6 +1,7 @@
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const JsonldUtils = require("../utils/jsonld-utils");
 const DatabusUtils = require("../utils/databus-utils");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
 const QueryNode = require("../query-builder/query-node");
 const TabNavigation = require("../utils/tab-navigation");
 const DatabusUris = require("../utils/databus-uris");
@@ -21,7 +22,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
   $scope.authenticated = data.auth.authenticated;
   $scope.versionGraph = data.graph;
   $scope.version = AppJsonFormatter.formatVersionData(data.graph);
-  
+
   $scope.queryResult = {};
   $scope.addToCollectionQuery = "";
   $scope.collectionModalVisible = false;

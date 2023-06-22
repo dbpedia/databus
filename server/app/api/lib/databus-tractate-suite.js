@@ -140,9 +140,13 @@ signer.validate = async function (canonicalized, proof) {
       // Extract the pathname of the URL without leading slash
       var repo = webIdURL.pathname.substring(1);
       // Read the WebId directly from the Gstore to avoid access problems in private mode
-      var content = JSON.stringify(await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID));
 
-      quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, content)
+      var webIdJsonLd = await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID);
+      var flattenedGraphs = await jsonld.flatten(webIdJsonLd);
+
+      console.log(`Loaded WebID`);
+      console.log(flattenedGraphs);
+      quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, JSON.stringify(flattenedGraphs))
 
     } else {
       // Get the WebId via HTTP request

@@ -17,11 +17,12 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
   $scope.tabNavigation = new TabNavigation($scope, $location, [
     'files', 'versions', 'edit'
   ]);
+
   $scope.versions = data.versions;
   $scope.artifact = data.artifact;
-  $scope.artifact.name = DatabusUtils.uriToName($scope.artifact.uri);
-  $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri, 2));
-  $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
+  $scope.accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri, 2));
+  $scope.canEdit = $scope.accountName == data.auth.info.accountName;
+  
  
   if (data.auth.authenticated && $scope.canEdit) {
     
@@ -31,7 +32,6 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
     $scope.formData.artifact = {};
 
     var abstract = DatabusUtils.createAbstractFromDescription($scope.artifact.description);
-
     $scope.formData.artifact.generateAbstract = abstract == $scope.artifact.abstract;
     $scope.formData.artifact.name = $scope.artifact.name;
     $scope.formData.artifact.title = $scope.artifact.title;

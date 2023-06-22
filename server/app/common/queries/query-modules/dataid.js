@@ -4,6 +4,7 @@ const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
 const jsonld = require('jsonld');
 const rp = require('request-promise');
+const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
 
 let instance = {};
 
@@ -178,13 +179,11 @@ instance.getArtifactsByAccount = async function (accountName) {
 
     for (let i in bindings) {
       let binding = bindings[i];
-      var artifact = await instance.getArtifactByUri(binding.artifact);
-
-      artifact.name = UriUtils.uriToName(artifact.uri);
-      artifact.groupName = UriUtils.uriToName(artifact.group);
-      result.push(artifact);
+      binding.name = DatabusUtils.uriToResourceName(binding.uri);
+      binding.groupName = DatabusUtils.uriToResourceName(DatabusUtils.navigateUp(binding.uri));
+      console.log(binding);
+      result.push(binding);
     }
-
 
     // return the result object
     return result;
@@ -213,6 +212,8 @@ instance.getArtifactsByAccount = async function (accountName) {
     let query = require('../sparql/get-versions-by-account.sparql');
 
     query = exec.formatQuery(query, queryOptions);
+
+    console.log(query);
     // Execute the query to get a list of bindings
     let bindings = await exec.executeSelect(query);
 
@@ -235,13 +236,11 @@ instance.getArtifactsByAccount = async function (accountName) {
 /**
  * Get some basic information on versions of an artifact with artifactUri
  */
-instance.getVersionsByArtifact = async function (account, group, artifact) {
+instance.getVersionsByArtifact = async function (artifactUri) {
   // Load the query from file, replace placeholder with groupUri
-  let queryOptions = { ARTIFACT_URI: UriUtils.createResourceUri([account, group, artifact]) };
+  let queryOptions = { ARTIFACT_URI: artifactUri };
   let query = exec.formatQuery(require('../sparql/get-versions-by-artifact.sparql'), queryOptions);
-
   let bindings = await exec.executeSelect(query);
-
   return bindings;
 }
 

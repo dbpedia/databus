@@ -4,15 +4,15 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
 PREFIX sec: <https://w3id.org/security#>
 
 CONSTRUCT
 {
-  ?dataset a dataid:Dataset .
-  ?dataset ?datasetProperty ?datasetObject .
+  ?version a databus:Version .
+  ?version ?versionProperty ?versionObject .
   ?version a databus:Version .
   ?artifact a databus:Artifact .
+  ?group a databus:Group .
   ?distribution a databus:Part .
   ?distribution ?distributionProperty ?distributionObject .
   ?contentVariant ?contentVariantProperty ?contentVariantObject .
@@ -20,10 +20,10 @@ CONSTRUCT
 }
 WHERE
 {
-  ?dataset a dataid:Dataset .
-  ?dataset dcat:distribution ?distribution .
+  ?version a databus:Version .
+  ?version dcat:distribution ?distribution .
   {
-    ?dataset ?datasetProperty ?datasetObject .
+    ?version ?versionProperty ?versionObject .
   }
   UNION
   {
@@ -32,17 +32,17 @@ WHERE
   }
   UNION
   {
-    ?dataset dataid:version ?version .
-    ?version a databus:Version .
-  }
-  UNION
-  {
-    ?dataset databus:artifact ?artifact .
+    ?version databus:artifact ?artifact .
     ?artifact a databus:Artifact .
   }
   UNION
   {
-    ?dataset sec:proof ?proof .
+    ?version databus:group ?group .
+    ?group a databus:Group .
+  }
+  UNION
+  {
+    ?version sec:proof ?proof .
     ?proof ?proofProperty ?proofObject .
   }
   UNION

@@ -1,3 +1,5 @@
+const DatabusUtils = require("../../utils/databus-utils");
+
 // hinzufügen eines Controllers zum Modul
 function TableEditorController() {
 
@@ -12,8 +14,6 @@ function TableEditorController() {
       ctrl.model.groupMode = true;
     }
 
-
-   
     ctrl.setupColumns();
     ctrl.updateViewModel();
   }

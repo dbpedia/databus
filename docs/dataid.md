@@ -47,7 +47,7 @@ databus:Version  a owl:Class ;
   ] . 
 ```
 ```javascript
-"Dataset": 	"databus:Version" 
+"Version": 	"databus:Version" 
 ```
 
 ## 1. General Metadata
