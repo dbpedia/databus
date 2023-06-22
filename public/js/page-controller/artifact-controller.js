@@ -22,10 +22,11 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
   $scope.artifact = data.artifact;
   $scope.accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri, 2));
   $scope.canEdit = $scope.accountName == data.auth.info.accountName;
-  
- 
+  $scope.pageTitle = DatabusUtils.stringOrFallback($scope.artifact.title,
+    DatabusUtils.uriToTitle($scope.artifact.uri));
+
   if (data.auth.authenticated && $scope.canEdit) {
-    
+
     $scope.formData = {};
     $scope.formData.group = {};
     $scope.formData.group.name = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri));
@@ -150,6 +151,9 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
       $scope.artifact.title = $scope.formData.artifact.title;
       $scope.artifact.abstract = $scope.formData.artifact.abstract;
       $scope.artifact.description = $scope.formData.artifact.description;
+
+      $scope.pageTitle = DatabusUtils.stringOrFallback($scope.artifact.title,
+        DatabusUtils.uriToTitle($scope.artifact.uri));
 
       DatabusAlert.alert($scope, true, "Artifact Saved!");
       $scope.$apply();

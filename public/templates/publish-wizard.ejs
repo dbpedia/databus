@@ -215,8 +215,8 @@
                 <div class="row-label">Name</div>
                 <div style="flex: 1">
                   <input class="input" type="text" ng-model="group.name">
-                  <span ng-if="hasError(group.errors, 'err_invalid_group_name')" class="help is-danger">{{
-                    texts.errors['err_invalid_group_name'] }}</span>
+                  <span ng-if="hasError(group.errors, 'err_invalid_group_title')" class="help is-danger">{{
+                    texts.errors['err_invalid_group_title'] }}</span>
                   <span ng-if="hasError(group.warnings, 'warning_group_exists')" style="color: #3d8d83" class="help">{{
                     texts.errors['warning_group_exists'] }}</span>
                 </div>
@@ -339,8 +339,8 @@
                     <div class="row-label">Name</div>
                     <div style="flex: 1">
                       <input class="input" type="text" ng-model="artifact.name">
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_name')" class="help is-danger">{{
-                        texts.errors['err_invalid_artifact_name'] }}</span>
+                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_title')" class="help is-danger">{{
+                        texts.errors['err_invalid_artifact_title'] }}</span>
                       <span ng-if="hasError(artifact.warnings, 'warning_artifact_exists')" style="color: #3d8d83"
                         class="help">{{
                         texts.errors['warning_artifact_exists'] }}</span>

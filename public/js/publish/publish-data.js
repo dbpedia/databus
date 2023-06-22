@@ -59,7 +59,7 @@ class PublishData {
 
 
     if (!DatabusUtils.isValidGroupName(this.group.name)) {
-      this.group.errors.push('err_invalid_group_name');
+      this.group.errors.push('err_invalid_group_title');
       hasErrors = true;
     }
 
@@ -104,7 +104,7 @@ class PublishData {
 
     if (this.artifact.generateMetadata != 'none') {
       if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
-        this.artifact.errors.push('err_invalid_artifact_name');
+        this.artifact.errors.push('err_invalid_artifact_title');
         hasErrors = true;
       }
     }
@@ -122,7 +122,7 @@ class PublishData {
     if (this.version.generateMetadata != 'none') {
 
       if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
-        this.version.errors.push('err_invalid_version_name');
+        this.version.errors.push('err_invalid_version_title');
         hasErrors = true;
       }
 

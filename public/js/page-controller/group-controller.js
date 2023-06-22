@@ -23,7 +23,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
     minRelevance: 0.01,
     maxResults: 10,
     placeholder: `Search ${$scope.accountName}'s data...`,
-    resourceTypes: [ 'Artifact'],
+    resourceTypes: ['Artifact'],
     filter: `&publisher=${$scope.accountName}&typeNameWeight=0&group=${$scope.group.name}`
   };
 
@@ -43,7 +43,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
       if (artifact.latestVersionDate != undefined) {
         $scope.group.hasData = true;
       }
-  
+
       artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
       artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
       artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
@@ -56,7 +56,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
   });
 
 
-  $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title,
+  $scope.pageTitle = DatabusUtils.stringOrFallback($scope.group.title,
     DatabusUtils.uriToTitle($scope.group.uri));
 
 
@@ -110,6 +110,11 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
       $scope.group.title = $scope.formData.group.title;
       $scope.group.abstract = $scope.formData.group.abstract;
       $scope.group.description = $scope.formData.group.description;
+
+
+      $scope.pageTitle = DatabusUtils.stringOrFallback($scope.group.title,
+        DatabusUtils.uriToTitle($scope.group.uri));
+
       DatabusAlert.alert($scope, true, "Group Saved!");
       $scope.$apply();
     }

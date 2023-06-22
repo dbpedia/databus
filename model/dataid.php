@@ -19,7 +19,7 @@ Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it
 
 
 <?php
-$section="version" ;
+$section="dataid" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06";
 $owl='databus:Version  a owl:Class ;
      rdfs:label "Version"@en ;
