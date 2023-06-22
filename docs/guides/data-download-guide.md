@@ -39,7 +39,21 @@ To download the particular file,  just click on the download link todo: image.
 You're done, now you should have the data on your machine and you start using it.
 
 ### Technique 2: Query Databus data download links using SPARQL (todo)
+```sparql
 
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+​
+SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
+  GRAPH ?g {
+    <https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2023-06-13> dcat:distribution ?distribution .
+    ?distribution databus:file ?file .
+    ?distribution dcat:byteSize ?byteSize .
+    ?distribution databus:formatExtension ?format .
+    ?distribution dcat:downloadURL ?downloadUrl .
+  }
+}
+```
 ### Technique 3: Access data on the Databus via Linked Data
 Linked Data is a mechanism for publishing structured data on the Web. Databus implements the Linked Data principles which allows us to access the data on the Databus as Linked Data.
 Lets try this on an example where we will retrieve data for the download link for the instance types dataset published on the Databus.
