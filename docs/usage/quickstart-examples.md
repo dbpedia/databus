@@ -21,6 +21,7 @@ Use the API key in the `x-api-key` HTTP-header of your API calls to authenticate
 Most API calls can be used to create, change or delete data on the Databus. This includes groups, artifacts and versions but also account information and Databus Collections.
 
 You can generate your own example inputs by using the Web-UI of Publish Wizard, for example in our [dev Databus](https://dev.databus.dbpedia.org). **NOTE! In case you use you own Databus server, you will need to change all the URI prefixes in the generated Json-LD to yours, i.e. `https://dev.databus.dbpedia.org` -> `https://<your server>`!**
+
 ![publish.png](../captions/publish.png)
 
 Before saving your inputs to the database, they will be validated in 2 steps:
