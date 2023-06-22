@@ -90,6 +90,66 @@ This gives a quick overview on what to put in for the different keys. In which e
 | downloadURL  | The location URL of the registered file.                                                                                                                                                                                                                  |
 | dcv:key      | Set a value for a given key to individually identify a file and notate properties of a file. Example `"dcv:type": "rawdata"`                                                                                                                              |
 
+#### Turtle
+
+You can easily retrieve a turtle representation of a published dataset version by executing curl request with `Accept:text/turtle` header on the version uri:
+
+```shell
+curl -H "Accept:text/turtle" https://staging.databus.dbpedia.org/<your username>/testgroup/testartifact/2023-06-22#dataid.ttl
+```
+
+Here is an example of turtle representatation of the metadata stored in databus:
+
+```text
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns1:	<https://databus.dbpedia.org/debugi/> .
+@prefix ns2:	<https://dataid.dbpedia.org/databus#> .
+ns1:testgroup	rdf:type	ns2:Group .
+@prefix ns3:	<https://databus.dbpedia.org/debugi/testgroup/> .
+ns3:testartifact	rdf:type	ns2:Artifact .
+@prefix ns4:	<http://dataid.dbpedia.org/ns/cv#> .
+ns4:asdf	rdf:type	rdf:Property .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+ns4:asdf	rdfs:subPropertyOf	ns2:contentVariant .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22#testartifact_asdf=qwer.ttl>	rdf:type	ns2:Part .
+@prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:	<http://purl.org/dc/terms/> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22#testartifact_asdf=qwer.ttl>	dcterms:modified	"2023-06-22T12:26:25.347Z"^^xsd:dateTime ;
+	dcterms:hasVersion	"2023-06-22" ;
+	dcterms:issued	"2023-06-22T12:26:25.347Z"^^xsd:dateTime .
+@prefix ns8:	<http://www.w3.org/ns/dcat#> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22#testartifact_asdf=qwer.ttl>	ns8:byteSize	2944 ;
+	ns4:asdf	"qwer" ;
+	ns2:sha256sum	"3f2372305549beddb0bf9784dbfc0ad156c1789cc86c0077b3e14d70b69c7270" ;
+	ns2:compression	"none" ;
+	ns2:formatExtension	"ttl" ;
+	ns8:downloadURL	<https://holycrab13.github.io/webid.ttl> ;
+	ns2:file	<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22/testartifact_asdf=qwer.ttl> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22>	rdf:typns2:Version .
+@prefix ns9:	<http://dataid.dbpedia.org/ns/core#> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22>	rdf:typns9:Dataset ;
+	dcterms:modified	"2023-06-22T12:26:25.347Z"^^xsd:dateTime ;
+	dcterms:description	"This is just a test. Nothing to see here." ;
+	dcterms:abstract	"This is just a test. Nothing to see here." ;
+	dcterms:title	"My Title" ;
+	dcterms:hasVersion	"2023-06-22" ;
+	ns2:artifact	ns3:testartifact ;
+	dcterms:issued	"2023-06-22T12:26:25.347Z"^^xsd:dateTime .
+@prefix ns10:	<https://databus.dbpedia.org/debugi#> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22>	dcterms:publisher	ns10:this ;
+	ns8:distribution	<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22#testartifact_asdf=qwer.ttl> .
+@prefix ns11:	<https://databus.dbpedia.org/> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22>	ns2:account	ns11:debugi ;
+	ns2:group	ns1:testgroup .
+@prefix ns12:	<https://w3id.org/security#> .
+<https://databus.dbpedia.org/debugi/testgroup/testartifact/2023-06-22>	ns12:proof	<6cbae469abfbfc6014fb661a9d7400a1> ;
+	dcterms:license	<https://dalicc.net/licenselibrary/AFL-3.0> .
+<6cbae469abfbfc6014fb661a9d7400a1>	rdf:type	ns2:DatabusTractateV1 ;
+	ns12:signature	"AQscxRHoMsdToTP1jW7RBFWJ+GUF333GXCydM4gVBvjt2S3crKUbOCG2NYCiSplhtIreXcSSA3t3mQsdfz3/f0w4+EYkVKFH5O19U5tX+WzJG/rXt1yHmNYI5waklvHypWgRUKHR84XwPAHvu4+Dojm5p0HqBlinEYEHmnOw1UrfClZmalGxBk+aoa5E4E1YPBDlAywzWfs7ZruS9meCTMh1RSt9lX2Xplrnzm09dpZ8mJR6q+XIUTm8VAwzHbNzMaZ+xqPip6pbVRefUS6IokWFsQ0gLOwkGotws4YxbXcFa50gO9fg4x973/PygPylXEtKvZPUrS13Z/Yg61jeuA==" .
+```
+
+Turtle is very useful for writing SPARQL requests as in the following sections.
+
 ### SPARQL Queries
 
 After you have some data in Databus published you can execute SPARQL queries to filter out what you need.
