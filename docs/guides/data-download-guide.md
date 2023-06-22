@@ -6,7 +6,7 @@ This guide walks you through the process of downloading data from the Databus.
 ## What will you learn
 You will learn different ways and techniques of downloading data from the Databus. We will cover how to:
 
-* Technique 1: Use Databus UI do download data
+* Technique 1: Use the Databus UI do download data
 * Technique 2: Query Databus data download links using SPARQL (todo)
 * Technique 3: Access data on the Databus via Linked Data
 * Technique 4: Access Databus data via Collections and SPARQL
@@ -21,7 +21,7 @@ You will learn different ways and techniques of downloading data from the Databu
 * rapper RDF parsing and serializing command line tool
 
 
-### Technique 1: Use Databus UI do download data
+### Technique 1: Use the Databus UI do download data
 First, navigate to the Databus UI and find relevant data.
 
 The main Databus endpoint is running at https://databus.dbpedia.org  which hosts the DBpedia Knowledge Graph as well as many other valuable datasets.
@@ -38,22 +38,54 @@ To download the particular file,  just click on the download link logo
 
 You're done, now you should have the data on your machine and you start using it.
 
-### Technique 2: Query Databus data download links using SPARQL (todo)
+### Technique 2: Query Databus data download links using SPARQL
+The SPARQL query language gives you flexibility and freedom when querying data on the Databus.
+
+With SPARQL you can write simple queries to collect all artifacts published under some group but also do other much more complex queries such as retrieving the users that published the most number of datasets in a specific time period.
+
+In the following example we will put together a SPARQL query that will return the download links associated with the particular artifact and specific version.
+
+Let's assume we want to retrieve the download links for the `instance-types` artifact, published by the `dbpedia` account and under the group `mappings`. The version that we want is `2022.12.01`.
+
+The identifier for such an artifact is following: https://databus.dbpedia.org/dbpedia/mappings/instance-types/2022.12.01
+
+Note that the identifiers have hierarchical structure. To learn more about the [URI Design](https://dbpedia.gitbook.io/databus/model/uridesign) article which explains the detail the Databus URIs.
+
+After we have the URI identifier we need to write the query. This, also, however, requires knowledge about the Databus Model.
+In short, the Databus Model defines following core concepts:
+* Group - consolidates one or more artifacts.
+* Artifact - represents a logical dataset in the DBpedia Databus platform
+* Version - represents a state of the artifact at certain point of time 
+* Part - each artifact can consists of one or more files, which are modelled as parts
+
+For complete details of the Databus Model check the [Databus Ontology](https://dataid.dbpedia.org/databus/core.html#).
+
+In our example, we already know the identifier of the artifact and its version so the only thing we need to query are the download links of the files associated with our artifact.
+
+In the Databus model the Version(s) is linked to the data Part(s) via the `dcat:distribution` property.
+While the download links are provided for each part using the `dcat:downloadURL`.
+
+We have all the information we need, so lets write the SPARQL query.
+
 ```sparql
 
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 ​
-SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
+SELECT DISTINCT ?downloadUrl WHERE {
   GRAPH ?g {
-    <https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2023-06-13> dcat:distribution ?distribution .
-    ?distribution databus:file ?file .
-    ?distribution dcat:byteSize ?byteSize .
-    ?distribution databus:formatExtension ?format .
-    ?distribution dcat:downloadURL ?downloadUrl .
+    <https://databus.dbpedia.org/dbpedia/mappings/instance-types/2022.12.01> dcat:distribution ?part .
+    ?part dcat:downloadURL ?downloadUrl .
   }
 }
 ```
+
+Lets also run the query against the [Databus SPARQL endpoint](https://databus.dbpedia.org/repo/sparql) and retrieve the list of download URLs for all the files associated with the dataset with the identifier.
+
+If the SPARQL query is passed and processed successfully, you should receive a list of download links.
+
+If this is the case, then congratulations, you learned how to query Databus with SPARQL!
+
 ### Technique 3: Access data on the Databus via Linked Data
 Linked Data is a mechanism for publishing structured data on the Web. Databus implements the Linked Data principles which allows us to access the data on the Databus as Linked Data.
 Lets try this on an example where we will retrieve data for the download link for the instance types dataset published on the Databus.
