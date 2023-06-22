@@ -2,7 +2,7 @@
 description: Databus allows to realize flexible Data Registries or even Meta-Registries
 ---
 
-# Building Meta Registries
+# Building Data Repositories
 
 With the growing importance of the FAIR data principles and mass production of data, metadata repositories or registries that specialize in cataloguing data assets for specific domains are on the rise.&#x20;
 
