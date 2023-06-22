@@ -127,7 +127,7 @@ Databus offers metadata extensions using Mods.
 You can read about them more in detail [here](docs/mods.md).
 ### API
 Instead of using GUI, you can automate your publishing and data retrieving process
- using our http-API. Refer to it [here](docs/usage/api/api-docs.md).
+ using our http-API. Refer to it [here](docs/usage/api/README.md).
 
 ## Contributing
 Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).

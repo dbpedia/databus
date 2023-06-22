@@ -27,7 +27,6 @@
     * [Auto-Completion](docs/auto-completion.md)
 
   * [API](docs/usage/api/README.md)
-    * [API Docs](docs/usage/api/api-docs.md)
   * [Databus Mods](docs/mods.md)
   * [Databus Client](docs/databus-client.md)
 * [Running Your Own Databus Server](docs/running-your-own-databus-server/running-own-server.md)

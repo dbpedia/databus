@@ -1,6 +1,6 @@
 # Quickstart Examples
 
-In this chapter we will focus only on the main api which consists of publishing a dataset and querying metadata stored with SPARQL. Please refer to [API Docs](api/api-docs.md) for details.
+In this chapter we will focus only on the main api which consists of publishing a dataset and querying metadata stored with SPARQL. Please refer to [API Docs](api/README.md) for details.
 
 ## Creating an API Token
 
