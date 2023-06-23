@@ -1,50 +1,48 @@
 ---
 description: >-
- DBpedia Databus is an open platform for sharing structured
- data, including RDF datasets and ontologies. It is built on top of the 
- Linked Data principles and FAIR.
+DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph.
 ---
 
-# Databus
+Important Links: (Docu Gitbook)[https://dbpedia.gitbook.io/databus/], (Join Discord)[https://discord.gg/fB8byAPP7e], Contact, (Databus used in the DBpedia Project)[https://databus.dbpedia.org/]
 
-DBpedia Databus is an open platform for sharing structured data, 
-including RDF (Resource Description Framework) datasets and 
-ontologies. It is in essence a repository of metainformation describing your data. 
-Databus is built on top of the Linked Data principles and
-FAIR (Findable, Accessible, Interoperable, and Reusable).
+# What is the DBpedia Databus?
 
-Databus can be seen as a **data** repository (analogous to [software repositories](https://en.wikipedia.org/wiki/Software_repository), e.g. Maven or Pip). A key difference of Databus from a typical software repository is that it does not store the actual data (i.e. files on disk) but focuses solely on capturing metadata describing your data (i.e. what kind of files and where are they).
+The DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph. The Databus implements well-known concepts from Software Engineering such as agile rapid prototyping, build automation, test-driven development for Data Engineering and connects data via a loosely-coupled bus system and a common, but extensible metadata format through state-of-the-art semantic technologies such as ontologies, SPARQL, SHACL and Linked Data. 
 
-The idea is simple. Owners of the data upload the descriptions of their data and where to find it. Users of the data can find and download what they want and check out for updates if new versions of the data were uploaded. **This enables smooth continuous integration processes for your data.**
+🔥 *Hot Fact*: The DBpedia Databus condenses 15 years of expertise from the DBpedia Community into an accessible open-source tool.
 
-![Databus as a repo](docs/databus-as-repo.drawio.png)
+## Supercharging Collaboration on Open Data
+Communities, public organisations, researchers and data enthusiasts can deploy their own DBpedia Databus as a powerful productivity tool to foster collaboration on Open Data. Bringing into existence such participatory models with community feedback and upstream contribution are drivers for Democratized Knowledge, Accelerated Innovation and Transparent Governance. Contrary to conventional publisher-centric data “publishing” platforms, the growing Databus Network is optimised for data consumers by innovating discovery, findability and access. Data flows to where it is needed and appreciated - the people who build amazing things with it.  
 
-The key features of DBpedia Databus are:
-* Versioning: Databus can be used as a repository, 
-like [Maven](https://maven.apache.org) in Java 
-or [Pip](https://pypi.org/project/pip/) in Python, for your data artifacts.
-* Querying: SPARQL endpoint and Databus Collections provide a rich API 
-for querying the metadata you publish.
-* Decentralized infrastructure: Databus is built on a decentralized 
-infrastructure. This ensures that the data is always available, even if some 
-servers go down.
-* Provenance tracking: Databus tracks the provenance of data, 
-which means that users can see where the data came from and who has 
-modified it over time.
-* Data quality assessment: Databus provides tools for assessing 
-the quality of data, such as validation and testing. This helps to ensure 
-that the data is accurate, complete, and consistent.
- different applications and contexts.
+💡 *Spotlight*: The Databus Network places the power in the hands of data consumers, streamlining discovery and access. Data flows to where it is valued and ignites creativity.
 
-The DBpedia Databus is a valuable resource for anyone who 
-works with structured data, including researchers, data scientists, 
-and developers. It provides a central hub for sharing and discovering 
-data, making it easier to leverage the full potential of Linked Data.
+## A Power Tool for Data Engineers
+The DBpedia Databus addresses a significant gap in tooling: the “pre and post-processing”, which wastes precious time in the magnitude of months of every data-intensive project. DBpedia’s tech stack comprises a complex extraction software producing data releases, an online database and several web services. We fully automated the pipeline and application deployment with the Databus and saved 90% of time (2 full-time engineers to 1 part-time engineer), while increasing productivity 5-fold by shortening the release cycle from 17 to 3 months with improved quality, i.e. automated data validation tests over 14 billion facts. Benefit now from our power tool, which tackles the pain points in Data Engineering: efficiency, automation, scalability and data quality. Databus provides an efficient environment for initial identification and acquisition from existing Databuses to low-level tasks such as conversion, normalization to data-quality control and debugging pipelines to loading the data into the final application. 
+
+💪 *Strength*: The DBpedia Databus addresses industry pain points head-on – efficiency, automation, scalability, and data quality – ensuring your data projects are set for success.
+
+## Get on Board the Databus
+Databus is designed as a lightweight and agile solution and fits seamlessly into existing environments. 
+* *Comprehensive/All-in*: In the DBpedia Project, we went all-in to manage 5000 release files per month plus triple the amount in input and intermediary files plus additional dataset contributions by the community. 
+* *Semantic Layer On-Top*: Databus is a proud member of the Open Energy Family (https://openenergy-platform.org/) and deployed as an additional semantic layer over the various existing databases to extend the underlying rigid metadata schemas. 
+* *Plugin*: In eccenca’s product (Corporate MEMory)[https://eccenca.com/products/enterprise-knowledge-graph-platform-corporate-memory] Databus is a small plugin that handles export, versioning and archival of subgraphs, that can be exchanged with other CMEM instances via the semantic catalogue metadata in the Databus Knowledge Graph. 
+
+## Deployment Levels
+We identified these deployment levels with our partners:
+1. *Open community*: Set up a data space in the Databus Network and jointly curate it with community contributions spanning across several organisations (see DBpedia and Open Energy) 
+2. *Organisation*: Implement your enterprise’s data strategy and optimise efficiency, integration of external data and re-use; manage research data university-wide for scientific sustainability and FAIR. Databus hooks into single sign-on authentication like Siemens ID or DLR ID
+3. *Department, group or team*: Systematise data workflows internally; transparently record scientific results from beginning to end.  
+4. *Collaborative projects*: Efficiently coordinate data with partners in large projects or in multi-project environments. 
+5. *Application, Product or Pipeline*: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  
+
+🚀 *Next Step*: Try our quickstart guide for downloading data from DBpedia (no registration necessary).  Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus. Get in contact via the informal dev channel on Discord or reach out to the Databus Management Team to explore partnership opportunities. Your data journey transformation begins here.
+
+
+
 
 ## Status 
 
-This repo develops Databus version >= 2.0, which is a major upgrade of version 
-1.3-beta (currently running at https://databus.dbpedia.org).
+Development of the Databus started in 2018 as means to manage the DBpedia Knowledge Graph extraction more efficiently. In the first 5 years, we fireproofed Databus online at the public beta at databus.dbpedia.org and refined the Metadata model. Starting with the first public release version 2.1.0, the core model aka the Databus Ontology is stable.
 
 ## Important Links
 
