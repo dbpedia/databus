@@ -1,6 +1,5 @@
 // External includes
 var fs = require('fs');
-var minifier = require("./app/minifier.js");
 var rp = require('request-promise');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
