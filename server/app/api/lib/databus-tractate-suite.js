@@ -144,8 +144,6 @@ signer.validate = async function (canonicalized, proof) {
       var webIdJsonLd = await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID);
       var flattenedGraphs = await jsonld.flatten(webIdJsonLd);
 
-      console.log(`Loaded WebID`);
-      console.log(flattenedGraphs);
       quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, JSON.stringify(flattenedGraphs))
 
     } else {

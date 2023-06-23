@@ -104,8 +104,7 @@ instance.getArtifact = async function (accountName, groupName, artifactName) {
  * @param {*} artifactName 
  * @returns 
  */
-instance.hasArtifact = async function (accountName, groupName, artifactName) {
-  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
+instance.hasArtifact = async function (artifactUri) {
   return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATABUS_ARTIFACT}> }`);
 }
 
@@ -241,6 +240,8 @@ instance.getVersionsByArtifact = async function (artifactUri) {
   let queryOptions = { ARTIFACT_URI: artifactUri };
   let query = exec.formatQuery(require('../sparql/get-versions-by-artifact.sparql'), queryOptions);
   let bindings = await exec.executeSelect(query);
+
+
   return bindings;
 }
 

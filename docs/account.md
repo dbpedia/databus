@@ -65,10 +65,11 @@ Spec (OWL, SHACL, JSON-LD Context)
 	a sh:PropertyShape ;
 	sh:targetClass foaf:Person ;
 	sh:severity sh:Violation ;
-	sh:message "Required property foaf:account MUST occur exactly once in foaf:Person."@en ;
+	sh:message "Required property foaf:account MUST occur exactly once in foaf:Person and must target an IRI."@en ;
 	sh:path foaf:account ;
 	sh:minCount 1 ;
-	sh:maxCount 1 .
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
 
 <#foaf-name>   
 	a sh:PropertyShape ;

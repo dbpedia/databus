@@ -5,7 +5,6 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 
-# Get the information of the latest dataset for a specific artifact
 SELECT DISTINCT ?version ?name ?title ?abstract ?description ?license ?date WHERE {
   GRAPH ?g {
     ?version databus:artifact <%ARTIFACT_URI%> .

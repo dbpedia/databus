@@ -123,8 +123,8 @@ module.exports = function (router, protector) {
 
       var targetPath = Constants.DATABUS_FILE_WEBID;
 
-      console.log(`Target path: ${targetPath}`);
-      console.log(JSON.stringify(compactedGraph));
+      // console.log(`Target path: ${targetPath}`);
+      // console.log(JSON.stringify(compactedGraph));
 
       // Save the data using the database manager
       var result = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);

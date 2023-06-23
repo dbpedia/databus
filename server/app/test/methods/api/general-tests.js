@@ -117,7 +117,6 @@ async function publishTest() {
     response = await rp(options);
     assert(response.statusCode == 204, `Could not delete version ${options.uri}.`);
 
-
     // ======== send sparql request ===========
     options.method = "POST";
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/sparql`;

@@ -178,7 +178,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
     .getPublisherHasAccount(datasetPublisherUri, accountUri);
 
   if (!isPublisherConnectedToAccount) {
-    logger.error(versionGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer.`, null);
+    logger.error(versionGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer <${accountUri}>.`, null);
     return 403;
   }
 

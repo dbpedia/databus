@@ -9,7 +9,7 @@ SELECT DISTINCT ?artifact WHERE
 {
   GRAPH ?g {
     ?artifact a databus:Artifact .
-    FILTER(STRSTARTS(STR(?artifact), "%GROUP_URI%/"))
+    ?artifact databus:group <%GROUP_URI%> .
   }
 }
   

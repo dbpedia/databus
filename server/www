@@ -87,7 +87,6 @@ async function masterProcess() {
     await initialize();
 
     // TODO: Validate startup environment variables
-
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
 
