@@ -1,54 +1,54 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
 PREFIX sec: <https://w3id.org/security#>
 
 CONSTRUCT
 {
-  ?dataset a dataid:Dataset .
-  ?dataset ?datasetProperty ?datasetObject .
-  ?version a dataid:Version .
-  ?artifact a dataid:Artifact .
-  ?distribution a dataid:Part .
+  ?version a databus:Version .
+  ?version ?versionProperty ?versionObject .
+  ?version a databus:Version .
+  ?artifact a databus:Artifact .
+  ?group a databus:Group .
+  ?distribution a databus:Part .
   ?distribution ?distributionProperty ?distributionObject .
   ?contentVariant ?contentVariantProperty ?contentVariantObject .
   ?proof ?proofProperty ?proofObject .
 }
 WHERE
 {
-  ?dataset a dataid:Dataset .
-  ?dataset dcat:distribution ?distribution .
+  ?version a databus:Version .
+  ?version dcat:distribution ?distribution .
   {
-    ?dataset ?datasetProperty ?datasetObject .
+    ?version ?versionProperty ?versionObject .
   }
   UNION
   {
-    ?distribution a dataid:Part .
+    ?distribution a databus:Part .
     ?distribution ?distributionProperty ?distributionObject .
   }
   UNION
   {
-    ?dataset dataid:version ?version .
-    ?version a dataid:Version .
+    ?version databus:artifact ?artifact .
+    ?artifact a databus:Artifact .
   }
   UNION
   {
-    ?dataset dataid:artifact ?artifact .
-    ?artifact a dataid:Artifact .
+    ?version databus:group ?group .
+    ?group a databus:Group .
   }
   UNION
   {
-    ?dataset sec:proof ?proof .
+    ?version sec:proof ?proof .
     ?proof ?proofProperty ?proofObject .
   }
   UNION
   {
     ?distribution ?contentVariant ?contentVariantLiteral .
     ?contentVariant ?contentVariantProperty ?contentVariantObject .
-    ?contentVariant rdfs:subPropertyOf dataid:contentVariant .
+    ?contentVariant rdfs:subPropertyOf databus:contentVariant .
   }
 }

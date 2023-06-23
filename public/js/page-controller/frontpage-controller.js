@@ -1,12 +1,12 @@
+const DatabusUris = require("../utils/databus-uris");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+
 /**
  * Controller of the front page
  * @param  {scope} $scope      [description]
  * @param  {http} $http       [description]
  * @param  {sce} $sce        [description]
- * @param  {factory} auth        [description]
- * @param  {factory} collections [description]
- * @param  {factory} sparql      [description]
- * @return {[type]}             [description]
  */
 function FrontPageController($scope, $sce, $http) {
 
@@ -16,6 +16,7 @@ function FrontPageController($scope, $sce, $http) {
 
   $scope.activityChartData = {};
   $scope.activityChartData.isLoading = true;
+  $scope.utils = new DatabusWebappUtils();
 
   $scope.searchQuery = "";
   $scope.searchSettings = {
@@ -54,27 +55,14 @@ function FrontPageController($scope, $sce, $http) {
   });
 
 
-  $scope.formatUploadSize = function(size) {
-    return Math.round(size * 100) / 100;
-  };
-
   for(var d in $scope.uploadRankingData) {
-    $scope.uploadRankingData[d].uploadSize = $scope.formatUploadSize($scope.uploadRankingData[d].uploadSize);
-  }
-
-  $scope.formatDate = function(date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
-
-  $scope.formatLicense = function(licenseUri) {
-    var licenseName = DatabusUtils.uriToName(licenseUri);
-
-    var html = '<div class="license-icon is-primary">' + licenseName + '</div>'
-    return $sce.trustAsHtml(html);
+    $scope.uploadRankingData[d].uploadSize = DatabusUtils.formatFileSize($scope.uploadRankingData[d].uploadSize);
   }
 
   for(var d in $scope.recentUploadsData) {
-    $scope.recentUploadsData[d].date = $scope.formatDate($scope.recentUploadsData[d].date);
-    $scope.recentUploadsData[d].licenseTag = $scope.formatLicense($scope.recentUploadsData[d].license);
+    $scope.recentUploadsData[d].date = DatabusUtils.formatDate($scope.recentUploadsData[d].date);
   }
 }
+
+
+module.exports = FrontPageController;

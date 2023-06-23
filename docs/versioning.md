@@ -13,7 +13,7 @@ Although the definition of the version ID is quite free and left to the user, th
 	You can also switch the versioning (e.g. to `YYYY.MM.DD`) and the sorting still stays intact.
 * 	This query provides an example how this can be used on the Databus to find DBpedia long abstracts later then 2021 and then order them chronologically:
 ```
-PREFIX databus: <http://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>

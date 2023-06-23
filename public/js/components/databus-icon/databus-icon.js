@@ -44,3 +44,5 @@ function DatabusIconController() {
   }
 }
 
+
+module.exports = DatabusIconController;

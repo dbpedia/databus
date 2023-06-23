@@ -1,5 +1,5 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 
@@ -10,7 +10,7 @@ SELECT DISTINCT
 
   ?d dcat:downloadURL ?file .
   ?d dct:license ?license .
-  ?d dataid:uncompressedByteSize ?size .
+  ?d dct:byteSize ?size .
   {
     %COLLECTION_QUERY%
   }

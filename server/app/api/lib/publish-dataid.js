@@ -15,25 +15,22 @@ var constructVersionQuery = require('../../common/queries/constructs/construct-v
 var autocompleter = require('./dataid-autocomplete');
 var fileAnalyzer = require('../../common/file-analyzer');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
-const DatabusLogLevel = require('../../common/databus-log-level');
 
 
 async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
 
-  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
-  var distributions = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
+  var distributions = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATABUS_PART);
 
   for (var distribution of distributions) {
-
-
     // Only fetch when there is something missing!
     if (!alwaysFetch) {
       var needsFetching = false;
 
-      needsFetching |= distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == null;
-      needsFetching |= distribution[DatabusUris.DATAID_COMPRESSION] == null;
-      needsFetching |= distribution[DatabusUris.DATAID_SHASUM] == null;
+      needsFetching |= distribution[DatabusUris.DATABUS_FORMAT_EXTENSION] == null;
+      needsFetching |= distribution[DatabusUris.DATABUS_COMPRESSION] == null;
+      needsFetching |= distribution[DatabusUris.DATABUS_SHASUM] == null;
       needsFetching |= distribution[DatabusUris.DCAT_BYTESIZE] == null;
 
       if (!needsFetching) {
@@ -53,20 +50,20 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
     logger.debug(versionGraphUri, `Analyzed part <${distribution[DatabusUris.JSONLD_ID]}>`, analyzeResult.data);
 
 
-    if (distribution[DatabusUris.DATAID_FORMAT_EXTENSION] == undefined) {
-      distribution[DatabusUris.DATAID_FORMAT_EXTENSION] = [{}];
-      distribution[DatabusUris.DATAID_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE]
+    if (distribution[DatabusUris.DATABUS_FORMAT_EXTENSION] == undefined) {
+      distribution[DatabusUris.DATABUS_FORMAT_EXTENSION] = [{}];
+      distribution[DatabusUris.DATABUS_FORMAT_EXTENSION][0][DatabusUris.JSONLD_VALUE]
         = analyzeResult.data.formatExtension;
     }
 
-    if (distribution[DatabusUris.DATAID_COMPRESSION] == undefined) {
-      distribution[DatabusUris.DATAID_COMPRESSION] = [{}];
-      distribution[DatabusUris.DATAID_COMPRESSION][0][DatabusUris.JSONLD_VALUE]
+    if (distribution[DatabusUris.DATABUS_COMPRESSION] == undefined) {
+      distribution[DatabusUris.DATABUS_COMPRESSION] = [{}];
+      distribution[DatabusUris.DATABUS_COMPRESSION][0][DatabusUris.JSONLD_VALUE]
         = analyzeResult.data.compression;
     }
 
-    distribution[DatabusUris.DATAID_SHASUM] = [{}];
-    distribution[DatabusUris.DATAID_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
+    distribution[DatabusUris.DATABUS_SHASUM] = [{}];
+    distribution[DatabusUris.DATABUS_SHASUM][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.shasum;
     distribution[DatabusUris.DCAT_BYTESIZE] = [{}];
     distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_VALUE] = analyzeResult.data.byteSize;
     distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
@@ -84,7 +81,7 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
 async function constructInput(expandedGraph, versionGraphUri, logger) {
 
   var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
-  var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATAID_CONTENT_VARIANT);
+  var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATABUS_CONTENT_VARIANT);
   logger.debug(versionGraphUri, `Detected CV-graphs`, cvGraphs);
 
   var distributionUris = versionGraph[DatabusUris.DCAT_DISTRIBUTION];
@@ -120,7 +117,7 @@ async function constructInput(expandedGraph, versionGraphUri, logger) {
     totalTripleCount += tripleCount;
 
     var subGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
-    subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATAID_PART);
+    subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATABUS_PART);
 
     // Add the constructed graphs to the result graph
     for (var subGraph of subGraphs) {
@@ -141,7 +138,7 @@ async function constructInput(expandedGraph, versionGraphUri, logger) {
 
 function validateDatasetUri(dataidGraphs, accountUri, logger) {
 
-  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
 
   // Validate the prefix of the Dataset identifier
@@ -170,7 +167,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
   // dataidGraphs = await jsonld.flatten(dataidGraphs);
   // Fetch important uris
-  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+  var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
 
   var datasetPublisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
@@ -181,7 +178,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
     .getPublisherHasAccount(datasetPublisherUri, accountUri);
 
   if (!isPublisherConnectedToAccount) {
-    logger.error(versionGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer.`, null);
+    logger.error(versionGraphUri, `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer <${accountUri}>.`, null);
     return 403;
   }
 
@@ -220,8 +217,10 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
     return 400;
   }
 
-  console.log(proofGraph);
+  //console.log(proofGraph);
   // Validate the proof 
+  //console.log(dataidGraphs);
+  
   var validationSuccess = await signer.validate(signer.canonicalize(dataidGraphs), proofGraph);
 
   if (!validationSuccess) {
@@ -243,12 +242,12 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
   try {
 
     var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
-    logger.debug(versionGraphUri, `Processing dataset <${versionGraphUri}>`, versionGraph);
+    logger.debug(versionGraphUri, `Processing version <${versionGraphUri}>`, versionGraph);
 
 
     // Run construct query
     var dataidGraphs = await constructInput(expandedGraph, versionGraphUri, logger);
-    versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATAID_VERSION);
+    versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
 
     if (dataidGraphs == null) {
       logger.debug(versionGraphUri, `Construct query did not yield any triples. Nothing to publish.`, null);
@@ -281,8 +280,8 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     }
 
     // Run CV validator to validate content variant setup
-    var distributionGraphs = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATAID_PART);
-    var cvGraphs = JsonldUtils.getSubPropertyGraphs(dataidGraphs, DatabusUris.DATAID_CONTENT_VARIANT);
+    var distributionGraphs = JsonldUtils.getTypedGraphs(dataidGraphs, DatabusUris.DATABUS_PART);
+    var cvGraphs = JsonldUtils.getSubPropertyGraphs(dataidGraphs, DatabusUris.DATABUS_CONTENT_VARIANT);
 
     // Apply data fix for byteSize, so omitting DECIMAL passes the SHACL test
     for(var distribution of distributionGraphs) {
@@ -293,8 +292,8 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
 
     var contentVariantUris = [];
 
-    contentVariantUris.push(DatabusUris.DATAID_FORMAT_EXTENSION);
-    contentVariantUris.push(DatabusUris.DATAID_COMPRESSION);
+    contentVariantUris.push(DatabusUris.DATABUS_FORMAT_EXTENSION);
+    contentVariantUris.push(DatabusUris.DATABUS_COMPRESSION);
 
     for (var cvGraph of cvGraphs) {
       contentVariantUris.push(cvGraph[DatabusUris.JSONLD_ID]);
@@ -303,7 +302,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     var contentVariantErrors = DatabusUtils.cvSplit(distributionGraphs, contentVariantUris, 0);
 
     if (contentVariantErrors.length > 0) {
-      logger.error(versionGraphUri, `Invalid content variant setup. Two or more files are not distinguishable by either dataid:formatExtension, dataid:compression or any custom content variant.`, contentVariantErrors);
+      logger.error(versionGraphUri, `Invalid content variant setup. Two or more files are not distinguishable by either databus:formatExtension, databus:compression or any custom content variant.`, contentVariantErrors);
       return 400;
     }
 

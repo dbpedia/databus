@@ -17,7 +17,6 @@
       .databus-banner-text {
         margin-left: 24px;
       }
-
     </style>
 
 
@@ -31,7 +30,8 @@
               <path class="is-white" serif:id="shape 21" fill="#fff" d="M6,0 L1,6 l5,6 l5,-6 L6,0z" />
             </svg>
             <div class="databus-banner-text">
-              <h1 class="title is-2 resource-page-title">{{ artifact.title }}</h1>
+              <h1 class="title is-2 resource-page-title">{{ pageTitle }}
+              </h1>
               <uri-breadcrumbs class="header-breadcrumbs" uri="artifact.uri"></uri-breadcrumbs>
             </div>
           </div>
@@ -53,13 +53,13 @@
             <p class="section-label">
               DCT:DESCRIPTION
             </p>
-            <span ng-bind-html="markdownToHtml(artifact.description)"></span>
+            <span ng-bind-html="utils.markdownToHtml(artifact.description)"></span>
           </div>
           <div ng-if="!artifact.description && artifact.latestVersionDescription">
             <p class="section-label">
               DCT:DESCRIPTION OF LATEST VERSION
             </p>
-            <span ng-bind-html="markdownToHtml(artifact.latestVersionDescription)"></span>
+            <span ng-bind-html="utils.markdownToHtml(artifact.latestVersionDescription)"></span>
           </div>
         </div>
         <div ng-if="versions == null || versions.length == 0" style="margin-bottom: 2em">
@@ -67,17 +67,17 @@
         <div>
           <!--Tabs-->
           <div class="collection-editor-tabs">
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }"
-              ng-click="tabs.activeTab=0;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
+              ng-click="tabNavigation.navigateTo('files');">
               <div class="section-label">Files</div>
             </div>
-            <div  ng-if="versions != null && versions.length > 0" class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
-              ng-click="tabs.activeTab=1;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+              ng-click="tabNavigation.navigateTo('versions');">
               <div class="section-label">Versions</div>
             </div>
             <div style="flex: 1"></div>
             <div class="collection-editor-tab align-right" ng-if="canEdit"
-              ng-class="{ 'is-active' : tabs.activeTab == 2 }" ng-click="tabs.activeTab=2;">
+              ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }" ng-click="tabNavigation.navigateTo('edit');">
 
               <div class="section-label" style="display: flex;">
                 <databus-icon style="margin-right:12px;" shape="'edit'" size="24">
@@ -90,14 +90,11 @@
     </div>
     <section class="section">
       <div class="container" style="min-height: 680px;">
-
-        <div ng-if="tabs.activeTab == 2 && canEdit">
-
-          <div class="content-box">
-
-            <div class="box-header">
-              <h3>EDIT ARTIFACT INFO</h3>
-            </div>
+        <div ng-if="tabNavigation.activeTab == 2 && canEdit">
+          <div class="databus-settings-box-header">
+            <h3>EDIT ARTIFACT INFO</h3>
+          </div>
+          <div class="databus-settings-box">
             <div class="box-content">
               <div class="row">
                 <div class="row-label optional">Title</div>
@@ -140,39 +137,46 @@
                   </div>
                 </div>
               </div>
+
+
             </div>
 
-
           </div>
-
-
 
 
         </div>
 
         <!--Version table-->
-        <div class="topic" ng-if="tabs.activeTab==1">
-          <table class="table is-size-6 is-fullwidth">
-            <col width="40%">
-            <col width="30%">
-            <col width="30%">
-            <tbody>
-              <tr>
-                <th>Version</th>
-                <th>Release Date</th>
-                <th class="is-hidden-touch">License</th>
-              </tr>
-              <tr ng-repeat="version in versions">
-                <td>
-                  <a ng-href="{{ getPathname(version.version) }}">{{ version.version }}</a>
-                </td>
-                <td>{{ formatDate(version.date) }}</td>
-                <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="topic" ng-if="tabNavigation.activeTab==1">
+
+          <div ng-if="versions == null || versions.length == 0">
+            <div class="databus-no-content" style="min-height: 300px">
+              <p>There are no datasets associated with this artifact!</p>
+            </div>
+          </div>
+          <div ng-if="versions != null && versions.length > 0">
+            <table class="table is-size-6 is-fullwidth">
+              <col width="40%">
+              <col width="30%">
+              <col width="30%">
+              <tbody>
+                <tr>
+                  <th>Version</th>
+                  <th>Release Date</th>
+                  <th class="is-hidden-touch">License</th>
+                </tr>
+                <tr ng-repeat="version in versions">
+                  <td>
+                    <a ng-href="{{ utils.getPathname(version.version) }}">{{ version.version }}</a>
+                  </td>
+                  <td>{{ utils.formatDate(version.date) }}</td>
+                  <td class="is-hidden-touch"><a href="{{ version.license }}">{{ version.license }}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="topic file-browser" ng-if="tabs.activeTab==0">
+        <div class="topic file-browser" ng-if="tabNavigation.activeTab==0">
           <div ng-if="versions == null || versions.length == 0">
             <div class="databus-no-content" style="min-height: 300px">
               <p>There are no datasets associated with this artifact!</p>

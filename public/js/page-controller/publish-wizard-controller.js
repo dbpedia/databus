@@ -1,21 +1,8 @@
-
-if (typeof require !== 'undefined') {
-  const PublishSession = require("../publish/publish-session");
-  const JsonldUtils = require("../utils/jsonld-utils");
-  const DatabusUris = require("../utils/databus-uris");
-}
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const PublishSession = require("../publish/publish-session");
 
 // Controller for the header section
 function PublishWizardController($scope, $http, focus, $q) {
-
-
-  // TODO
-  // console.log(data.licenseData);
-  // Test cases:
-  // https://www.pik-potsdam.de/members/giannou/sample-output-remind/at_download/file
-  // https://data.dnb.de/opendata/?C=M;O=D
-  // http://caligraph.org/resources.html
-  // https://openenergy-platform.org/ontology/oeo
 
   $scope.login = function () {
     window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
@@ -225,3 +212,4 @@ function PublishWizardController($scope, $http, focus, $q) {
 }
 
 
+module.exports = PublishWizardController;

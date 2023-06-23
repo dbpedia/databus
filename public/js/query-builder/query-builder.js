@@ -1,3 +1,5 @@
+const QueryNode = require("./query-node");
+
 class QueryBuilder {
 
   static build(config) {
@@ -5,13 +7,31 @@ class QueryBuilder {
     return builder.createQuery(config.node, config.template, config.resourceBaseUrl, config.root);
   }
 
-  createQuery(node, template, resourceBaseUrl, root) {
 
-    if (typeof QueryNode !== 'function') {
-      this.getParent = require("./query-node").findParentNodeRecursive;
-    } else {
-      this.getParent = QueryNode.findParentNodeRecursive;
+  isValidHttpUrl(string) {
+    let url;
+
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
     }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
+  uniqueList(arr) {
+    var u = {}, a = [];
+    for (var i = 0, l = arr.length; i < l; ++i) {
+      if (!u.hasOwnProperty(arr[i])) {
+        a.push(arr[i]);
+        u[arr[i]] = 1;
+      }
+    }
+    return a;
+  }
+
+  createQuery(node, template, resourceBaseUrl, root) {
 
     this.result = '';
     this.root = root != undefined ? root : node;
@@ -54,18 +74,14 @@ class QueryBuilder {
 
   prependPrefixes() {
 
-    if (typeof DatabusUtils !== 'function') {
-      this.prefixes = require("./../utils/databus-utils").uniqueList(this.prefixes);
-    } else {
-      this.prefixes = DatabusUtils.uniqueList(this.prefixes);
-    }
+    this.prefixes = this.uniqueList(this.prefixes);
 
     for (var line of this.prefixes) {
       this.prependLine(line, 0);
     }
   }
 
-   appendTemplateHeader(indent) {
+  appendTemplateHeader(indent) {
     for (var line of this.template) {
 
       if (line == this.templateInsertionKey) {
@@ -136,15 +152,7 @@ class QueryBuilder {
 
     if (node.uri != null) {
 
-      var isValidHttpUrl;
-
-      if (typeof DatabusUtils !== 'function') {
-        isValidHttpUrl = require("./../utils/databus-utils").isValidHttpUrl(node.uri);
-      } else {
-        isValidHttpUrl = DatabusUtils.isValidHttpUrl(node.uri);
-      }
-
-      if (!isValidHttpUrl) {
+      if (!this.isValidHttpUrl(node.uri)) {
 
         // Custom query node
         var query = this.removeAndCollectPrefixes(node.property);
@@ -197,16 +205,7 @@ class QueryBuilder {
       return null;
     }
 
-    var isValidHttpUrl;
-
-    if (typeof DatabusUtils !== 'function') {
-      isValidHttpUrl = require("./../utils/databus-utils").isValidHttpUrl(node.uri);
-    } else {
-      isValidHttpUrl = DatabusUtils.isValidHttpUrl(node.uri);
-    }
-
-
-    if (!isValidHttpUrl) {
+    if (!this.isValidHttpUrl(node.uri)) {
       return null;
     }
 
@@ -377,7 +376,7 @@ class QueryBuilder {
       facetUris.push(facetUri);
     }
 
-    var parentNode = this.getParent(this.root, node); // node.parent;
+    var parentNode = QueryNode.findParentNodeRecursive(this.root, node); // node.parent;
 
     while (parentNode != undefined) {
 
@@ -393,7 +392,7 @@ class QueryBuilder {
         facetUris.push(facetUri);
       }
 
-      parentNode = this.getParent(this.root, parentNode); // parentNode.parent;
+      parentNode = QueryNode.findParentNodeRecursive(this.root, parentNode); // parentNode.parent;
     }
 
     return facetUris;
@@ -411,7 +410,7 @@ class QueryBuilder {
       result.push(node.facetSettings[facetUri][i]);
     }
 
-    var parentNode = this.getParent(this.root, node); // node.parent;
+    var parentNode = QueryNode.findParentNodeRecursive(this.root, node); // node.parent;
 
     while (parentNode != undefined) {
 
@@ -430,7 +429,7 @@ class QueryBuilder {
         }
       }
 
-      parentNode = this.getParent(this.root, parentNode); //parentNode.parent;
+      parentNode = QueryNode.findParentNodeRecursive(this.root, parentNode); //parentNode.parent;
     }
 
 
@@ -461,5 +460,4 @@ class QueryBuilder {
   }
 }
 
-if (typeof module === "object" && module && module.exports)
-  module.exports = QueryBuilder;
+module.exports = QueryBuilder;

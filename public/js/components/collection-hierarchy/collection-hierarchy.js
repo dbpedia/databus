@@ -1,4 +1,7 @@
-// TODO fabian bug
+const DatabusCollectionWrapper = require("../../collections/databus-collection-wrapper");
+const QueryBuilder = require("../../query-builder/query-builder");
+const QueryNode = require("../../query-builder/query-node");
+const DatabusUtils = require("../../utils/databus-utils");
 
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyController($http, $location, $sce) {
@@ -174,14 +177,14 @@ function CollectionHierarchyController($http, $location, $sce) {
   }
 
   ctrl.addCustomNode = function() {
-    ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n\
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n\
+    ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX databus: <https://dataid.dbpedia.org/databus#>\n\
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>\n\
 PREFIX dct: <http://purl.org/dc/terms/>\n\
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\
 \n\
 # Get all files\n\
 SELECT DISTINCT ?file WHERE {\n\
-  ?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
+  ?dataset databus:artifact <https://databus.dbpedia.org/dbpedia/publication/strategy> .\n\
   ?dataset dcat:distribution ?distribution .\n\
   ?distribution dcat:downloadURL ?file .\n\
 }');
@@ -202,3 +205,4 @@ SELECT DISTINCT ?file WHERE {\n\
   }
 }
 
+module.exports = CollectionHierarchyController;

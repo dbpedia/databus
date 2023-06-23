@@ -31,7 +31,7 @@
                 d="M21.698 10.658l2.302 1.342-12.002 7-11.998-7 2.301-1.342 9.697 5.658 9.7-5.658zm-9.7 10.657l-9.697-5.658-2.301 1.343 11.998 7 12.002-7-2.302-1.342-9.7 5.657zm12.002-14.315l-12.002-7-11.998 7 11.998 7 12.002-7z" />
             </svg>
             <div class="databus-banner-text">
-              <h1 class="resource-page-title title is-2 has-text-left">{{ group.title }}</h1>
+              <h1 class="resource-page-title title is-2 has-text-left">{{ pageTitle }}</h1>
               <uri-breadcrumbs class="header-breadcrumbs" uri="group.uri"></uri-breadcrumbs>
             </div>
           </div>
@@ -58,17 +58,18 @@
         <div>
           <!--Tabs-->
           <div class="collection-editor-tabs">
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 0 }"
-              ng-click="tabs.activeTab=0;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
+              ng-click="tabNavigation.navigateTo('files');">
               <div class="section-label">Files</div>
             </div>
-            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabs.activeTab == 1 }"
-              ng-click="tabs.activeTab=1;">
+            <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+              ng-click="tabNavigation.navigateTo('artifacts');">
               <div class="section-label">Artifacts</div>
             </div>
             <div style="flex: 1"></div>
             <div class="collection-editor-tab align-right" ng-if="canEdit"
-              ng-class="{ 'is-active' : tabs.activeTab == 2 }" ng-click="tabs.activeTab=2;">
+              ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }" 
+              ng-click="tabNavigation.navigateTo('edit');">
 
               <div class="section-label" style="display: flex;">
                 <databus-icon style="margin-right:12px;" shape="'edit'" size="24">
@@ -81,15 +82,11 @@
     </div>
     <section class="section">
       <div class="container" style="min-height: 680px">
-
-        <div ng-if="tabs.activeTab == 2 && canEdit">
-
-
-          <div class="content-box" ng-init="group=session.formData.group">
-
-            <div class="box-header">
-              <h3>EDIT GROUP INFO</h3>
-            </div>
+        <div ng-if="tabNavigation.activeTab == 2 && canEdit">
+          <div class="databus-settings-box-header">
+            <h3>EDIT GROUP INFO</h3>
+          </div>
+          <div class="databus-settings-box">
             <div class="box-content">
               <div class="row">
                 <div class="row-label optional">Title</div>
@@ -135,9 +132,9 @@
             </div>
           </div>
         </div>
-        <div ng-if="tabs.activeTab == 0">
+        <div ng-if="tabNavigation.activeTab == 0">
           <div style="padding-top: 0.75rem" ng-if="isLoading">
-            <div class="databus-no-content placeholder-large">
+            <div class="databus-no-content placeholder-medium">
               <div class="lds-ellipsis">
                 <div></div>
                 <div></div>
@@ -148,8 +145,8 @@
           </div>
 
           <div ng-if="!isLoading && !group.hasData">
-            <div class="databus-no-content">
-              <p>There are no datasets associated with this group!</p>
+            <div class="databus-no-content placeholder-medium">
+              <p>There are no files associated with this group!</p>
             </div>
           </div>
           <div ng-if="group.hasData">
@@ -165,7 +162,7 @@
             </div>
           </div>
         </div>
-        <div ng-if="tabs.activeTab == 1">
+        <div ng-if="tabNavigation.activeTab == 1">
 
           <div style="text-align:center" ng-if="isLoading">
             <div class="loading-rect placeholder-large">
@@ -178,34 +175,25 @@
             </div>
           </div>
 
-          <div ng-if="!isLoading && !group.hasData">
-            <div class="databus-no-content">
-              <p>There are no datasets associated with this group!</p>
+          <div ng-if="!isLoading && !group.hasArtifacts">
+            <div class="databus-no-content placeholder-medium">
+              <p>There are no artifacts associated with this group!</p>
             </div>
           </div>
 
-          <div ng-if="group.hasData">
-            <div class="field" style="display: flex; line-height: 1;">
-              <div class="control has-icons-left" style="flex:1;margin-right: 0.5em;">
-                <input class="input" type="text" ng-model="input.search" ng-change="invokeSearch();"
-                  placeholder="Search this group...">
-                <span class="icon is-left">
-                  <i class="fas fa-search"></i>
-                </span>
-              </div>
-            </div>
-            <br />
+          <div ng-if="group.hasArtifacts">
 
-            <div class="dataset-name" ng-if="input.search.length > 0" ng-repeat="result in searchResult">
-              <div style="display: flex; align-items: center;">
-                <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
-                  desc="result.abstract">
-                </entity-card>
-              </div>
+
+            <div class="field is-grouped" style="margin-bottom: 1em;">
+              <p class="control" style="flex: 1;">
+                <search search-input="dataSearchInput" settings="dataSearchSettings">
+                </search>
+              </p>
             </div>
 
-            <div ng-if="input.search.length == 0" class="dataset-name" ng-repeat="result in artifacts">
-              <div style="display: flex; align-items: center;">
+
+            <div ng-if="dataSearchInput.length == 0" class="dataset-name" ng-repeat="result in artifacts">
+              <div style="display: flex; align-items: center; margin-bottom: 1em;">
                 <entity-card style="flex: 1;" label="result.title" type="'Artifact'" uri="result.uri"
                   desc="result.abstract">
                 </entity-card>

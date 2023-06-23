@@ -1,10 +1,5 @@
-var JsonldUris = undefined;
+const DatabusUris = require("./databus-uris");
 
-if (typeof module === "object" && module && module.exports) {
-  JsonldUris = require("./databus-uris");
-} else {
-  JsonldUris = DatabusUris;
-}
 
 class JsonldUtils {
 
@@ -13,7 +8,7 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph[JsonldUris.JSONLD_TYPE] != undefined && graph[JsonldUris.JSONLD_TYPE].includes(graphType)) {
+      if (graph[DatabusUris.JSONLD_TYPE] != undefined && graph[DatabusUris.JSONLD_TYPE].includes(graphType)) {
         return graph;
       }
     }
@@ -25,8 +20,8 @@ class JsonldUtils {
     graph[property] = [];
 
     var entry = {};
-    entry[JsonldUris.JSONLD_TYPE] = type;
-    entry[JsonldUris.JSONLD_VALUE] = value;
+    entry[DatabusUris.JSONLD_TYPE] = type;
+    entry[DatabusUris.JSONLD_VALUE] = value;
 
     graph[property].push(entry);
   }
@@ -35,7 +30,7 @@ class JsonldUtils {
     graph[property] = [];
 
     var entry = {};
-    entry[JsonldUris.JSONLD_ID] = uri;
+    entry[DatabusUris.JSONLD_ID] = uri;
 
     graph[property].push(entry);
   }
@@ -48,12 +43,12 @@ class JsonldUtils {
     if (graph[property].length == 1) {
       var value = graph[property][0];
 
-      if (value[JsonldUris.JSONLD_VALUE] != null) {
-        return value[JsonldUris.JSONLD_VALUE];
+      if (value[DatabusUris.JSONLD_VALUE] != null) {
+        return value[DatabusUris.JSONLD_VALUE];
       }
 
-      if (value[JsonldUris.JSONLD_ID] != null) {
-        return value[JsonldUris.JSONLD_ID];
+      if (value[DatabusUris.JSONLD_ID] != null) {
+        return value[DatabusUris.JSONLD_ID];
       }
 
       return null;
@@ -62,12 +57,12 @@ class JsonldUtils {
 
       for (var value of graph[property]) {
 
-        if (value[JsonldUris.JSONLD_VALUE] != null) {
-          result.push(value[JsonldUris.JSONLD_VALUE]);
+        if (value[DatabusUris.JSONLD_VALUE] != null) {
+          result.push(value[DatabusUris.JSONLD_VALUE]);
         }
 
-        if (value[JsonldUris.JSONLD_ID] != null) {
-          result.push(value[JsonldUris.JSONLD_ID]);
+        if (value[DatabusUris.JSONLD_ID] != null) {
+          result.push(value[DatabusUris.JSONLD_ID]);
         }
       }
 
@@ -83,7 +78,7 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph[JsonldUris.JSONLD_ID] != undefined && graph[JsonldUris.JSONLD_ID] == id) {
+      if (graph[DatabusUris.JSONLD_ID] != undefined && graph[DatabusUris.JSONLD_ID] == id) {
         return graph;
       }
     }
@@ -99,8 +94,8 @@ class JsonldUtils {
     for (var g in graphs) {
       var graph = graphs[g];
 
-      if (graph[JsonldUris.JSONLD_TYPE] != undefined &&
-        graph[JsonldUris.JSONLD_TYPE].includes(graphType)) {
+      if (graph[DatabusUris.JSONLD_TYPE] != undefined &&
+        graph[DatabusUris.JSONLD_TYPE].includes(graphType)) {
         result.push(graph);
       }
     }
@@ -113,12 +108,12 @@ class JsonldUtils {
     var result = [];
 
     for (var graph of graphs) {
-      if (graph[JsonldUris.RDFS_SUB_PROPERTY_OF] == undefined) {
+      if (graph[DatabusUris.RDFS_SUB_PROPERTY_OF] == undefined) {
         continue;
       }
 
-      for (var property of graph[JsonldUris.RDFS_SUB_PROPERTY_OF]) {
-        if (property[JsonldUris.JSONLD_ID] == propertyUri) {
+      for (var property of graph[DatabusUris.RDFS_SUB_PROPERTY_OF]) {
+        if (property[DatabusUris.JSONLD_ID] == propertyUri) {
           result.push(graph);
         }
       }
@@ -145,7 +140,7 @@ class JsonldUtils {
       return null;
     }
 
-    return obj[0][JsonldUris.JSONLD_ID];
+    return obj[0][DatabusUris.JSONLD_ID];
   }
 }
 

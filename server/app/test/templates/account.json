@@ -2,7 +2,7 @@
     "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
     "@graph": [
         {
-            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%",
+            "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#doc",
             "@type": "foaf:PersonalProfileDocument",
             "maker": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this",
             "primaryTopic": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%#this"
@@ -15,7 +15,7 @@
             ],
             "name": "%ACCOUNT_NAME%",
             "rdfs:comment": "Hello Databus!",
-            "account": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%"
+            "foaf:account": { "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT_NAME%" }
         }
     ]
 }

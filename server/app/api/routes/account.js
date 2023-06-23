@@ -19,6 +19,7 @@ var constructAccountQuery = require('../../common/queries/constructs/construct-a
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 module.exports = function (router, protector) {
 
@@ -73,36 +74,52 @@ module.exports = function (router, protector) {
 
       // Expected uris
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
+      var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
+      var profileUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
 
       // Compare the specified id to the actual person uri
-      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/Person');
+      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
+
+      if(personGraph == undefined) {
+        res.status(400).send(`No person graph found`);
+        return false;
+      }
 
       // Mismatch gives error
-      if (personGraph['@id'] != personUri) {
+      if (personGraph[DatabusUris.JSONLD_ID] != personUri) {
         res.status(400).send(`The specified uri of the foaf:Person does not match the expected value. (specified: ${personGraph['@id']}, expected: ${personUri})\n`);
         return false;
       }
 
       // Compare the specified id to the actual person uri
-      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, 'http://xmlns.com/foaf/0.1/PersonalProfileDocument');
+      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT);
 
-      // Mismatch gives error
-      if (profileGraph['@id'] != accountUri) {
-        res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${accountUri})\n`);
+      if(profileGraph == undefined) {
+        res.status(400).send(`No person graph found`);
         return false;
       }
 
-      personGraph['http://www.w3.org/ns/auth/cert#key'] = [{
-        "@type": "http://www.w3.org/ns/auth/cert#RSAPublicKey",
-        "http://www.w3.org/2000/01/rdf-schema#label": "Shared Databus Public Key",
-        "http://www.w3.org/ns/auth/cert#modulus": modulus,
-        "http://www.w3.org/ns/auth/cert#exponent": exponent
-      }];
+      // Mismatch gives error
+      if (profileGraph[DatabusUris.JSONLD_ID] != profileUri) {
+        res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${profileUri})\n`);
+        return false;
+      }
+
+      var rsaKeyGraph = {};
+      rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
+      rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
+      rsaKeyGraph[DatabusUris.CERT_MODULUS] = modulus;
+      rsaKeyGraph[DatabusUris.CERT_EXPONENT] = exponent;
+
+      personGraph[DatabusUris.CERT_KEY] = [ rsaKeyGraph ];
+    
 
       var insertGraphs = expandedGraphs;
-
       var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
+
+      if (process.env.DATABUS_CONTEXT_URL != null) {
+        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      }
 
       var targetPath = Constants.DATABUS_FILE_WEBID;
 
@@ -233,7 +250,7 @@ module.exports = function (router, protector) {
       }
 
       if (!canConnect) {
-        res.status(403).send('Unable to find valid backlink in WebId document.');
+        res.status(403).send('Unable to find valid backlink in WebId document. Make sure that the URI targets the foaf:Person of your WebId document.');
         return;
       }
 
@@ -249,7 +266,6 @@ module.exports = function (router, protector) {
         }
       }
 
-
       var accountReference = {};
       accountReference[DatabusUris.JSONLD_ID] = accountUri;
 
@@ -259,6 +275,11 @@ module.exports = function (router, protector) {
       expandedGraphs.push(addon);
 
       var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+
+      if (process.env.DATABUS_CONTEXT_URL != null) {
+        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      }
+
       await GstoreHelper.save(auth.info.accountName, path, compactedGraph);
 
       res.status(200).send('WebId linked to account.\n');
@@ -391,7 +412,7 @@ module.exports = function (router, protector) {
       }
 
       var policy = {};
-      policy['@type'] = [DatabusUris.S4AC_ACCESS_POLICY];
+      policy[DatabusUris.JSONLD_TYPE] = [DatabusUris.S4AC_ACCESS_POLICY];
       policy[DatabusUris.S4AC_HAS_ACCESS_PRIVILEGE] = [DatabusUris.S4AC_ACCESS_CREATE];
       policy[DatabusUris.DCT_CREATOR] = { '@id': accountUri };
       policy[DatabusUris.DCT_SUBJECT] = { '@id': grantUri };
@@ -410,8 +431,6 @@ module.exports = function (router, protector) {
       res.status(400).send(err.message);
     }
   });
-
-
 
   router.post('/api/account/access/revoke', protector.protect(), async function (req, res, next) {
     try {
@@ -499,7 +518,7 @@ module.exports = function (router, protector) {
       return;
     }
 
-    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}`;
+    var resourceUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${req.params.account}${DatabusConstants.WEBID_DOCUMENT}`;
     var template = require('../../common/queries/constructs/ld/construct-account.sparql');
     getLinkedData(req, res, next, resourceUri, template);
   });

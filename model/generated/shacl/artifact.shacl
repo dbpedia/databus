@@ -5,9 +5,12 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix databus: <https://dataid.dbpedia.org/databus#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix dcv: <https://dataid.dbpedia.org/databus-cv#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
 
 <#artifact-exists>

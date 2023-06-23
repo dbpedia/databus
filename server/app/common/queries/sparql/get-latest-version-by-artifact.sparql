@@ -1,27 +1,27 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX databus: <https://databus.dbpedia.org/>
+
 
 SELECT DISTINCT ?latestVersion ?latestVersionTitle
   ?latestVersionAbstract ?latestVersionDescription ?latestVersionDate 
   ?latestVersionLicense ?latestVersionAttribution WHERE
 {
   GRAPH ?g2 {
-    ?dataset dataid:artifact <%ARTIFACT_URI%> .
+    ?dataset databus:artifact <%ARTIFACT_URI%> .
     ?dataset dct:hasVersion ?latestVersion .
     ?dataset dct:title ?latestVersionTitle .
     ?dataset dct:abstract ?latestVersionAbstract .
     ?dataset dct:description ?latestVersionDescription .
     ?dataset dct:issued ?latestVersionDate .
     ?dataset dct:license ?latestVersionLicense .
-    OPTIONAL { ?dataset dataid:attribution ?latestVersionAttribution . }
+    OPTIONAL { ?dataset databus:attribution ?latestVersionAttribution . }
     {
       SELECT ?latestVersion WHERE {
         GRAPH ?g1 {
-          ?dataset dataid:artifact <%ARTIFACT_URI%>  .
+          ?dataset databus:artifact <%ARTIFACT_URI%>  .
           ?dataset dct:hasVersion ?latestVersion .
         }
       } ORDER BY DESC(?latestVersion) LIMIT 1

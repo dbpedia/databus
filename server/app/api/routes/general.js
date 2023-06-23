@@ -71,7 +71,7 @@ module.exports = function (router, protector, webdav) {
       var expandedGraph = await jsonld.flatten(graph);
 
       // Publish groups
-      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_GROUP);
+      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_GROUP);
       logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
       processedResources += groupGraphs.length;
       // console.log(groupGraphs);
@@ -86,7 +86,7 @@ module.exports = function (router, protector, webdav) {
       }
 
       // Publish artifacts
-      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_ARTIFACT);
+      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_ARTIFACT);
       logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
       processedResources += artifactGraphs.length;
 
@@ -100,7 +100,7 @@ module.exports = function (router, protector, webdav) {
       }
 
       // Publish versions
-      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATAID_VERSION);
+      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_VERSION);
       logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
       processedResources += datasetGraphs.length;
 

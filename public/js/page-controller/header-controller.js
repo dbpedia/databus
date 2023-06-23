@@ -1,11 +1,13 @@
+var DatabusWebappUtils = require("../utils/databus-webapp-utils");
 
 // Controller for the header section
-function HeaderController($scope, $http, collectionManager) {
+function HeaderController($scope, $http, collectionManager, searchManager) {
 
   $scope.auth = data.auth;
   $scope.authenticated = data.auth.authenticated;
 
   $scope.accountName = null;
+  $scope.utils = new DatabusWebappUtils($scope);
   
   if($scope.authenticated && $scope.auth.info != null) {
     $scope.accountName = $scope.auth.info.accountName;
@@ -20,7 +22,11 @@ function HeaderController($scope, $http, collectionManager) {
     $scope.collectionManager = collectionManager;
     // Collection Manager Init
     var loadCollectionsFromServer = $scope.collectionManager.accountName != $scope.auth.info.accountName;
+
     $scope.collectionManager.tryInitialize($scope.auth.info.accountName, loadCollectionsFromServer);
+
+    // Initialize search manager
+    searchManager.initialize();
   }
 
   $scope.hideAccountMenu = function() {
@@ -78,3 +84,5 @@ function HeaderController($scope, $http, collectionManager) {
     return first != null ? first.elements.length : "";
   }
 }
+
+module.exports = HeaderController;

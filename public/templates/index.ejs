@@ -21,8 +21,6 @@
       </div>
       <div class="open-beta"><%= databus.version %></div>
     </section>
-
-
     <section class="section">
       <div class="container">
         <div class="columns">
@@ -60,7 +58,8 @@
               <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
             </div>
           </div>
-          <div class="column main">
+
+          <div class="column">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <p class="section-label">Search</p>
             </div>
@@ -85,7 +84,7 @@
                   uri="dataset.version"
                   label="dataset.title"  
                   desc="dataset.abstract"
-                  date="formatDate(dataset.date)">
+                  date="utils.formatDate(dataset.date)">
                 </entity-card>
               </div>
             </div>

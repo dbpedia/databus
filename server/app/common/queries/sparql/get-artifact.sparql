@@ -1,22 +1,22 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX databus: <https://databus.dbpedia.org/>
 
-# Fetches an artifact. Returns a binding if the artifact is declared as an dataid:Artifact somewhere
+
+# Fetches an artifact. Returns a binding if the artifact is declared as an databus:Artifact somewhere
 SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description WHERE
 {
   VALUES ?artifact {
     <%ARTIFACT_URI%> 
   }
   GRAPH ?g1 {
-    ?artifact a dataid:Artifact .
+    ?artifact a databus:Artifact .
   }
   OPTIONAL { 
     GRAPH ?g2 {
-      ?artifact a dataid:Artifact .
+      ?artifact a databus:Artifact .
       OPTIONAL {  ?artifact dct:title ?title . }
       OPTIONAL {  ?artifact dct:abstract ?abstract . }
       OPTIONAL {  ?artifact dct:description ?description . }

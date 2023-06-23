@@ -4,19 +4,9 @@ const ServerUtils = require('../../utils/server-utils');
 const UriUtils = require('../../utils/uri-utils');
 const jsonld = require('jsonld');
 const rp = require('request-promise');
-const defaultContext = require('../../context.json');
+const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
 
 let instance = {};
-
-instance.getGroupByUri = async function (groupUri) {
-
-  // Create the query and insert the account uri
-  let queryOptions = { GROUP_URI: groupUri };
-  let query = exec.formatQuery(require('../sparql/get-group.sparql'), queryOptions);
-  let bindings = await exec.executeSelect(query);
-
-  return bindings.length !== 0 ? bindings[0] : null;
-}
 
 /**
  * Get information about a databus group
@@ -45,7 +35,7 @@ instance.getGroup = async function (accountName, group) {
  */
 instance.hasGroup = async function (accountName, groupName) {
   let groupUri = UriUtils.createResourceUri([accountName, groupName]);
-  return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATAID_GROUP}> }`);
+  return await exec.executeAsk(`ASK { <${groupUri}> a <${DatabusUris.DATABUS_GROUP}> }`);
 }
 
 /**
@@ -114,9 +104,8 @@ instance.getArtifact = async function (accountName, groupName, artifactName) {
  * @param {*} artifactName 
  * @returns 
  */
-instance.hasArtifact = async function (accountName, groupName, artifactName) {
-  let artifactUri = UriUtils.createResourceUri([accountName, groupName, artifactName]);
-  return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATAID_ARTIFACT}> }`);
+instance.hasArtifact = async function (artifactUri) {
+  return await exec.executeAsk(`ASK { <${artifactUri}> a <${DatabusUris.DATABUS_ARTIFACT}> }`);
 }
 
 /**
@@ -189,13 +178,11 @@ instance.getArtifactsByAccount = async function (accountName) {
 
     for (let i in bindings) {
       let binding = bindings[i];
-      var artifact = await instance.getArtifactByUri(binding.artifact);
-
-      artifact.name = UriUtils.uriToName(artifact.uri);
-      artifact.groupName = UriUtils.uriToName(artifact.group);
-      result.push(artifact);
+      binding.name = DatabusUtils.uriToResourceName(binding.uri);
+      binding.groupName = DatabusUtils.uriToResourceName(DatabusUtils.navigateUp(binding.uri));
+      console.log(binding);
+      result.push(binding);
     }
-
 
     // return the result object
     return result;
@@ -224,6 +211,8 @@ instance.getArtifactsByAccount = async function (accountName) {
     let query = require('../sparql/get-versions-by-account.sparql');
 
     query = exec.formatQuery(query, queryOptions);
+
+    console.log(query);
     // Execute the query to get a list of bindings
     let bindings = await exec.executeSelect(query);
 
@@ -246,12 +235,12 @@ instance.getArtifactsByAccount = async function (accountName) {
 /**
  * Get some basic information on versions of an artifact with artifactUri
  */
-instance.getVersionsByArtifact = async function (account, group, artifact) {
+instance.getVersionsByArtifact = async function (artifactUri) {
   // Load the query from file, replace placeholder with groupUri
-  let queryOptions = { ARTIFACT_URI: UriUtils.createResourceUri([account, group, artifact]) };
+  let queryOptions = { ARTIFACT_URI: artifactUri };
   let query = exec.formatQuery(require('../sparql/get-versions-by-artifact.sparql'), queryOptions);
-
   let bindings = await exec.executeSelect(query);
+
 
   return bindings;
 }
@@ -334,7 +323,7 @@ instance.getVersion = async function (account, group, artifact, version) {
 
 instance.hasVersion = async function (accountName, groupName, artifactName, versionName) {
   let versionUri = UriUtils.createResourceUri([accountName, groupName, artifactName, versionName]);
-  return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATAID_VERSION}> }`);
+  return await exec.executeAsk(`ASK { <${versionUri}> a <${DatabusUris.DATABUS_VERSION}> }`);
 }
 
 instance.getVersionByUri = async function (versionUri) {
@@ -358,6 +347,7 @@ instance.getGroupsByAccount = async function (account) {
   let queryOptions = { ACCOUNT_URI: UriUtils.createResourceUri([account]) };
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
 
+  console.log(query);
   let bindings = await exec.executeSelect(query);
   let result = [];
 

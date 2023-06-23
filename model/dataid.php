@@ -8,7 +8,7 @@ init();
 ?>
 ## Version
 
-A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets).
 
 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
@@ -19,10 +19,9 @@ Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it
 
 
 <?php
-$section="version" ;
+$section="dataid" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06";
-$owl=
-'databus:Version  a owl:Class ;
+$owl='databus:Version  a owl:Class ;
     rdfs:label "Version"@en ;
     rdfs:comment "Dataset Version"@en ; 
     rdfs:subClassOf dcat:Dataset , dataid:Dataset ;
@@ -49,7 +48,7 @@ $shacl='<#dataset-exists>
 $example='"@type": "databus:Version",';
 
 $context='"Version": 	"databus:Version" ';
-
+		
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
 
@@ -218,7 +217,7 @@ Three main features are included in the model:
 ### license
 
 * Usage of DALICC License URIs is highly recommended ([library](https://www.dalicc.net/license-library/)). 
-* License is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractate.
+* License is set at the databus:Version node, but is always valid for all distributions, which is also reflected by signing the tractate.
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 <?php
@@ -232,7 +231,7 @@ $owl='dct:license
 
 $shacl='<#has-license>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:license;
@@ -308,18 +307,18 @@ The field attribution is:
 
 
 <?php
-$owl='dataid:attribution a owl:DataTypeProperty; 
+$owl='databus:attribution a owl:DataTypeProperty; 
 	rdfs:label "attribution"@en ;
 	rdfs:comment "TODO"@en ;
 	rdfs:domain databus:Artifact, databus:Version, databus:Group ;
 	rdfs:range xsd:string ;
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . ';
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . ';
 
 $shacl='';
 
 $example='"attribution": "TODO",';
 
-$context='"attribution":	{"@id": "dataid:attribution"}';
+$context='"attribution":	{"@id": "databus:attribution"}';
 
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
@@ -362,7 +361,7 @@ $shacl='<#has-group>
     sh:select """
 			SELECT $this ?group
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#group> ?group .
+				$this <https://dataid.dbpedia.org/databus#group> ?group .
         FILTER(!strstarts(str($this), str(?group)))
 			}
 			""" ;
@@ -411,7 +410,7 @@ $shacl='<#has-artifact>
     sh:select """
 			SELECT $this ?artifact
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#artifact> ?artifact .
+				$this <https://dataid.dbpedia.org/databus#artifact> ?artifact .
         FILTER(!strstarts(str($this), str(?artifact)))
 			}
 			""" ;
@@ -514,7 +513,7 @@ $owl='dct:issued
 
 $shacl='<#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -547,7 +546,7 @@ $owl='dct:modified
 
 $shacl='<#has-modified>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:modified;
@@ -568,10 +567,10 @@ table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 
 
 
+<?php
 
 ### proof
 
-<?php
 $owl=
 'sec:proof a owl:ObjectProperty; 
 	rdfs:label "has cryptographic proof"@en ;
@@ -581,16 +580,16 @@ $owl=
 	rdfs:isDefinedBy <https://w3id.org/security#> . 
 ';
 
-
 $shacl='';
 
 $example='"proof": {
-  "@type": "dataid:DatabusTractateV1",
+  "@type": "databus:DatabusTractateV1",
   "signature": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
 }';
 
 $context='"signature":	{"@id": "sec:signature"},
-"proof":	{"@id": "sec:proof"}';
+"proof":	{"@id": "sec:proof", "@type": "@id" },
+"DatabusTractateV1": "databus:DatabusTractateV1"';
 
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>

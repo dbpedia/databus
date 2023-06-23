@@ -1,12 +1,36 @@
-function GroupPageController($scope, $http, $sce, $interval, collectionManager) {
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const DataIdCreator = require("../publish/dataid-creator");
+const QueryBuilder = require("../query-builder/query-builder");
+const QueryNode = require("../query-builder/query-node");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const TabNavigation = require("../utils/tab-navigation");
+
+function GroupPageController($scope, $http, $sce, $interval, $location, collectionManager) {
 
   $scope.group = data.group;
-  $scope.group.name = DatabusUtils.uriToResourceName($scope.group.uri);
-  $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
+  $scope.accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.group.uri));
+
+  $scope.utils = new DatabusWebappUtils($scope, $sce);
+  $scope.tabNavigation = new TabNavigation($scope, $location, [
+    'files', 'artifacts', 'edit'
+  ]);
+
+  $scope.dataSearchInput = "";
+  $scope.dataSearchSettings = {
+    minRelevance: 0.01,
+    maxResults: 10,
+    placeholder: `Search ${$scope.accountName}'s data...`,
+    resourceTypes: ['Artifact'],
+    filter: `&publisher=${$scope.accountName}&typeNameWeight=0&group=${$scope.group.name}`
+  };
+
+
   $scope.group.hasData = false;
+  $scope.group.hasArtifacts = false;
   $scope.isLoading = true;
-
-
 
   $http({
     method: 'GET',
@@ -19,29 +43,28 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       if (artifact.latestVersionDate != undefined) {
         $scope.group.hasData = true;
       }
-  
+
       artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
       artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
       artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
     }
 
-    $scope.group.hasData = $scope.artifacts.length > 0;
+    $scope.group.hasArtifacts = $scope.artifacts.length > 0;
     $scope.isLoading = false;
   }, function errorCallback(response) {
     $scope.isLoading = false;
   });
 
 
-  $scope.group.title = DatabusUtils.stringOrFallback($scope.group.title,
+  $scope.pageTitle = DatabusUtils.stringOrFallback($scope.group.title,
     DatabusUtils.uriToTitle($scope.group.uri));
 
 
-  $scope.canEdit = $scope.publisherName == data.auth.info.accountName;
+  $scope.canEdit = $scope.accountName == data.auth.info.accountName;
 
   if (data.auth.authenticated && $scope.canEdit) {
 
     var abstract = DatabusUtils.createAbstractFromDescription($scope.group.description);
-
     $scope.formData = {};
     $scope.formData.group = {};
     $scope.formData.group.generateAbstract = abstract == $scope.group.abstract;
@@ -87,6 +110,11 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
       $scope.group.title = $scope.formData.group.title;
       $scope.group.abstract = $scope.formData.group.abstract;
       $scope.group.description = $scope.formData.group.description;
+
+
+      $scope.pageTitle = DatabusUtils.stringOrFallback($scope.group.title,
+        DatabusUtils.uriToTitle($scope.group.uri));
+
       DatabusAlert.alert($scope, true, "Group Saved!");
       $scope.$apply();
     }
@@ -96,8 +124,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.facetsView.resourceUri = $scope.group.uri;
   $scope.facetsView.settings = [];
   $scope.facetsView.parentSettings = null;
-  $scope.tabs = {};
-  $scope.tabs.activeTab = 0;
   $scope.authenticated = data.auth.authenticated;
   $scope.selection = [];
 
@@ -116,7 +142,7 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '9%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '6%' });
 
-  $scope.groupNode = new QueryNode($scope.group.uri, 'dataid:group');
+  $scope.groupNode = new QueryNode($scope.group.uri, 'databus:group');
   $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
 
   $scope.onFacetSettingsChanged = function () {
@@ -153,9 +179,6 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     return $sce.trustAsHtml(result);
   }
 
-  $scope.formatDate = function (date) {
-    return moment(date).format('MMM Do YYYY') + " (" + moment(date).fromNow() + ")";
-  };
 
   $scope.formatLicense = function (licenseUri) {
     var licenseName = DatabusUtils.uriToName(licenseUri);
@@ -269,11 +292,13 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     artifact.isSelected = artifact.alreadyAdded || $scope.selection.includes(artifact.uri);
   }
 
+
+
   $scope.search = function () {
 
     $scope.searchResult = [];
 
-    var typeFilters = `&publisher=${$scope.publisherName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
+    var typeFilters = `&publisher=${$scope.accountName}&publisherWeight=0&typeName=Artifact&typeNameWeight=0&group=${$scope.group.name}&minRelevance=0.1`;
 
     $http({
       method: 'GET',
@@ -293,3 +318,5 @@ function GroupPageController($scope, $http, $sce, $interval, collectionManager) 
     });
   }
 }
+
+module.exports = GroupPageController;

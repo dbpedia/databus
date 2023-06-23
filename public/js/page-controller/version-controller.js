@@ -1,63 +1,30 @@
-// Fake includes for syntax highlighting
-if (typeof require !== 'undefined') {
-  const JsonldUtils = require("../utils/jsonld-utils");
-  const DatabusUtils = require("../utils/databus-utils");
-  const QueryNode = require("../query-builder/query-node");
-}
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const JsonldUtils = require("../utils/jsonld-utils");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const QueryNode = require("../query-builder/query-node");
+const TabNavigation = require("../utils/tab-navigation");
+const DatabusUris = require("../utils/databus-uris");
+const DataIdCreator = require("../publish/dataid-creator");
+const QueryTemplates = require("../query-builder/query-templates");
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const QueryBuilder = require("../query-builder/query-builder");
+const AppJsonFormatter = require("../utils/app-json-formatter");
 
 function VersionPageController($scope, $http, $sce, $location, collectionManager) {
 
-  // TODO: Change this hacky BS!
-  setTimeout(function () {
-    $(".dropdown-item").click(function (e) {
-      var dropdown = $(this).closest(".dropdown");
-      $(dropdown).removeClass("is-active");
-      e.stopPropagation();
-    });
-
-    $("body").click(function () {
-      $(".dropdown").removeClass("is-active");
-    });
-
-    $(".dropdown").click(function (e) {
-      $(".dropdown").removeClass("is-active");
-      $(this).addClass("is-active");
-      e.stopPropagation();
-    });
-  }, 500);
-
-
   $scope.navigation = new TabNavigation($scope, $location, [
-    '', 'mods', 'edit'
+    'files', 'mods', 'edit'
   ]);
 
-  $scope.utils = new DatabusWebappUtils($scope);
-
-  $scope.tabs = {};
-  $scope.tabs.activeTab = 0;
-
+  $scope.utils = new DatabusWebappUtils($scope, $sce);
   $scope.collectionManager = collectionManager;
-  $scope.actions = data.actions;
-  $scope.versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
+  $scope.authenticated = data.auth.authenticated;
+  $scope.versionGraph = data.graph;
+  $scope.version = AppJsonFormatter.formatVersionData(data.graph);
 
-  $scope.version = {};
-  $scope.version.uri = $scope.versionGraph[DatabusUris.JSONLD_ID];
-  $scope.version.title = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_TITLE);
-  $scope.version.abstract = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ABSTRACT);
-  $scope.version.description = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_DESCRIPTION);
-  $scope.version.artifact = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ARTIFACT_PROPERTY);
-  $scope.version.license = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_LICENSE);
-  $scope.version.attribution = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DATAID_ATTRIBUTION);
-  $scope.version.wasDerivedFrom = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.PROV_WAS_DERIVED_FROM);
-
-  $scope.version.issued = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_ISSUED);
-  $scope.version.name = JsonldUtils.getProperty($scope.versionGraph, DatabusUris.DCT_HAS_VERSION);
-
-  $scope.serviceData = data.services;
-  $scope.modsData = data.mods;
   $scope.queryResult = {};
   $scope.addToCollectionQuery = "";
-  $scope.authenticated = data.auth.authenticated;
   $scope.collectionModalVisible = false;
 
   $scope.publisherName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.version.uri, 3));
@@ -151,7 +118,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
       });
 
       var graphs = response.data;
-      var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATAID_VERSION);
+      var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_VERSION);
 
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_TITLE, DatabusUris.XSD_STRING,
         $scope.formData.version.title);
@@ -160,7 +127,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
       JsonldUtils.setLiteral(versionGraph, DatabusUris.DCT_DESCRIPTION, DatabusUris.XSD_STRING,
         $scope.formData.version.description);
       JsonldUtils.setLink(versionGraph, DatabusUris.DCT_LICENSE, $scope.formData.version.license);
-      JsonldUtils.setLiteral(versionGraph, DatabusUris.DATAID_ATTRIBUTION, DatabusUris.XSD_STRING,
+      JsonldUtils.setLiteral(versionGraph, DatabusUris.DATABUS_ATTRIBUTION, DatabusUris.XSD_STRING,
         $scope.formData.version.attribution);
 
       if ($scope.formData.version.wasDerivedFrom) {
@@ -205,10 +172,10 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '15%' });
 
-  $scope.artifactNode = new QueryNode($scope.version.artifact, 'dataid:artifact');
+  $scope.artifactNode = new QueryNode($scope.version.artifact, 'databus:artifact');
   $scope.artifactNode.setFacet('http://purl.org/dc/terms/hasVersion', $scope.version.name, true);
 
-  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.version.artifact), 'dataid:group');
+  $scope.groupNode = new QueryNode(DatabusUtils.navigateUp($scope.version.artifact), 'databus:group');
   $scope.groupNode.addChild($scope.artifactNode);
 
   $scope.collectionWidgetSelectionData = {};
@@ -279,8 +246,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
     return DatabusUtils.uriToName(uri);
   }
 
-  $scope.markdownToHtml = function (markdown) {
-    var converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
-  };
+
 }
+
+module.exports = VersionPageController;

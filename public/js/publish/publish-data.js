@@ -1,3 +1,5 @@
+const DatabusUtils = require("../utils/databus-utils");
+
 /**
  * Handles shasum creation (and possibly other file stats)
  */
@@ -9,13 +11,15 @@ class PublishData {
     this.group = data != undefined ? data.group : {};
     this.artifact = data != undefined ? data.artifact : {};
     this.version = data != undefined ? data.version : {};
+    this.files = data != undefined ? data.files : {};
     this.signature = data != undefined ? data.signature : undefined;
 
-    if(data == null) {
-      this.group.createNew = true;
+    if (data == null) {
+      this.group.generateMetadata = 'create';
       this.group.generateAbstract = true;
-      this.artifact.createNew = true;
+      this.artifact.generateMetadata = 'create';
       this.artifact.generateAbstract = true;
+      this.version.generateMetadata = 'create';
       this.version.generateAbstract = true;
       this.version.useArtifactTitle = true;
       this.signature = this.createSignatureData();
@@ -48,12 +52,14 @@ class PublishData {
     this.group.errors = [];
     this.artifact.errors = [];
     this.version.errors = [];
+    this.files.errors = [];
     this.group.warnings = [];
     this.artifact.warnings = [];
     this.version.warnings = [];
 
+
     if (!DatabusUtils.isValidGroupName(this.group.name)) {
-      this.group.errors.push('err_invalid_group_name');
+      this.group.errors.push('err_invalid_group_title');
       hasErrors = true;
     }
 
@@ -63,7 +69,7 @@ class PublishData {
       return value.name == self.group.name;
     });
 
-    if (existingGroup.length > 0 && this.group.createNew) {
+    if (existingGroup.length > 0 && this.group.generateMetadata == 'create') {
       this.group.warnings.push('warning_group_exists');
     }
 
@@ -71,7 +77,7 @@ class PublishData {
       return value.groupName == self.group.name && value.name == self.artifact.name;
     });
 
-    if (existingArtifact.length > 0 && this.artifact.createNew) {
+    if (existingArtifact.length > 0 && this.artifact.generateMetadata == 'create') {
       this.artifact.warnings.push('warning_artifact_exists');
     }
 
@@ -96,47 +102,63 @@ class PublishData {
       return;
     }
 
-    if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
-      this.artifact.errors.push('err_invalid_artifact_name');
-      hasErrors = true;
+    if (this.artifact.generateMetadata != 'none') {
+      if (!DatabusUtils.isValidArtifactName(this.artifact.name)) {
+        this.artifact.errors.push('err_invalid_artifact_title');
+        hasErrors = true;
+      }
     }
 
-    if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
-      this.version.errors.push('err_invalid_version_name');
-      hasErrors = true;
+    var versionUri = `${DATABUS_RESOURCE_BASE_URL}/${this.accountData.accountName}/${this.group.name}/${this.artifact.name}/${this.version.name}`;
+
+    var existingVersion = this.accountData.versions.filter(function (value) {
+      return value == versionUri;
+    });
+
+    if (existingVersion.length > 0) {
+      this.version.warnings.push('warning_version_exists');
     }
 
-    if (!DatabusUtils.isValidUrl(this.version.license)) {
-      this.version.errors.push('err_invalid_version_license');
-      hasErrors = true;
-    }
+    if (this.version.generateMetadata != 'none') {
 
-    if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
-      this.version.errors.push('err_invalid_version_abstract');
-      hasErrors = true;
-    }
-
-    if (!DatabusUtils.isValidResourceText(this.version.description, 1)) {
-      this.version.errors.push('err_invalid_version_description');
-      hasErrors = true;
-    }
-
-    if (DatabusUtils.objSize(this.version.files) == 0) {
-      this.version.errors.push('err_no_files');
-      hasErrors = true;
-    }
-
-    if (this.version.isConfigDirty) {
-
-
-      var files = [];
-      for (var f in this.version.files) {
-        this.version.files[f].errors = [];
-        files.push(this.version.files[f]);
+      if (!DatabusUtils.isValidVersionIdentifier(this.version.name)) {
+        this.version.errors.push('err_invalid_version_title');
+        hasErrors = true;
       }
 
-      this.cvSplit(this.version, files, 0);
-      this.version.isConfigDirty = false;
+      if (!DatabusUtils.isValidUrl(this.version.license)) {
+        this.version.errors.push('err_invalid_version_license');
+        hasErrors = true;
+      }
+
+      if (!DatabusUtils.isValidResourceText(this.version.abstract, 1)) {
+        this.version.errors.push('err_invalid_version_abstract');
+        hasErrors = true;
+      }
+
+      if (!DatabusUtils.isValidResourceText(this.version.description, 1)) {
+        this.version.errors.push('err_invalid_version_description');
+        hasErrors = true;
+      }
+
+
+      if (DatabusUtils.objSize(this.version.files) == 0) {
+        this.files.errors.push('err_no_files');
+        hasErrors = true;
+      }
+
+      if (this.version.isConfigDirty) {
+
+
+        var files = [];
+        for (var f in this.version.files) {
+          this.version.files[f].errors = [];
+          files.push(this.version.files[f]);
+        }
+
+        this.cvSplit(this.version, files, 0);
+        this.version.isConfigDirty = false;
+      }
     }
 
     this.hasConfigurationError = hasErrors;
@@ -173,11 +195,10 @@ class PublishData {
       id: uri,
       uri: file.url,
       name: name,
-      contentVariants: {},
+      contentVariants: file.contentVariants,
       compression: file.compression,
       formatExtension: file.formatExtension,
-      artifactId: undefined,
-      groupId: undefined,
+      rowspan: 1,
     });
 
     this.version.files.sort(function (a, b) {
@@ -426,3 +447,5 @@ class PublishData {
   }
 
 }
+
+module.exports = PublishData;

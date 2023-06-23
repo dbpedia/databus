@@ -1,3 +1,7 @@
+const DatabusUris = require("../utils/databus-uris");
+const DatabusCollectionUtils = require("./databus-collection-utils");
+const DatabusCollectionWrapper = require("./databus-collection-wrapper");
+
 class DatabusCollectionManager {
 
   // Daten die wir haben:
@@ -41,6 +45,10 @@ class DatabusCollectionManager {
   }
 
   async tryInitialize(accountName, loadFromServer) {
+
+    if(accountName == undefined) {
+      return;
+    }
 
     this.sessionInfo.accountName = accountName;
     window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
@@ -278,7 +286,7 @@ class DatabusCollectionManager {
 
     for (var g in collection.content.groups) {
       var group = collection.content.groups[g];
-      var groupNode = new QueryNode(group.uri, 'dataid:group');
+      var groupNode = new QueryNode(group.uri, 'databus:group');
 
       // add group facets
       for (var s in group.settings) {
@@ -297,7 +305,7 @@ class DatabusCollectionManager {
       for (var a in group.artifacts) {
         var artifact = group.artifacts[a];
 
-        var artifactNode = new QueryNode(artifact.uri, 'dataid:artifact');
+        var artifactNode = new QueryNode(artifact.uri, 'databus:artifact');
 
         // add artifact facets
 
@@ -560,16 +568,16 @@ class DatabusCollectionManager {
 
       // Format collection as json-ld
       let collectionJsonLd = {
-        "@context": JSONLD_CONTEXT,
+        "@context": DATABUS_CONTEXT[DatabusUris.JSONLD_CONTEXT],
         "@graph": [
           {
             "@id": collectionUri,
-            "@type": "dataid:Collection",
+            "@type": "Collection",
             "publisher": publisherUri,
             "title": this.activeCollection.title,
             "abstract": this.activeCollection.abstract,
             "description": this.activeCollection.description,
-            "dataid:content": contentString,
+            "databus:collectionContent": contentString,
           }
         ]
       };
@@ -748,4 +756,4 @@ class DatabusCollectionManager {
 }
 
 
-
+module.exports = DatabusCollectionManager;

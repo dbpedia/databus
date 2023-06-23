@@ -1,3 +1,4 @@
+const DatabusCollectionUtils = require("../../collections/databus-collection-utils");
 
 
 // hinzufügen eines Controllers zum Modul
@@ -99,3 +100,5 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
   }
 }
 
+
+module.exports = CollectionDataTableController;

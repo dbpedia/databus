@@ -120,6 +120,7 @@
     </div>
   </div>
 
+  <!--
   <div class="databus-settings-box-header">
     <h3>MODS</h3>
   </div>
@@ -194,7 +195,7 @@
           <div ng-repeat="extension in profileData.searchExtensions" class="settings-entity">
             <div style="display: flex; align-items: center; width: 100%;">
             <div style="margin-right: .5em">{{ extension.endpointUri }}</div>
-            <div style="flex: 1; color: #aaa">[{{ extension.adapter }}]</div>
+            <div style="flex: 1; color: #aaa">[{{ extension.adapterName }}]</div>
             <div ng-click="removeSearchExtension(extension.endpointUri)" class="button is-error">
               Remove
             </div>
@@ -205,7 +206,7 @@
       </div>
 
     </div>
-  </div>
+  </div>-->
 
   <div class="databus-settings-box-header">
     <h3>WEBID</h3>
@@ -264,7 +265,7 @@
       </div>
 
       <div class="row">
-        <div class="row-label">Linked WebIds</div>
+        <div class="row-label">Linked External WebIds</div>
 
         <div ng-if="profileData.webIds == null || profileData.webIds.length == 0" class="databus-settings-info">You
           haven't linked any external WebIds yet.</div>

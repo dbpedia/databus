@@ -1,19 +1,19 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX databus: <https://databus.dbpedia.org/system/ontology#>
+
 
 # Creates a group
 CONSTRUCT
 {
-  ?group a dataid:Artifact .
+  ?group a databus:Artifact .
   ?group ?p ?o .
 }
 WHERE
 {
-  ?group a dataid:Artifact .
+  ?group a databus:Artifact .
   ?group ?p ?o .
 }

@@ -1,5 +1,5 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -21,16 +21,15 @@ SELECT DISTINCT
 WHERE { 
   %COLLECTION_QUERY%
   ?distribution dcat:downloadURL ?file .
-  ?distribution dataid:formatExtension ?format .
-  OPTIONAL { ?distribution dataid:contentVariant ?var . }
+  ?distribution databus:formatExtension ?format .
+  OPTIONAL { ?distribution databus:contentVariant ?var . }
   OPTIONAL { ?distribution dct:license ?license . }
   OPTIONAL { ?distribution dcat:byteSize ?size . }
-  OPTIONAL { ?distribution dataid:preview ?preview . }
-  ?distribution dct:hasVersion ?version .
-  ?dataset dcat:distribution ?distribution .
-  ?dataset dataid:version ?versionUri .
-  ?dataset dct:title ?title .
-  ?dataset dct:abstract ?abstract .
-  ?dataset dct:description ?description.
+  ?distribution dct:hasVersion ?versionName .
+  ?version dcat:distribution ?distribution .
+  ?version a databus:Version .
+  ?version dct:title ?title .
+  ?version dct:abstract ?abstract .
+  ?version dct:description ?description.
 }
-GROUP BY ?versionUri ?dataset ?distribution ?title ?description ?license ?size ?version ?format ?preview
+GROUP BY ?version ?distribution ?title ?description ?license ?size ?versionName ?format ?preview

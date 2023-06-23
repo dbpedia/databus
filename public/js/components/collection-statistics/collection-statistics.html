@@ -31,7 +31,7 @@
       </tr>
       <tr>
         <td>Size</td>
-        <td> {{ $ctrl.formatUploadSize($ctrl.statistics.size) }}</td>
+        <td> {{ $ctrl.utils.formatUploadSize($ctrl.statistics.size) }}</td>
       </tr>
       <tr>
         <td>License(s)</td>
@@ -46,7 +46,7 @@
       </tr>
     </table>
     <div style="margin-top:40px;" class="content description-markdown">
-      <div ng-bind-html="$ctrl.markdownToHtml($ctrl.collection.description)"></div>
+      <div ng-bind-html="$ctrl.utils.markdownToHtml($ctrl.collection.description)"></div>
     </div>
   </div>
 </div>

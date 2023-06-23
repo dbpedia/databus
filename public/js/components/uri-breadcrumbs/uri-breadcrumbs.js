@@ -10,6 +10,10 @@ function UriBreadcrumbsController() {
 
     var uri = ctrl.uri;
 
+    if(uri == undefined || uri == null) {
+      return;
+    }
+
     var url = new URL(uri);
 
     var extensions = url.pathname.split('/');
@@ -31,4 +35,6 @@ function UriBreadcrumbsController() {
     }
   }
 }
+
+module.exports = UriBreadcrumbsController;
 

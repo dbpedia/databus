@@ -1,11 +1,12 @@
-// Pseudo include for easier dev
-if (typeof require !== 'undefined') {
-  const DatabusUtils = require("../utils/databus-utils");
-  const DatabusWebappUtils = require("../utils/databus-webapp-utils");
-  const DatabusAlert = require("../components/databus-alert/databus-alert");
-}
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const SearchAdapter = require("../search/search-adapter");
+const DatabusMessages = require("../utils/databus-messages");
+const DatabusConstants = require("../utils/databus-constants");
+const AppJsonFormatter = require("../utils/app-json-formatter");
 
-function ProfileController($scope, $http, searchAdapters) {
+function ProfileController($scope, $http) {
 
   $scope.profileData = data.profile;
   $scope.auth = data.auth;
@@ -16,41 +17,21 @@ function ProfileController($scope, $http, searchAdapters) {
   $scope.createApiKeyError = "";
   $scope.addWebIdUri = "";
   $scope.grantAccessUri = "";
-  $scope.adapters = searchAdapters;
+  $scope.adapters = SearchAdapter.list;
   $scope.utils = new DatabusWebappUtils($scope);
 
-  $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
+  $scope.personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}${DatabusConstants.WEBID_THIS}`;
 
-  $scope.putProfile = function (accountName, foafName) {
+  $scope.putProfile = function (accountName) {
 
-    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}#this`;
+    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
+      accountName,
+      accountName, 
+      null, 
+      null);
 
-    var webidGraph = {
-      "@graph": [
-        {
-          "@id": personUri,
-          "@type": [
-            "http://xmlns.com/foaf/0.1/Person",
-            "http://dbpedia.org/ontology/DBpedian"
-          ],
-          "http://xmlns.com/foaf/0.1/account": { "@id": profileUri },
-          "http://xmlns.com/foaf/0.1/img": { "@id": "" },
-          "http://xmlns.com/foaf/0.1/name": foafName
-        },
-        {
-          "@id": profileUri,
-          "@type": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
-          "http://xmlns.com/foaf/0.1/maker": { "@id": personUri },
-          "http://xmlns.com/foaf/0.1/primaryTopic": { "@id": personUri }
-        }
-      ]
-    };
-
-    $http.put(`/${accountName}`, webidGraph).then(function (result) {
-      if (result.data.code == DatabusResponse.USER_PROFILE_CREATED) {
-        window.location.reload(true);
-      }
+    $http.put(`/${accountName}`, accountJsonLd).then(function (result) {
+      window.location.reload(true);
     }, function (err) {
       console.log(err);
       $scope.createAccountError = err.data;
@@ -73,9 +54,8 @@ function ProfileController($scope, $http, searchAdapters) {
         return;
       }
 
-      var name = accountName;
       $scope.showAccountNameHints = false;
-      $scope.putProfile(accountName, name, '');
+      $scope.putProfile(accountName);
     }
 
     return;
@@ -106,6 +86,8 @@ function ProfileController($scope, $http, searchAdapters) {
       if (result.data != null) {
         $scope.apiKeys.push(result.data);
       }
+
+      DatabusAlert.alert($scope, true, DatabusMessages.ACCOUNT_API_KEY_CREATED);
 
     }, function (err) {
       console.log(err);
@@ -172,6 +154,7 @@ function ProfileController($scope, $http, searchAdapters) {
 
     $http.post(`/api/account/webid/add?uri=${encodeURIComponent($scope.addWebIdUri)}`).then(function (result) {
       $scope.profileData.webIds.push($scope.addWebIdUri);
+      DatabusAlert.alert($scope, true, DatabusMessages.ACCOUNT_WEBID_LINKED);
 
     }, function (err) {
       console.log(err);
@@ -200,40 +183,13 @@ function ProfileController($scope, $http, searchAdapters) {
       return;
     }
 
-    // Create webId data locally
-    var profileUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}`;
-    var personUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}#this`;
+    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
+      $scope.auth.info.accountName,
+      $scope.editData.label, 
+      $scope.editData.about, 
+      $scope.editData.imageUrl);
 
-    var webIdData =
-    {
-      "@context": JSONLD_CONTEXT,
-      "@graph": [
-        {
-          "@id": profileUri,
-          "@type": "foaf:PersonalProfileDocument",
-          "maker": personUri,
-          "primaryTopic": personUri,
-        },
-        {
-          "@id": personUri,
-          "@type": ["dbo:DBpedian", "foaf:Person"],
-          "name": $scope.editData.label,
-          "rdfs:comment": $scope.editData.about,
-          "account": profileUri,
-          "img": $scope.editData.imageUrl
-        }
-      ]
-    };
-
-    if ($scope.editData.webIdURI != undefined && $scope.editData.webIdURI != '') {
-      webIdData['@graph'].push({
-        "@id": $scope.editData.webIdURI,
-        "account": profileUri
-      });
-    }
-
-
-    $http.put('/' + $scope.auth.info.accountName, webIdData).then(function (result) {
+    $http.put(`/${$scope.auth.info.accountName}`, accountJsonLd).then(function (result) {
       DatabusAlert.alert($scope, true, DatabusMessages.ACCOUT_PROFILE_SAVED);
     }, function (err) {
       console.log(err);
@@ -248,8 +204,7 @@ function ProfileController($scope, $http, searchAdapters) {
 
   $scope.modsSettings = {}
   $scope.modsSettings.searchExtensionURI = "";
-  $scope.modsSettings.searchExtensionAdapter = searchAdapters[0];
-
+  $scope.modsSettings.searchExtensionAdapter = $scope.adapters[0];
 
 
   $scope.editData = DatabusUtils.createCleanCopy($scope.profileData);
@@ -259,3 +214,5 @@ function ProfileController($scope, $http, searchAdapters) {
   }
 
 }
+
+module.exports = ProfileController;

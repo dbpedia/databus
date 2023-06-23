@@ -112,10 +112,10 @@ $owl='missing';
 from format
 $shacl='<#has-format>
 	a sh:PropertyShape ;
-	sh:targetClass dataid:Part ;
+	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
 	sh:path dataid:format ;
-	sh:message "A dataid:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; 
+	sh:message "A databus:Part MUST have exactly one dataid:format of type xsd:string AND should not inlcude a \'.\' in front"@en ; 
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:datatype xsd:string ;
 	sh:maxCount 1 ;
@@ -335,7 +335,7 @@ $shacl='<#properties-are-cvs>
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -351,8 +351,8 @@ $shacl='<#properties-are-cvs>
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
-        ?dist <http://dataid.dbpedia.org/databus#file> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+        ?dist <https://dataid.dbpedia.org/databus#file> ?value .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -361,7 +361,8 @@ $shacl='<#properties-are-cvs>
 
 $example='missing';
 
-$context='"subPropertyOf" : {
+$context='"contentVariant": { "@id" : "databus:contentVariant" },
+	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
   }';
@@ -379,23 +380,9 @@ $shacl='missing';
 
 $example='missing';
 
-$context='"maker": {
-    "@id": "foaf:maker",
-    "@type": "@id"
-  },
-  "primaryTopic": {
-    "@id": "foaf:primaryTopic",
-    "@type": "@id"
-  },
-  "name": {"@id": "foaf:name"},
-  "account": {
-    "@id": "foaf:account",
-    "@type": "@id"
-  },
-  "img": {
-    "@id": "foaf:img",
-    "@type": "@id"
-  },
+$context='
+  "Dataset": "dataid:Dataset",
+  "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},
   "exponent":	{"@id": "cert:exponent"}';

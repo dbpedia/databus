@@ -1,4 +1,9 @@
-// hinzufügen eines Controllers zum Modul
+const DatabusCollectionUtils = require("../collections/databus-collection-utils");
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+
 function CollectionController($scope, $sce, $http, collectionManager) {
 
   $scope.collection = new DatabusCollectionWrapper(data.collection);
@@ -6,10 +11,8 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   $scope.activeTab = 0;
   $scope.collectionManager = collectionManager;
 
-
-
   // Make some util functions available in the template
-  $scope.utils = new DatabusWebappUtils($scope);
+  $scope.utils = new DatabusWebappUtils($scope, $sce);
 
   $scope.isOwn = false;
 
@@ -21,7 +24,7 @@ function CollectionController($scope, $sce, $http, collectionManager) {
     $scope.isOwn = $scope.accountName === $scope.collectionAccountName;
   }
 
-  $scope.editCollection = function() {
+  $scope.editCollection = function () {
     $scope.collectionManager.setActive($scope.collection.uuid);
     window.location = `/app/collection-editor`;
   }
@@ -61,10 +64,7 @@ function CollectionController($scope, $sce, $http, collectionManager) {
     return DatabusUtils.formatFileSize(size);
   };
 
-  $scope.markdownToHtml = function (markdown) {
-    var converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
-  };
+
 
   $scope.editCopy = function () {
     if (!$scope.collectionManager.isInitialized) {
@@ -85,7 +85,6 @@ function CollectionController($scope, $sce, $http, collectionManager) {
 
     let collectionSnapshot = $scope.collectionManager.createSnapshot($scope.collection);
 
-    console.log(collectionSnapshot);
     $scope.collectionManager.setActive(collectionSnapshot.uuid);
     window.location.href = '/app/collection-editor'
   }
@@ -134,26 +133,12 @@ ${$scope.collectionViewModel.downloadScript[2]}`
     DatabusAlert.alert($scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
   }
 
-  $scope.markdownToHtml = function (markdown) {
-    let converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
-  };
 
   $scope.filesToClipboard = function () {
     $scope.utils.copyToClipboard($scope.collectionFiles);
     DatabusAlert.alert($scope, true, DatabusMessages.GENERIC_COPIED_TO_CLIPBOARD);
   }
 
-  $scope.getStatusMessage = function (code) {
-    return DatabusResponse.Message[code];
-  }
-
-  $scope.getStatusSuccess = function () {
-    return $scope.statusCode >= 2000 && $scope.statusCode < 3000;
-  }
-
-  $scope.resetStatus = function () {
-    $scope.statusCode = 0;
-  }
-
 }
+
+module.exports = CollectionController;

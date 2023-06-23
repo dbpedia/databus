@@ -1,25 +1,44 @@
 
 
 
-var searchAdapters = [
-    { 
-        name: 'lookup',
-        label: 'Lookup',
-        factory: this.lookup
-    }
-    /*
-    {
-        name: 'virtuoso',
-        label: 'Virtuoso SPARQL',
-        factory: this.virtuoso
-    }
-    */
-];
 
 class SearchAdapter {
 
+    static list = [
+        { 
+            name: 'lookup',
+            label: 'Lookup',
+            factory: this.lookup
+        }
+        /*
+        {
+            name: 'virtuoso',
+            label: 'Virtuoso SPARQL',
+            factory: this.virtuoso
+        }
+        */
+    ];
+
+    constructor($http, endpoint, queryFormatter, resultFormatter) {
+        this.http = $http;
+        this.endpoint = endpoint;
+        this.queryFormatter = queryFormatter;
+        this.resultFormatter = resultFormatter;
+    }
+
+    static inferResourceTypes(docs) {
+        // TODO:
+    }
+    
+
     static lookup($http, endpoint) {
-        return new SearchAdapter($http, endpoint);
+        return new SearchAdapter($http, endpoint, function(query) {
+            return `?query=${query}&format=json`;
+        }, function(response) {
+            var docs = response.data.docs;
+            SearchAdapter.inferResourceTypes(docs);
+            return docs;
+        });
     }
 
     static virtuoso($http, endpoint) {
@@ -34,12 +53,7 @@ class SearchAdapter {
         return virtuosoAdapter;
     }
 
-    constructor($http, endpoint, queryFormatter, resultFormatter) {
-        this.http = $http;
-        this.endpoint = endpoint;
-        this.queryFormatter = queryFormatter;
-        this.resultFormatter = resultFormatter;
-    }
+   
 
     async search(query) {
         try {
@@ -60,3 +74,5 @@ class SearchAdapter {
         }
     }
 }
+
+module.exports = SearchAdapter;

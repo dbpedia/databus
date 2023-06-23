@@ -1,3 +1,6 @@
+const DatabusConstants = require("../../utils/databus-constants");
+const DatabusUtils = require("../../utils/databus-utils");
+
 // hinzufügen eines Controllers zum Modul
 function FileBrowserController($http, $scope) {
 
@@ -78,7 +81,7 @@ function FileBrowserController($http, $scope) {
 
       var req = {
         method: 'POST',
-        url: DATABUS_SPARQL_ENDPOINT_URL,
+        url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
         data: "format=json&query=" + encodeURIComponent(query),
         headers: {
           "Content-type" : "application/x-www-form-urlencoded"
@@ -139,3 +142,4 @@ function FileBrowserController($http, $scope) {
 
 
 
+module.exports = FileBrowserController;

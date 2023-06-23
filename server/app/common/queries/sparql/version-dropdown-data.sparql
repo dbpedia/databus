@@ -1,14 +1,15 @@
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 
 SELECT DISTINCT ?format ?compression ?variant ?tag WHERE {
-
-  ?dataset dataid:version <%VERSION_URI%> .
-  ?dataset dcat:distribution ?distribution .
-  ?distribution dataid:formatExtension ?format .
-  ?distribution dataid:compression ?compression .
-  OPTIONAL { ?distribution dataid:contentVariant ?variant. }
-  OPTIONAL { ?distribution dataid-cv:tag ?tag. }
+  VALUES ?version {
+    <%VERSION_URI%> 
+  }
+  ?version dcat:distribution ?distribution .
+  ?distribution databus:formatExtension ?format .
+  ?distribution databus:compression ?compression .
+  OPTIONAL { ?distribution databus:contentVariant ?variant. }
+  OPTIONAL { ?distribution dcv:tag ?tag. }
 }

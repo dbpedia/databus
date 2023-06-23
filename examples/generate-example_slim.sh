@@ -12,7 +12,7 @@ read -r -d '' DATAID_DATA << _EOT_
   "@graph" : [
     {
       "@id": "%DATABUS_URI%/%ACCOUNT%/examples",
-      "@type": "dataid:Group",
+      "@type": "databus:Group",
       "title": "Example Group",
       "abstract": "This is an example group for API testing.",
       "description": "This is an example group for API testing.",

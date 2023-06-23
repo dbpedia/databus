@@ -11,21 +11,25 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const { dataid } = require('../../common/queries/sparql');
 const getJsonLd = require('../../common/get-jsonld');
 const accountQueryTemplate = require("../../common/queries/constructs/ld/construct-account.sparql");
+const groupQueryTemplate = require("../../common/queries/constructs/ld/construct-group.sparql");
+const artifactQueryTemplate = require("../../common/queries/constructs/ld/construct-artifact.sparql");
 const collectionQueryTemplate = require("../../common/queries/constructs/ld/construct-collection.sparql");
-const AppJsonFormatter = require('../app-json-formatter');
+const versionQueryTemplate = require("../../common/queries/constructs/ld/construct-version.sparql");
+
+const AppJsonFormatter = require('../../../../public/js/utils/app-json-formatter');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(10);
 
-  var licenseCache = new DatabusCache(3600, 100000);
-
   router.get('/:account', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
-      var accountUri = UriUtils.createResourceUri([req.params.account]);
-      var accountJsonLd = await getJsonLd(accountUri, accountQueryTemplate, 'flatten');
+      var profileUri = `${UriUtils.createResourceUri([req.params.account])}${DatabusConstants.WEBID_DOCUMENT}`;
+
+      var accountJsonLd = await getJsonLd(profileUri, accountQueryTemplate, 'flatten');
 
       if (accountJsonLd == null) {
         next('route');
@@ -82,39 +86,40 @@ module.exports = function (router, protector) {
     }
   });
 
+
   router.get('/:account/:group', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
-      // let groupData = await sparql.dataid.getGroup(req.params.account, req.params.group);
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var groupUri = `${UriUtils.createResourceUri([req.params.account, req.params.group])}`;
 
-      let cacheKey = `cache_key_${req.params.account}_${req.params.group}`;
-      let data = await cache.get(cacheKey, async () => {
-        return {
-          group: await sparql.dataid.getGroup(req.params.account, req.params.group)
-        };
-      });
+      var groupJsonLd = await getJsonLd(groupUri, groupQueryTemplate, 'flatten');
 
-      if (data.group == null) {
+      if (groupJsonLd == null) {
         next('route');
         return;
       }
 
-      data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      var title = data.group.title != null ? data.group.title : UriUtils.uriToLabel(data.group.uri);
+      var groupData = AppJsonFormatter.formatGroupData(groupJsonLd);
 
       res.render('group', {
-        title: title,
-        data: data,
+        title: groupData.title,
+        data: {
+          auth: auth,
+          group: groupData
+        }
       });
+
 
     } catch (err) {
       console.log(err);
-      res.status(500).send(err);
+      next('route');
     }
+
   });
 
   router.get('/:account/collections/:collection', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
-    
+
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var collectionUri = UriUtils.createResourceUri([req.params.account, 'collections', req.params.collection]);
@@ -172,6 +177,36 @@ module.exports = function (router, protector) {
     }
 
     try {
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var artifactUri = `${UriUtils.createResourceUri([req.params.account, req.params.group, req.params.artifact])}`;
+      var artifactJsonLd = await getJsonLd(artifactUri, artifactQueryTemplate, 'flatten');
+
+      if (artifactJsonLd == null) {
+        next('route');
+        return;
+      }
+
+      var artifactData = AppJsonFormatter.formatArtifactData(artifactJsonLd);
+      var versions = await sparql.dataid.getVersionsByArtifact(artifactUri);
+
+      res.render('artifact', {
+        title: artifactData.title != undefined ? artifactData.title : artifactData.name,
+        data: {
+          auth: auth,
+          artifact: artifactData,
+          versions: versions
+        }
+      });
+
+
+    } catch (err) {
+      console.log(err);
+      next('route');
+    }
+
+    /*
+
+    try {
 
       let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}`;
       let data = await cache.get(cacheKey, async () => {
@@ -197,44 +232,67 @@ module.exports = function (router, protector) {
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
-    }
+    }*/
   });
 
   router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
     try {
-      let cacheKey = `ck_${req.params.account}_${req.params.group}_${req.params.artifact}_${req.params.version}`;
 
 
-      let data = await cache.get(cacheKey, async () => {
-        return {
-          version: await sparql.dataid.getVersion(req.params.account, req.params.group,
-            req.params.artifact, req.params.version)
-        };
+      var auth = ServerUtils.getAuthInfoFromRequest(req);
+      var versionUri = UriUtils.createResourceUri([req.params.account, req.params.group,
+      req.params.artifact, req.params.version]);
+
+      var versionGraphs = await cache.get(versionUri, async () => {
+        return await getJsonLd(versionUri, versionQueryTemplate, 'flatten')
       });
 
-      // Only deliver the version graph
-      var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATAID_VERSION);
-      data.version = [versionGraph];
-
-      try {
-        data.licenseData = await licenseCache.get('dalicc', async () => {
-          return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
-        });
-      } catch(err) {
-        data.licenseData = null;
-      }
-
-      if (data.version == null) {
+      if (versionGraphs == null) {
         next('route');
         return;
       }
 
-      data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      res.render('version', { title: data.version.title, data: data });
+      var versionGraph = JsonldUtils.getTypedGraph(versionGraphs, DatabusUris.DATABUS_VERSION);
+      var versionTitle = JsonldUtils.getProperty(versionGraph, DatabusUris.DCT_TITLE);
+
+      res.render('version', {
+        title: versionTitle,
+        data: {
+          auth: auth,
+          graph: versionGraph
+        }
+      });
+
     } catch (err) {
       console.log(err);
-      res.status(404).send('Sorry cant find that!');
+      next('route');
     }
+
+    /*
+
+    // Only deliver the version graph
+    var versionGraph = JsonldUtils.getTypedGraph(data.version, DatabusUris.DATABUS_VERSION);
+    data.version = [versionGraph];
+
+    try {
+      data.licenseData = await licenseCache.get('dalicc', async () => {
+        return JSON.parse(await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000'));
+      });
+    } catch(err) {
+      data.licenseData = null;
+    }
+
+    if (data.version == null) {
+      next('route');
+      return;
+    }
+
+    data.auth = ServerUtils.getAuthInfoFromRequest(req);
+    res.render('version', { title: data.version.title, data: data });
+  } catch (err) {
+    console.log(err);
+    res.status(404).send('Sorry cant find that!');
+  } */
   });
 }

@@ -31,14 +31,14 @@ paths:
                 type: string
                 example: |
                   @base <%DATABUS_RESOURCE_BASE_URL%> .
-                  @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+                  @prefix databus: <https://dataid.dbpedia.org/databus#> .
                   @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                   @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
                   @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
                   @prefix dcat:  <http://www.w3.org/ns/dcat#> .
                   @prefix dct:   <http://purl.org/dc/terms/> .
 
-                  <> a dataid:Databus . 
+                  <> a databus:Databus . 
                   <> dct:hasVersion "<2.1.0-rc.1>" .
 
   /api/publish:
@@ -88,7 +88,7 @@ paths:
           in: query
           schema:
             type: boolean
-          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *dataid:Part*. Default value is *true*."
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *databus:Part*. Default value is *true*."
           required: false
           example: "true"
         - name: log-level
@@ -950,7 +950,7 @@ paths:
                       },
                       {
                         "@id": "20617c91ba3780bb0141bc9357f57ad3",
-                        "@type": "dataid:DatabusTractateV1",
+                        "@type": "databus:DatabusTractateV1",
                         "signature": "UuNw/KHoZfWkHxSo7bNTBwBhVpTY3wl1xOkI2fsSy/iDgzV8iUjlmfyAXgDaTschevGtPmPA4x2LsYRSeQbP5oJ4dnww6pqPzuBLu8Qpanuq40bJS1mAC1Cg58yuR5Zw3tmtn6Yxpoujolxqo5toD1IH1P2L6KfGdXM6HfJb+BR8uxIMiEB0yrRYRSuMKi2mkm6CqCbRaRHTL70DMO8lqoc9nOq/KHcm2Kat0kBeluLciBjPUdrIeepQMwNt4Lk6iXVkB6xHEUros45p3xXGb0+obHnkYdEQpNzPCXIR6Ou1LvuAFgfzmpuYg0yQUjJSKshsiPf91NLJTGLzfEvgDA=="
                       },
                       {
@@ -1082,7 +1082,134 @@ paths:
             text/plain:
               schema:
                 type: string
-    /{account}/collections/{id}:
+
+  /api/tractate/v1/canonicalize:
+    post:
+      summary: "Canonicalize DataId"
+      description: "Generate the canonicalized form of a DataId for the Databus Tractate v1."
+      operationId: "tractate-canonicalize"
+      tags:
+        - tractate
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              example: |
+                {
+                  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                  "@graph": {
+                    "@type": [ "Version", "Dataset" ],
+                    "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
+                    "hasVersion": "%VERSION%",
+                    "title": "Test Version",
+                    "description": "Data for testing purposes.",
+                    "license": "http://creativecommons.org/licenses/by/4.0/",
+                    "distribution": [
+                      {
+                        "@type": "Part",
+                        "formatExtension": "ttl",
+                        "compression": "none",
+                        "downloadURL": "https://holycrab13.github.io/webid.ttl",
+                        "byteSize": 2730,
+                        "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
+                      }
+                    ]
+                  }
+                }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Databus Tractate Version 1.0
+                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this
+                  %DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%
+                  http://creativecommons.org/licenses/by/4.0/
+                  d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1'
+  /api/tractate/v1/verify:
+    post:
+      summary: "Verify Tractate"
+      description: "Verify a Databus Tractate v1."
+      operationId: "tractate-verify"
+      tags:
+        - tractate
+      requestBody:
+        description: "Metadata in JSONLD. May contain at most one group and one version metadata graph."
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              example: '{
+                "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+                "@graph": [
+                    {
+                      "@id": "_:b0",
+                      "@type": "databus:DatabusTractateV1",
+                      "signature": {
+                          "@type": "xsd:string",
+                          "@value": "ydUqnbsw4JZaiuJ7n9vsIIAIhU1to0Dlr85KVGAFEYGOiAvx22ruwWfgeGOeRC2Dwkwcnq1QdgnAZnAkxiAu1XqmRMlGtwUtkn7XyeSQBQfbuiaL/Vsq7iQWd7YyD9C5PMXcP6T7F21mqW8oZcFso/JDemhNu//dC+o/XWsGM6Vf7teBaXuWUFTrg39c0Rf9X/7MxQN6TQ6Na0+C/vjQO5nM55B7kJyfGaO8PUez8zShA3uYoCHbeJgd8MIvM04S3ia6itg+w+CaEhN9OZNKRm8I7Kxd67c+3hBaijqYROswC4+5O+fEWIqCUdKnPu11/DFSUP5I0gSBgx1gVdx+aA=="
+                      }
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
+                      "@type": "databus:Artifact"
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
+                      "@type": "databus:Version"
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#Dataset",
+                      "@type": "Dataset",
+                      "artifact": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%",
+                      "group": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
+                      "version": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%",
+                      "description": "%GROUP% version of the %ARTIFACT% dataset from DBpedia",
+                      "hasVersion": "%VERSION%",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "license": "http://creativecommons.org/licenses/by/4.0/",
+                      "modified": "2022-02-11T13:28:58.132Z",
+                      "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
+                      "title": "%GROUP% %ARTIFACT%",
+                      "distribution": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
+                      "proof": {
+                          "@id": "_:b0"
+                      }
+                    },
+                    {
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%#%ARTIFACT%.ttl",
+                      "@type": "Part",
+                      "compression": "none",
+                      "file": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%/%ARTIFACT%/%VERSION%/%ARTIFACT%.ttl",
+                      "formatExtension": "ttl",
+                      "formatExtension": "ttl",
+                      "sha256sum": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1",
+                      "hasVersion": "%VERSION%",
+                      "issued": "2022-02-11T13:28:58.132Z",
+                      "byteSize": "2730",
+                      "downloadURL": "https://holycrab13.github.io/webid.ttl"
+                    }
+                ]
+              }'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: '{
+                    "success": true,
+                    "message": "Verification successful.\n"
+                  }'
+
+  /{account}/collections/{id}:
     put:
       summary: "Create / Update Collection"
       description: "Creates or updates a Databus Collection."
@@ -1118,11 +1245,11 @@ paths:
                 "@graph": [
                   {
                     "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/collections/%GROUP%-%ARTIFACT%",
-                    "@type": "dataid:Collection",
+                    "@type": "databus:Collection",
                     "publisher": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%#this",
                     "title": "%GROUP% %ARTIFACT%",
                     "description": "%GROUP% %ARTIFACT% Data (latest version) from DBpedia.",
-                    "dataid:content": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%2F%ARTIFACT%%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%22%VERSION%%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
+                    "databus:collectionContent": "%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%22%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%22%2C%22property%22%3A%22dataid%3Agroup%22%2C%22childNodes%22%3A%5B%7B%22uri%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%USERNAME%%2F%GROUP%%2F%ARTIFACT%%22%2C%22property%22%3A%22dataid%3Aartifact%22%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%22http%3A%2F%2Fpurl.org%2Fdc%2Fterms%2FhasVersion%22%3A%5B%7B%22value%22%3A%22%VERSION%%22%2C%22checked%22%3Atrue%7D%5D%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%5D%2C%22facetSettings%22%3A%7B%7D%7D%2C%22generatedQuery%22%3A%7B%22root%22%3A%7B%22uri%22%3Anull%2C%22property%22%3Anull%2C%22childNodes%22%3A%5B%5D%2C%22facetSettings%22%3A%7B%7D%7D%7D%7D"
                   }
                 ]
               }'
@@ -1204,21 +1331,21 @@ paths:
                   PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                   PREFIX dcat:   <http://www.w3.org/ns/dcat#>
                   PREFIX dct:    <http://purl.org/dc/terms/>
-                  PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
-                  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+                  PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
+                  PREFIX databus: <https://dataid.dbpedia.org/databus#>
                   SELECT ?file WHERE
                   {
                   	{
                   		GRAPH ?g
                   		{
                   			{
-                  				?dataset dataid:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection> .
+                  				?dataset databus:group <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection> .
                   				{
-                  					?dataset dataid:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection/first> .
+                  					?dataset databus:artifact <%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/yourCollection/first> .
                   				}
                   			}
                   			?dataset dcat:distribution ?distribution .
-                  			?distribution dataid:file ?file .
+                  			?distribution databus:file ?file .
                   		}
                   	}
                   }"
@@ -1227,7 +1354,7 @@ paths:
                 type: object
                 example: '{
                   "@id": "%DATABUS_RESOURCE_BASE_URL%/%USERNAME%/%GROUP%",
-                  "@type": "dataid:Group",
+                  "@type": "databus:Group",
                   "description": "%GROUP% datasets from DBpedia",
                   "title": "%GROUP% Data",
                   "@context": {
@@ -1241,7 +1368,7 @@ paths:
                     "sec": "https://w3id.org/security#",
                     "dataid": "http://dataid.dbpedia.org/ns/core#",
                     "dct": "http://purl.org/dc/terms/",
-                    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                    "dcv": "https://dataid.dbpedia.org/databus-cv#",
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "cert": "http://www.w3.org/ns/auth/cert#",
@@ -1436,7 +1563,7 @@ paths:
                       "sec": "https://w3id.org/security#",
                       "dataid": "http://dataid.dbpedia.org/ns/core#",
                       "dct": "http://purl.org/dc/terms/",
-                      "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                      "dcv": "https://dataid.dbpedia.org/databus-cv#",
                       "xsd": "http://www.w3.org/2001/XMLSchema#",
                       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                       "cert": "http://www.w3.org/ns/auth/cert#",

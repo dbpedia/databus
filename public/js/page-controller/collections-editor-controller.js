@@ -1,3 +1,11 @@
+const DatabusCollectionUtils = require("../collections/databus-collection-utils");
+const DatabusCollectionWrapper = require("../collections/databus-collection-wrapper");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const QueryNode = require("../query-builder/query-node");
+const DatabusMessages = require("../utils/databus-messages");
+const DatabusUtils = require("../utils/databus-utils");
+const DatabusWebappUtils = require("../utils/databus-webapp-utils");
+const TabNavigation = require("../utils/tab-navigation");
 
 /**
  * Controls the collection editor page
@@ -155,22 +163,22 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
         $scope.$apply();
       });
 
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       DatabusAlert.alert($scope, false, err);
     }
   }
 
-  $scope.unpublishCollection = async function() {
+  $scope.unpublishCollection = async function () {
 
-    if($scope.collectionManager.activeCollection.isDraft) {
+    if ($scope.collectionManager.activeCollection.isDraft) {
       return;
     }
 
     try {
       await $scope.collectionManager.unpublishActiveCollection();
       DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_COLLECTION_UNPUBLISHED);
-    } catch(err) {
+    } catch (err) {
       DatabusAlert.alert($scope, false, err);
       console.log(err);
     }
@@ -210,7 +218,7 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       return;
     }
 
-    if(!$scope.collectionManager.activeCollection.isDraft) {
+    if (!$scope.collectionManager.activeCollection.isDraft) {
       return;
     }
 
@@ -228,14 +236,14 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
    */
   $scope.discardChanges = function () {
 
-    if(!$scope.collectionManager.activeCollection.hasLocalChanges) {
+    if (!$scope.collectionManager.activeCollection.hasLocalChanges) {
       return;
     }
 
-    if($scope.collectionManager.activeCollection.isDraft) {
+    if ($scope.collectionManager.activeCollection.isDraft) {
       return;
     }
-    
+
     $scope.collectionManager.discardLocalChanges();
     DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_LOCAL_CHANGES_DISCARDED);
   }
@@ -256,10 +264,41 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
       var toLoad = JSON.parse(loadFromJsonString);
 
       var target = $scope.collectionManager.activeCollection;
-      target.title = toLoad.title;
+
+      if (toLoad.label != undefined) {
+        target.title = toLoad.label;
+      }
+
+      if (toLoad.title != undefined) {
+        target.title = toLoad.title;
+      }
+
       target.description = toLoad.description;
       target.abstract = toLoad.abstract;
-      target.content = toLoad.content;
+
+      if (toLoad.content.generatedQuery != undefined || toLoad.content.customQueries) {
+        // Datbaus 1.0 Syntax detected
+
+        var databusNode = new QueryNode(DATABUS_RESOURCE_BASE_URL, null);
+
+        target.content.root = new QueryNode(null, null);
+        target.content.root.addChild(databusNode);
+
+        for(var groupNode of toLoad.content.generatedQuery.root.childNodes) {
+          databusNode.addChild(groupNode);
+        }
+
+        for(var customNode of toLoad.content.customQueries) {
+
+          var label = customNode.label;
+          var query = customNode.query;
+
+          databusNode.addChild(new QueryNode(label, query));
+        }
+
+      } else {
+        target.content = toLoad.content;
+      }
 
       DatabusAlert.alert($scope, true, DatabusMessages.CEDIT_COLLECTION_IMPORTED);
       $scope.isLoadFromJsonVisible = false;
@@ -278,3 +317,4 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
   $scope.onActiveCollectionChanged();
 }
 
+module.exports = CollectionsEditorController;

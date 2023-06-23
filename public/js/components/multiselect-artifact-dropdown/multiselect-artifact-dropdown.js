@@ -41,7 +41,7 @@ function MultiselectArtifactDropdownController($timeout, $sce) {
     var hasArtifact = QueryNode.findChildByUri(groupNode, value.artifactUri);
   
     if (!hasArtifact) {
-      let node = new QueryNode(value.artifactUri, 'dataid:artifact');
+      let node = new QueryNode(value.artifactUri, 'databus:artifact');
       groupNode.addChild(node);
     } else {
       QueryNode.removeChildByUri(groupNode, value.artifactUri);
@@ -58,3 +58,4 @@ function MultiselectArtifactDropdownController($timeout, $sce) {
   }
 }
 
+module.exports = MultiselectArtifactDropdownController;

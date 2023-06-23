@@ -2,7 +2,7 @@
   "@language": "en",
   "dataid": "http://dataid.dbpedia.org/ns/core#",
   "databus": "https://databus.dbpedia.org/system/ontology#",
-  "dcv": "http://dataid.dbpedia.org/ns/cv#",
+  "dcv": "https://dataid.dbpedia.org/databus-cv#",
   "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
   "dct": "http://purl.org/dc/terms/",
   "dcat": "http://www.w3.org/ns/dcat#",
@@ -52,13 +52,13 @@
     "@id": "dct:modified",
     "@type": "xsd:dateTime"
   },
-  "Artifact": "dataid:Artifact",
+  "Artifact": "databus:Artifact",
   "format": {
-    "@id": "dataid:formatExtension",
+    "@id": "databus:formatExtension",
     "@type": "xsd:string"
   },
   "signature": {
-    "@id": "dataid:signature",
+    "@id": "databus:signature",
     "@type": "xsd:string"
   },
   "tractate": {

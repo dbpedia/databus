@@ -12,10 +12,10 @@ Example (JSON-LD):
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
 databus:Artifact a owl:Class ;
-    rdfs:label "Databus Artifact"@en ;
-    rdfs:comment """A Databus Artifact represents a logical dataset in the DBpedia Databus platform, akin to the role that artifacts play in Maven. However, instead of software libraries, it encompasses datasets. Each artifact has an abstract identity, meaning it maintains a stable reference across different versions and variants of the dataset. The abstract identity facilitates tracking and retrieval of various versions of the dataset."""@en ;
-    rdfs:subClassOf prov:Entity ;
-    rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> .
+     rdfs:label "Databus Artifact"@en ;
+     rdfs:comment """A Databus Artifact represents a logical dataset in the DBpedia Databus platform, akin to the role that artifacts play in Maven. However, instead of software libraries, it encompasses datasets. Each artifact has an abstract identity, meaning it maintains a stable reference across different versions and variants of the dataset. The abstract identity facilitates tracking and retrieval of various versions of the dataset."""@en ;
+     rdfs:subClassOf prov:Entity ;
+     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ```
 ```turtle

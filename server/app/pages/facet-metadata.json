@@ -1,8 +1,8 @@
 {
   "http://purl.org/dc/terms/hasVersion" : "Version",
-  "http://dataid.dbpedia.org/ns/core#formatExtension" : "Format",
-  "http://dataid.dbpedia.org/ns/cv#lang" : "Language",
-  "http://dataid.dbpedia.org/ns/cv#domain" : "Domain",
-  "http://dataid.dbpedia.org/ns/cv#tag" : "Tag",
-  "http://dataid.dbpedia.org/ns/core#compression" : "Compression"
+  "https://dataid.dbpedia.org/databus#formatExtension" : "Format",
+  "https://dataid.dbpedia.org/databus-cv#lang" : "Language",
+  "https://dataid.dbpedia.org/databus-cv#domain" : "Domain",
+  "https://dataid.dbpedia.org/databus-cv#tag" : "Tag",
+  "https://dataid.dbpedia.org/databus#compression" : "Compression"
 }

@@ -14,81 +14,19 @@
   <link rel='stylesheet prefetch' href='/node_modules/bulma-checkradio/dist/css/bulma-checkradio.min.css'>
   <link href='/node_modules/yasgui-yasqe/dist/yasqe.min.css' rel='stylesheet' type='text/css' />
   <link href='/node_modules/codemirror/lib/codemirror.css' rel='stylesheet' type='text/css' />
+  
   <link href="/fonts/fontawesome/css/fontawesome.min.css" rel="stylesheet">
   <link href="/fonts/fontawesome/css/solid.min.css" rel="stylesheet">
+  
   <script src="/node_modules/jquery/dist/jquery.min.js"></script>
   <script src="/node_modules/angular/angular.min.js"></script>
-  <script src="/node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.min.js"></script>
   <script src="/node_modules/markdown-it/dist/markdown-it.js"></script>
   <script src='/node_modules/codemirror/lib/codemirror.js'></script>
   <script src='/node_modules/moment/min/moment.min.js'></script>
   <script src='/node_modules/yasgui-yasqe/dist/yasqe.js'></script>
-  <script src="/node_modules/angular-content-editable/dist/angular-content-editable.min.js"></script>
-  <script src="/node_modules/@iamadamjowett/angular-click-outside/clickoutside.directive.js"></script>
 
-  <% if(site.minifyJs){ %>
+  <script src="/dist/main.js"></script>
 
-    <script src="/min/databus.min.js"></script>
-    <% } else { %>
-      <script src="/js/utils/databus-uris.js"></script>
-      <script src="/js/page-controller/header-controller.js"></script>
-      <script src="/js/page-controller/account-controller.js"></script>
-      <script src="/js/page-controller/profile-controller.js"></script>
-      <script src="/js/components/databus-search/databus-search.js"></script>
-      <script src="/js/page-controller/collections-editor-controller.js"></script>
-      <script src="/js/page-controller/collection-controller.js"></script>
-      <script src="/js/page-controller/frontpage-controller.js"></script>
-      <script src="/js/page-controller/artifact-controller.js"></script>
-      <script src="/js/page-controller/version-controller.js"></script>
-      <script src="/js/page-controller/group-controller.js"></script>
-      <script src="/js/page-controller/publish-wizard-controller.js"></script>
-      <script src="/js/publish/dataid-creator.js"></script>
-      <script src="/js/publish/publish-data.js"></script>
-      <script src="/js/publish/file-analyzer-client.js"></script>
-      <script src="/js/components/file-browser/file-browser.js"></script>
-      <script src="/js/components/collection-node/collection-node.js"></script>
-      <script src="/js/components/collection-search/collection-search.js"></script>
-      <script src="/js/components/edit-label/edit-label.js"></script>
-      <script src="/js/components/override-checkbox/override-checkbox.js"></script>
-      <script src="/js/components/collection-editor/collection-editor.js"></script>
-      <script src="/js/components/collection-editor-widget/collection-editor-widget.js"></script>
-      <script src="/js/components/collection-hierarchy/collection-hierarchy.js"></script>
-      <script src="/js/components/collection-hierarchy-two/collection-hierarchy.js"></script>
-      <script src="/js/components/collection-statistics/collection-statistics.js"></script>
-      <script src="/js/components/collection-status/collection-status.js"></script>
-      <script src="/js/components/collection-data-table/collection-data-table.js"></script>
-      <script src="/js/components/table-editor/table-editor.js"></script>
-      <script src="/js/components/expandable-arrow/expandable-arrow.js"></script>
-      <script src="/js/components/databus-icon/databus-icon.js"></script>
-      <script src="/js/components/artifact-card/artifact-card.js"></script>
-      <script src="/js/components/uri-breadcrumbs/uri-breadcrumbs.js"></script>
-      <script src="/js/components/yasqe-text/yasqe-text.js"></script>
-      <script src="/js/components/type-tag/type-tag.js"></script>
-      <script src="/js/components/facets-view/facets-view.js"></script>
-      <script src="/js/components/entity-card/entity-card.js"></script>
-      <script src="/js/components/search/search-controller.js"></script>
-      <script src="/js/components/autofill-dropdown/autofill-dropdown.js"></script>
-      <script src="/js/components/databus-alert/databus-alert.js"></script>
-      <script src="/js/components/multiselect-dropdown/multiselect-dropdown.js"></script>
-      <script src="/js/components/multiselect-artifact-dropdown/multiselect-artifact-dropdown.js"></script>
-      <script src="/js/utils/databus-response.js"></script>
-      <script src="/js/utils/databus-constants.js"></script>
-      <script src="/js/utils/jsonld-context.js"></script>
-      <script src="/js/utils/jsonld-utils.js"></script>
-      <script src="/js/utils/databus-utils.js"></script>
-      <script src="/js/utils/databus-messages.js"></script>
-      <script src="/js/utils/databus-facets-cache.js"></script>
-      <script src="/js/utils/databus-webapp-utils.js"></script>
-      <script src="/js/utils/tab-navigation.js"></script>
-      <script src="/js/collections/databus-collection-manager.js"></script>
-      <script src="/js/collections/databus-collection-utils.js"></script>
-      <script src="/js/collections/databus-collection-wrapper.js"></script>
-      <script src="/js/query-builder/query-builder.js"></script>
-      <script src="/js/query-builder/query-node.js"></script>
-      <script src="/js/utils/search-adapter.js"></script>
-      <script src="/js/query-builder/query-templates.js"></script>
-      <script src="/js/angular-application.js"></script>
-      <% } %>
 </head>
 <body ng-app="databusApplication" ng-cloak>
   <nav ng-controller="HeaderController" id="navbar" class="databus-navbar">

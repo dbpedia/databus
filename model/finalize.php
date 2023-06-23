@@ -17,8 +17,9 @@ function headerFooterContext($contextFile){
 
     $contextPrefix ='{ 
 "@context": {
+	"databus": "https://dataid.dbpedia.org/databus#",
 	"dataid": "http://dataid.dbpedia.org/ns/core#",
-	"dcv": "http://dataid.dbpedia.org/ns/cv#",
+	"dcv": "https://dataid.dbpedia.org/databus-cv#",
 	"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 	"dct": "http://purl.org/dc/terms/",
 	"dcat": "http://www.w3.org/ns/dcat#",
@@ -52,9 +53,12 @@ function headerFooterShacl($shaclDir){
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
+@prefix databus: <https://dataid.dbpedia.org/databus#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix dcv: <https://dataid.dbpedia.org/databus-cv#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
 
 ";

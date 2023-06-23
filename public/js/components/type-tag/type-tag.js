@@ -43,3 +43,4 @@ function TypeTagController() {
   }
 }
 
+module.exports = TypeTagController;

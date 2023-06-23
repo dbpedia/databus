@@ -11,6 +11,7 @@ const HttpStrings = require('./http-strings');
 module.exports = async function getJsonLd(resourceUri, template, formatting) {
 
   try {
+
     var exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
 
     if (!exists) {

@@ -8,9 +8,9 @@ CONSTRUCT
 }
 WHERE
 {
-  VALUES ?account { <%RESOURCE_URI%> }
+  VALUES ?profile { <%RESOURCE_URI%> }
   GRAPH ?g { 
-    ?account ?p ?o .
+    ?profile a foaf:PersonalProfileDocument .
     ?a ?b ?c . 
   }
 }

@@ -63,7 +63,7 @@ module.exports = function (router, protector) {
       var triples = await constructor.executeConstruct(req.body, constructCollection);
       var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
-      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATAID_COLLECTION);
+      var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_COLLECTION);
     
       collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
 

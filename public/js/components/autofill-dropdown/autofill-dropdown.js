@@ -63,3 +63,5 @@ function AutofillDropdownController($timeout) {
   }
 }
 
+module.exports = AutofillDropdownController;
+

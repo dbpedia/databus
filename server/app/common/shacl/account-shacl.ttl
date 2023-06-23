@@ -7,7 +7,7 @@
 @prefix dataid: <http://dataid.dbpedia.org/ns/core#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix dcat:  <http://www.w3.org/ns/dcat#> .
-@prefix dcv: <http://dataid.dbpedia.org/ns/cv#> .
+@prefix dcv: <https://dataid.dbpedia.org/databus-cv#> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
@@ -62,22 +62,15 @@
   sh:path foaf:primaryTopic ;
   sh:class foaf:Person .
 
-<#foaf-account-target>   
-  a sh:PropertyShape ;
-  sh:targetClass foaf:Person ;
-  sh:severity sh:Violation ;
-  sh:message "Object of foaf:account must be of type foaf:PersonalProfileDocument."@en ;
-  sh:path foaf:account ;
-  sh:class foaf:PersonalProfileDocument .
-
 <#foaf-account>   
   a sh:PropertyShape ;
   sh:targetClass foaf:Person ;
   sh:severity sh:Violation ;
-  sh:message "Required property foaf:account MUST occur exactly once in foaf:Person."@en ;
+  sh:message "Required property foaf:account MUST occur exactly once in foaf:Person and must target an IRI."@en ;
   sh:path foaf:account ;
   sh:minCount 1 ;
-  sh:maxCount 1 .
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI .
 
 <#foaf-name>   
   a sh:PropertyShape ;

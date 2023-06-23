@@ -1,12 +1,13 @@
 
 
 // hinzufügen eines Controllers zum Modul
-function SearchController($http, $interval, $sce, searchAdapters) {
+function SearchController($http, $interval, $sce, searchManager) {
 
   var ctrl = this;
 
   // TODO: get search extensions from the logged in user
 
+  ctrl.searchManager = searchManager;
   ctrl.results = [];
 
   ctrl.formatResult = function (result) {
@@ -74,12 +75,15 @@ function SearchController($http, $interval, $sce, searchAdapters) {
     return false;
   }
 
+  ctrl.baseQueryFormatter = function(query) {
+    return `?query=${query}${ctrl.searchFilter}${ctrl.baseFilters}${ctrl.typeFilters}`
+  }
+
   $interval(function () {
 
     if (ctrl.searchChanged) {
 
       var baseFilters = `&minRelevance=${ctrl.minRelevance}&maxResults=${ctrl.maxResults}`;
-
       var typeFilters = ``;
       var isAnyFilterActive = ctrl.isAnyFilterActive();
 
@@ -100,14 +104,14 @@ function SearchController($http, $interval, $sce, searchAdapters) {
         }
       }
 
-      var url = `/api/search?query=${ctrl.searchInput}${ctrl.searchFilter}${baseFilters}${typeFilters}`;
-      $http({
-        method: 'GET',
-        url: url
-      }).then(function successCallback(response) {
+      ctrl.baseFilters = baseFilters;
+      ctrl.typeFilters = typeFilters;
+      ctrl.searchManager.baseAdapter.queryFormatter = ctrl.baseQueryFormatter;
+
+      ctrl.searchManager.search(ctrl.searchInput).then(function success(results) {
+        ctrl.results = results;
         ctrl.isSearching = false;
-        ctrl.results = response.data;
-      }, function errorCallback(response) {
+      }, function error(response) {
         ctrl.isSearching = false;
       });
 
@@ -122,4 +126,5 @@ function SearchController($http, $interval, $sce, searchAdapters) {
 
 };
 
+module.exports = SearchController;
 

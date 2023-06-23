@@ -25,7 +25,7 @@ $shacl='<#group-exists>
 	  sh:path [ sh:inversePath rdf:type ] ;
 	  sh:minCount 1 ;
 	  sh:maxCount 1;
-	  sh:message "Exactly one subject with an rdf:type of dataid:Group must occur."@en ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Group must occur."@en ;
 	] ;
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;

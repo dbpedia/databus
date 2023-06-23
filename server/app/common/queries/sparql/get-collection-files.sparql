@@ -1,5 +1,5 @@
 PREFIX databus-sys:  <https://databus.dbpedia.org/system/voc/> 
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -22,14 +22,13 @@ WHERE
     <%COLLECTION_URI%> dcat:distribution ?distribution . 
     
     ?distribution dcat:downloadURL ?downloadURL .  
-    ?distribution dataid:formatExtension ?format .
-    OPTIONAL { ?distribution dataid:contentVariant ?var . }
+    ?distribution databus:formatExtension ?format .
+    OPTIONAL { ?distribution databus:contentVariant ?var . }
     OPTIONAL { ?distribution dct:license ?license . }
     OPTIONAL { ?distribution dcat:byteSize ?size . }
-    OPTIONAL { ?distribution dataid:preview ?preview . }
     ?distribution dct:hasVersion ?version .
     ?dataset dcat:distribution ?distribution .
-    ?dataset dataid:version ?versionUri .
+    ?dataset a databus:Version .
     ?dataset rdfs:label ?label .
     ?dataset rdfs:comment ?comment.
-} GROUP BY ?versionUri ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview
+} GROUP BY ?dataset ?distribution ?label ?comment ?license ?size ?version ?format ?preview

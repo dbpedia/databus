@@ -376,7 +376,7 @@ missing
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -392,8 +392,8 @@ missing
 			SELECT $this ?value
 			WHERE {
         ?this <http://www.w3.org/ns/dcat#distribution> ?dist .
-        ?dist <http://dataid.dbpedia.org/databus#file> ?value .
-				$this <http://dataid.dbpedia.org/databus#version> ?version .
+        ?dist <https://dataid.dbpedia.org/databus#file> ?value .
+				$this <https://dataid.dbpedia.org/databus#version> ?version .
         FILTER(!strstarts(str($value), str(?version)))
 			}
 			""" ;
@@ -401,7 +401,8 @@ missing
 
 ```
 ```javascript
-"subPropertyOf" : {
+"contentVariant": { "@id" : "databus:contentVariant" },
+	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
   }
@@ -426,23 +427,9 @@ missing
 missing
 ```
 ```javascript
-"maker": {
-    "@id": "foaf:maker",
-    "@type": "@id"
-  },
-  "primaryTopic": {
-    "@id": "foaf:primaryTopic",
-    "@type": "@id"
-  },
-  "name": {"@id": "foaf:name"},
-  "account": {
-    "@id": "foaf:account",
-    "@type": "@id"
-  },
-  "img": {
-    "@id": "foaf:img",
-    "@type": "@id"
-  },
+
+  "Dataset": "dataid:Dataset",
+  "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},
   "exponent":	{"@id": "cert:exponent"}

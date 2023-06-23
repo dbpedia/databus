@@ -23,8 +23,8 @@
     "errors": {
         "err_invalid_group_description": "The group description is invalid. Please enter at least 25 characters.",
         "err_invalid_group_label": "The group label is invalid. Please enter at least 3 characters.",
-        "err_invalid_group_name": "The group name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
-        "err_invalid_artifact_name": "The artifact name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
+        "err_invalid_group_title": "The group name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
+        "err_invalid_artifact_title": "The artifact name is invalid. Please enter between 3 to 50 characters. \nRegex: [a-zA-Z0-9_\\-\\.]{3,50}$",
         "err_invalid_artifact_label": "The artifact label is invalid. Please enter at least 3 characters.",
         "err_invalid_version_name": "The version name is invalid. Please enter at least 3 characters.",
         "err_invalid_version_title": "The version title is missing.",
@@ -34,6 +34,7 @@
         "err_no_files": "You have to upload at least one file.",
         "err_not_analyzed": "This file has not been analzyed yet.",
         "warning_group_exists": "A group with this name already exits. Publishing will overwrite its metadata.",
-        "warning_artifact_exists": "An artifact with this name already exits. Publishing will overwrite its metadata."
+        "warning_artifact_exists": "An artifact with this name already exits. Publishing will overwrite its metadata.",
+        "warning_version_exists": "A version with this name already exits. Publishing will overwrite its metadata. This is not recommended, as other users might use your version identifier as a data dependency."
     }
 }

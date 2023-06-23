@@ -1,3 +1,5 @@
+const DatabusUtils = require("../../utils/databus-utils");
+
 // hinzufügen eines Controllers zum Modul
 function EntityCardController($sce) {
 
@@ -5,9 +7,9 @@ function EntityCardController($sce) {
 
   ctrl.$onInit = function() {
 
-    //if(ctrl.desc != null && ctrl.desc.length > 300) {
-    //  ctrl.desc = ctrl.desc.substr(0, 300) + '...';
-    //}
+    if(ctrl.label == null || ctrl.label == "") {
+      ctrl.label = DatabusUtils.uriToTitle(ctrl.uri);
+    }
   }
 
   ctrl.formatResult = function(result) {
@@ -16,3 +18,4 @@ function EntityCardController($sce) {
 }
 
 
+module.exports = EntityCardController;

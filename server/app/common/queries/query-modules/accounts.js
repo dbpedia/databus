@@ -11,6 +11,9 @@ instance.getPublisherHasAccount = async function (publisherUri, accountUri) {
   queryOptions.ACCOUNT_URI = accountUri;
 
   var query = exec.formatQuery(require('../sparql/get-publisher-has-account.sparql'), queryOptions);
+
+  console.log(query);
+  
   var result = await exec.executeAsk(query);
 
   return result;

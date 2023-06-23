@@ -80,11 +80,14 @@ module.exports = function (router, protector) {
 
   router.delete('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
 
-    var artifactUri = `${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}`;
+    var artifactUri = UriUtils.createResourceUri([
+      req.params.account,
+      req.params.group,
+      req.params.artifact
+    ]);
 
     // Check if the artifact exists
-    var exists = await sparql.dataid.hasArtifact(req.params.account, req.params.group,
-      req.params.artifact);
+    var exists = await sparql.dataid.hasArtifact(artifactUri);
 
     if (!exists) {
       res.status(204).send(`The artifact  <${artifactUri}> does not exist.`);
@@ -92,8 +95,7 @@ module.exports = function (router, protector) {
     }
 
     // Allow deletion only if there are no artifacts (and thus no versions).
-    var versions = await sparql.dataid.getVersionsByArtifact(req.params.account, req.params.group,
-      req.params.artifact);
+    var versions = await sparql.dataid.getVersionsByArtifact(artifactUri);
 
     if (versions.length > 0) {
       res.status(409).send(`Unable to delete non-empty artifact <${artifactUri}>.`);

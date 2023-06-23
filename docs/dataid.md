@@ -2,7 +2,7 @@
 *auto-generated from model/*.php via [pre-commit hook](https://github.com/dbpedia/databus/blob/master/model/README.md)*
 ## Version
 
-A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets). 
+A Databus Version is one specific version of a Databus artifact (artifacts = version-independent, abstract datasets).
 
 
 Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it could mean:
@@ -231,7 +231,7 @@ Three main features are included in the model:
 ### license
 
 * Usage of DALICC License URIs is highly recommended ([library](https://www.dalicc.net/license-library/)). 
-* License is set at the dataid:Dataset node, but is always valid for all distributions, which is also reflected by signing the tractate.
+* License is set at the databus:Version node, but is always valid for all distributions, which is also reflected by signing the tractate.
 * context.jsonld contains `"@context":{"@base": null },` to prevent creating local IRIs.
 
 
@@ -255,7 +255,7 @@ dct:license
 ```turtle
 <#has-license>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:license MUST occur exactly once and have URI/IRI as value"@en ;
 	sh:path dct:license;
@@ -343,18 +343,18 @@ Example (JSON-LD):
 ```
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
-dataid:attribution a owl:DataTypeProperty; 
+databus:attribution a owl:DataTypeProperty; 
 	rdfs:label "attribution"@en ;
 	rdfs:comment "TODO"@en ;
 	rdfs:domain databus:Artifact, databus:Version, databus:Group ;
 	rdfs:range xsd:string ;
-	rdfs:isDefinedBy <http://dataid.dbpedia.org/ns/core#> . 
+	rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> . 
 ```
 ```turtle
 
 ```
 ```javascript
-"attribution":	{"@id": "dataid:attribution"}
+"attribution":	{"@id": "databus:attribution"}
 ```
 
 ## 3. Structural Metadata
@@ -403,7 +403,7 @@ databus:group rdf:type owl:ObjectProperty ;
     sh:select """
 			SELECT $this ?group
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#group> ?group .
+				$this <https://dataid.dbpedia.org/databus#group> ?group .
         FILTER(!strstarts(str($this), str(?group)))
 			}
 			""" ;
@@ -452,7 +452,7 @@ databus:artifact a rdf:ObjectProperty ;
     sh:select """
 			SELECT $this ?artifact
 			WHERE {
-				$this <http://dataid.dbpedia.org/databus#artifact> ?artifact .
+				$this <https://dataid.dbpedia.org/databus#artifact> ?artifact .
         FILTER(!strstarts(str($this), str(?artifact)))
 			}
 			""" ;
@@ -573,7 +573,7 @@ dct:issued
 ```turtle
 <#has-issued>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:issued MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:issued;
@@ -613,7 +613,7 @@ dct:modified
 ```turtle
 <#has-modified>
 	a sh:PropertyShape ;
-	sh:targetClass void:Version ;
+	sh:targetClass databus:Version ;
 	sh:severity sh:Violation ;
 	sh:message "Required property dct:modified MUST occur exactly once AND have xsd:dateTime as value"@en ;
 	sh:path dct:modified;
@@ -632,15 +632,12 @@ dct:modified
 
 
 
-### proof
-
-
 Example (JSON-LD):
 ```javascript
 {	
 	"@id": "https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06",
 	"proof": {
-  "@type": "dataid:DatabusTractateV1",
+  "@type": "databus:DatabusTractateV1",
   "signature": "d61a05ca4810367f361f17500304a168aab27a3119c93a18c00bce1775dfd6b1"
 }
 }
@@ -660,5 +657,6 @@ sec:proof a owl:ObjectProperty;
 ```
 ```javascript
 "signature":	{"@id": "sec:signature"},
-"proof":	{"@id": "sec:proof"}
+"proof":	{"@id": "sec:proof", "@type": "@id" },
+"DatabusTractateV1": "databus:DatabusTractateV1"
 ```
