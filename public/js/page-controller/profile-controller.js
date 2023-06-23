@@ -5,7 +5,6 @@ const SearchAdapter = require("../search/search-adapter");
 const DatabusMessages = require("../utils/databus-messages");
 const DatabusConstants = require("../utils/databus-constants");
 const AppJsonFormatter = require("../utils/app-json-formatter");
-const DatabusUris = require("../utils/databus-uris");
 
 function ProfileController($scope, $http) {
 

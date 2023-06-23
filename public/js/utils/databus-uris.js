@@ -22,7 +22,7 @@ class DatabusUris {
   static DATABUS_FORMAT = 'https://dataid.dbpedia.org/databus#format';
   static DATABUS_FORMAT_EXTENSION = 'https://dataid.dbpedia.org/databus#formatExtension';
   static DATABUS_CONTENT_VARIANT = 'https://dataid.dbpedia.org/databus#contentVariant';
-  static DATABUS_CONTENT_VARIANT_PREFIX = 'http://dataid.dbpedia.org/ns/cv#';
+  static DATABUS_CONTENT_VARIANT_PREFIX = 'https://dataid.dbpedia.org/databus-cv#';
   static DATABUS_SHASUM = 'https://dataid.dbpedia.org/databus#sha256sum';
   static DATABUS_COLLECTION = 'https://dataid.dbpedia.org/databus#Collection';
   static DATABUS_FILE = 'https://dataid.dbpedia.org/databus#file';

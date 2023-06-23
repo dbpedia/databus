@@ -88,7 +88,7 @@ class DatabusFacetsCache {
 
   static GET_GROUP_FACETS = `
   PREFIX databus: <https://dataid.dbpedia.org/databus#>
-  PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+  PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
   PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX dcat:  <http://www.w3.org/ns/dcat#>
   PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
@@ -134,7 +134,7 @@ class DatabusFacetsCache {
 
   static GET_ARTIFACT_FACETS = `
   PREFIX databus: <https://dataid.dbpedia.org/databus#>
-  PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+  PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
   PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX dcat:  <http://www.w3.org/ns/dcat#>
   PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>

@@ -402,7 +402,7 @@ missing
 
 ```
 ```javascript
-"contentVariant": "databus:contentVariant",
+"contentVariant": { "@id" : "databus:contentVariant" },
 	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"

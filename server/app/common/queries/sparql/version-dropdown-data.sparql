@@ -1,5 +1,5 @@
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 
@@ -11,5 +11,5 @@ SELECT DISTINCT ?format ?compression ?variant ?tag WHERE {
   ?distribution databus:formatExtension ?format .
   ?distribution databus:compression ?compression .
   OPTIONAL { ?distribution databus:contentVariant ?variant. }
-  OPTIONAL { ?distribution dataid-cv:tag ?tag. }
+  OPTIONAL { ?distribution dcv:tag ?tag. }
 }

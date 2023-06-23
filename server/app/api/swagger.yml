@@ -1251,7 +1251,7 @@ paths:
                   PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                   PREFIX dcat:   <http://www.w3.org/ns/dcat#>
                   PREFIX dct:    <http://purl.org/dc/terms/>
-                  PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>
+                  PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
                   PREFIX databus: <https://dataid.dbpedia.org/databus#>
                   SELECT ?file WHERE
                   {
@@ -1288,7 +1288,7 @@ paths:
                     "sec": "https://w3id.org/security#",
                     "dataid": "http://dataid.dbpedia.org/ns/core#",
                     "dct": "http://purl.org/dc/terms/",
-                    "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                    "dcv": "https://dataid.dbpedia.org/databus-cv#",
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
                     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                     "cert": "http://www.w3.org/ns/auth/cert#",
@@ -1475,7 +1475,7 @@ paths:
                       "sec": "https://w3id.org/security#",
                       "dataid": "http://dataid.dbpedia.org/ns/core#",
                       "dct": "http://purl.org/dc/terms/",
-                      "dcv": "http://dataid.dbpedia.org/ns/cv#",
+                      "dcv": "https://dataid.dbpedia.org/databus-cv#",
                       "xsd": "http://www.w3.org/2001/XMLSchema#",
                       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                       "cert": "http://www.w3.org/ns/auth/cert#",

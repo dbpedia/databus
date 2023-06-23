@@ -25,6 +25,7 @@ function autocompleteResourceEntry(expandedGraph, prop, navUpAmount) {
   var versionGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_VERSION);
   var resourceUri = UriUtils.navigateUp(versionGraph['@id'], navUpAmount);
 
+
   expandedGraph.push({
     '@id': resourceUri,
     '@type': prop
@@ -83,23 +84,29 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   }
 
   var datasetUri = versionGraph[DatabusUris.JSONLD_ID];
+  var artifactUri = DatabusUtils.navigateUp(datasetUri, 1);
+  var groupUri = DatabusUtils.navigateUp(datasetUri, 2);
+  var accountUri = DatabusUtils.navigateUp(datasetUri, 3);
+
   versionGraph[DatabusUris.JSONLD_TYPE] = [DatabusUris.DATABUS_VERSION, DatabusUris.DATAID_DATASET];
+  
+
+  versionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
+  versionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+
+  versionGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = [{}];
+  versionGraph[DatabusUris.DATABUS_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
+
+  versionGraph[DatabusUris.DATABUS_ARTIFACT_PROPERTY] = [{}];
+  versionGraph[DatabusUris.DATABUS_ARTIFACT_PROPERTY][0][DatabusUris.JSONLD_ID] = artifactUri;
 
   // Auto-generate publisher entry
   var publisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
 
   if (publisherUri == null) {
-    var accountUri = UriUtils.navigateUp(datasetUri, 3);
     versionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
     versionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}#this`;
   }
-
-  // Auto-generate resource references
-  autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY, 3);
-  autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_GROUP_PROPERTY, 2);
-  autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_ARTIFACT_PROPERTY, 1);
-  // autocompleteResourceUri(versionGraph, DatabusUris.DATABUS_VERSION_PROPERTY, 0);
-
 
 
   var timeString = new Date(Date.now()).toISOString();
@@ -131,9 +138,37 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   versionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
 
   // Auto-generate resource entries
+
+  var artifactGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_ARTIFACT);
+ 
+  if (artifactGraph == undefined) {
+    artifactGraph = {};
+    artifactGraph[DatabusUris.JSONLD_ID] = artifactUri;
+    artifactGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ARTIFACT;
+    expandedGraph.push(artifactGraph);
+  }
+
+  artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
+  artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = [{}];
+  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
+
+
+  var groupGraph = JsonldUtils.getTypedGraph(expandedGraph, DatabusUris.DATABUS_GROUP);
+ 
+  if (groupGraph == undefined) {
+    groupGraph = {};
+    groupGraph[DatabusUris.JSONLD_ID] = groupUri;
+    groupGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_GROUP;
+    expandedGraph.push(groupGraph);
+  }
+
+  groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
+  groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+
   // autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_VERSION, 0);
-  autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_ARTIFACT, 1);
-  autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_GROUP, 2);
+  //autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_ARTIFACT, 1);
+  //autocompleteResourceEntry(expandedGraph, DatabusUris.DATABUS_GROUP, 2);
 
   var fileGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_PART);
 

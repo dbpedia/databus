@@ -13,7 +13,7 @@
   static DEFAULT_PREFIXES = [
     `PREFIX databus: <https://dataid.dbpedia.org/databus#>`,
     `PREFIX databus: <https://dataid.dbpedia.org/databus#>`,
-    `PREFIX dcv: <http://dataid.dbpedia.org/ns/cv#>`,
+    `PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>`,
     `PREFIX dct:    <http://purl.org/dc/terms/>`,
     `PREFIX dcat:   <http://www.w3.org/ns/dcat#>`,
     `PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`,

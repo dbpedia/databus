@@ -63,7 +63,7 @@ The above example shows two databus:Part(s) of a databus:Version. The two parts 
 ...
 {
   "@type": "rdf:Property",
-  "@id": "http://dataid.dbpedia.org/ns/cv#size",
+  "@id": "https://dataid.dbpedia.org/databus-cv#size",
   "rdfs:subPropertyOf": "databus:contentVariant"
 }
 ```

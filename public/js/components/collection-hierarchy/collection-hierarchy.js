@@ -178,7 +178,7 @@ function CollectionHierarchyController($http, $location, $sce) {
 
   ctrl.addCustomNode = function() {
     ctrl.collectionWrapper.addCustomQueryNode('Custom Query', 'PREFIX databus: <https://dataid.dbpedia.org/databus#>\n\
-PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n\
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>\n\
 PREFIX dct: <http://purl.org/dc/terms/>\n\
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n\
 \n\

@@ -21,13 +21,13 @@ The following table shows a list of inferrable properties that can optionally be
 ### Part
 | Property   | Value inferred from |
 |------------|---------------|
-| @id | @id of databus:Version, databus:formatExtension, databus:compression and content variants (i.e. properties with prefix *http://dataid.dbpedia.org/ns/cv#*)
+| @id | @id of databus:Version, databus:formatExtension, databus:compression and content variants (i.e. properties with prefix *https://dataid.dbpedia.org/databus-cv#*)
 | databus:formatExtension | content-disposition header of file specified with dcat:downloadURL (if present). *Alternatively:* String value of dcat:downloadURL |
 | databus:compression | content-disposition header of file specified with dcat:downloadURL (if present). *Alternatively:* String value of dcat:downloadURL |
 | dataid:shasum | sha256sum of the file specified with dcat:downloadURL |
 | dataid:byteSize | size of the file specified with dcat:downloadURL |
 | dct:hasVersion | dct:hasVersion of associated databus:Version |
-| properties with prefix *http://dataid.dbpedia.org/ns/cv#* | Only set if the property is used in any other databus:Part of the databus:Version. Value is set to empty string. |
+| properties with prefix *https://dataid.dbpedia.org/databus-cv#* | Only set if the property is used in any other databus:Part of the databus:Version. Value is set to empty string. |
 
 
 

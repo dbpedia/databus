@@ -7,12 +7,9 @@ function EntityCardController($sce) {
 
   ctrl.$onInit = function() {
 
-    if(ctrl.label == null) {
+    if(ctrl.label == null || ctrl.label == "") {
       ctrl.label = DatabusUtils.uriToTitle(ctrl.uri);
     }
-    //if(ctrl.desc != null && ctrl.desc.length > 300) {
-    //  ctrl.desc = ctrl.desc.substr(0, 300) + '...';
-    //}
   }
 
   ctrl.formatResult = function(result) {

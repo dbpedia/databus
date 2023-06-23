@@ -217,9 +217,9 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
     return 400;
   }
 
-  console.log(proofGraph);
+  //console.log(proofGraph);
   // Validate the proof 
-  console.log(dataidGraphs);
+  //console.log(dataidGraphs);
   
   var validationSuccess = await signer.validate(signer.canonicalize(dataidGraphs), proofGraph);
 

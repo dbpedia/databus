@@ -362,7 +362,7 @@ $shacl='<#properties-are-cvs>
 
 $example='missing';
 
-$context='"contentVariant": "databus:contentVariant",
+$context='"contentVariant": { "@id" : "databus:contentVariant" },
 	"subPropertyOf" : {
     "@id" : "rdfs:subPropertyOf",
     "@type" : "@id"
