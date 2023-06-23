@@ -11,19 +11,20 @@ In the Databus model a dataset corresponds to an [artifact](../artifact.md). The
 
 By organizing dataset artifacts into groups, the DBpedia Databus provides a structured and coherent way to manage and publish data files, making it easier for users to find and access datasets that are relevant to their needs.
 
-The group group/artifact/version/file relationship is depicted in the following diagram.&#x20;
+The relationships among the group, artifact, version and file are depicted in the following diagram.&#x20;
 
 <figure><img src="databus-model.png" alt=""><figcaption></figcaption></figure>
 
-### Creating Dataset Identifiers
+### Dataset Identifiers
 
-Metadata for your Datasets is made available under a specific URI identifier, where certain path segments of that URI are shared between related (using groups) Datasets (see examples below). The identifiers reflect the above-mentioned group/artifact/version/file structure.
+Metadata for your datasets is made available under a specific URI identifier. Certain path segments of the URIs are shared between related (via groups) datasets (see an example below). The identifiers reflect the above-mentioned group-artifact-version-file structure.
 
-> **Note** Choosing descriptive names for your identifiers and putting thought into the partitioning of your metadata entries can greatly impact the understandability and usefulness of your data.
+> **Note** Choosing descriptive (i.e. human readable) names for your identifiers and putting thought into the partitioning of your metadata entries can greatly impact the understandability, findability and usefulness of your data.
 
-#### Identifier Hierarchy
+#### Identifiers Hierarchy
 
-The identifier URI hierarchy has the following levels:
+The identifier URI hierarchy is organized as follows:
+
 
 * Account (Username)
   * [Group](../group.md)
@@ -31,52 +32,57 @@ The identifier URI hierarchy has the following levels:
       * [Version](../version.md)
         * [Distribution](../distribution.md)
 
+
+
+Thus, the identifiers of your metadata entries on the Databus are a composite the following parts:
+
+1. The **Databus base URI** _(e.g. https://databus.dbpedia.org)_ The base URI is the URI under which is located your Databus instance is deployed. 
+2. Your **account name** for that Databus _(e.g. janfo)_ The username of the dataset owner on the particular Databus instance.
+3. The **group name** _(e.g. animals)_ The id/name of the published group.
+4. The **artifact name** _(e.g. cats)_ The id/name of the published artifact.
+5. The **version** _(e.g. 2023-03-30)_ The version of the published data.
+6. The **distribution name** _(e.g. cats.ttl.bz)_ The id of the published data distribution.
+
+An example of a full URI identifier is provided in the following figure.
+
 ![uri\_identifiers](uri\_structure.png)
 
-Thus, the identifiers of your metadata entries on the Databus are a composite of two or more of the following:
+The identifiers encoded in the example above are as follows: 
 
-1. The Databus **base URI** _(e.g. https://databus.dbpedia.org)_
-2. Your **account name** for that Databus _(e.g. janfo)_
-3. The **group name** _(e.g. animals)_
-4. The **artifact name** _(e.g. cats)_
-5. The **version name** _(e.g. 2023-03-30)_
-6. The **distribution name** _(e.g. cats.ttl.bz)_
-
-The full example identifiers would look like this:
-
-* **Account** Identifier: https://databus.dbpedia.org/janfo
-* **Group** Identifier: https://databus.dbpedia.org/janfo/animals
-* **Artifact** Identifier: https://databus.dbpedia.org/janfo/animals/cats
-* **Version** Identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30
-* **Distribution** (file) Identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30/cats.ttl.bz
+* **Account** identifier: https://databus.dbpedia.org/janfo
+* **Group** identifier: https://databus.dbpedia.org/janfo/animals
+* **Artifact** identifier: https://databus.dbpedia.org/janfo/animals/cats
+* **Version** identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30
+* **Distribution** identifier: https://databus.dbpedia.org/janfo/animals/cats/2023-03-30/cats.ttl.bz
 
 See more on the URI design [here](../uridesign.md).
 
 #### Best Practices
 
-The metadata publisher has complete control over the names of the Databus identifiers. Though, there are a few best practices to be considered:
+The metadata publisher has complete control over the names of the Databus identifiers. Though, below we provide the best practices when designing identifiers:
 
 1. **The account name**
 
-* The account name can be chosen on account creation. It is advised to use your personal (nick)name or the name of your institution/company
+* The account name is chosen on account creation, i.e. when registering at the particular Datbaus instane. It is advised to use your personal username or the name of your institution/company. In other words, the account name is the identifier of the data owner/publisher. E.g. DBpedia publishes the regular releases under the account name _dbpedia_.
 
 2. **The group name**
 
-* A group can be understood as folder for multiple related artifacts. Generally, it is recommended to create _one group for one project_ - the same way you would create a folder on-disk for a certain project. However, if a project requires a large amount of datasets (and thus, artifacts) it can be a good idea to use multiple groups.
+* The group can be understood as folder for multiple related artifacts. Generally, it is recommended to create _one group for one project_ - the same way you would create a folder on-disk for a certain project. However, if a project manages a large amount of datasets (and thus, artifacts) it is a good idea to use multiple groups. For example, DBpedia introduces groups such as _mappings_, _generic_, _text_, etc. and publishes artifacts under these groups where under each group are published artifacts which are generated using particural extraction processes. E.g. under the _mappings_ group are published artifacts generated by the Mapping Extractors, while under the _generic_ group are published artifacts generated by the Generic Extractors.
 
 3. **The artifact**
 
-* an artifact consists of multiple versions of different files, but all the files should somehow be related, so an artifact should represent _data of one certain topic_.
+* An artifact consists of multiple versions of different files, but all the files should somehow be related, so an artifact should represent _data of one certain topic_ or _data from certain source_. For example, under the _mappings_ group DBpedia publishes the artifacts which are generated using the mappings based extractors.
 
-5. **The version**:
+5. **The version**
 
-* A version consists of multiple distributions, each representing a file and tracks the evolution of one artifact. There is a [whole page](../versioning.md) for versioning best practises.
+* A version represents the state of the artifact at a particular point of time. Under each version aree publiished one or more distributions of the dataset, each represented as a file and tracks the evolution of one artifact. Read [more](../versioning.md) for the versioning best practises.
 
 7. **The distribution**
 
-* One distribution represents one certain file in an artifact/version and is distinguished by others through [content variants](../content-variants.md). As the name suggests, in one artifact/version the files should somehow be closely related or even the same data in different flavors.
-* Examples:
+* A distribution represents one certain file representing an artifact with some version. An artifact can have multiple distributions which are distinguished via [content variants](../content-variants.md). As the "content variant" term suggests, having an artifact with different content variants means that the files are closely related or even represent the same data in different flavors.
+* Few examples of content variants:
   * the same data in different languages or encodings/file types
   * a file and other files generated from that file
   * a file and other files describing that file
-* Of course it is not always, but it is helpful to keep the names of content variants the same across versions of the dataset, which helps keeping SPARQL queries consistent
+
+Of course, it is not always feasible, but it is highly recommended to keep the names of content variants same across different versions of the dataset. This allows easy search and retrieval of the datasets using SPARQL.

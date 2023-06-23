@@ -37,7 +37,10 @@ A content variant is a key-value pair with the key being a sub-property of `data
 ```
 
 The above example shows two databus:Part(s) of a databus:Version. The two parts are distinguishable by format (`nt` and `ttl`). Hence, no content variant is *required*.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0067b699f60ddd68834ae8d05997a9e0743b27d4
 
 ``` json
 "@context" : "https://downloads.dbpedia.org/databus/context.jsonld",
@@ -69,3 +72,6 @@ The above example shows two databus:Part(s) of a databus:Version. The two parts 
 ```
 
 The above example shows two databus:Parts of a databus:Version. Both parts have a format of `ttl` and a compression type of `none`. In order to improve the distinguishability of the two parts, an additional content variant has to be used. The publisher of the databus:Version chose the property `dcv:size` as the content variant dimension and assigned each part a different value (`small` and `big`).
+
+
+

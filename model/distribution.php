@@ -12,13 +12,12 @@ init();
 $section="dataid";
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt";
 
-$owl='dcat:Distribution
-	a owl:Class ;
-	rdfs:label "Distribution"@en ;
-	rdfs:comment "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	rdfs:isDefinedBy <http://www.w3.org/TR/vocab-dcat/> ;
-	skos:definition "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
-	skos:scopeNote "This represents a general availability of a dataset it implies no information about the actual access method of the data, i.e. whether by direct download, API, or through a Web page. The use of dcat:downloadURL property indicates directly downloadable distributions."@en ;';
+$owl='databus:Part  a owl:Class ;
+    rdfs:label "Part"@en ;
+    rdfs:comment """A Part represents a single file (i.e. distribution) which is referenced from a particular Version.
+    Typically a dataset consists of several files, e.g. same (or similar) files but in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail. Artifacts are packaged compositionally, i.e. each Part adds to the dataset, which is the sum of information."""@en ;
+    rdfs:subClassOf dcat:Distribution ; # todo: , dataid:XXX ;
+    rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> .';
 
 $shacl='<#part-exists>
 	a sh:NodeShape ;
@@ -298,11 +297,11 @@ TODO ??
 
 ```
 <#signature-violation>
-#   databus:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
+#   sec:signature         "dg6U+QmLt/WJvcb2yQApkAD5vanzNE1fBxvCwB87+G/XgsOpeDm3jDAEnCA43uWyw3A+sVKXfOvYFGfh7LPrJRIcZTlaqpXZ9UU1TmunCFrtvh+TZ+T0eMwOxzWfQ7eLAdZJlV5IDMNZZwNi9u6ukiF8ciSJjpRSHWDYD11NT79Q9sKMmVFosfoo8GEa9aM43BzqNDew/aoRMW6xlvAGKO4rbmbbONroeYLSeTApakF5SwgEQ8pcjvAZf7UoNNTlOFjklUiJIoVlhaUiuatptxa/aGK499Ja/sQqordPgJfOIa+pRhAXIBYZvXRGPxpi8lwHCU8oXSzSArArWIPyMg=="^^xsd:string ;
     a sh:PropertyShape ;
     sh:severity sh:Violation ;
-    sh:message " TODO Optional property databus:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
-    sh:path databus:signature;
+    sh:message " TODO Optional property sec:signature MUST occur 0 or 1 time AND have xsd:string as value AND match pattern"@en ;
+    sh:path sec:signature;
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
     sh:pattern "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" .

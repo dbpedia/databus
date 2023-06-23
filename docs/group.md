@@ -12,11 +12,10 @@ Example (JSON-LD):
 Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
 databus:Group a owl:Class ;
-     rdfs:label "Databus Group"@en ;
-     rdfs:comment """A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit."""@en ; 
-     rdfs:subClassOf prov:Entity ;
-     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
-
+    rdfs:label "Databus Group"@en ;
+    rdfs:comment """A Databus Group is a container owned by a Databus user that bundles Databus Artifacts intended to form a meaningful unit."""@en ; 
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 
 ```
 ```turtle
