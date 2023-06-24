@@ -1,6 +1,7 @@
 ---
 description: >-
-DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph.
+DBpedia Databus is a transformative platform for agile data integration, 
+collaboration, and automation via a structured metadata Knowledge Graph.
 ---
 
 Important Links: (Docu Gitbook)[https://dbpedia.gitbook.io/databus/], (Join Discord)[https://discord.gg/fB8byAPP7e], Contact, (Databus used in the DBpedia Project)[https://databus.dbpedia.org/]
