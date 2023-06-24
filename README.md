@@ -77,8 +77,7 @@ More examples of the Databus capabilities are demonstrated in our use cases:
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 
 # Getting Started
-| Learn how to do a roundtrip: Deploy a databus, upload data, query and download |
-| --- |
+ℹ️ Learn how to do a roundtrip: Deploy a databus, upload data, query and download 
 
 > **Note**
 > This is a note
