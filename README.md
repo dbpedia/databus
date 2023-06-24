@@ -80,6 +80,9 @@ More examples of the Databus capabilities are demonstrated in our use cases:
 | Learn how to do a roundtrip: Deploy a databus, upload data, query and download |
 | --- |
 
+> **Note**
+> This is a note
+
 ### Preparing Your Data
 Databus does not store the data itself but only metainformation, therefore before running the server
 we need to publish our data somewhere and make it publicly available. 
