@@ -21,24 +21,22 @@ The DBpedia Databus addresses a significant gap in tooling: the “pre and post-
 
 💪 *Strength*: The DBpedia Databus addresses industry pain points head-on – efficiency, automation, scalability, and data quality – ensuring your data projects are set for success.
 
-## Get on Board the Databus
+## Reference Deployments
 Databus is designed as a lightweight and agile solution and fits seamlessly into existing environments. 
-* *Comprehensive/All-in*: In the DBpedia Project, we went all-in to manage 5000 release files per month plus triple the amount in input and intermediary files plus additional dataset contributions by the community. 
-* *Semantic Layer On-Top*: Databus is a proud member of the Open Energy Family (https://openenergy-platform.org/) and deployed as an additional semantic layer over the various existing databases to extend the underlying rigid metadata schemas. 
-* *Plugin*: In eccenca’s product (Corporate MEMory)[https://eccenca.com/products/enterprise-knowledge-graph-platform-corporate-memory] Databus is a small plugin that handles export, versioning and archival of subgraphs, that can be exchanged with other CMEM instances via the semantic catalogue metadata in the Databus Knowledge Graph. 
+* **Comprehensive & All-in**: In the DBpedia Project, we went all-in to manage 5000 release files per month plus triple the amount in input and intermediary files plus additional dataset contributions by the community. 
+* **Semantic Layer On-Top**: Databus is a proud member of the [Open Energy Family](https://openenergy-platform.org/) and deployed as an additional semantic layer over the various existing databases to extend the underlying rigid metadata schemas and enable search, persistent IDs and provenance tracking of scientific results. 
+* *Plugin*: In eccenca’s product [Corporate MEMory](https://eccenca.com/products/enterprise-knowledge-graph-platform-corporate-memory) Databus is a small plugin that handles export, versioning and archival of subgraphs, that can be exchanged with other CMEM instances via the semantic catalogue metadata in the Databus Knowledge Graph. 
 
 ## Deployment Levels
 We identified these deployment levels with our partners:
-1. *Open community*: Set up a data space in the Databus Network and jointly curate it with community contributions spanning across several organisations (see DBpedia and Open Energy) 
-2. *Organisation*: Implement your enterprise’s data strategy and optimise efficiency, integration of external data and re-use; manage research data university-wide for scientific sustainability and FAIR. Databus hooks into single sign-on authentication like Siemens ID or DLR ID
-3. *Department, group or team*: Systematise data workflows internally; transparently record scientific results from beginning to end.  
-4. *Collaborative projects*: Efficiently coordinate data with partners in large projects or in multi-project environments. 
-5. *Application, Product or Pipeline*: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  
+1. **Open community**: Set up a data space in the Databus Network and jointly curate it with community contributions spanning across several organisations (see DBpedia and Open Energy) 
+2. **Organisation**: Implement your enterprise’s data strategy and optimise efficiency, integration of external data and re-use; manage research data university-wide for scientific sustainability and FAIR. Databus hooks into single sign-on authentication like Siemens ID or DLR ID
+3. **Department, group or team**: Systematise data workflows internally; transparently record scientific results from beginning to end.  
+4. **Collaborative projects**: Efficiently coordinate data with partners in large projects or in multi-project environments. 
+5. **Application, Product or Pipeline**: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  
 
-🚀 *Next Step*: Try our quickstart guide for downloading data from DBpedia (no registration necessary).  Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus. Get in contact via the informal dev channel on Discord or reach out to the Databus Management Team to explore partnership opportunities. Your data journey transformation begins here.
-
-
-
+## Get on Board the Databus
+🚀 Try our quickstart guide for downloading data from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. Get in contact via the informal dev channel on Discord or reach out to the Databus Management Team to explore partnership opportunities. Your data journey transformation begins here.
 
 ## Status 
 
