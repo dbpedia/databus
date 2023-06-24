@@ -3,9 +3,10 @@ description: >-
  DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph.
 ---
 
-Important Links: [Docu Gitbook](https://dbpedia.gitbook.io/databus/), [Join Discord](https://discord.gg/fB8byAPP7e), Contact, [Databus used in the DBpedia Project](https://databus.dbpedia.org/)
+Important Links: [Gitbook Docu](https://dbpedia.gitbook.io/databus/), [Join Discord](https://discord.gg/fB8byAPP7e), Contact, [Databus used in the DBpedia Project](https://databus.dbpedia.org/)
 
-# What is the DBpedia Databus?
+# About
+## What is the DBpedia Databus?
 
 The DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph. The Databus implements well-known concepts from Software Engineering such as agile rapid prototyping, build automation, test-driven development for Data Engineering and connects data via a loosely-coupled bus system and a common, but extensible metadata format through state-of-the-art semantic technologies such as ontologies, SPARQL, SHACL and Linked Data. 
 
@@ -36,13 +37,28 @@ We identified these deployment levels with our partners:
 5. **Application, Product or Pipeline**: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  
 
 ## Get on Board the Databus
-🚀 Try our quickstart guide for downloading data from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. Get in contact via the informal dev channel on Discord or reach out to the Databus Management Team to explore partnership opportunities. Your data journey transformation begins here.
+🚀 Try our quickstart guide for downloading data from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. 
 
-## Status 
+## Contact
+
+The DBpedia Databus, maintained by the Institute for Applied Informatics (InfAI), Leipzig, is not just a tool but a catalyst for data innovation. Our team is eager to connect, collaborate, and form strategic partnerships to shape the future of data management.
+
+If you're interested in exploring collaborations, encountering issues, or just have a question, we'd love to hear from you:
+
+* **Email**: Reach us at [databus@infai.org](mailto:databus@infai.org).
+* **GitHub**: Use our [GitHub page](https://github.com/dbpedia/databus/issues) for reporting issues.
+* **Discord:**: https://discord.gg/fB8byAPP7e 
+* **Community Forum**: Engage with us on the [Community Forum](https://forum.dbpedia.org).
+
+Your interest and involvement will greatly contribute to the Databus community. Let's shape the future of data management together.
+
+Get in contact via the informal dev channel on Discord or reach out to the Databus Management Team to explore partnership opportunities. Your data journey transformation begins here.
+
+# Status 
 
 Development of the Databus started in 2018 as means to manage the DBpedia Knowledge Graph extraction more efficiently. In the first 5 years, we fireproofed Databus online at the public beta at databus.dbpedia.org and refined the Metadata model. Starting with the first public release version 2.1.0, the core model aka the Databus Ontology is stable.
 
-## Important Links
+# Important Links
 
 **Documentation:** [https://dbpedia.gitbook.io/databus/overview/readme](https://dbpedia.gitbook.io/databus/overview/readme) 
 
@@ -60,7 +76,9 @@ More examples of the Databus capabilities are demonstrated in our use cases:
  * [Meta registries](docs/building-meta-registries.md)
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 
-## Getting Started
+# Getting Started
+| Learn how to do a roundtrip: Deploy a databus, upload data, query and download |
+| --- |
 
 ### Preparing Your Data
 Databus does not store the data itself but only metainformation, therefore before running the server
@@ -125,12 +143,13 @@ You can read about them more in detail [here](docs/mods.md).
 Instead of using GUI, you can automate your publishing and data retrieving process
  using our http-API. Refer to it [here](docs/usage/api/README.md).
 
+# Meta
+
 ## Contributing
 Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).
 
-If you would like to submit a non-trivial patch or pull request 
-we will need you to sign the Contributor License Agreement, we 
-will send it to you in that case.
+If you would like to submit a non-trivial patch or pull request we will need you to sign the Contributor License Agreement, we will send it to you in that case.
+
 ## License
 
 The source code of this repo is published under 
