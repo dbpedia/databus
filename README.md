@@ -143,7 +143,7 @@ After files are published, we can perform queries. Databus offers two
 mechanisms for that: a SPARQL endpoint and Collections. 
 
 Collections (user-created data catalogues) allow to flexibly combine files and artifacts together and share the collection links. Collections provide a tool to build, store and share SPARQL queries.    
-Read more [here](docs/collections.md).
+Read more [here](docs/usage/web-interface/collections.md).
 
 The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/quickstart-examples.md).
 ### Mods
