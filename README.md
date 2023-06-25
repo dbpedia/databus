@@ -40,12 +40,13 @@ We identified these deployment levels with our partners:
 🚀 Try our quickstart guide for downloading data from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. 
 
 ## Contact
+<!-- TODO change email to databus@infai.org -->
 
 The DBpedia Databus, maintained by the Institute for Applied Informatics (InfAI), Leipzig, is not just a tool but a catalyst for data innovation. Our team is eager to connect, collaborate, and form strategic partnerships to shape the future of data management.
 
 If you're interested in exploring collaborations, encountering issues, or just have a question, we'd love to hear from you:
 
-* **Email**: Reach us at [databus@infai.org](mailto:databus@infai.org).
+* **Email**: Reach us at [dbpedia@infai.org](mailto:dbpedia@infai.org).
 * **GitHub**: Use our [GitHub page](https://github.com/dbpedia/databus/issues) for reporting issues.
 * **Discord:**: https://discord.gg/fB8byAPP7e 
 * **Community Forum**: Engage with us on the [Community Forum](https://forum.dbpedia.org).
@@ -77,22 +78,27 @@ More examples of the Databus capabilities are demonstrated in our use cases:
  * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
 
 # Getting Started
-ℹ️ Learn how to do a roundtrip: Deploy a databus, upload data, query and download 
+<!-- TODO link to our guide -->
+ℹ️ Learn how to do a roundtrip: Prepare data, deploy a databus, upload data, query and download. Alternatively, you can also start with just the download guide on existing Databuses. 
 
-> **Note**
-> This is a note
 
-### Preparing Your Data
-Databus does not store the data itself but only metainformation, therefore before running the server
-we need to publish our data somewhere and make it publicly available. 
+## Preparing Your Data
+Databus does not store the data itself but only metainformation, therefore before running the server we need to publish our data on the internet and make it publicly available, normally via HTTPS. 
 
-**In this step we need to obtain a URI or several URIs pointing to the actual data files for download.** 
+**This step requires a URI or several URIs resolving to the actual data files for download.** 
 As an example here we can publish a single file, e.g. this `README.md`. So our URI is: 
 ```
 https://raw.githubusercontent.com/dbpedia/databus/master/README.md
 ```
-### Running the Server
-#### Requirements
+
+<!-- TODO change webdav link to our guide -->
+ℹ️ Explanation and variants:
+* Databus considers "text" as data. Data is any URI that can be accessed to retrieve bytecode. Text is normally encoded in Unicode UTF-8 bytecode.  
+* Data can be kept private, either by Firewall, VPN, HTTP Basic Authentication (`https://user:pass@example.com`), local IPs (`127.0.0.1' or '192'), using `file://`.
+* In the image above, we listed some free public storage options. Note that Databus comes with a built-in [WebDav](https://en.wikipedia.org/wiki/WebDAV) to store your data. 
+
+## Running the Server
+### Requirements
 
 In order to run the Databus on-premise you will need `docker` and `docker-compose` 
 installed on your machine.&#x20;
@@ -100,7 +106,7 @@ installed on your machine.&#x20;
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
 
-#### Starting the Databus Server
+### Starting the Databus Server
 
 Clone the repository or download the `docker-compose.yml` and `.env` files. 
 Both files need to exist in the same directory. Navigate to 
@@ -112,7 +118,9 @@ docker-compose up
 ```
 The Databus should be available at `http://localhost:3000`.&#x20;
 
-See [here](docs/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
+ℹ️ Further notes:
+* See [here](docs/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
+* For regular deployment, we highly recommend that you also register a domain and choose a subdomain such as `databus.example.org`. 
 
 ### Publishing Your First Artifact
 To publish an artifact you need to create a Databus account. 
@@ -126,18 +134,18 @@ in the `Files` section.
 
 After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
-See more on how to organise your data [here](docs/model.md), there 
-you can find detailed explanations and our suggestions on structuring
-your datasets.
+ℹ️ Notes:
+* See more on how to organise your data [here](docs/model.md), there you can find detailed explanations and our suggestions on structuring your datasets.
+* For automated metadata uploads see the [API](docs/usage/api.md)
 
-### Querying Metainformation
+### Querying Metadata
 After files are published, we can perform queries. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
-Collections allow to flexibly combine files and artifacts together. 
+Collections (user-created data catalogues) allow to flexibly combine files and artifacts together and share the collection links. Collections provide a tool to build, store and share SPARQL queries.    
 Read more [here](docs/collections.md).
 
-SPARQL endpoint allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/quickstart-examples.md).
+The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/quickstart-examples.md).
 ### Mods
 Databus offers metadata extensions using Mods. 
 You can read about them more in detail [here](docs/mods.md).
