@@ -92,13 +92,17 @@ Lets try this on an example where we will retrieve data for the download link fo
 
 First, you would need to open your terminal application.
 
-Then, write a command using the rapper command line tool. Here is the command for the “instance types” dataset.
+Then, write a command using the cURL command line tool. Here is the command for the “instance types” dataset.
 
-`rapper https://databus.dbpedia.org/dbpedia/mappings/instance-types/2021.12.01  -i turtle -o turtle`
+`curl -L https://databus.dbpedia.org/dbpedia/mappings/instance-types/2021.12.01 -H "Accept: text/turtle"`
 
 By running the command should receive a valid RDF representation of version 2021.12.01 of the `instance types` artifact.
+The **format of the results** is the RDF turtle serialization format. However, you can also retrieve the results in other formats. For this you would need to change the value of the **Accept header** in the cURL command.
+For example:
+* Accept: application/json - for results in JSON
+* Accept: text/ntriples - for the results in the N-triples serialization format
 
-Next, you can dig in the RDF data, grab the download links encoded using the databus:downloadURL properties, and finally, use the download links to download the data.
+Next, you can dig in the data, grab the download links encoded using the databus:downloadURL properties, and finally, use the download links to download the data.
 
 You are done.
 
