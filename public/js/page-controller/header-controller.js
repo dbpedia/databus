@@ -17,9 +17,9 @@ function HeaderController($scope, $http, collectionManager, searchManager) {
   $scope.databusCookieConsentKey = 'databus_cookie_consent';
   let cookieConsent = window.localStorage.getItem($scope.databusCookieConsentKey);
   $scope.showCookieDialogue = cookieConsent === undefined;
+  $scope.collectionManager = collectionManager;
 
   if ($scope.authenticated) {
-    $scope.collectionManager = collectionManager;
     // Collection Manager Init
     var loadCollectionsFromServer = $scope.collectionManager.accountName != $scope.auth.info.accountName;
 
@@ -27,6 +27,8 @@ function HeaderController($scope, $http, collectionManager, searchManager) {
 
     // Initialize search manager
     searchManager.initialize();
+  } else {
+    $scope.collectionManager.clearSession();
   }
 
   $scope.hideAccountMenu = function() {

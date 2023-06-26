@@ -190,12 +190,9 @@ instance.getCollectionsByAccount = async function (accountName, onlyIssued) {
     bindings[e].description = unescape(bindings[e].description);
     bindings[e].content = DatabusUtils.tryParseJson(unescape(bindings[e].content));
 
-
-    console.log(JSON.stringify(bindings[e].content, null, 3));
     result[bindings[e].uri] = bindings[e];
   }
 
-  console.log(result);
 
   return result;
 }

@@ -26,18 +26,27 @@ class DatabusCollectionManager {
 
   constructor($http, $interval, storageKey) {
 
-    this.storageKeyPrefix = `${storageKey}_${encodeURI(DATABUS_RESOURCE_BASE_URL)}`;
-    // window.sessionStorage.removeItem(`${this.storageKeyPrefix}_session`);
-
-    this.sessionInfo = JSON.parse(window.sessionStorage.getItem(`${this.storageKeyPrefix}_session`));
-
-    if (this.sessionInfo == undefined) {
+    try {
+      this.storageKeyPrefix = `${storageKey}_${encodeURI(DATABUS_RESOURCE_BASE_URL)}`;
+      // window.sessionStorage.removeItem(`${this.storageKeyPrefix}_session`);
+  
+      this.sessionInfo = JSON.parse(window.sessionStorage.getItem(`${this.storageKeyPrefix}_session`));
+  
+      if (this.sessionInfo == undefined) {
+        this.sessionInfo = {};
+      }
+    } catch(err) {
       this.sessionInfo = {};
     }
+   
 
     this.http = $http;
     this.interval = $interval;
+  }
 
+  clearSession() {
+    this.sessionInfo = {};
+    window.sessionStorage.setItem(`${this.storageKeyPrefix}_session`, JSON.stringify(this.sessionInfo));
   }
 
   get accountName() {

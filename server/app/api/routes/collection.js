@@ -15,6 +15,9 @@ var constructCollection = require('../../common/queries/constructs/construct-col
 const UriUtils = require('../../common/utils/uri-utils');
 const getLinkedData = require('../../common/get-linked-data');
 
+var defaultContext = require('./../../common/context.json');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+
 module.exports = function (router, protector) {
 
   var baseUrl = process.env.DATABUS_RESOURCE_BASE_URL || Constants.DEFAULT_DATABUS_RESOURCE_BASE_URL;
@@ -46,13 +49,16 @@ module.exports = function (router, protector) {
     }
   }); */
 
-  router.put('/:account/collections/:collection', protector.protect(true), async function(req, res, next) {
+  router.put('/:account/collections/:collection', protector.protect(true), async function (req, res, next) {
 
     try {
-      if (req.params.account != req.databus.accountName) {
+
+      var accountName = req.params.account;
+
+      if (accountName != req.databus.accountName) {
 
         res.status(403).send({
-          success : false,
+          success: false,
           message: 'You cannot edit collections in a foreign namespace.'
         });
         return;
@@ -64,14 +70,24 @@ module.exports = function (router, protector) {
       var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
 
       var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_COLLECTION);
-    
-      collectionGraph['@id'] = `${baseUrl}${req.originalUrl}`;
+
+      if(collectionGraph == null) {
+        res.status(400).send({
+          success: false,
+          message: 'No databus:Collection found in the input.'
+        });
+        return;
+      }
+
+      var collectionUri = `${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}`;
+
+      collectionGraph[DatabusUris.JSONLD_ID] = collectionUri;
+
+      var publisherUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
 
       // Set publisher
-      collectionGraph[DatabusUris.DCT_PUBLISHER] = [ {
-          "@id": `${baseUrl}/${req.params.account}#this`
-      } ];
-
+      collectionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
+      collectionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = publisherUri;
       var timeString = new Date(Date.now()).toISOString();
 
       // Set times
@@ -87,33 +103,39 @@ module.exports = function (router, protector) {
         collectionGraph[DatabusUris.DCT_MODIFIED][0][DatabusUris.JSONLD_VALUE] = timeString;
       }
 
-      console.log(expandedGraphs);
-
       // Validate the group RDF with the shacl validation tool
       var shaclResult = await shaclTester.validateCollectionRDF(expandedGraphs);
-      
-       // Return failure
-       if (!shaclResult.isSuccess) {
-        // todo
-        var response = 'SHACL validation error:\n';
-        for (var m in shaclResult.messages) {
-          response += `> * ${shaclResult.messages[m]}\n`
-        }
+
+      // Return failure
+      if (!shaclResult.isSuccess) {
 
         res.status(400).send({
-          success : false,
-          message: response
+          success: false,
+          message: shaclResult
         });
         return;
       }
 
-      var targetPath = `collections/${req.params.collection}/collection.jsonld`;
-      var publishResult = await GstoreHelper.save(req.params.account, targetPath, expandedGraphs);
+      // Compact graph, determine target path
+      var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
+
+      if (process.env.DATABUS_CONTEXT_URL != null) {
+        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      }
+
+      var targetPath = UriUtils.createPath([ 
+        Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER,
+        req.params.collection,
+        Constants.DATABUS_FILE_COLLECTION
+      ]);
+
+      console.log(`Saving collection <${collectionUri}> to ${req.params.account}:${targetPath}`);
+      var publishResult = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);
 
       // Return failure
       if (!publishResult.isSuccess) {
         res.status(500).send({
-          success : false,
+          success: false,
           message: `Internal database error.`
         });
       }
@@ -128,7 +150,7 @@ module.exports = function (router, protector) {
     } catch (err) {
       console.log(err);
       res.status(403).send({
-        success: true,
+        success: false,
         message: err,
       });
     }
@@ -145,7 +167,7 @@ module.exports = function (router, protector) {
       var targetPath = `collections/${req.params.collection}/collection.jsonld`;
 
       var resource = await GstoreHelper.read(req.params.account, targetPath);
-  
+
       if (resource == null) {
         res.status(404).send(`The collection "${process.env.DATABUS_RESOURCE_BASE_URL}${req.originalUrl}" does not exist.`);
         return;
@@ -193,6 +215,6 @@ module.exports = function (router, protector) {
 
     var template = require('../../common/queries/constructs/ld/construct-collection.sparql');
     getLinkedData(req, res, next, resourceUri, template);
-  
+
   });
 }

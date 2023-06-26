@@ -345,13 +345,12 @@
         </div>
         <div ng-if="!profileData.isOwn">
 
-          <div ng-repeat="collection in collectionsData.collections | collectionfilter:search.title">
-            <div>
+          <div ng-repeat="collection in collectionsData.collections  | collectionfilter:collectionSearch.input | orderBy:collectionSearch.sortProperty:collectionSearch.sortReverse">
+            <div style="margin-bottom: 1em;">
               <entity-card label="collection.title" uri="collection.uri" type="'Collection'" desc="collection.abstract"
                 date="formatCollectionDateFromNow(collection.issued)">
               </entity-card>
             </div>
-            <div ng-if="!$last" style="margin: 0em 1.5em;" class="is-divider"></div>
           </div>
         </div>
       </div>

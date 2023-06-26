@@ -22,6 +22,24 @@ class UriUtils {
     return sanitizeUrl(result);
   }
 
+  static createPath(path) {
+
+    var result = "";
+    var isFirst = true;
+
+    for (var p in path) {
+
+      if(!isFirst) {
+        result += "/";
+      }
+
+      result += encodeURI(path[p]);
+      isFirst = false;
+    }
+
+    return sanitizeUrl(result);
+  }
+
   static startsWith(base, uri) {
     return base.startsWith(baseUrl) && uri.startsWith(base);
   }

@@ -22,7 +22,7 @@ WHERE
   ?collection dct:title ?title .
   ?collection dct:abstract ?abstract .
   ?collection dct:description ?description .
-  ?collection dct:publisher ?publisher .
   ?collection databus:collectionContent ?content .
+  OPTIONAL { ?collection dct:publisher ?publisher . }
   OPTIONAL { ?collection dct:issued ?issued . }
 }

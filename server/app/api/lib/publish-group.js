@@ -18,6 +18,12 @@ module.exports = async function publishGroup(accountName, graph, logger) {
     var groupUri = graph[DatabusUris.JSONLD_ID];
     logger.debug(groupUri, `Processing group <${groupUri}>`, graph);
 
+     // Check for namespace violation
+     if (!groupUri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+       logger.error(groupUri, `Group identifier does not start with the resource base url of this Databus (${process.env.DATABUS_RESOURCE_BASE_URL})`);
+       return 403;
+     }
+
     // Check for namespace violation
     var expectedUriPrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
     if (!groupUri.startsWith(expectedUriPrefix)) {

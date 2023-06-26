@@ -18,7 +18,6 @@ self.executeConstruct = async function (jsonld, query) {
 
   try {
 
-
     var store = await self.createStore();
     await self.loadJsonld(store, jsonld);
 
