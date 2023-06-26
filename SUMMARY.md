@@ -1,6 +1,8 @@
 # Table of contents
 
 * [Overview](README.md)
+* [Guides](docs/guides.md)
+  * [Data Download](docs/guides/data-download-guide.md)
 * [Use Cases](docs/usecases.md)
   * [Data Version Control](docs/maven-for-data-manage-data-dependencies-like-code.md)
   * [Populating Database with Data](docs/use-cases/set-up-db.md)
