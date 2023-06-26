@@ -71,7 +71,7 @@ module.exports = function (router, protector) {
 
       var collectionGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_COLLECTION);
 
-      if(collectionGraph == null) {
+      if (collectionGraph == null) {
         res.status(400).send({
           success: false,
           message: 'No databus:Collection found in the input.'
@@ -123,7 +123,7 @@ module.exports = function (router, protector) {
         compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
       }
 
-      var targetPath = UriUtils.createPath([ 
+      var targetPath = UriUtils.createPath([
         Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER,
         req.params.collection,
         Constants.DATABUS_FILE_COLLECTION
@@ -195,8 +195,11 @@ module.exports = function (router, protector) {
       if (result != null) {
         res.status(200).send(result);
       } else {
-        res.status(404).send('Unable to find the collection.');
+        next('route');
       }
+    }, function(err) {
+      console.log(err);
+      res.status(500).send();
     });
   });
 

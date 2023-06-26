@@ -19,6 +19,7 @@ function UriBreadcrumbsController() {
     var extensions = url.pathname.split('/');
     var pathSoFar = '';
 
+
     for(var e in extensions) {
       var extension = extensions[e];
 
@@ -26,7 +27,11 @@ function UriBreadcrumbsController() {
         continue;
       }
 
-      pathSoFar += extension + "/";
+      pathSoFar += extension;
+
+      if(e < extensions.length - 1) {
+        pathSoFar += "/";
+      }
 
       ctrl.entries.push({
         label: extension,

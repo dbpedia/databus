@@ -3,86 +3,9 @@ var crypto = require('crypto');
 const UriUtils = require('../../utils/uri-utils');
 const DatabusUtils = require('../../../../../public/js/utils/databus-utils');
 const QueryTemplates = require('../../../../../public/js/query-builder/query-templates');
+const QueryBuilder = require('../../../../../public/js/query-builder/query-builder');
 
 var instance = {};
-
-/**
- * Collection GET. Retrieves a collection with formatted fields
- * @param  {} collectionUri
-
-instance.getCollection = async function (account, id) {
-  let queryOptions = {
-    COLLECTION_URI: UriUtils.createResourceUri([account, 'collections', id]),
-    PUBLISHER_COLLECTIONS_GRAPH_URI: UriUtils.createResourceUri([account, 'collections'])
-  };
-  let selectQuery = exec.formatQuery(require('../sparql/get-collection.sparql'), queryOptions);
-  //console.log(selectQuery);
-  let entry = await exec.executeSelect(selectQuery);
-
-  if (entry.length === 0) {
-    return null;
-  }
-
-  entry[0].uri = queryOptions.COLLECTION_URI;
-  entry[0].label = unescape(entry[0].label);
-  entry[0].description = unescape(entry[0].description);
-  entry[0].content = DatabusUtils.tryParseJson(unescape(entry[0].content));
-
-  return entry[0];
-}
-
-/*
-instance.getCollectionStatistics = async function (collectionUri) {
-
-  let queryOptions = {
-    COLLECTION_URI: collectionUri,
-    PUBLISHER_COLLECTIONS_GRAPH_URI: DatabusUtils.navigateUp(collectionUri) //collectionUri+"/data.jsonld" //
-  };
-
-  let selectQuery = exec.formatQuery(require('../sparql/get-collection.sparql'), queryOptions);
-
-  //console.log(`Query: ${selectQuery}`);
-  let entry = await exec.executeSelect(selectQuery);
-
-  if (entry.length === 0) {
-    return null;
-  }
-
-  let content = DatabusUtils.tryParseJson(unescape(entry[0].content));
-
-  let queryBuilder = new QueryBuilder();
-  let wrapperQuery = require('../sparql/file-statistics-query-template.sparql');
-  let query = queryBuilder.createCollectionQuery(content, wrapperQuery, '%COLLECTION_QUERY%');
-
-  //console.log(`More query: ${query}`);
-  let entries = await exec.executeSelect(query);
-
-  if (entries.length === 0) {
-    return null;
-  }
-
-  let result = {
-    fileCount: entries.length,
-    licenses: [],
-    files: [],
-    size: 0
-  };
-
-  for (let i in entries) {
-    let element = entries[i];
-
-    result.size += parseInt(element.size);
-    result.licenses.push(element.license);
-    result.files.push(element);
-  }
-
-  result.licenses = result.licenses.filter(function (item, pos, self) {
-    return self.indexOf(item) === pos;
-  });
-
-  return result;
-}
-*/
 
 instance.getCollectionQuery = async function (account, id) {
 
