@@ -99,8 +99,8 @@ Then, write a command using the cURL command line tool. Here is the command for 
 By running the command should receive a valid RDF representation of version 2021.12.01 of the `instance types` artifact.
 The **format of the results** is the RDF turtle serialization format. However, you can also retrieve the results in other formats. For this you would need to change the value of the **Accept header** in the cURL command.
 For example:
-* Accept: application/json - for results in JSON
-* Accept: text/ntriples - for the results in the N-triples serialization format
+* Accept: `application/json` - for results in JSON
+* Accept: `text/ntriples` - for the results in the N-triples serialization format
 
 Next, you can dig in the data, grab the download links encoded using the databus:downloadURL properties, and finally, use the download links to download the data.
 
