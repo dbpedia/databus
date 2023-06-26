@@ -2,12 +2,15 @@ var rp = require('request-promise');
 const Constants = require('../constants');
 const DatabusMessage = require('../databus-message');
 
+var prefix = encodeURIComponent(`${process.env.DATABUS_RESOURCE_BASE_URL}/`);
+
 
 class GstoreHelper {
 
+  
+
   static async read(repo, path) {
     
-  
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
       headers: {
@@ -27,8 +30,7 @@ class GstoreHelper {
 
   static async save(repo, path, content) {
 
-    var prefix = encodeURIComponent(process.env.DATABUS_RESOURCE_BASE_URL);
-
+    
     try {
       var options = {
         uri: `${process.env.DATABUS_DATABASE_URL}/graph/save?repo=${repo}&prefix=${prefix}&path=${path}`,
@@ -54,7 +56,7 @@ class GstoreHelper {
 
     try {
 
-      var uri = `${process.env.DATABUS_DATABASE_URL}/graph/delete?repo=${repo}&path=${path}`;
+      var uri = `${process.env.DATABUS_DATABASE_URL}/graph/delete?repo=${repo}&prefix=${prefix}&path=${path}`;
       var res = await rp.delete(uri);
 
       process.send({
