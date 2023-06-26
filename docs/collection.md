@@ -178,8 +178,8 @@ databus:collectionContent
 		sh:severity sh:Violation ;
 		sh:message "A collection needs content."@en ;
         sh:qualifiedValueShape [ sh:datatype xsd:string ] ;
-		sh:maxCount 1 ;	
-		sh:minCount 1 ;			
+		sh:qualifiedMaxCount 1 ;	
+		sh:qualifiedMinCount 1 ;			
     ] . 
 ```
 ```javascript
