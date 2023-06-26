@@ -101,7 +101,7 @@ docker-compose up
 The Databus should be available at `http://localhost:3000`.&#x20;
 
 ℹ️ Further notes:
-* See [here](docs/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
+* See [here](https://dbpedia.gitbook.io/databus/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
 * For regular deployment, we highly recommend that you also register a domain and choose a subdomain such as `databus.example.org`. 
 
 ### Publishing Your First Artifact
@@ -117,23 +117,34 @@ in the `Files` section.
 After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
 ℹ️ Notes:
-* See more on how to organise your data [here](docs/model.md), there you can find detailed explanations and our suggestions on structuring your datasets.
-* For automated metadata uploads see the [API](docs/usage/api.md)
+* See more on how to organise your data [here](https://dbpedia.gitbook.io/databus/model.md), there you can find detailed explanations and our suggestions on structuring your datasets.
+* For automated metadata uploads see the [API](https://dbpedia.gitbook.io/databus/usage/api.md)
 
 ### Querying Metadata
 After files are published, we can perform queries. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
 Collections (user-created data catalogues) allow to flexibly combine files and artifacts together and share the collection links. Collections provide a tool to build, store and share SPARQL queries.    
-Read more [here](docs/usage/web-interface/collections.md).
+Read more [here](https://dbpedia.gitbook.io/databus/usage/web-interface/collections.md).
 
-The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. See some examples of the SPARQL queries in [examples](docs/usage/quickstart-examples.md).
+The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. Use this query to retrieve all links available on a Databus. The link you uploaded in the previous step should be in the result. See more examples of the SPARQL queries in [examples](https://dbpedia.gitbook.io/databus/usage/quickstart-examples.md). 
+```
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+
+SELECT ?file  WHERE {
+  ?distributions dcat:downloadURL ?file .
+}    
+```
+ℹ️ SPARQL allows for the SERVICE keyword, that allows [federated querying](https://www.w3.org/TR/sparql11-federated-query/#simpleService) over several databuses. 
+
+
 ### Mods
 Databus offers metadata extensions using Mods. 
-You can read about them more in detail [here](docs/mods.md).
+You can read about them more in detail [here](https://dbpedia.gitbook.io/databus/mods.md).
+
 ### API
 Instead of using GUI, you can automate your publishing and data retrieving process
- using our http-API. Refer to it [here](docs/usage/api/README.md).
+ using our http-API. Refer to it [here](https://dbpedia.gitbook.io/databus/usage/api/README.md).
 
 # Meta
 
