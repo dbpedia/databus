@@ -6,6 +6,8 @@ const DatabusMessage = require('../databus-message');
 class GstoreHelper {
 
   static async read(repo, path) {
+    
+  
     let options = {
       url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
       headers: {
@@ -25,9 +27,11 @@ class GstoreHelper {
 
   static async save(repo, path, content) {
 
+    var prefix = encodeURIComponent(process.env.DATABUS_RESOURCE_BASE_URL);
+
     try {
       var options = {
-        uri: `${process.env.DATABUS_DATABASE_URL}/graph/save?repo=${repo}&path=${path}`,
+        uri: `${process.env.DATABUS_DATABASE_URL}/graph/save?repo=${repo}&prefix=${prefix}&path=${path}`,
         body: content,
         json: true
       };
