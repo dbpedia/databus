@@ -59,24 +59,6 @@ Get in contact via the informal dev channel on Discord or reach out to the Datab
 
 Development of the Databus started in 2018 as means to manage the DBpedia Knowledge Graph extraction more efficiently. In the first 5 years, we fireproofed Databus online at the public beta at databus.dbpedia.org and refined the Metadata model. Starting with the first public release version 2.1.0, the core model aka the Databus Ontology is stable.
 
-# Important Links
-
-**Documentation:** [https://dbpedia.gitbook.io/databus/overview/readme](https://dbpedia.gitbook.io/databus/overview/readme) 
-
-**API documentation:** [https://github.com/dbpedia/databus/blob/master/API.md](https://github.com/dbpedia/databus/blob/master/API.md)
-
-**Working deployments:** [DBpedia Databus (Reference)](https://dev.databus.dbpedia.org/), [Energy Databus](https://energy.databus.dbpedia.org/)
-
-**Development setup:** [https://github.com/dbpedia/databus/blob/master/devenv/README.md](https://github.com/dbpedia/databus/blob/master/devenv/README.md)
-
-**Our Discord:** [https://discord.gg/fB8byAPP7e](https://discord.gg/fB8byAPP7e)
-
-## Use Cases
-
-More examples of the Databus capabilities are demonstrated in our use cases:
- * [Meta registries](docs/building-meta-registries.md)
- * [Maven for data](docs/maven-for-data-manage-data-dependencies-like-code.md)
-
 # Getting Started
 <!-- TODO link to our guide -->
 ℹ️ Learn how to do a roundtrip: Prepare data, deploy a databus, upload data, query and download. Alternatively, you can also start with just the download guide on existing Databuses. 
