@@ -27,15 +27,11 @@ function UriBreadcrumbsController() {
         continue;
       }
 
-      pathSoFar += extension;
-
-      if(e < extensions.length - 1) {
-        pathSoFar += "/";
-      }
+      pathSoFar += "/" + extension;
 
       ctrl.entries.push({
         label: extension,
-        uri: '/' + pathSoFar
+        uri: pathSoFar
       });
     }
   }
