@@ -131,7 +131,6 @@ module.exports = function (router, protector) {
       }
 
       var collectionData = AppJsonFormatter.formatCollectionData(collectionJsonLd);
-      console.log(JSON.stringify(collectionData, null, 3));
 
       res.render('collection', {
         title: collectionData.title,
