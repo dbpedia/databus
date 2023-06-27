@@ -128,6 +128,66 @@ Extra tip: you can also retrieve the SPARQL query by submitting the following cu
 Great, you are done here!
 
 ### Technique 5: Download data using the Databus client (todo)
+DBpedia Databus Client is a tool that downloads data from DBpedia Databus using SPARQL and makes it data fit for your applications. It simplifies data consumption and compilation from the DBpedia Databus, addressing challenges in using data from different publishers and domains. In addition to just downloading data from any databus, it can convert the data into different formats to suit the needs of your software projects
+
+### Requirements
+
+You have multiple options to run the client (shown in [usage](docs/usage/ "mention")). For the standalone approach (.jar file) you only need `Java`installed on your machine.
+
+* **Java:** `JDK 8` or `JDK 11`
+
+### Installation
+
+Download `databus-client.jar` of the latest [Databus Client release](https://github.com/dbpedia/databus-client/releases/latest).
+
+### Choose Data for your application
+
+First, we need to select the Databus, where we want to get our data from. We take [this](https://dev.databus.dbpedia.org/) databus. Its SPARQL Endpoint is located here: [https://dev.databus.dbpedia.org/sparql](https://dev.databus.dbpedia.org/sparql) .
+
+To select data from a DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
+
+We use the following query as selection for this example:
+
+```
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}
+```
+
+### Download and convert selected data
+
+In order to download the data we need to pass the query as the _`-s`_ argument. Additionaly we need to specify where the query needs to be asked to. This is done using the `-e` argument. Furthermore if we want to convert the files to _.nt_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. There are more options described in [#cli-options](docs/usage/cli.md#cli-options "mention")
+
+```
+java -jar target/databus-client-v2.1-beta.jar \
+-s "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}" \
+-e "https://dev.databus.dbpedia.org/sparql" \
+-f nt
+```
+
+Per default the resulting files will be saved to `./files/` . &#x20;
 
 ### Technique 6: Download data using a simple bash script
 Downloading data using a bash script is maybe the most convenient way of retrieving data from the Databus.
