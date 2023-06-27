@@ -132,7 +132,7 @@ DBpedia Databus Client is a tool that downloads data from DBpedia Databus using 
 
 ### Requirements
 
-You have multiple options to run the client (shown in [usage](docs/usage/ "mention")). For the standalone approach (.jar file) you only need `Java`installed on your machine.
+You have multiple options to run the client (shown in [databus client - usage](https://dbpedia.gitbook.io/databus/v/download-client/usage)). For the standalone approach (.jar file) you only need `Java`installed on your machine.
 
 * **Java:** `JDK 8` or `JDK 11`
 
@@ -188,7 +188,7 @@ SELECT ?file WHERE
 ```
 
 Per default the resulting files will be saved to `./files/` . &#x20;
-There are more options described in the [DBpedia Databus Client docu](https://dbpedia.gitbook.io/databus/v/download-client/)
+There are more options described in the [DBpedia Databus Client documentation](https://dbpedia.gitbook.io/databus/v/download-client/).
 
 ### Technique 6: Download data using a simple bash script
 Downloading data using a bash script is maybe the most convenient way of retrieving data from the Databus.
