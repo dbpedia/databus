@@ -280,6 +280,8 @@ class DatabusCollectionUtils {
 
       for(var binding of response.data.results.bindings) {
         binding.databus = databusUri;
+
+        
         bindings.push(binding);
       }
 
@@ -291,10 +293,25 @@ class DatabusCollectionUtils {
     let result = [];
 
     for(var binding of bindings) {
-      result.push(DatabusCollectionUtils.reduceBinding(binding));
+      binding = DatabusCollectionUtils.reduceBinding(binding);
+
+      var variant = binding.variant;
+        var variants = variant.split(',');
+
+        var cleanedVariants = [];
+
+        for(var v of variants) {
+          if(v != "" && v != " ") {
+            cleanedVariants.push(v);
+          }
+        }
+
+        binding.variant = cleanedVariants.join(",");
+
+      result.push(binding);
     }
 
-    
+
     /*
     for (var entry of entries) {
 
