@@ -278,10 +278,10 @@ class DatabusCollectionUtils {
 
       response = await $http(req);
 
-      for(var binding of response.data.results.bindings) {
+      for (var binding of response.data.results.bindings) {
         binding.databus = databusUri;
 
-        
+
         bindings.push(binding);
       }
 
@@ -292,21 +292,24 @@ class DatabusCollectionUtils {
 
     let result = [];
 
-    for(var binding of bindings) {
+    for (var binding of bindings) {
       binding = DatabusCollectionUtils.reduceBinding(binding);
 
       var variant = binding.variant;
+
+      if(variant != undefined) {
         var variants = variant.split(',');
 
         var cleanedVariants = [];
 
-        for(var v of variants) {
-          if(v != "" && v != " ") {
+        for (var v of variants) {
+          if (v != "" && v != " ") {
             cleanedVariants.push(v);
           }
         }
 
         binding.variant = cleanedVariants.join(",");
+      }
 
       result.push(binding);
     }
