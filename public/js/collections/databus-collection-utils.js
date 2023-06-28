@@ -160,7 +160,7 @@ class DatabusCollectionUtils {
     var req = {
       method: 'POST',
       url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
-      data: "format=json&query=" + encodeURIComponent(query),
+      data: "format=json&timeout=1000000&query=" + encodeURIComponent(query),
       headers: {
         "Content-type": "application/x-www-form-urlencoded"
       },
@@ -272,7 +272,6 @@ class DatabusCollectionUtils {
 
     return result;
   }
-
 
   /*
   static copyData(data) {
