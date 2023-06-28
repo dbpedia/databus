@@ -92,13 +92,17 @@ Lets try this on an example where we will retrieve data for the download link fo
 
 First, you would need to open your terminal application.
 
-Then, write a command using the rapper command line tool. Here is the command for the “instance types” dataset.
+Then, write a command using the cURL command line tool. Here is the command for the “instance types” dataset.
 
-`rapper https://databus.dbpedia.org/dbpedia/mappings/instance-types/2021.12.01  -i turtle -o turtle`
+`curl -L https://databus.dbpedia.org/dbpedia/mappings/instance-types/2021.12.01 -H "Accept: text/turtle"`
 
 By running the command should receive a valid RDF representation of version 2021.12.01 of the `instance types` artifact.
+The **format of the results** is the RDF turtle serialization format. However, you can also retrieve the results in other formats. For this you would need to change the value of the **Accept header** in the cURL command.
+For example:
+* Accept: `application/json` - for results in JSON
+* Accept: `text/ntriples` - for the results in the N-triples serialization format
 
-Next, you can dig in the RDF data, grab the download links encoded using the databus:downloadURL properties, and finally, use the download links to download the data.
+Next, you can dig in the data, grab the download links encoded using the databus:downloadURL properties, and finally, use the download links to download the data.
 
 You are done.
 
@@ -124,6 +128,67 @@ Extra tip: you can also retrieve the SPARQL query by submitting the following cu
 Great, you are done here!
 
 ### Technique 5: Download data using the Databus client (todo)
+DBpedia Databus Client is a tool that downloads data from DBpedia Databus using SPARQL and makes it data fit for your applications. It simplifies data consumption and compilation from the DBpedia Databus, addressing challenges in using data from different publishers and domains. In addition to just downloading data from any databus, it can convert the data into different formats to suit the needs of your software projects
+
+### Requirements
+
+You have multiple options to run the client (shown in [databus client - usage](https://dbpedia.gitbook.io/databus/v/download-client/usage)). For the standalone approach (.jar file) you only need `Java`installed on your machine.
+
+* **Java:** `JDK 8` or `JDK 11`
+
+### Installation
+
+Download `databus-client.jar` of the latest [Databus Client release](https://github.com/dbpedia/databus-client/releases/latest).
+
+### Choose Data for your application
+
+First, we need to select the Databus, where we want to get our data from. We take [this](https://dev.databus.dbpedia.org/) databus. Its SPARQL Endpoint is located here: [https://dev.databus.dbpedia.org/sparql](https://dev.databus.dbpedia.org/sparql) .
+
+To select data from a DBpedia Databus, you can perform queries. Databus provides two mechanisms for this, which are described in detail [here](https://dbpedia.gitbook.io/databus/#querying-metainformation).&#x20;
+
+We use the following query as selection for this example:
+
+```
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}
+```
+
+### Download and convert selected data
+
+In order to download the data we need to pass the query as the _`-s`_ argument. Additionaly we need to specify where the query needs to be asked to. This is done using the `-e` argument. Furthermore if we want to convert the files to _.nt_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. 
+
+```
+java -jar target/databus-client-v2.1-beta.jar \
+-s "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}" \
+-e "https://dev.databus.dbpedia.org/sparql" \
+-f nt
+```
+
+Per default the resulting files will be saved to `./files/` . &#x20;
+There are more options described in the [DBpedia Databus Client documentation](https://dbpedia.gitbook.io/databus/v/download-client/).
 
 ### Technique 6: Download data using a simple bash script
 Downloading data using a bash script is maybe the most convenient way of retrieving data from the Databus.
@@ -157,4 +222,83 @@ Congrats, you have learnt another technique for downloading data from the Databu
 
 ### Technique 7: Download and load data in the Virtuoso triple store (todo)
 
+Deploy a dataset into a Docker SPARQL endpoint (Virtuoso) using the Databus Client.
 
+### Requirements
+
+* **Docker:** `^3.5`
+
+## Execution
+
+### Get docker-compose.yml
+
+get the [docker-compose.yml](../../docker/virtuoso-compose/docker-compose.yml) file of the Databus Client Repository, or create your own:
+
+```
+version: '3.5'
+
+services:
+
+  db:
+    image: tenforce/virtuoso
+    ports:
+      - 8895:8890
+    volumes:
+      - toLoad:/data/toLoad
+    entrypoint: >
+      bash -c 'while [ ! -f /data/toLoad/complete ]; do sleep 1; done
+      && rm -f /data/toLoad/complete && bash /virtuoso.sh'
+
+  # To change the file query: Mount an external query
+  # file under volumes between host and container
+  # and apply internal path as environment variable.
+
+  databus_client:
+    image: dbpedia/databus-client:latest
+    environment:
+      - SOURCE=/databus-client/query.sparql
+      - ENDPOINT=https://dev.databus.dbpedia.org/sparql
+      - COMPRESSION=gz
+    volumes:
+      - ./myQuery.sparql:/databus-client/query.sparql
+      - toLoad:/var/toLoad
+    entrypoint: >
+      bash -c 'bash /databus-client/entrypoint.sh
+      && mv -t /var/toLoad $$(find /var/repo -name "*.gz");
+      touch /var/toLoad/complete'
+
+volumes:
+  toLoad:
+```
+
+### Select your desired data
+
+Again you need to specify your desired data in a sparql query
+
+```
+echo "PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+
+SELECT ?file WHERE
+{
+        GRAPH ?g
+        {
+                ?dataset databus:artifact <https://dev.databus.dbpedia.org/tester/testgroup/testartifact> .
+                { ?distribution <http://purl.org/dc/terms/hasVersion> '2023-06-23' . }
+                ?dataset dcat:distribution ?distribution .
+                ?distribution databus:file ?file .
+        }
+}" > myQuery.sparql
+```
+
+### Start Containers
+
+```
+docker compose up
+```
+
+Container needs some startup time and endpoint is not immediately reachable. If it is done you can query it with directly in your browser at [http://localhost:8895/sparql/](http://localhost:8895/sparql/) or you can query directly in your terminal: e.g.
+
+```
+curl --data-urlencode query="SELECT * {?a <http://xmlns.com/foaf/0.1/account> ?o }" "http://localhost:8895/sparql"
+```

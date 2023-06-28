@@ -1,0 +1,2 @@
+DBpedia Databus Client is a tool that downloads data from DBpedia Databus using SPARQL and makes it data fit for your applications. It simplifies data consumption and compilation from the DBpedia Databus, addressing challenges in using data from different publishers and domains. In addition to just downloading data from any databus, it can convert the data into different formats to suit the needs of your software projects.
+For further information check the [documentation](https://dbpedia.gitbook.io/databus/v/download-client/).
