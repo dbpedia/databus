@@ -1,4 +1,4 @@
-DATABUS_RESOURCE_BASE_URL=https://databus.dbpedia.org
+DATABUS_RESOURCE_BASE_URL=http://localhost:3000
 DATABUS_DATABASE_URL=http://localhost:3002
 DATABUS_NAME="Just Another Databus"
 DATABUS_ORG_ICON="https://www.dbpedia.org/wp-content/uploads/2020/09/dbpedia-org-logo.png"

@@ -62,8 +62,6 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
     if (result.inCollection) {
       QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
-      // ctrl.onComponentAdded();
-      // ctrl.collectionManager.saveLocally();
     }
     else {
       if (result.typeName[0].value == 'Group') {
@@ -90,13 +88,6 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
         ctrl.onComponentAdded();
       }
     }
-
-    // check if a group has no children left, if yes, remove it as well
-    //for(let r in ctrl.root.childNodes) {
-    //  if (ctrl.root.childNodes[r].property === "databus:group" && ctrl.root.childNodes[r].childNodes.length === 0) {
-    //    QueryNode.removeChildByUri(ctrl.root, ctrl.root.childNodes[r].uri);
-    //  }
-    // }
 
     for (let r in ctrl.results) {
       ctrl.results[r].inCollection = ctrl.isInCollection(ctrl.results[r]);
@@ -134,7 +125,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
         $http({
           method: 'GET',
-          url: ctrl.targetDatabusUrl + '/api/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=50&query='
+          url: ctrl.targetDatabusUrl + '/api/search' + typeFilters + '&format=JSON_FULL&minRelevance=10&maxResults=10&query='
             + ctrl.searchInput,
         }).then(function successCallback(response) {
 

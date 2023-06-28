@@ -18,6 +18,20 @@ class DatabusUtils {
     return this.checkField(identifier, identifierRegex, min, 50);
   }
 
+  static formatQuery(query, placeholderMappings) {
+
+    if (placeholderMappings == undefined) {
+       return query;
+    }
+ 
+    for (var placeholder in placeholderMappings) {
+       var re = new RegExp('%' + placeholder + '%', "g");
+       query = query.replace(re, placeholderMappings[placeholder]);
+    }
+ 
+    return query;
+ }
+
   static isValidVersionIdentifier(identifier) {
     var labelRegex = /^[A-Za-z0-9_\.\-]*$/;
     return this.checkField(identifier, labelRegex, 3, 50);

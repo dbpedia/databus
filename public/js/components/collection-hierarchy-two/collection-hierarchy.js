@@ -320,7 +320,7 @@ SELECT ?file WHERE {
       resultUriPrefix = node.uri;
     }
 
-    var url = `${baseUrl}/api/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=50&query=${nodeView.search}`;
+    var url = `${baseUrl}/api/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=10&query=${nodeView.search}`;
 
     try {
       $http({ method: 'GET', url: url }).then(function successCallback(response) {

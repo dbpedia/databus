@@ -25,25 +25,24 @@
     <th>License</th>
   </tr>
 
-  <tr ng-if="$ctrl.files.length == 0"><td colspan="5"><i style="color: #999">None</i></td></tr>
-  <tr ng-repeat-start="file in $ctrl.groupedFiles" style="position:relative;">
+  <tr ng-if="$ctrl.files.length == 0">
+    <td colspan="5"><i style="color: #999">None</i></td>
+  </tr>
+  <tr ng-repeat-start="version in $ctrl.groupedFiles" style="position:relative;">
   </tr>
 
-  <tr style="position:relative;" ng-repeat-start="download in file.downloads">
+  <tr style="position:relative;" ng-repeat-start="distribution in version.distributions">
 
-    <td ng-if="$first" rowspan="{{ $ctrl.getRowspan(file) }}">
-      <span ng-if="$first">{{file.title}} (<a target="_blank" ng-href="{{file.uri}}">{{ file.version }}</a>)</span></td-->
+    <td ng-if="$first" rowspan="{{ $ctrl.getRowspan(version) }}">
+      <span ng-if="$first">{{version.title}} (<a target="_blank" ng-href="{{version.uri}}">{{
+          $ctrl.uriToName(version.uri) }}</a>)</span></td-->
     <td>
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
 
-        <div style="cursor:pointer;" ng-click="download.expanded = !download.expanded"
-          ng-class="{ right : !download.expanded, down : download.expanded }" class="arrow"></div>
-
-
         <div style="display: flex; justify-content: flex-end; align-items: center;">
-          {{ $ctrl.formatUploadSize(download.size) }}
-          <a ng-href="{{ $ctrl.createRelativeUri(download.files) }}" target="_blank">
+          {{ $ctrl.formatUploadSize(distribution.size) }}
+          <a ng-href="{{ $ctrl.createRelativeUri(distribution.file) }}" target="_blank">
             <svg style="margin-left:1em;margin-bottom:-.4em;" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
               fill-rule="evenodd" clip-rule="evenodd">
               <path
@@ -54,19 +53,12 @@
       </div>
     </td>
 
-    <td>{{ download.variant }}</td>
-    <td>{{ download.format }}</td>
-    <td><a ng-href="{{ download.license }}">{{download.license}}</a></td>
+    <td>{{ distribution.variant }}</td>
+    <td>{{ distribution.format }}</td>
+    <td><a ng-href="{{ version.license }}">{{version.license}}</a></td>
 
   </tr>
   <tr ng-repeat-end>
-    <td colspan="4" style="padding:0;" ng-if="download.expanded">
-      <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid #dbdbdb;"><b>Comment</b> <br />{{ download.comment
-        }}</div>
-      <div>
-        <pre style="max-width:initial; padding: 0.5rem 0.75rem;"><b>Preview</b><br/>{{ download.preview }}</pre>
-      </div>
-    </td>
   </tr>
 
   <tr ng-repeat-end></tr>

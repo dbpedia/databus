@@ -1,4 +1,5 @@
 const DatabusCollectionUtils = require("../../collections/databus-collection-utils");
+const DatabusUtils = require("../../utils/databus-utils");
 
 
 // hinzufügen eines Controllers zum Modul
@@ -14,9 +15,6 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
     ctrl.isLoading = true;
     DatabusCollectionUtils.getCollectionFiles(ctrl.$http, ctrl.collection).then(function(result) {
       ctrl.files = result;
-      ctrl.files = ctrl.files.filter(function(f) {
-        return f.files != undefined;
-      });
       ctrl.isLoading = false;
       $scope.$apply();
     }, function(err) {
@@ -29,16 +27,19 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
       return;
     }
 
-    ctrl.groupedFiles = ctrl.groupBy(ctrl.files, 'dataset');
+    ctrl.groupedFiles = ctrl.groupBy(ctrl.files, 'version');
   }
 
   ctrl.getRowspan = function(file) {
-    var span = file.downloads.length * 2;
-    if(!file.downloads[file.downloads.length - 1].expanded) {
+
+    return file.distributions.length * 2; 
+    /*
+    var span = file.distributions.length * 2;
+    if(!file.distributions[file.distributions.length - 1].expanded) {
       span--;
     }
 
-    return span;
+    return span;*/
   }
 
   ctrl.groupBy = function(list, key) {
@@ -53,13 +54,12 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
         result[keyVal] = {}
         result[keyVal].value = keyVal;
         result[keyVal].title = element.title;
-        result[keyVal].uri = element.dataset;
-        result[keyVal].version = element.version;
-        result[keyVal].downloads = [];
-        result[keyVal].licenses = [];
+        result[keyVal].uri = keyVal;
+        result[keyVal].distributions = [];
+        result[keyVal].license = element.license;
       }
 
-      result[keyVal].downloads.push(element);
+      result[keyVal].distributions.push(element);
     }
     
     return result;
@@ -68,8 +68,8 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
   ctrl.calculateRowSpan = function(file) {
     var rowspan = 0;
 
-    for(var d in file.downloads) {
-      rowspan += (file.downloads[d].expanded ? 2 : 1);
+    for(var d in file.distributions) {
+      rowspan += 1; //(file.distributions[d].expanded ? 2 : 1);
     }
 
     return rowspan;
@@ -88,8 +88,12 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
 
     if(ctrl.previousFileCount != ctrl.files.length) {
       ctrl.previousFileCount = ctrl.files.length;
-      ctrl.groupedFiles = ctrl.groupBy(ctrl.files, 'dataset');
+      ctrl.groupedFiles = ctrl.groupBy(ctrl.files, 'version');
     }  
+  }
+
+  ctrl.uriToName = function(uri) {
+    return DatabusUtils.uriToName(uri);
   }
 
   ctrl.formatUploadSize = function(size) {

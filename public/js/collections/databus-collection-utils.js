@@ -2,6 +2,7 @@ const QueryBuilder = require("../query-builder/query-builder");
 const QueryTemplates = require("../query-builder/query-templates");
 const DatabusConstants = require("../utils/databus-constants");
 const DatabusMessages = require("../utils/databus-messages");
+const DatabusUtils = require("../utils/databus-utils");
 
 class DatabusCollectionUtils {
 
@@ -30,7 +31,7 @@ class DatabusCollectionUtils {
       if (!this.CEDIT_IDENTIFIER_REGEX.test(form.identifier.value)) {
         hasError = true;
         form.identifier.error = this.formatMessageWithRegex(
-          DatabusMessages.CEDIT_INVALID_IDENTIFIER, 
+          DatabusMessages.CEDIT_INVALID_IDENTIFIER,
           this.CEDIT_IDENTIFIER_REGEX
         );
       }
@@ -40,7 +41,7 @@ class DatabusCollectionUtils {
     if (!this.CEDIT_TITLE_REGEX.test(collection.title)) {
       hasError = true;
       form.title.error = this.formatMessageWithRegex(
-        DatabusMessages.CEDIT_INVALID_TITLE, 
+        DatabusMessages.CEDIT_INVALID_TITLE,
         this.CEDIT_TITLE_REGEX
       );
     }
@@ -49,7 +50,7 @@ class DatabusCollectionUtils {
     if (!this.CEDIT_ABSTRACT_REGEX.test(collection.abstract)) {
       hasError = true;
       form.abstract.error = this.formatMessageWithRegex(
-        DatabusMessages.CEDIT_INVALID_ABSTRACT, 
+        DatabusMessages.CEDIT_INVALID_ABSTRACT,
         this.CEDIT_ABSTRACT_REGEX
       );
     }
@@ -58,7 +59,7 @@ class DatabusCollectionUtils {
     if (!this.CEDIT_DESCRIPTION_REGEX.test(collection.description)) {
       hasError = true;
       form.description.error = this.formatMessageWithRegex(
-        DatabusMessages.CEDIT_INVALID_DESCRIPTION, 
+        DatabusMessages.CEDIT_INVALID_DESCRIPTION,
         this.CEDIT_DESCRIPTION_REGEX
       );
     }
@@ -147,6 +148,21 @@ class DatabusCollectionUtils {
     return binding;
   }
 
+
+  static formatQuery(query, placeholderMappings) {
+
+    if (placeholderMappings == undefined) {
+      return query;
+    }
+
+    for (var placeholder in placeholderMappings) {
+      var re = new RegExp('%' + placeholder + '%', "g");
+      query = query.replace(re, placeholderMappings[placeholder]);
+    }
+
+    return query;
+  }
+
   static async getCollectionStatistics($http, collection) {
 
     var query = QueryBuilder.build({
@@ -209,7 +225,7 @@ class DatabusCollectionUtils {
     let query = QueryBuilder.build({
       node: collection.content.root,
       resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
-      template: QueryTemplates.COLLECTION_FILES_TEMPLATE
+      template: QueryTemplates.DISTRIBUTIONS_TEMPLATE
     });
 
     var req = {
@@ -228,14 +244,120 @@ class DatabusCollectionUtils {
       return null;
     }
 
+    var distributions = {};
+    var bindings = [];
+
+    for (var entry of entries) {
+      var uri = entry.distribution.value;
+      var databusUri = DatabusCollectionUtils.navigateUp(uri, 4);
+
+      if (distributions[databusUri] == null) {
+        distributions[databusUri] = [];
+      }
+
+      distributions[databusUri].push(`<${uri}>`);
+    }
+
+    for (var databusUri in distributions) {
+
+      var distributionsString = distributions[databusUri].join('\n');
+
+      var params = {};
+      params.DISTRIBUTIONS = distributionsString;
+
+      let fileQuery = DatabusCollectionUtils.formatQuery(QueryTemplates.COLLECTION_TABLE_QUERY, params);
+
+      var req = {
+        method: 'POST',
+        url: `${databusUri}${DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL}`,
+        data: "format=json&query=" + encodeURIComponent(fileQuery),
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded"
+        },
+      }
+
+      response = await $http(req);
+
+      for(var binding of response.data.results.bindings) {
+        binding.databus = databusUri;
+        bindings.push(binding);
+      }
+
+    }
+
+
+    // Postproccess
+
     let result = [];
+
+    for(var binding of bindings) {
+      result.push(DatabusCollectionUtils.reduceBinding(binding));
+    }
+
+    
+    /*
+    for (var entry of entries) {
+
+      try {
+        console.log(entry.distribution.value);
+
+        var params = {};
+        params.DISTRIBUTION = entry.distribution.value;
+
+        let fileQuery = DatabusUtils.formatQuery(QueryTemplates.COLLECTION_TABLE_ROW_QUERY, params);
+
+        var req = {
+          method: 'POST',
+          url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
+          data: "format=json&query=" + encodeURIComponent(fileQuery),
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded"
+          },
+        }
+
+        response = await $http(req);
+
+        if (response.data.results.bindings.length === 0) {
+          continue;
+        }
+
+        result.push(DatabusCollectionUtils.reduceBinding(response.data.results.bindings[0]));
+
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    // Postprocess:
+
+
 
     for (let i in entries) {
       let element = DatabusCollectionUtils.reduceBinding(entries[i]);
       result.push(element);
     }
+    */
 
     return result;
+  }
+
+
+
+  static navigateUp(uri, steps) {
+
+    if (steps == undefined) {
+      steps = 1;
+    }
+
+    for (var i = 0; i < steps; i++) {
+      uri = uri.substr(0, uri.lastIndexOf('/'));
+    }
+
+    if (uri.includes('#')) {
+      uri = uri.substr(0, uri.lastIndexOf('#'));
+    }
+
+    return uri;
   }
 
   static async getCollectionFileURLs($http, collection) {
@@ -266,7 +388,6 @@ class DatabusCollectionUtils {
 
     for (let i in entries) {
       let element = DatabusCollectionUtils.reduceBinding(entries[i]);
-      console.log(element);
       result += element.file + '\n';
     }
 

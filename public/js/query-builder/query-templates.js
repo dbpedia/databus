@@ -20,6 +20,53 @@
     `PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>`
   ];
 
+  static COLLECTION_TABLE_ROW_QUERY = `
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?file SAMPLE(?version) SAMPLE(?title) SAMPLE(?abstract) SAMPLE(?license) SAMPLE(?size) SAMPLE(?format) SAMPLE(?compression) (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) WHERE {
+  <%DISTRIBUTION%> databus:file ?file .
+  <%DISTRIBUTION%> databus:formatExtension ?format .
+  <%DISTRIBUTION%> databus:compression ?compression .
+  <%DISTRIBUTION%> dcat:byteSize ?size .
+  ?version dcat:distribution <%DISTRIBUTION%> .
+  ?version dct:title ?title .
+  ?version dct:abstract ?abstract.
+  ?version dct:license ?license .
+
+  OPTIONAL { <%DISTRIBUTION%> ?p  ?var. ?p rdfs:subPropertyOf databus:contentVariant . }
+} GROUP BY ?file
+`;
+
+static COLLECTION_TABLE_QUERY = `
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(?title) AS ?title SAMPLE(?abstract) AS ?abstract SAMPLE(?license) AS ?license SAMPLE(?size) AS ?size SAMPLE(?format) AS ?format SAMPLE(?compression) AS ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) WHERE {
+  VALUES ?distribution {
+    %DISTRIBUTIONS%
+  }
+  ?distribution databus:file ?file .
+  ?distribution databus:formatExtension ?format .
+  ?distribution databus:compression ?compression .
+  ?distribution dcat:byteSize ?size .
+  ?version dcat:distribution ?distribution .
+  ?version dct:title ?title .
+  ?version dct:abstract ?abstract.
+  ?version dct:license ?license .
+  OPTIONAL { ?distribution ?p  ?var. ?p rdfs:subPropertyOf databus:contentVariant . }
+} GROUP BY ?distribution
+`;
 
   static COLLECTION_STATISTICS_TEMPLATE = {
     indent: 1,
@@ -122,6 +169,19 @@
       `%QUERY%`,
       `\t?dataset dcat:distribution ?distribution .`,
       `\t?distribution databus:file ?file .`,
+      `}`,
+    ]
+  };
+
+  static DISTRIBUTIONS_TEMPLATE = {
+    prefixes: QueryTemplates.DEFAULT_PREFIXES,
+    indent: 1,
+    select: `SELECT ?distribution WHERE`,
+    body: [
+      `GRAPH ?g`,
+      `{`,
+      `%QUERY%`,
+      `\t?dataset dcat:distribution ?distribution .`,
       `}`,
     ]
   };
