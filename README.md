@@ -3,7 +3,7 @@ description: >-
  DBpedia Databus is a transformative platform for agile data integration, collaboration, and automation via a structured metadata Knowledge Graph.
 ---
 
-Important Links: [Gitbook Docu](https://dbpedia.gitbook.io/databus/), [Join Discord](https://discord.gg/fB8byAPP7e), Contact, [Databus used in the DBpedia Project](https://databus.dbpedia.org/)
+Important Links: [Gitbook Docu](https://dbpedia.gitbook.io/databus/), [Join Discord](https://discord.gg/fB8byAPP7e),  [Databus used in the DBpedia Project](https://databus.dbpedia.org/)
 
 # About
 ## What is the DBpedia Databus?
@@ -37,7 +37,7 @@ We identified these deployment levels with our partners:
 5. **Application, Product or Pipeline**: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  
 
 ## Get on Board the Databus
-🚀 Try our quickstart guide for downloading data from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. 
+🚀 Try our [quickstart guide for downloading data](https://dbpedia.gitbook.io/databus/guides/data-download-guide) from DBpedia (no registration necessary). Currently, 380,000 files are available on ~30 servers via https://databus.dbpedia.org alone, serving ~200,000 requests per day. This Github repo lets you deploy your own bus for your own data. 
 
 ## Contact
 <!-- TODO change email to databus@infai.org -->
@@ -61,7 +61,7 @@ Development of the Databus started in 2018 as means to manage the DBpedia Knowle
 
 # Getting Started
 <!-- TODO link to our guide -->
-ℹ️ Learn how to do a roundtrip: Prepare data, deploy a databus, upload data, query and download. Alternatively, you can also start with just the download guide on existing Databuses. 
+ℹ️ Learn how to do a roundtrip: Prepare data, deploy a databus, upload data, query and download. Alternatively, you can also start with just the [download guide on existing Databuses](https://dbpedia.gitbook.io/databus/guides/data-download-guide). 
 
 
 ## Preparing Your Data
@@ -101,7 +101,7 @@ docker-compose up
 The Databus should be available at `http://localhost:3000`.&#x20;
 
 ℹ️ Further notes:
-* See [here](https://dbpedia.gitbook.io/databus/running-your-own-databus-server/configuration.md) on detailed configuration of Databus for the use in production.
+* See [here](https://dbpedia.gitbook.io/databus/running-own-server/configuration) on detailed configuration of Databus for the use in production.
 * For regular deployment, we highly recommend that you also register a domain and choose a subdomain such as `databus.example.org`. 
 
 ### Publishing Your First Artifact
@@ -117,17 +117,17 @@ in the `Files` section.
 After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
 
 ℹ️ Notes:
-* See more on how to organise your data [here](https://dbpedia.gitbook.io/databus/model.md), there you can find detailed explanations and our suggestions on structuring your datasets.
-* For automated metadata uploads see the [API](https://dbpedia.gitbook.io/databus/usage/api.md)
+* See more on how to organise your data [here](https://dbpedia.gitbook.io/databus/model), there you can find detailed explanations and our suggestions on structuring your datasets.
+* For automated metadata uploads see the [API](https://dbpedia.gitbook.io/databus/usage/api)
 
 ### Querying Metadata
 After files are published, we can perform queries. Databus offers two 
 mechanisms for that: a SPARQL endpoint and Collections. 
 
 Collections (user-created data catalogues) allow to flexibly combine files and artifacts together and share the collection links. Collections provide a tool to build, store and share SPARQL queries.    
-Read more [here](https://dbpedia.gitbook.io/databus/usage/web-interface/collections.md).
+Read more [here](https://dbpedia.gitbook.io/databus/usage/web-interface/collections).
 
-The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. Use this query to retrieve all links available on a Databus. The link you uploaded in the previous step should be in the result. See more examples of the SPARQL queries in [examples](https://dbpedia.gitbook.io/databus/usage/quickstart-examples.md). 
+The SPARQL endpoint at [localhost:3000/sparql](http://localhost:3000/sparql) allows to run queries directly. Use this query to retrieve all links available on a Databus. The link you uploaded in the previous step should be in the result. See more examples of the SPARQL queries in [examples](https://dbpedia.gitbook.io/databus/usage/quickstart-examples). 
 ```
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
@@ -140,11 +140,11 @@ SELECT ?file  WHERE {
 
 ### Mods
 Databus offers metadata extensions using Mods. 
-You can read about them more in detail [here](https://dbpedia.gitbook.io/databus/mods.md).
+You can read about them more in detail [here](https://dbpedia.gitbook.io/databus/usage/mods).
 
 ### API
 Instead of using GUI, you can automate your publishing and data retrieving process
- using our http-API. Refer to it [here](https://dbpedia.gitbook.io/databus/usage/api/README.md).
+ using our http-API. Refer to it [here](https://dbpedia.gitbook.io/databus/usage/api).
 
 # Meta
 
