@@ -20,142 +20,13 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+const publishAccount = require('../lib/publish-account');
 
 module.exports = function (router, protector) {
 
-  var cache = new DatabusCache(120);
-  var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
-  var publicKeyInfo = pem2jwk(pkeyPEM);
-
-  let buff = Buffer.from(publicKeyInfo.n, 'base64');
-  var modulus = buff.toString('hex');
-  var exponent = 65537;
-
-  var putOrPatchAccount = async function (req, res, next, hasAccount) {
-    try {
-
-      // Get the accountName from the protected request
-      var authInfo = ServerUtils.getAuthInfoFromRequest(req);
-      var accountName = authInfo.info.accountName;
-
-      if (accountName.length < 4) {
-        res.status(403).send(`Account name is too short. An account name should contain at least 4 characters.\n`);
-        return false;
-      }
-
-      // Check the auth info account and deny access on mismatch
-      if (accountName !== req.params.account) {
-        /// console.log(`AccountName mismatch: ${accountName} != ${req.params.account}\n`);
-        res.status(403).send(`You cannot edit the account data in a foreign namespace\n`);
-        return false;
-      }
-
-      // Validate the group RDF with the shacl validation tool
-      var shaclResult = await shaclTester.validateWebIdRDF(req.body);
-
-      // Return failure
-      if (!shaclResult.isSuccess) {
-        var response = 'SHACL validation error:\n';
-        for (var m in shaclResult.messages) {
-          response += `>>> ${shaclResult.messages[m]}\n`
-        }
-
-        res.status(400).send(response);
-        return;
-      }
-
-      var triples = await constructor.executeConstruct(req.body, constructAccountQuery);
-      var expandedGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
-
-      if (expandedGraphs.length == 0) {
-        res.status(400).send(`The following construct query did not yield any triples:\n\n${constructAccountQuery}\n`);
-        return;
-      }
-
-      // Expected uris
-      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
-      var profileUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
-
-      // Compare the specified id to the actual person uri
-      var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
-
-      if(personGraph == undefined) {
-        res.status(400).send(`No person graph found`);
-        return false;
-      }
-
-      // Mismatch gives error
-      if (personGraph[DatabusUris.JSONLD_ID] != personUri) {
-        res.status(400).send(`The specified uri of the foaf:Person does not match the expected value. (specified: ${personGraph['@id']}, expected: ${personUri})\n`);
-        return false;
-      }
-
-      // Compare the specified id to the actual person uri
-      var profileGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT);
-
-      if(profileGraph == undefined) {
-        res.status(400).send(`No person graph found`);
-        return false;
-      }
-
-      // Mismatch gives error
-      if (profileGraph[DatabusUris.JSONLD_ID] != profileUri) {
-        res.status(400).send(`The specified uri of the foaf:PersonalProfileDocument graph does not match the expected value. (specified: ${profileGraph['@id']}, expected: ${profileUri})\n`);
-        return false;
-      }
-
-      var rsaKeyGraph = {};
-      rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
-      rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
-      rsaKeyGraph[DatabusUris.CERT_MODULUS] = modulus;
-      rsaKeyGraph[DatabusUris.CERT_EXPONENT] = exponent;
-
-      personGraph[DatabusUris.CERT_KEY] = [ rsaKeyGraph ];
-    
-
-      var insertGraphs = expandedGraphs;
-      var compactedGraph = await jsonld.compact(insertGraphs, defaultContext);
-
-      if (process.env.DATABUS_CONTEXT_URL != null) {
-        compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      }
-
-      var targetPath = Constants.DATABUS_FILE_WEBID;
-
-      // console.log(`Target path: ${targetPath}`);
-      // console.log(JSON.stringify(compactedGraph));
-
-      // Save the data using the database manager
-      var result = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);
-
-      if (!result.isSuccess) {
-        // return with Forbidden
-        res.status(500).send('Internal database error.\n');
-        return false;
-      }
-
-      // return success
-      if (!hasAccount) {
-        res.status(201).send('Account created successfully.\n');
-      } else {
-        res.status(200).send('Account saved successfully.\n');
-      }
-
-      return true;
-
-    } catch (err) {
-      // return 500 with error
-      console.log('User creation failed!');
-      console.log(err);
-      res.status(500).send(err);
-      return false;
-    }
-  }
+  
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
-
-
 
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
@@ -183,12 +54,20 @@ module.exports = function (router, protector) {
         // allow write to the account namespace
         req.databus.accountName = req.params.account;
 
-        if ((await putOrPatchAccount(req, res, next, accountExists))) {
+        var result = await publishAccount(req.databus.accountName, req.body);
+
+        if (result.isSuccess) {
           await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
+          res.status(201).send(result.message);
+          return;
         }
+
+        res.status(result.statusCode).send(result.message);
       }
     } else {
-      putOrPatchAccount(req, res, next, accountExists);
+
+      var result = await publishAccount(req.databus.accountName, req.body);
+      res.status(result.statusCode).send(result.message);
     }
   });
 
@@ -547,8 +426,9 @@ module.exports = function (router, protector) {
 
     res.status(result.isSuccess ? 200 : 500).send(message);
   });
-}
 
+
+}
 
 
 

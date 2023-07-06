@@ -280,16 +280,11 @@ class DatabusCollectionUtils {
 
       for (var binding of response.data.results.bindings) {
         binding.databus = databusUri;
-
-
         bindings.push(binding);
       }
-
     }
 
-
     // Postproccess
-
     let result = [];
 
     for (var binding of bindings) {

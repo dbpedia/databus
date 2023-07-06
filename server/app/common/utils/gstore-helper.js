@@ -40,10 +40,12 @@ class GstoreHelper {
 
       var res = await rp.post(options);
 
-      process.send({
-        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
-      });
-
+      if(process.send != undefined) {
+        process.send({
+          id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
+        });
+      }
+      
       return { isSuccess: true };
     } catch (err) {
       console.log(err);

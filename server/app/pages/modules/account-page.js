@@ -3,6 +3,9 @@ var jsonld = require('jsonld');
 
 const ServerUtils = require('../../common/utils/server-utils.js');
 var DatabusCache = require('../../common/cache/databus-cache');
+const { executeAsk } = require('../../common/execute-query');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+const UriUtils = require('../../common/utils/uri-utils');
 
 var cache = new DatabusCache(15);
 
@@ -23,10 +26,7 @@ module.exports = function (router, protector) {
       return;
 
     } else {
-
-      // Redirect to the specific account page
       res.redirect('/' + auth.info.accountName);
-      return;
     }
   });
 

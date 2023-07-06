@@ -5,6 +5,11 @@ const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
 const DatabusUserDatabase = require('./userdb.js');
+const DatabusConstants = require('../public/js/utils/databus-constants.js');
+const UriUtils = require('./app/common/utils/uri-utils.js');
+const { executeAsk } = require('./app/common/execute-query.js');
+const publishAccount = require('./app/api/lib/publish-account.js');
+const AppJsonFormatter = require('../public/js/utils/app-json-formatter.js');
 
 
 function writeManifest() {
@@ -78,7 +83,7 @@ async function initializeContext() {
   // Load the internal default context
   var context = require('../model/generated/context.json');
 
-  // Overwrite default if configured
+  // Set default if not configured
   if (process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined) {
     process.env.DATABUS_DEFAULT_CONTEXT_URL = Constants.DATABUS_DEFAULT_CONTEXT_URL;
   }
@@ -111,7 +116,7 @@ async function initializeContext() {
 
     } catch (err) {
       console.log(err);
-      console.error(`Failed to fetch default context from ${defaultContextUrl}`);
+      console.error(`Failed to fetch default context from ${contextUrl}`);
     }
   }
 
@@ -133,6 +138,30 @@ async function initializeUserDatabase() {
   console.log(`Connecting to User Databse...`);
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
+
+  console.log(`Verifying user account integrity`);
+
+  for(var user of await userDatabase.getUsers()) {
+    var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
+    var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
+
+    if (!exists) {
+      // Redirect to the specific account page
+      console.log(`No profile found for user ${user.accountName}. Creating profile...`);
+     
+      var accountJsonLd = AppJsonFormatter.createAccountData(
+        process.env.DATABUS_RESOURCE_BASE_URL, 
+        user.accountName,
+        user.accountName, 
+        null, 
+        null);
+
+      await publishAccount(user.accountName, accountJsonLd);
+
+      console.log(`Created new default profile for user ${user.accountName}`);
+    } 
+  }
+
 }
 
 

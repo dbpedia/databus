@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+ initializeExtensions();
+
 const numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const cluster = require('cluster');
@@ -15,8 +17,6 @@ var searchIndexer = null;
 var config = require('./config.json')
 var runTests = require('./app/test/main.js');
 
-
-initializeExtensions();
 
 if (cluster.isMaster) {
   masterProcess();
