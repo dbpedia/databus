@@ -151,7 +151,7 @@ Instead of using GUI, you can automate your publishing and data retrieving proce
 # Meta
 
 ## Issue Management
-We use milestones, that are roughly 3 month long, [see here](https://github.com/dbpedia/databus/milestones). Issues are sorted in these milestones as a rough orientation, i.e. if they are delayed or prove to be too difficult, we will push them back to the next milestone. Issues, which are clear candidates to be pushed back are labeled `stretch task`. Milestone `2.x.x` is the backlog and might be picked, if no other issues are more urgent or important. Note that we have a soft voting mechanism: adding 👍 to the issue (under the post) as a reaction helps us to prioritize. 
+We use milestones, that are roughly 3 months long, [see here](https://github.com/dbpedia/databus/milestones). Issues are sorted into these milestones as a rough orientation, when they will be tackled. Of course, if they are delayed or prove to be too difficult, we will push them back to the next milestone. Issues, which are clear candidates to be pushed back are labeled `stretch task`. Milestone `2.x.x` is the backlog and might be picked, if no other issues are more urgent or important. Note that we have a soft voting mechanism: adding 👍 to the issue (under the post) as a reaction helps us to prioritize. 
 
 ## Contributing
 Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).
