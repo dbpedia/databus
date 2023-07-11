@@ -57,6 +57,8 @@ Get in contact via the informal dev channel on Discord or reach out to the Datab
 
 # Status 
 
+  Currently, we are migrating databus.dbpedia.org and energy.databus.dbpedia.org to 2.1.0-rc8 then we beta test it some more. 
+
 Development of the Databus started in 2018 as means to manage the DBpedia Knowledge Graph extraction more efficiently. In the first 5 years, we fireproofed Databus online at the public beta at databus.dbpedia.org and refined the Metadata model. Starting with the first public release version 2.1.0, the core model aka the Databus Ontology is stable.
 
 # Getting Started
@@ -147,6 +149,9 @@ Instead of using GUI, you can automate your publishing and data retrieving proce
  using our http-API. Refer to it [here](https://dbpedia.gitbook.io/databus/usage/api).
 
 # Meta
+
+## Issue Management
+We use milestones, that are roughly 3 month long, [see here](https://github.com/dbpedia/databus/milestones). Issues are sorted in these milestones as a rough orientation, i.e. if they are delayed or prove to be too difficult, we will push them back to the next milestone. Issues, which are clear candidates to be pushed back are labeled `stretch task`. Milestone `2.x.x` is the backlog and might be picked, if no other issues are more urgent or important. Note that we have a soft voting mechanism: adding 👍 to the issue (under the post) as a reaction helps us to prioritize. 
 
 ## Contributing
 Please report issues in our [github repository](https://github.com/dbpedia/databus/issues).
