@@ -19,6 +19,7 @@
     * [Artifact](docs/artifact.md)
     * [Version](docs/dataid.md)
     * [Distribution](docs/distribution.md)
+    * [Collection](docs/collection.md)
   * [Content Variants](docs/content-variants.md)
   * [Persistence (HowTo)](docs/model/persistence-howto.md)
 * [Usage](docs/usage/README.md)
