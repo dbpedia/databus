@@ -12,7 +12,6 @@
 
   static DEFAULT_PREFIXES = [
     `PREFIX databus: <https://dataid.dbpedia.org/databus#>`,
-    `PREFIX databus: <https://dataid.dbpedia.org/databus#>`,
     `PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>`,
     `PREFIX dct:    <http://purl.org/dc/terms/>`,
     `PREFIX dcat:   <http://www.w3.org/ns/dcat#>`,
@@ -21,7 +20,6 @@
   ];
 
   static COLLECTION_TABLE_ROW_QUERY = `
-PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct:    <http://purl.org/dc/terms/>
@@ -44,7 +42,6 @@ SELECT ?file SAMPLE(?version) SAMPLE(?title) SAMPLE(?abstract) SAMPLE(?license) 
 `;
 
 static COLLECTION_TABLE_QUERY = `
-PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX dct:    <http://purl.org/dc/terms/>
