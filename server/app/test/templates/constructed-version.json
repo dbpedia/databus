@@ -1,0 +1,20 @@
+{
+  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+  "@graph": {
+    "@type": [ "Version", "Dataset" ],
+    "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
+    "hasVersion": "%VERSION%",
+    "title": "Test Version",
+    "description": "Data for testing purposes.",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "distribution": [
+      {
+        "@type": "Part",
+        "formatExtension": "ttl",
+        "compression": "none",
+        "downloadURL": "https://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=Construct+%7B%3Fs+%3Fp+%3Fo%7D+%7B%3Fs+%3Fp+%3Fo%7D+Limit+100&format=text%2Fturtle&timeout=30000&signal_void=on&signal_unconnected=on",
+        "dcv:tag": "constructed"
+      }
+    ]
+  }
+}

@@ -29,7 +29,6 @@ module.exports = async function () {
       // Account
       console.log("===== Account Tests =====")
       await accountTests();
-
       
       // API
       console.log("===== API Tests =====")

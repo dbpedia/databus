@@ -1,4 +1,5 @@
 const params = require('../../test-user.json');
+const nerdParams = require('../../test-user-nerd.json');
 const rp = require('request-promise');
 const assert = require('assert');
 const ServerUtils = require('../../../common/utils/server-utils');
@@ -13,6 +14,7 @@ var accountTests = {};
 accountTests.accountTests = async function() {
 
     await createTestUser(params);
+    await createTestUser(nerdParams);
 
     const options = {};
     options.headers = { "x-api-key": params.APIKEY };
@@ -27,6 +29,15 @@ accountTests.accountTests = async function() {
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${params.ACCOUNT_NAME}`;
     options.method = "DELETE";
     await rp(options);
+
+
+    options.headers = { "x-api-key": nerdParams.APIKEY };
+    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${nerdParams.ACCOUNT_NAME}`;
+    options.method = "DELETE";
+    await rp(options);
+
+
+    options.headers = { "x-api-key": params.APIKEY };
 
     // ======= GET non-existing Account ==========
 
@@ -50,7 +61,7 @@ accountTests.accountTests = async function() {
     options.body = webid;
 
     var response = await rp(options);
-    assert(response.statusCode == 201, 'Account could not be created.');
+    assert(response.statusCode == 201, 'Account could not be created. 201 expected.');
 
     // ======= PUT Account - invalid =======
 

@@ -8,11 +8,13 @@ var shaclTester = require('../../common/shacl/shacl-tester');
 var jsonld = require('jsonld');
 var fs = require('fs');
 const pem2jwk = require('pem-jwk').pem2jwk;
+const exec = require('../../common/execute-query');
 
 const defaultContext = require('../../common/context.json');
 
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
+const UriUtils = require('../../common/utils/uri-utils');
 
 var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
 var publicKeyInfo = pem2jwk(pkeyPEM);
@@ -20,6 +22,10 @@ let buff = Buffer.from(publicKeyInfo.n, 'base64');
 var modulus = buff.toString('hex');
 var exponent = 65537;
 
+async function accountExists(accountName) {
+  let accountUri = UriUtils.createResourceUri([accountName]);
+  return await exec.executeAsk(`ASK { ?s <${DatabusUris.FOAF_ACCOUNT}> <${accountUri}> . }`);
+}
 
 module.exports = async function publishAccount(accountName, body) {
 
@@ -115,6 +121,9 @@ module.exports = async function publishAccount(accountName, body) {
 
     var targetPath = Constants.DATABUS_FILE_WEBID;
 
+
+    var exists = await accountExists(accountName);
+
     // Save the data using the database manager
     var saveResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
@@ -126,7 +135,7 @@ module.exports = async function publishAccount(accountName, body) {
     }
 
     result.isSuccess = true;
-    result.statusCode = 200;
+    result.statusCode = exists ? 200 : 201;
     result.message = 'Account saved successfully.\n';
     return result;
 

@@ -33,8 +33,8 @@ function CollectionController($scope, $sce, $http, collectionManager) {
   $scope.collectionViewModel.downloadScript = [];
   $scope.collectionViewModel.downloadScript.length = 3;
   $scope.collectionViewModel.downloadScript[0] = `query=$(curl -H "Accept:text/sparql" ${$scope.collection.uri})`;
-  $scope.collectionViewModel.downloadScript[1] = `files=$(curl -H "Accept: text/csv" --data-urlencode "query=\${query}" ${DATABUS_RESOURCE_BASE_URL}/sparql | tail -n +2 | sed 's/\\r$//')`;
-  $scope.collectionViewModel.downloadScript[2] = 'while IFS= read -r file ; do wget $file; done <<< "$files"';
+  $scope.collectionViewModel.downloadScript[1] = `files=$(curl -X POST -H "Accept: text/csv" --data-urlencode "query=\${query}" ${DATABUS_RESOURCE_BASE_URL}/sparql | tail -n +2 | sed 's/\\r$//' | sed 's/"//g')`;
+  $scope.collectionViewModel.downloadScript[2] = `while IFS= read -r file ; do wget $file; done <<< "$files"`;
 
   $scope.collectionViewModel.downloadManual = 'To fetch the query via *curl* run \n``` shell\n'
     + $scope.collectionViewModel.downloadScript[0] + '\n```'

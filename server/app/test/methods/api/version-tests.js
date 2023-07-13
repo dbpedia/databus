@@ -14,7 +14,7 @@ versionTests.versionTests = async function () {
     await versionTests.getTestVersion(404);
 
     // ========= Create Version ===========
-    const options = {};
+    var options = {};
 
     options.method = "PUT";
     options.json = true;
@@ -84,6 +84,37 @@ versionTests.versionTests = async function () {
 
     // ========= Get Version ===========    
     await versionTests.getTestVersion(404);
+
+
+    // ========= Create Constructed Version ========
+    options = {};
+    options.method = "PUT";
+    options.json = true;
+    options.resolveWithFullResponse = true;
+    options.headers = { "x-api-key": params.APIKEY };
+    options.uri = UriUtils.createResourceUri([
+        params.ACCOUNT_NAME,
+        params.GROUP_NAME,
+        "constructed",
+        params.VERSION_NAME
+    ]);
+    options.body = ServerUtils.formatJsonTemplate(require('../../templates/constructed-version.json'), {
+        DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+        ACCOUNT: params.ACCOUNT_NAME,
+        GROUP: params.GROUP_NAME,
+        ARTIFACT: "constructed",
+        VERSION: params.VERSION_NAME
+    });
+
+    response = await rp(options);
+    assert(response.statusCode == 200, 'Constructed version could not be created.');
+
+    options.method = "DELETE";
+    options.headers = { "x-api-key": params.APIKEY };
+    
+    response = await rp(options);
+    assert(response.statusCode == 204, 'Could not delete constructed version.');
+
 }
 
 

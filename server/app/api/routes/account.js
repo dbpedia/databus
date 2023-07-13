@@ -24,7 +24,7 @@ const publishAccount = require('../lib/publish-account');
 
 module.exports = function (router, protector) {
 
-  
+
 
   router.put('/:account', protector.protect(), async function (req, res, next) {
 
@@ -53,7 +53,7 @@ module.exports = function (router, protector) {
       } else {
         // allow write to the account namespace
         req.databus.accountName = req.params.account;
-
+        /** 
         var result = await publishAccount(req.databus.accountName, req.body);
 
         if (result.isSuccess) {
@@ -62,14 +62,20 @@ module.exports = function (router, protector) {
           return;
         }
 
-        res.status(result.statusCode).send(result.message);
+        res.status(result.statusCode).send(result.message);*/
       }
-    } else {
-
-      var result = await publishAccount(req.databus.accountName, req.body);
-      res.status(result.statusCode).send(result.message);
     }
+
+    if(req.databus.accountName != req.params.account) {
+      res.status(403).send(`Trying to write to an unowned account namespace.\n`);
+      return;
+    }
+
+    var result = await publishAccount(req.databus.accountName, req.body);
+    res.status(result.statusCode).send(result.message);
   });
+
+  
 
   router.post('/api/account/webid/remove', protector.protect(), async function (req, res, next) {
     try {
