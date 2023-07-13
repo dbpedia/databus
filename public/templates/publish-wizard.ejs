@@ -87,22 +87,16 @@
 
     <!-- WIZARD -->
     <section ng-if="authenticated && hasAccount && !isAccountDataLoading">
-
-
       <div class="container">
         <div ng-if="nerdMode.enabled">
           <div class="wizard-info content" style="padding-top: 0;">
             <h1 class="title">Publish Wizard</h1>
-            <p>Nerd mode. You know what to do.</p>
+            <p>Nerd mode. You know what to do. You can send JSON bodies to the publish API directly and choose a log level.</p>
           </div>
-
-          <div class="content-box" ng-init="artifact=session.formData.artifact">
-            <div class="box-header">
-              <h3>Publish</h3>
-            </div>
-
+          <div class="databus-settings-box-header">PUBLISH</div>
+          <div class="databus-settings-box">
+            
             <div class="box-content">
-
               <div class="row">
                 <div class="row-label optional">JSON Body</div>
                 <div style="flex: 1">
@@ -110,11 +104,10 @@
                     ng-model="nerdMode.customJson"></textarea>
                 </div>
               </div>
-
               <div class="row">
                 <div class="row-label optional">Log Level</div>
                 <div style="flex: 1">
-                  <select ng-model="nerdMode.logLevel" ng-options="x for x in nerdMode.logLevelOptions">
+                  <select class="dropdown" ng-model="nerdMode.logLevel" ng-options="x for x in nerdMode.logLevelOptions">
                   </select>
                 </div>
               </div>
@@ -632,7 +625,7 @@
                   <div class="row-label">Add Files</div>
                   <div class="databus-settings-info">
                     <div>Enter file URLs divided by newlines and click <b>Add URLs</b> to add file entries to your
-                      metadata document.</div>
+                      metadata document. The file URLs can be used by other users to download your files.</div>
                   </div>
                   <div class="control" style="width: 100%; margin-bottom: 0.5em;">
                     <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;" class="input"
@@ -648,7 +641,7 @@
                 <div class="row">
                   <div class="row-label">Add Files From Resource Page</div>
                   <div class="databus-settings-info">
-                    <div>Searches the HTML document of the entered URL for links to files and adds them to the version.
+                    <div>Searches the HTML document of the entered URL for any links to files and adds the file URLs to the version.
                     </div>
                   </div>
                   <div class="field has-addons">
@@ -669,8 +662,6 @@
 
                     <div class="databus-settings-box-note">
                       <div class="hover-note">
-                        <databus-icon shape="'info'" class='artifact-icon' on-click="changeFilePanel(false);" size="24">
-                        </databus-icon>
                         <div class="hover-dropdown content"
                           style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
                           <ul style="margin-top: 0; margin-left: 1.5em;">
@@ -684,7 +675,7 @@
                   <div class="databus-settings-info">
                     <div>Content variants are facets that you can add to your files. This can be helpful when your files
                       exist in multiple languages or your dataset is partitioned into multiple files in any other way.
-                      Content variants can help other Databus users to find the correct files for their use case.</div>
+                      Content variants can help other Databus users to find the correct files for their use case. Read more about content variants <a href="https://dbpedia.gitbook.io/databus/model/content-variants" target="_blank">here</a>.</div>
                   </div>
 
                   <div class="field has-addons">

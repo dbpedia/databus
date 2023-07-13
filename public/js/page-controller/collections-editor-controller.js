@@ -3,6 +3,7 @@ const DatabusCollectionWrapper = require("../collections/databus-collection-wrap
 const DatabusAlert = require("../components/databus-alert/databus-alert");
 const QueryNode = require("../query-builder/query-node");
 const DatabusMessages = require("../utils/databus-messages");
+const DatabusUris = require("../utils/databus-uris");
 const DatabusUtils = require("../utils/databus-utils");
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const TabNavigation = require("../utils/tab-navigation");
@@ -261,6 +262,8 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
 
   $scope.loadFromJson = function (loadFromJsonString) {
     try {
+
+      
       var toLoad = JSON.parse(loadFromJsonString);
 
       var target = $scope.collectionManager.activeCollection;
@@ -278,7 +281,12 @@ function CollectionsEditorController($scope, $timeout, $http, $location, collect
 
       if (toLoad.content.generatedQuery != undefined || toLoad.content.customQueries) {
         // Datbaus 1.0 Syntax detected
+        var replacedJson = loadFromJsonString
+          .replace("dataid:", "databus:")
+          .replace("http://dataid.dbpedia.org/ns/cv#",
+          DatabusUris.DATABUS_CONTENT_VARIANT_PREFIX);
 
+        var toLoad = JSON.parse(replacedJson);
         var databusNode = new QueryNode(DATABUS_RESOURCE_BASE_URL, null);
 
         target.content.root = new QueryNode(null, null);

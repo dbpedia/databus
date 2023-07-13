@@ -58,6 +58,7 @@ function AccountPageController($scope, $http, $location, collectionManager) {
   $http.get(`/app/account/content?account=${encodeURIComponent($scope.profileData.accountName)}`)
     .then(function (response) {
 
+      $scope.publishedData.isLoading = false;
       $scope.publishedData.groups = response.data.groups;
       $scope.publishedData.artifacts = response.data.artifacts;
 
