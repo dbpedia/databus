@@ -27,6 +27,7 @@ The Databus container accepts the following environment variables:
 * **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
 * **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
+* **DATABUS_PRIVATE_MODE**: Default is *false*. If set to *true* this will return an HTTP status code of **401** when trying to access the Databus without authentication.
 
 The volumes of the Databus container are best left unchanged. The internal path of the volumes should not be altered. The ourside paths may be changed to any desired path. The keypair folder will store the private and public key of your Databus deployment. The users folder will hold a mini-database associating your OIDC users with Databus users.
 
