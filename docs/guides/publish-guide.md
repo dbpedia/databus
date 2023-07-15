@@ -28,11 +28,17 @@ DBpedia Databus is the file metadata storage, but it does not store the data its
 You may store your data in a Github repository. To publish it in Databus you simply obtain permanent links to the files.
 
 To get permanent links you need to switch to repository version of particular commit:
+
 ![publish-guide-1.png](..%2Fimages%2Fpublish-guide-1.png)
+
 then:
+
 ![publish-guide-2.png](..%2Fimages%2Fpublish-guide-2.png)
+
 and then copy raw links to file data:
+
 ![publish-guide-3.png](..%2Fimages%2Fpublish-guide-3.png)
+
 For example a link to our readme as of July 2023 will be: [https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md](https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md)
 
 **!NOTE! If you use links referring not to commit, but to branch, the files there may be changing over time, which will break corrspondence with the file hashes stored in Databus**
@@ -58,7 +64,9 @@ Publishing your data using web-interface in Databus is very simple.
 
 3. Fill in the publishing form following the hints.
 4. Publish!
-   ![Publish](../images/publish-button.png)
+
+![Publish](../images/publish-button.png)
+
 5. After publishing, you can move on with querying the data you published using [collections](../usage/web-interface/collections.md) or also checkout out [Data Download Guide](data-download-guide.md).
 
 
