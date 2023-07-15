@@ -232,7 +232,7 @@ Deploy a dataset into a Docker SPARQL endpoint (Virtuoso) using the Databus Clie
 
 ### Get docker-compose.yml
 
-get the [docker-compose.yml](../../docker/virtuoso-compose/docker-compose.yml) file of the Databus Client Repository, or create your own:
+get the [docker-compose.yml](https://github.com/dbpedia/databus-client/blob/master/docker/virtuoso-compose/docker-compose.yml) file of the Databus Client Repository, or create your own:
 
 ```
 version: '3.5'
@@ -297,8 +297,12 @@ SELECT ?file WHERE
 docker compose up
 ```
 
-Container needs some startup time and endpoint is not immediately reachable. If it is done you can query it with directly in your browser at [http://localhost:8895/sparql/](http://localhost:8895/sparql/) or you can query directly in your terminal: e.g.
+Container needs some startup time and endpoint is not immediately reachable. If it is done you can query it with directly in your browser at [http://localhost:8895/sparql/](http://localhost:8895/sparql/), or you can query directly in your terminal: e.g.
 
 ```
 curl --data-urlencode query="SELECT * {?a <http://xmlns.com/foaf/0.1/account> ?o }" "http://localhost:8895/sparql"
 ```
+
+## More links
+
+You can find more in our [Publishing Guide](publish-guide.md) or [Quickstart Examples](..%2Fusage%2Fquickstart-examples.md)

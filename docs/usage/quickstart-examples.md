@@ -6,11 +6,11 @@ In this chapter we will focus only on the main api which consists of publishing 
 
 Once the Databus has been started with the correct configuration, you can use the login button on the web interface to log in to your OIDC provider account. Once you are successfully logged in, you can navigate to your account page by using the 'My Account' button on the landing page or using the dropdown in the upper right corner of the screen.
 
-![img.png](../captions/my-account.png)
+![img.png](../images/my-account.png)
 
 You will be asked to specify a namespace. Choose this namespace carefully, as it will be visible in all your databus URIs. The namespace can only be changed by an admin later.
 
-![settings-tab.png](../captions/settings-tab.png)
+![settings-tab.png](../images/settings-tab.png)
 
 Navigate to the settings tab on your account page and scroll to the 'API Keys' section. Enter a display name for your API key (this is only for better distinguishability) and click 'Create' to create the key. You can use the copy icon on the API key to copy the key value to your clipboard.
 
@@ -22,7 +22,7 @@ Most API calls can be used to create, change or delete data on the Databus. This
 
 You can generate your own example inputs by using the Web-UI of Publish Wizard, for example in our [dev Databus](https://dev.databus.dbpedia.org). **NOTE! In case you use you own Databus server, you will need to change all the URI prefixes in the generated Json-LD to yours, i.e. `https://dev.databus.dbpedia.org` -> `https://<your server>`!**
 
-![publish.png](../captions/publish.png)
+![publish.png](../images/publish.png)
 
 Before saving your inputs to the database, they will be validated in 2 steps:
 1) **Construct Query:** A construct query is executed on your RDF input to only select the needed triples. This prevents users from inserting unneeded information.
@@ -36,7 +36,7 @@ In the quickstart we use the minimal required input metadata for publishing a da
 
 The following example of use our dev Databus at `https://dev.databus.dbpedia.org/`.
 
-In the following example we publish a minimal Json-LD with metadata about a test dataset containing our [README](https://raw.githubusercontent.com/dbpedia/databus/master/README.md) file.  
+In the following example we publish a minimal Json-LD with metadata about a test dataset containing our [README](https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md) file.  
 
 You need the execute the following HTTP request (we provide curl for it):
 
@@ -65,7 +65,7 @@ curl -X 'POST' \
           "@type": "Part",
           "formatExtension": "md",
           "compression": "none",
-          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/master/README.md"
+          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md"
         }
       ]
     }
@@ -156,7 +156,7 @@ After you have some data in Databus published you can execute SPARQL queries to 
 
 For that you can use SPARQL endpoint interface or API method [`POST /sparql`](https://dev.databus.dbpedia.org/api/#/general/sparql-post).
 
-![img.png](../captions/SPARQL-endpoint.png)
+![img.png](../images/SPARQL-endpoint.png)
 
 
 Example query for retrieving list of all datasets in Databus:

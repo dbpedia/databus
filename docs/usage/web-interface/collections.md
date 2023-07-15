@@ -20,9 +20,9 @@ The DBpedia Databus Collections are useful in many ways.
 ## The Editor UI
 
 Firstly, you can find the collection editor by hovering over the username icon and clicking on "Collections".
-![](..%2F..%2Fcaptions%2Fcollections_menu.png)
+![](..%2F..%2Fimages%2Fcollections_menu.png)
 Click on "Create New" and the collection editor will open:
-![](../../captions/collections_main_menu.png)
+![](../../images/collections_main_menu.png)
 
 On the "Documentation" tab you need to give your new collection an Id. There you can also edit its visibility status, give it a title and add a description. 
 
@@ -34,7 +34,7 @@ After the first publish your collection receives an URI generated from its Id. F
 
 Let’s have a look at the core piece of the collection editor: the hierarchy view.
 
-![](../../captions/collections_tree_view.png)
+![](../../images/collections_tree_view.png)
 
 On the top of the hierarchy is the list of the Databus nodes. You can add other Databus nodes to make federated collections containing data from several Databus instances.
 
@@ -48,7 +48,7 @@ When you want to add content to your collection you need pick between the catego
 ## Generated Queries
 Clicking the "Groups & Artifacts" will take you to a search field. Make use of the indexed search on the Databus to find and add the groups and artifacts you need. If you want to refine your search, you can do that in the next step.
 
-![](../../captions/collections_generated_query.png)
+![](../../images/collections_generated_query.png)
 
 Once the artifact or group has been added to your collection, the Add to Collection button will turn green. Once you are done you can go back to the Editor with Back to Hierarchy button.
 
@@ -58,14 +58,14 @@ Your hierarchy will now contain several new nodes.
 
 Group and artifacts that have been added to the collection will show up as nodes in the hierarchy. Clicking a node will open a filter where you can refine your dataset selection. Setting a filter to a group node will apply it to all artifact nodes unless you override that setting in any artifact node manually.
 
-![](../../captions/collections_facets.png)
+![](../../images/collections_facets.png)
 
 A group node will provide a list of filters that will be applied to all artifacts of that group. Artifact nodes will then actually select data files which will be visible in the faceted view. The facets are generated dynamically from the available variants declared in the metadata.
 
 ## Custom Queries
 If you hit on the "Custom SPARQL Queries", a new node called “Custom Query” will appear in the hierarchy. You can remove a custom query by clicking on the corresponding button. If you click the node it will take you to a SPARQL input field where you can edit the query.
 
-![](../../captions/collections_custom_query.png)
+![](../../images/collections_custom_query.png)
 
 To make your collection more understandable for others, you can document your query by adding a label and description.
 

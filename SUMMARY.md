@@ -2,6 +2,7 @@
 
 * [Overview](README.md)
 * [Guides](docs/guides.md)
+  * [Data Publishing](docs/guides/publish-guide.md)
   * [Data Download](docs/guides/data-download-guide.md)
 * [Use Cases](docs/usecases.md)
   * [Data Version Control](docs/maven-for-data-manage-data-dependencies-like-code.md)

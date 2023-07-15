@@ -121,7 +121,7 @@ paths:
                           "@type": "Part",
                           "formatExtension": "md",
                           "compression": "none",
-                          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/master/README.md"
+                          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md"
                         }
                       ]
                     }
