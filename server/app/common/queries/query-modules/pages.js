@@ -50,6 +50,23 @@ instance.getGlobalActivityChartData = async function () {
 }
 
 
+
+instance.getAccountHistory = async function (accountName) {
+  let accountUri = UriUtils.createResourceUri([accountName]);
+  if (accountUri == null) {
+    return null;
+  }
+
+  let query = require('../sparql/get-account-history.sparql');
+  let queryOptions = { ACCOUNT_URI: accountUri };
+  query = exec.formatQuery(query, queryOptions);
+
+  let bindings = await exec.executeSelect(query);
+  return bindings;
+}
+
+
+
 instance.getAccountActivityChartData = async function (account) {
   let accountUri = UriUtils.createResourceUri([account]);
   if (accountUri == null) {

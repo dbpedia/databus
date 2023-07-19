@@ -59,6 +59,9 @@ class DatabusWebappUtils {
     return DatabusUtils.objSize(obj);
   }
 
+  navigateUp(uri) {
+    return DatabusUtils.navigateUp(uri);
+  }
 
   uriToName(uri) {
     return DatabusUtils.uriToName(uri); 

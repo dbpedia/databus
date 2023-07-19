@@ -220,13 +220,14 @@
       <div ng-if="tabNavigation.activeTab == 0" class="container account-page-tab">
         <div class="columns" style="margin: 0">
           <div class="column is-3" style="padding: 0; padding-right: 3em; ">
-            <div class="profile-picture">
+            <div class="profile-picture" style="margin-bottom: 2em;">
               <img ng-src="{{ getImageUrl() }}"></img>
             </div>
             <div ng-if="profileData.about" class="dashboard-card">
               <div class="dashboard-card-title">About</div>
               <p>{{ profileData.about }}</p>
             </div>
+            <account-history account-name="profileData.accountName"></account-history>
           </div>
           <div class="column" style="padding: 0">
             <div class="field is-grouped" style="margin-bottom: 1em;">

@@ -47,6 +47,10 @@ class DatabusUtils {
     return this.checkField(identifier, labelRegex, 3, 15);
   }
 
+  static timeStringNow() {
+    return new Date(Date.now()).toISOString();
+  }
+
   static isValidGroupName(name) {
     var labelRegex = /[a-zA-Z0-9_\-\.]{3,50}$/;
     return this.checkField(name, labelRegex, 3, 50);

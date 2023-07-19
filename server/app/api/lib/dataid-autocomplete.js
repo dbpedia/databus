@@ -109,7 +109,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   }
 
 
-  var timeString = new Date(Date.now()).toISOString();
+  var timeString = DatabusUtils.timeStringNow();
 
   if (versionGraph[DatabusUris.DCT_ISSUED] == undefined) {
     versionGraph[DatabusUris.DCT_ISSUED] = [{}];

@@ -31,7 +31,7 @@ const CollectionNodeController = require("./components/collection-node/collectio
 const CollectionSearchController = require("./components/collection-search/collection-search");
 const CollectionStatusController = require("./components/collection-status/collection-status");
 const CollectionDataTableController = require("./components/collection-data-table/collection-data-table");
-
+const AccountHistoryController = require("./components/account-history/account-history");
 
 var databusApplication = angular.module("databusApplication", [])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
@@ -114,6 +114,14 @@ databusApplication.component('overrideCheckbox', {
     readonly: '<',
     isOverride: '<',
     onChange: '&'
+  }
+});
+
+databusApplication.component('accountHistory', {
+  templateUrl: '/js/components/account-history/account-history.html',
+  controller: [ '$http', AccountHistoryController ],
+  bindings: {
+    accountName: '<'
   }
 });
 

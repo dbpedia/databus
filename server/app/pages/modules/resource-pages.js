@@ -38,8 +38,6 @@ module.exports = function (router, protector) {
 
       var accountData = AppJsonFormatter.formatAccountData(accountJsonLd);
 
-      console.log(JSON.stringify(accountData, null, 3));
-
       res.render('account', {
         title: accountData.label,
         data: {

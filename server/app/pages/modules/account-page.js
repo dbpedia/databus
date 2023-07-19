@@ -116,6 +116,14 @@ module.exports = function (router, protector) {
     }
   });
 
+  router.get('/app/account/history', async function (req, res, next) {
+    try {
+      var activity = await sparql.pages.getAccountHistory(req.query.accountName);
+      res.status(200).send(activity);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
 
 
   router.get('/app/account/activity', async function (req, res, next) {

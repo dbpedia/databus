@@ -1,0 +1,20 @@
+<div ng-if="$ctrl.results.length > 0">
+    <p class="section-label">RECENT ACTIVITY</p>
+    <div ng-repeat="result in $ctrl.results" style="margin-bottom: 1em;">
+        <div ng-if="!result.type.includes('Collection')">
+            <div style="color: #aaa;">{{ $ctrl.utils.formatDate(result.issuedDate ) }}</div>
+            <div>
+                Published version <a ng-href="{{result.resource}}">{{ $ctrl.utils.uriToName(result.resource) }}</a>
+                of
+                <a ng-href="{{$ctrl.utils.navigateUp(result.resource)}}">{{
+                    $ctrl.utils.uriToName($ctrl.utils.navigateUp(result.resource)) }}</a>.
+            </div>
+        </div>
+        <div ng-if="result.type.includes('Collection')">
+            <div style="color: #aaa;">{{ $ctrl.utils.formatDate(result.issuedDate ) }}</div>
+            <div>
+                Published collection <a ng-href="{{result.resource}}">{{ $ctrl.utils.uriToName(result.resource) }}</a>.
+            </div>
+        </div>
+    </div>
+</div>

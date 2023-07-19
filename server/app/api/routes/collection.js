@@ -17,6 +17,7 @@ const getLinkedData = require('../../common/get-linked-data');
 
 var defaultContext = require('./../../common/context.json');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
 module.exports = function (router, protector) {
 
@@ -84,11 +85,17 @@ module.exports = function (router, protector) {
       collectionGraph[DatabusUris.JSONLD_ID] = collectionUri;
 
       var publisherUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
+      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
 
       // Set publisher
       collectionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
       collectionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = publisherUri;
-      var timeString = new Date(Date.now()).toISOString();
+     
+      // Set account
+      collectionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
+      collectionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+
+      var timeString = DatabusUtils.timeStringNow();
 
       // Set times
       if (collectionGraph[DatabusUris.DCT_CREATED] == undefined) {
@@ -197,7 +204,7 @@ module.exports = function (router, protector) {
       } else {
         next('route');
       }
-    }, function(err) {
+    }, function (err) {
       console.log(err);
       res.status(500).send();
     });

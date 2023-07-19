@@ -1,4 +1,5 @@
 const DatabusUris = require("../utils/databus-uris");
+const DatabusUtils = require("../utils/databus-utils");
 const DatabusCollectionUtils = require("./databus-collection-utils");
 const DatabusCollectionWrapper = require("./databus-collection-wrapper");
 
@@ -592,7 +593,7 @@ class DatabusCollectionManager {
       };
 
       if (!this.activeCollection.isHidden) {
-        collectionJsonLd["@graph"][0].issued = Date.now().toString();
+        collectionJsonLd["@graph"][0].issued = DatabusUtils.timeStringNow();
       }
 
       var response = null;
