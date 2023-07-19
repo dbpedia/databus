@@ -70,9 +70,9 @@ Development of the Databus started in 2018 as means to manage the DBpedia Knowle
 Databus does not store the data itself but only metainformation, therefore before running the server we need to publish our data on the internet and make it publicly available, normally via HTTPS. 
 
 **This step requires a URI or several URIs resolving to the actual data files for download.** 
-As an example here we can publish a single file, e.g. this `README.md`. So our URI is: 
+As an example here we can publish a single file, e.g. this `README.md`. So our URI is **(note that we are using permalink from particular commit because the files for publishing must be static, see more in our [Publishing Guide](docs/guides/publish-guide.md))**: 
 ```
-https://raw.githubusercontent.com/dbpedia/databus/master/README.md
+https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md
 ```
 
 <!-- TODO change webdav link to our guide -->
@@ -113,7 +113,7 @@ icon and then `Publish Data`.
 
 Fill in the form for publishing and submit. 
 For simplicity, you can enter any name for group, artifact and version.
-Use the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/master/README.md`) 
+Use the URI of the file we prepared for publishing (`https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md`) 
 in the `Files` section.  
 
 After publishing the data should be visible on  `account icon -> My Account -> Data tab`.
