@@ -1,4 +1,4 @@
-<% include header %>
+<%- include('header') -%>
 
   <script src="/min/d3.min.js"></script>
   <div ng-controller="AccountPageController">
@@ -369,10 +369,10 @@
 
 
       <div class="container" ng-if="tabNavigation.activeTab == 2">
-        <% include profile %>
+        <%- include('profile') -%>
       </div>
 
 
       </section>
     </div>
-    <% include footer %>
+    <%- include('footer') -%>
