@@ -195,7 +195,7 @@ class PublishData {
       id: uri,
       uri: file.url,
       name: name,
-      contentVariants: file.contentVariants,
+      contentVariants: file.contentVariants != null ? file.contentVariants : {},
       compression: file.compression,
       formatExtension: file.formatExtension,
       rowspan: 1,

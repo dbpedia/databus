@@ -2,13 +2,15 @@
   <div ng-controller="VersionPageController">
 
     <style>
+      .resource-header-section:first-child {
+        margin-top: 1.5em;
+      }
 
-.resource-header-section:first-child {
-  margin-top: 1.5em;
-}
       .resource-header-section {
         margin-bottom: 3em;
       }
+
+    
     </style>
 
     <databus-alert></databus-alert>
@@ -42,14 +44,14 @@
             <span>{{ version.abstract }}</span>
           </div>
 
-          <div ng-if="version.description"  class="resource-header-section">
+          <div ng-if="version.description" class="resource-header-section">
             <p class="section-label">
               DCT:DESCRIPTION
             </p>
             <span ng-bind-html="utils.markdownToHtml(version.description)"></span>
           </div>
 
-          <div  class="resource-header-section">
+          <div class="resource-header-section">
 
             <p class="section-label">
               Version Info
@@ -94,7 +96,17 @@
                     </tr>
                     <tr ng-if="version.wasDerivedFrom">
                       <td>Was Derived From</td>
-                      <td><a class="hyphens" ng-href="{{ version.wasDerivedFrom }}">{{ version.wasDerivedFrom }}</a></td>
+                      <td><a class="hyphens" ng-href="{{ version.wasDerivedFrom }}">{{ version.wasDerivedFrom }}</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="vertical-align: middle;">Metadata Document</td>
+                      <td>
+                        <div class="button" ng-click="downloadMetadataAsFile()">
+                          <databus-icon size="24" shape="'download'" color="'#000'"></databus-icon>
+                          <span>Download</span>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -105,8 +117,8 @@
 
 
 
-        
-          
+
+
         </div>
 
         <!--Tabs-->
@@ -115,7 +127,7 @@
             ng-click="navigation.navigateTo('files');">
             <div class="section-label">Files</div>
           </div>
-         
+
           <div style="flex: 1"></div>
           <div class="collection-editor-tab align-right" ng-if="canEdit"
             ng-class="{ 'is-active' : navigation.activeTab == 2 }" ng-click="navigation.navigateTo('edit');">
@@ -170,8 +182,8 @@
                     ng-model="formData.version.description" ng-change="onDescriptionChanged()"></textarea>
                 </div>
               </div>
-               <!-- LICENSE URI -->
-               <div class="row">
+              <!-- LICENSE URI -->
+              <div class="row">
                 <div class="row-label">License URI</div>
                 <div style="flex: 1">
                   <div style="width: 100%;">

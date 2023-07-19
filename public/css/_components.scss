@@ -109,7 +109,7 @@
       padding-left: 0px;
       padding-top: 1em;
       padding-bottom: 1em;
-      flex:1;
+      flex: 1;
     }
   }
 
@@ -154,7 +154,7 @@
     color: white;
   }
 
-  
+
 
   .hero-body {
     display: flex;
@@ -184,6 +184,7 @@
 .sliderboy {
   padding-top: 0.5em;
 }
+
 .sliderboy-fix .slick-track {
   margin-left: 0;
   margin-right: 0;
@@ -194,12 +195,12 @@
   &:not(:last-child) {
     margin-bottom: 3em;
   }
-  
+
   .topic-label {
     color: $topic-header;
     font-size: 1em;
     letter-spacing: 0.1em;
-    text-transform: uppercase; 
+    text-transform: uppercase;
     margin-bottom: 1em;
   }
 }
@@ -247,4 +248,8 @@
   color: #656d76;
   max-width: 1000px;
   padding: 0.1em 0.2em;
+}
+
+.button databus-icon {
+  margin-right: 8px;
 }

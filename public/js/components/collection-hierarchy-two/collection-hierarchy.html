@@ -253,26 +253,19 @@
     </div>
 
     <div class="ce-content-source-body" ng-if="sourceView.expanded">
-
-
       <div>
-
-
         <div style="display: flex; margin-bottom: 0.5em; ">
-
           <b style="margin-right: 0.75em;">Add Content:</b>
           <div class="control">
-            <label class="radio">
-              <input type="radio" ng-model="sourceView.addMode" value="artifact" name="answer">
+            <label class="radio" for="{{ 'artifacts-' + sourceNode.uri }}">
+              <input type="radio" id="{{ 'artifacts-' + sourceNode.uri }}" name="{{ 'artifacts-' + sourceNode.uri }}" ng-model="sourceView.addMode" value="artifact" name="answer">
               Groups & Artifacts
             </label>
-            <label class="radio">
-              <input ng-model="sourceView.addMode" value="custom" type="radio" name="'custom'">
+            <label class="radio" for="{{ 'artifacts-' + sourceNode.uri }}">
+              <input ng-model="sourceView.addMode" id="{{ 'custom-' + sourceNode.uri }}" name="{{ 'custom-' + sourceNode.uri }}" value="custom" type="radio" name="'custom'">
               Custom SPARQL Query
             </label>
           </div>
-
-
         </div>
 
         <div ng-if="sourceView.addMode == 'artifact'">

@@ -246,6 +246,30 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
     return DatabusUtils.uriToName(uri);
   }
 
+  $scope.downloadMetadataAsFile = async function() {
+    var response = await $http({
+      method: 'GET',
+      url: $scope.version.uri,
+      headers: {
+        'Accept': 'application/ld+json',
+      }
+    });
+
+    $scope.download(`${$scope.version.name}.jsonld`, JSON.stringify(response.data, null, 3));
+  }
+
+  $scope.download = function(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
 
 }
 

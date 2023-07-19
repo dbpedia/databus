@@ -162,7 +162,7 @@ SELECT ?file WHERE {
 
   ctrl.addDatabus = function (uri) {
     let node = QueryNode.findChildByUri(ctrl.root, uri);
-
+    
     if (node == null) {
       ctrl.root.childNodes.push(new QueryNode(uri, null));
     }
@@ -366,13 +366,15 @@ SELECT ?file WHERE {
     for (var s in ctrl.root.childNodes) {
 
       var sourceNode = ctrl.root.childNodes[s];
-      sourceNode.expanded = true;
 
-      ctrl.view.sources[sourceNode.uri] = {};
-      ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
-      ctrl.view.sources[sourceNode.uri].addMode = 'artifact';
-      ctrl.view.sources[sourceNode.uri].customQueryLabel = `New Custom Query`;
-      ctrl.view.sources[sourceNode.uri].customQueryInput = ctrl.defaultQuery;
+      if(ctrl.view.sources[sourceNode.uri] == undefined) {
+        ctrl.view.sources[sourceNode.uri] = {};
+        ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
+        ctrl.view.sources[sourceNode.uri].expanded = true;
+        ctrl.view.sources[sourceNode.uri].addMode = 'artifact';
+        ctrl.view.sources[sourceNode.uri].customQueryLabel = `New Custom Query`;
+        ctrl.view.sources[sourceNode.uri].customQueryInput = ctrl.defaultQuery;
+      }
 
       for (var g in sourceNode.childNodes) {
 
