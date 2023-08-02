@@ -4,11 +4,11 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const GstoreHelper = require('../../common/utils/gstore-helper');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('./../../common/context.json');
+var defaultContext = require('./../../common/res/context.jsonld');
 var autocompleter = require('./dataid-autocomplete');
 
 module.exports = async function publishGroup(accountName, graph, logger) {

@@ -16,7 +16,7 @@ databus:Part  a owl:Class ;
     rdfs:label "Part"@en ;
     rdfs:comment """A Part represents a single file (i.e. distribution) which is referenced from a particular Version.
     Typically a dataset consists of several files, e.g. same (or similar) files but in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail. Artifacts are packaged compositionally, i.e. each Part adds to the dataset, which is the sum of information."""@en ;
-    rdfs:subClassOf dcat:Distribution ; # todo: , dataid:XXX ;
+    rdfs:subClassOf dcat:Distribution ;
     rdfs:isDefinedBy <http://dataid.dbpedia.org/databus#> .
 ```
 ```turtle
@@ -428,7 +428,6 @@ missing
 ```
 ```javascript
 
-  "Dataset": "dataid:Dataset",
   "RSAPublicKey" : "cert:RSAPublicKey",
   "key": 	{"@id": "cert:key"},
   "modulus":	{"@id": "cert:modulus"},

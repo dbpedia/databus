@@ -78,28 +78,34 @@ function tryCreateKeyPair() {
   console.log(fs.readFileSync(publicKeyFile, "utf8"));
 }
 
+async function initializeShacl() {
+
+  var shaclFiles = [
+    'account', 'artifact', 'collection', 'dataid', 'group'
+  ];
+
+  for(var file of shaclFiles) {
+    var shacl = require(`../model/generated/shacl/${file}.shacl`);
+    var shaclFile = `${__dirname}/app/common/res/shacl/${file}.shacl`;
+
+    console.log(`Creating SHACL resource }/app/common/res/shacl/${file}.shacl`);
+    fs.writeFileSync(shaclFile, shacl, "utf8");
+  }
+}
+
 async function initializeContext() {
 
   // Load the internal default context
   var context = require('../model/generated/context.json');
+  var hasContext = false;
 
-  // Set default if not configured
-  if (process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined) {
-    process.env.DATABUS_DEFAULT_CONTEXT_URL = Constants.DATABUS_DEFAULT_CONTEXT_URL;
-  }
-
-  if (config.loadExternalJsonldContext) {
+  // If configured, try to use it
+  if (process.env.DATABUS_DEFAULT_CONTEXT_URL != undefined) {
 
     // Use the context URL specified as env variable
     var contextUrl = process.env.DATABUS_DEFAULT_CONTEXT_URL;
 
-    // If no env variable was specified, use the default context URL 
-    // (https://downloads.dbpedia.org/databus/context.jsonld)
-    if (contextUrl == null) {
-      contextUrl = Constants.DATABUS_DEFAULT_CONTEXT_URL;
-    }
-
-    console.log(`Loading default context from ${contextUrl}...`);
+    console.log(`Loading default jsonld context from ${contextUrl}...`);
 
     try {
       // Request options
@@ -113,15 +119,24 @@ async function initializeContext() {
       // Request and save to file
       context = await rp(contextOptions);
       process.env.DATABUS_CONTEXT_URL = contextUrl;
+      hasContext = true;
 
     } catch (err) {
       console.log(err);
       console.error(`Failed to fetch default context from ${contextUrl}`);
     }
   }
+  
+  if(process.env.DATABUS_DEFAULT_CONTEXT_URL == undefined || !hasContext) {
+    
+    var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
+    
+    console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
+    process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
+  }
 
   // Set file path
-  var contextFile = __dirname + '/app/common/context.json';
+  var contextFile = __dirname + '/app/common/res/context.jsonld';
   var contextString = JSON.stringify(context, null, 3);
 
   console.log(``);
@@ -172,6 +187,7 @@ module.exports = async function () {
 
   await initializeUserDatabase();
 
+  await initializeShacl();
   await initializeContext();
 
   writeManifest();

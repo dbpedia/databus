@@ -13,6 +13,7 @@ const { versionTests } = require('./methods/api/version-tests');
 const testUserParams = require('./test-user.json');
 const nerdUserParams = require('./test-user-nerd.json');
 const databus = require('../../www');
+const resourceTests = require('./methods/resource-tests');
 
 module.exports = async function () {
 
@@ -24,6 +25,8 @@ module.exports = async function () {
       await utilTests();
       await webdavTests();
       await cacheTests();
+      await resourceTests();
+
 
       
       // Account

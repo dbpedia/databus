@@ -88,8 +88,7 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
   var groupUri = DatabusUtils.navigateUp(datasetUri, 2);
   var accountUri = DatabusUtils.navigateUp(datasetUri, 3);
 
-  versionGraph[DatabusUris.JSONLD_TYPE] = [DatabusUris.DATABUS_VERSION, DatabusUris.DATAID_DATASET];
-  
+  versionGraph[DatabusUris.JSONLD_TYPE] = [ DatabusUris.DATABUS_VERSION ];
 
   versionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
   versionGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;

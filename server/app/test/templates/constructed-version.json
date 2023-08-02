@@ -1,7 +1,7 @@
 {
   "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
   "@graph": {
-    "@type": [ "Version", "Dataset" ],
+    "@type": "Version",
     "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%/%ARTIFACT%/%VERSION%",
     "hasVersion": "%VERSION%",
     "title": "Test Version",

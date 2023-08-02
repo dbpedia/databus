@@ -34,6 +34,7 @@ class QueryBuilder {
   createQuery(node, template, resourceBaseUrl, root) {
 
     this.result = '';
+    this.baseNode = node;
     this.root = root != undefined ? root : node;
     this.cvCounter = 0;
     this.resourceBaseUrl = resourceBaseUrl;
@@ -381,9 +382,13 @@ class QueryBuilder {
     while (parentNode != undefined) {
 
       for (var facetUri in parentNode.facetSettings) {
-        if (!this.hasFacetOverride(parentNode, facetUri)) {
+
+        // check the base node -> if current node is the base, include all parent facets
+        // on the way too the root
+        if (node != this.baseNode && !this.hasFacetOverride(parentNode, facetUri)) {
           continue;
         }
+
 
         if (facetUris.includes(facetUri)) {
           continue;

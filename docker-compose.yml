@@ -13,7 +13,6 @@ services:
       DATABUS_NAME: ${DATABUS_NAME}
       DATABUS_OIDC_CLIENT_ID: ${DATABUS_OIDC_CLIENT_ID}
       DATABUS_OIDC_SECRET: ${DATABUS_OIDC_SECRET}
-      DATABUS_DEFAULT_CONTEXT_URL: https://downloads.dbpedia.org/databus/context.jsonld
       DATABUS_PRIVATE_MODE: ${DATABUS_PRIVATE_MODE} # Private mode will only show metadata for logged-in users
       DATABUS_PROXY_SERVER_ENABLE: ${DATABUS_PROXY_SERVER_ENABLE}
       DATABUS_PROXY_SERVER_USE_ACME: ${DATABUS_PROXY_SERVER_USE_ACME}
@@ -50,5 +49,6 @@ services:
     entrypoint: /bin/bash -c "
         echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
+        echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         /virtuoso-entrypoint.sh
       "

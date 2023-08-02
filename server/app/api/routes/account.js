@@ -4,14 +4,14 @@ const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
 var GstoreHelper = require('../../common/utils/gstore-helper');
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var request = require('request');
 var jsonld = require('jsonld');
 var fs = require('fs');
 const pem2jwk = require('pem-jwk').pem2jwk;
 const requestRDF = require('../../common/request-rdf');
 
-const defaultContext = require('../../common/context.json');
+const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 
 var constructor = require('../../common/execute-construct.js');
@@ -53,6 +53,13 @@ module.exports = function (router, protector) {
       } else {
         // allow write to the account namespace
         req.databus.accountName = req.params.account;
+
+        try {
+          await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
+        } catch(err) {
+          res.status(500).send(`Failed to write to user database`);
+          return;
+        }
         /** 
         var result = await publishAccount(req.databus.accountName, req.body);
 

@@ -2,12 +2,13 @@
 version: "3.0"
 services:
   gstore:
-    image: dbpedia/gstore:dev
+    image: gstore-dev #dbpedia/gstore:dev
     container_name: devenv_gstore
     environment: 
       STORAGE_USER: "dba"
       STORAGE_PASS: "everyoneknows"
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
+      GSTORE_LOCALHOST_CONTEXT_FALLBACK_URL: http://172.17.0.1
     ports:
       - "3002:8080"
     volumes:

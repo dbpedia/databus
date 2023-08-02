@@ -4,6 +4,9 @@ DATABUS_NAME="Just Another Databus"
 DATABUS_ORG_ICON="https://www.dbpedia.org/wp-content/uploads/2020/09/dbpedia-org-logo.png"
 DATABUS_BANNER_COLOR="\#5b798d"
 
+webpack:
+	(cd ../public && npx webpack --config webpack.config.js)
+
 env-clean:
 	sudo rm -r data/; \
 	sudo rm -r ../server/users; \
@@ -64,7 +67,6 @@ srv-start-dbpedia-keycloak:
 	DATABUS_DATABASE_URL=${DATABUS_DATABASE_URL} \
 	DATABUS_OIDC_ISSUER_BASE_URL=https://databus.dbpedia.org/auth/realms/databus \
 	DATABUS_OIDC_CLIENT_ID=databus-test-client \
-	DATABUS_DEFAULT_CONTEXT_URL=https://downloads.dbpedia.org/databus/context.jsonld \
 	DATABUS_OIDC_SECRET=e266406c-08c1-4baf-88c5-6137c8c57f3e \
 	npm start --prefix ../server
 

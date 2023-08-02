@@ -4,13 +4,13 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var jsonld = require('jsonld');
 var fs = require('fs');
 const pem2jwk = require('pem-jwk').pem2jwk;
 const exec = require('../../common/execute-query');
 
-const defaultContext = require('../../common/context.json');
+const defaultContext = require('../../common/res/context.jsonld');
 
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');

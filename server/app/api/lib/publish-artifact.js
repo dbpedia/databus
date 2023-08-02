@@ -2,7 +2,7 @@ const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');

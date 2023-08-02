@@ -2,20 +2,17 @@ const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const ServerUtils = require('../../common/utils/server-utils');
 const Constants = require('../../common/constants.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
-
-
-var request = require('request');
 var sparql = require('../../common/queries/sparql');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var sparql = require('../../common/queries/sparql');
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructCollection = require('../../common/queries/constructs/construct-collection.sparql');
 const UriUtils = require('../../common/utils/uri-utils');
 const getLinkedData = require('../../common/get-linked-data');
 
-var defaultContext = require('./../../common/context.json');
+var defaultContext = require('./../../common/res/context.jsonld');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
@@ -33,22 +30,6 @@ module.exports = function (router, protector) {
       res.status(404).send('404 - collection not found');
     }
   });
-
-  /**
-  router.get('/api/collection/statistics', async function(req, res, next) {
-    try{
-      let collectionStatistics = await sparql.collections.getCollectionStatistics(req.query.uri);
-
-      if(collectionStatistics.length !== 0) {
-        res.status(200).send(collectionStatistics);
-      } else {
-        res.status(404).send('Unable to find statistics for this collection.');
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(404).send('Unable to find statistics for this collection.');
-    }
-  }); */
 
   router.put('/:account/collections/:collection', protector.protect(true), async function (req, res, next) {
 

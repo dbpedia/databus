@@ -7,7 +7,7 @@ const DatabusLogger = require("../../common/databus-logger");
 const UriUtils = require("../../common/utils/uri-utils");
 
 const publishArtifact = require('../lib/publish-artifact');
-const defaultContext = require('../../common/context.json');
+const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 const jsonld = require('jsonld');
 

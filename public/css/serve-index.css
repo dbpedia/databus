@@ -1,0 +1,31 @@
+#search {
+    display: none;
+}
+
+.directory {
+    padding: 3em;
+}
+
+.view-tiles li {
+    list-style-type: none;
+    font-size: 20px;
+    width: 100%;
+}
+
+
+.view-tiles li a {
+    width: 100%;
+    display: flex;
+    padding: .5em;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.name {
+    display: block;
+    min-width: 300px;
+}
+
+.size {
+    display: block;
+    min-width: 200px;
+}

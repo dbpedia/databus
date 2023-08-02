@@ -1,4 +1,4 @@
-const defaultContext = require('./context.json');
+const defaultContext = require('./res/context.jsonld');
 const rp = require('request-promise');
 const request = require('request');
 const jsonld = require('jsonld');

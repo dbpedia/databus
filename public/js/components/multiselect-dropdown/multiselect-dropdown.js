@@ -34,6 +34,29 @@ function MultiselectDropdownController($timeout, $sce) {
       ctrl.parentInput.length == 0));
   }
 
+  ctrl.valueComparator = function(v1, v2) {
+    var isV1Included = ctrl.includesValue(ctrl.input, v1.value) 
+      || ctrl.includesValue(ctrl.parentInput, v1.value);
+    var isV2Included = ctrl.includesValue(ctrl.input, v2.value) 
+    || ctrl.includesValue(ctrl.parentInput, v2.value);
+
+    if(isV1Included != isV2Included) {
+      return isV1Included ? -1 : 1;
+    }
+
+    if(v1.value == "None") {
+      return -1;
+    }
+
+
+    if(v2.value == "None") {
+      return 1;
+    }
+
+    return v1.value.localeCompare(v2.value);
+  }
+  
+  
   ctrl.mergeSettings = function (parentSettings, childSettings) {
     var mergedSettings = {};
 

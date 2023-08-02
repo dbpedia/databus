@@ -1,7 +1,6 @@
 {
    "@context": {
       "databus": "https://dataid.dbpedia.org/databus#",
-      "dataid": "http://dataid.dbpedia.org/ns/core#",
       "dcv": "https://dataid.dbpedia.org/databus-cv#",
       "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
       "dct": "http://purl.org/dc/terms/",
@@ -102,7 +101,6 @@
          "@id": "rdfs:subPropertyOf",
          "@type": "@id"
       },
-      "Dataset": "dataid:Dataset",
       "RSAPublicKey": "cert:RSAPublicKey",
       "key": {
          "@id": "cert:key"

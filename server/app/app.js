@@ -15,11 +15,12 @@ var config = require("../config.json");
 const DatabusWebDAV = require("./webdav");
 var DatabusProtect = require('./common/protect/middleware');
 const { env } = require("process");
+var serveIndex = require('serve-index');
 
 // Creation of the mighty server app
 var app = express();
 
-var context = JSON.stringify(require('../app/common/context.json'), null, 3);
+var context = JSON.stringify(require('../app/common/res/context.jsonld'), null, 3);
 var titleColor = DatabusUtils.stringOrFallback(process.env.DATABUS_TITLE_COLOR, config.defaultColors.title);
 var bannerColor = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR, config.defaultColors.banner);
 
@@ -79,6 +80,7 @@ initialize(app, memoryStore).then(function () {
         }
       }));
     }
+
 
 
     // Attach modules to router
@@ -147,6 +149,24 @@ async function initialize(app, memoryStore) {
       store: memoryStore
     }));
 
+    var resourceDirectory = `${__dirname}/common/res/`;
+    console.log(resourceDirectory);
+
+    // Serve jsonld and shacl resources in the resource directory
+    app.use('/res', express.static(resourceDirectory, {
+      setHeaders : function(res, path, stat) {
+
+        if(path.endsWith('.shacl')) {
+          res.setHeader('Content-Type', 'text/turtle');
+        }
+
+        if(path.endsWith('.jsonld')) {
+          res.setHeader('Content-Type', 'application/ld+json');
+        }
+      }
+    }), serveIndex(resourceDirectory, {
+      stylesheet: `${__dirname}/../../public/css/serve-index.css`
+    }));
 
   } catch (err) {
     console.log(err);

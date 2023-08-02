@@ -8,7 +8,7 @@ const UriUtils = require("../../common/utils/uri-utils");
 const publishGroup = require('../lib/publish-group');
 const jsonld = require('jsonld');
 const getLinkedData = require("../../common/get-linked-data");
-const defaultContext = require('../../common/context.json');
+const defaultContext = require('../../common/res/context.jsonld');
 
 const sparql = require("../../common/queries/sparql");
 

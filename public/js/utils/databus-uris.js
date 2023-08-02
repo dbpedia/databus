@@ -51,9 +51,6 @@ class DatabusUris {
   static DCT_DESCRIPTION = 'http://purl.org/dc/terms/description'
   static DCT_LICENSE = 'http://purl.org/dc/terms/license';
 
-  // DATAID
-  static DATAID_DATASET = 'http://dataid.dbpedia.org/ns/core#Dataset';
-
   // DCAT
   static DCAT_DOWNLOAD_URL = 'http://www.w3.org/ns/dcat#downloadURL';
   static DCAT_BYTESIZE = 'http://www.w3.org/ns/dcat#byteSize';

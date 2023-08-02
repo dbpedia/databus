@@ -9,8 +9,8 @@ const fs = require('fs');
 var rp = require('request-promise');
 const path = require("path");
 var jsonld = require('jsonld');
-const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
-const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const JsonldUtils = require('../../../public/js/utils/jsonld-utils');
+const DatabusUris = require('../../../public/js/utils/databus-uris');
 
 var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;
 
@@ -69,23 +69,23 @@ instance.validateJsonld = async function(rdf, shaclFile) {
 
 
 instance.validateGroupRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/group.shacl');
+  return await instance.validateJsonld(rdf, './res/shacl/group.shacl');
 }
 
 instance.validateArtifactRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/artifact.shacl');
+  return await instance.validateJsonld(rdf, './res/shacl/artifact.shacl');
 }
 
 instance.validateDataidRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/dataid.shacl');
+  return await instance.validateJsonld(rdf, './res/shacl/dataid.shacl');
 }
 
 instance.validateCollectionRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/collection.shacl');
+  return await instance.validateJsonld(rdf, './res/shacl/collection.shacl');
 }
 
 instance.validateWebIdRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './../../../../model/generated/shacl/account.shacl');
+  return await instance.validateJsonld(rdf, './res/shacl/account.shacl');
 }
 
 module.exports = instance;

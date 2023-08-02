@@ -5,7 +5,7 @@ const Constants = require('../../common/constants');
 const fs = require('fs');
 
 var signer = require('./databus-tractate-suite');
-var shaclTester = require('../../common/shacl/shacl-tester');
+var shaclTester = require('../../common/shacl-tester');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var sparql = require('../../common/queries/sparql');

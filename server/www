@@ -16,6 +16,7 @@ var initialize = require('./init');
 var searchIndexer = null;
 var config = require('./config.json')
 var runTests = require('./app/test/main.js');
+const { log } = require('console');
 
 
 if (cluster.isMaster) {
@@ -195,6 +196,15 @@ function initializeExtensions() {
   // add a sparql file loading extension (simply read the file as a string)
   require.extensions['.sparql'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
+  };
+
+  require.extensions['.shacl'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+  };
+
+
+  require.extensions['.jsonld'] = function (module, filename) {
+    module.exports = JSON.parse(fs.readFileSync(filename, 'utf8'));
   };
 
   require.extensions['.ejs'] = function (module, filename) {
