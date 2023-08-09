@@ -1,6 +1,5 @@
 {
-    "version" : "2.1.0-rc.8",
-    "loadExternalJsonldContext" : true,
+    "version" : "2.1.0-rc.9",
     "defaultColors":  {
         "banner": "#81b8b2"
     }

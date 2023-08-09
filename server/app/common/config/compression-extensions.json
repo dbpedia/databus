@@ -1,0 +1,9 @@
+{
+    "bzip" : "bz",
+    "bzip2" : "bz2",
+    "gzip": "gz",
+    "lzip": "lz",
+    "lzop": "lzo",
+    "rzip": "rz",
+    "sfArk": "sfark"
+}
