@@ -16,11 +16,7 @@ var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 const UriUtils = require('../../common/utils/uri-utils');
 
-var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
-var publicKeyInfo = pem2jwk(pkeyPEM);
-let buff = Buffer.from(publicKeyInfo.n, 'base64');
-var modulus = buff.toString('hex');
-var exponent = 65537;
+
 
 async function accountExists(accountName) {
   let accountUri = UriUtils.createResourceUri([accountName]);
@@ -103,11 +99,16 @@ module.exports = async function publishAccount(accountName, body) {
       return result;
     }
 
+    var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
+    var publicKeyInfo = pem2jwk(pkeyPEM);
+    let buff = Buffer.from(publicKeyInfo.n, 'base64');
+    var modulus = buff.toString('hex');
+
     var rsaKeyGraph = {};
     rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
     rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
     rsaKeyGraph[DatabusUris.CERT_MODULUS] = modulus;
-    rsaKeyGraph[DatabusUris.CERT_EXPONENT] = exponent;
+    rsaKeyGraph[DatabusUris.CERT_EXPONENT] = 65537;
 
     personGraph[DatabusUris.CERT_KEY] = [rsaKeyGraph];
 
