@@ -6,6 +6,7 @@ const DatabusConstants = require("../../utils/databus-constants");
 const DatabusFacetsCache = require("../../utils/databus-facets-cache");
 const DatabusUris = require("../../utils/databus-uris");
 const DatabusUtils = require("../../utils/databus-utils");
+const DatabusWebappUtils = require("../../utils/databus-webapp-utils");
 
 // hinzufügen eines Controllers zum Modul
 function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collectionManager) {
@@ -16,6 +17,8 @@ function CollectionHierarchyControllerTwo($http, $location, $sce, $scope, collec
   ctrl.$http = $http;
   ctrl.$scope = $scope;
   ctrl.facets = new DatabusFacetsCache($http);
+  ctrl.utils = new DatabusWebappUtils($scope, $sce);
+  ctrl.$sce = $sce;
 
   collectionManager.onCollectionChangedInDifferentTab = function () {
     ctrl.previousCollectionId = null;
@@ -162,7 +165,7 @@ SELECT ?file WHERE {
 
   ctrl.addDatabus = function (uri) {
     let node = QueryNode.findChildByUri(ctrl.root, uri);
-    
+
     if (node == null) {
       ctrl.root.childNodes.push(new QueryNode(uri, null));
     }
@@ -367,7 +370,7 @@ SELECT ?file WHERE {
 
       var sourceNode = ctrl.root.childNodes[s];
 
-      if(ctrl.view.sources[sourceNode.uri] == undefined) {
+      if (ctrl.view.sources[sourceNode.uri] == undefined) {
         ctrl.view.sources[sourceNode.uri] = {};
         ctrl.view.sources[sourceNode.uri].uri = sourceNode.uri;
         ctrl.view.sources[sourceNode.uri].expanded = true;
@@ -394,8 +397,9 @@ SELECT ?file WHERE {
 
             if (hasVersionFacets != null && !hasVersionFacets.values.includes(KEY_LATEST_VERSION)) {
               hasVersionFacets.values.unshift(KEY_LATEST_VERSION);
-              $scope.$apply();
             }
+
+            $scope.$apply();
           });
 
           ctrl.query(groupNode);
@@ -415,8 +419,9 @@ SELECT ?file WHERE {
 
               if (hasVersionFacets != null && !hasVersionFacets.values.includes(KEY_LATEST_VERSION)) {
                 hasVersionFacets.values.unshift(KEY_LATEST_VERSION);
-                $scope.$apply();
               }
+
+              $scope.$apply();
               //var groupUri = DatabusUtils.navigateUp(artifactNode.uri);
               //ctrl.view.artifacts[artifactNode.uri].facets = result.data;
               //ctrl.mergeFacets(ctrl.view.groups[groupUri], result.data);
@@ -553,7 +558,7 @@ SELECT ?file WHERE {
       node: queryNode,
       template: QueryTemplates.NODE_FILE_TEMPLATE,
       resourceBaseUrl: DATABUS_RESOURCE_BASE_URL,
-      root: ctrl.root 
+      root: ctrl.root
     });
 
     this.querySparql(fullQuery).then(function (result) {
@@ -779,7 +784,49 @@ SELECT ?file WHERE {
   }
 
   ctrl.list = function (setting) {
-    return setting.map(function (v) { return v.value }).join(', ');
+
+    var allEntries = Object.keys(setting).map(function (key, index) {
+
+      var label = undefined;
+      var entry = setting[key];
+
+      if (entry.value == '') {
+        label = '<i style="color: #a3a3a3;">None</i>';
+      } else if(entry.value == '$latest') {
+        label = 'Latest Version';
+      } else {
+        label = entry.value;
+      }
+
+      if (entry.checked) {
+        return label;
+      } else {
+        return `<s>${label}</s>`;
+      }
+    });
+
+
+    var list = [];
+    var maxLength = 50;
+    var length = 0;
+    var hasOverflow = false;
+
+    for (var entry of allEntries) {
+      if (entry.length + length > maxLength) {
+        hasOverflow = true;
+        break;
+      }
+
+      length += entry.length;
+      list.push(entry);
+    }
+
+    if (hasOverflow) {
+      list.push('...');
+    }
+
+    return ctrl.$sce.trustAsHtml(list.join(', '));
+    // return setting.map(function (v) { return v.value }).join(', ');
   }
 }
 

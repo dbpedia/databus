@@ -82,7 +82,6 @@ function MultiselectDropdownController($timeout, $sce) {
 
     var allEntries = Object.keys(mergedSettings).map(function (key, index) {
 
-
       var label = undefined;
 
       if (key == '') {
