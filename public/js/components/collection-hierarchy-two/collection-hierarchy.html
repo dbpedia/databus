@@ -333,7 +333,7 @@
                 </div>
 
                 <entity-card style="flex: 1;" label="result.label[0].highlight" type="result.typeName[0].value"
-                  uri="result.resource[0].value" desc="result.comment[0].highlight">
+                  uri="result.resource[0].value" absolute="true"  desc="result.comment[0].highlight">
                 </entity-card>
 
               </div>
@@ -512,14 +512,14 @@
 
         </div>
 
-        <!--div class="ce-content-body-section">
+        <div class="ce-content-body-section">
           <p style="margin-bottom: 0.5em;"><b>Add Artifacts:</b></p>
 
           <div style="display: flex;">
             <div class="field" style="display: flex; line-height: 1; margin-bottom: 0; width: 100%;">
               <div class="control has-icons-left has-icons-right" style="flex:1;">
-                <input class="input" type="text" ng-model="sourceView.search"
-                  ng-change="$ctrl.searchNode(sourceNode, sourceView)" ng-keydown="$ctrl.handleKey($event, sourceView)"
+                <input class="input" type="text" ng-model="groupView.search"
+                  ng-change="$ctrl.searchNode(groupNode, groupView)" ng-keydown="$ctrl.handleKey($event, groupView)"
                   placeholder="Search this group for artifacts to add...">
                 <span class="icon is-small is-left">
                   <i class="fas fa-search"></i>
@@ -528,7 +528,43 @@
             </div>
           </div>
 
-        </div-->
+          <!-- Add search bubbles -->
+          <div ng-if="groupView.isSearching"
+            style="width: 100%; display: flex; justify-content: center; margin-top: 10px">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+          <div style="margin-top: 1.1em" ng-if="groupView.search != '' && groupView.searchResults.length > 0">
+
+            <div ng-repeat="result in groupView.searchResults">
+              <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                <div style=" margin-right: .5em;">
+                  <div class="is-clickable button" ng-click="$ctrl.addToCollection(groupNode, groupView, result)"
+                    ng-class="{ 'is-collection' : result.inCollection }" style="width: 48px; height: 48px;">
+                    <span ng-if="result.inCollection" class="icon is-small">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span ng-if="!result.inCollection" class="icon is-small">
+                      <i class="fas fa-plus"></i>
+                    </span>
+
+                  </div>
+                </div>
+
+                <entity-card style="flex: 1;" label="result.label[0].highlight" type="result.typeName[0].value"
+                  uri="result.resource[0].value" absolute="true" desc="result.comment[0].highlight">
+                </entity-card>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
 
         <div class="ce-content-body-section footer">
           <div style="display: flex;" ng-if="!$ctrl.readonly">

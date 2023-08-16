@@ -15,7 +15,7 @@ services:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
   virtuoso:
-    image: "pkleef/virtuoso-opensource-7:latest"
+    image: "openlink/virtuoso-opensource-7:latest"
     container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"

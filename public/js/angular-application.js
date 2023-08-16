@@ -140,7 +140,8 @@ databusApplication.component('entityCard', {
     desc: '<',
     date: '<',
     type: '<',
-    imageUrl: '<'
+    imageUrl: '<',
+    absolute: '<'
   }
 });
 
@@ -391,7 +392,8 @@ databusApplication.component('uriBreadcrumbs', {
   templateUrl: '/js/components/uri-breadcrumbs/uri-breadcrumbs.html',
   controller: UriBreadcrumbsController,
   bindings: {
-    uri: '<'
+    uri: '<',
+    absolute: '<'
   }
 });
 
