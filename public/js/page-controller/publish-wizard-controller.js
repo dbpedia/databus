@@ -2,7 +2,7 @@ const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const PublishSession = require("../publish/publish-session");
 
 // Controller for the header section
-function PublishWizardController($scope, $http, focus, $q) {
+function PublishWizardController($scope, $http, $interval, focus, $q) {
 
   $scope.login = function () {
     window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
@@ -17,8 +17,6 @@ function PublishWizardController($scope, $http, focus, $q) {
   $scope.authenticated = data.auth.authenticated;
   $scope.loadRequestCount = 0;
   $scope.texts = data.texts;
-
-  $scope.licenseData = data.licenseData;
 
   $scope.nerdMode = {};
   $scope.nerdMode.enabled = false;
@@ -79,27 +77,25 @@ function PublishWizardController($scope, $http, focus, $q) {
    */
 
   $scope.licenseQuery = "";
-  $scope.filterLicenses = function (licenseQuery) {
 
-    if(data.licenseData == undefined) {
-      return;
+  $interval(function () {
+    if ($scope.hasLicenseQueryChanged) {
+
+      $http.get(`/app/publish-wizard/licenses?limit=30&keyword=${$scope.licenseQuery}`).then(function(response) {
+        $scope.filteredLicenseList = response.data.results.bindings;
+      });
+
+      $scope.hasLicenseQueryChanged = false;
     }
 
-    // billo-suche mit lowercase und tokenization 
-    var tokens = licenseQuery.toLowerCase().split(' ');
-    $scope.filteredLicenseList = data.licenseData.results.bindings.filter(function (l) {
-      for (var token of tokens) {
-        if (!l.title.value.toLowerCase().includes(token)) {
-          return false;
-        }
-      }
+  }, 300);
 
-      return true;
-    });
+  $scope.filterLicenses = function (licenseQuery) {
+    $scope.licenseQuery = licenseQuery;
+    $scope.hasLicenseQueryChanged = true;
   }
 
   $scope.filterLicenses("");
-
 
   $scope.addFile = function (input) {
 

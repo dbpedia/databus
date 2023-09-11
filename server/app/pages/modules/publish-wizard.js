@@ -2,6 +2,7 @@ var sanitizeUrl = require('@braintree/sanitize-url').sanitizeUrl;
 var rp = require('request-promise');
 const cheerio = require('cheerio');
 var sparql = require("../../common/queries/sparql");
+const got = require('got');
 
 const ServerUtils = require('../../common/utils/server-utils.js');
 
@@ -9,16 +10,30 @@ module.exports = function (router, protector) {
 
   require('../../common/file-analyzer').route(router, protector);
 
-  router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
-    var dalicc = null;
+  router.get('/app/publish-wizard/licenses', protector.protect(), async function(req, res, next) {
+
+    var search = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`).search;
+
+    var options = {
+      method : 'GET',
+      headers : {
+        accept: 'application/json'
+      },
+    };
 
     try {
-      dalicc = await rp.get('https://api.dalicc.net/licenselibrary/list?limit=10000');
-      dalicc = JSON.parse(dalicc);
+      var daliccRes = await got(`https://api.dalicc.net/licenselibrary/list${search}`, options);
+      var dalicc = JSON.parse(daliccRes.body);
+      res.status(200).send(dalicc);
+
     } catch(err) {
-      console.log("DALICC SERVICE APPEARS TO BE DOWN!");
+      console.log(err);
+      res.status(500).send("DALICC SERVICE APPEARS TO BE DOWN!");
     }
+  });
+
+  router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -27,7 +42,7 @@ module.exports = function (router, protector) {
 
       res.render('publish-wizard', {
         title: 'Publish Data',
-        data: { auth: auth, publisherData: publishers, licenseData: dalicc, texts: texts }
+        data: { auth: auth, publisherData: publishers, texts: texts }
       });
     } catch (err) {
       console.log(err);
