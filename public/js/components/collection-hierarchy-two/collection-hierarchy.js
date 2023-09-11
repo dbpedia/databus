@@ -317,8 +317,8 @@ SELECT ?file WHERE {
     var typeFilters = `typeName=Artifact Group`;
 
     if (node.property == DATAID_GROUP_PROPERTY) {
-      var groupName = DatabusUtils.uriToName(node.uri);
-      var accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp(node.uri));
+      var groupName = DatabusUtils.uriToResourceName(node.uri);
+      var accountName = DatabusUtils.uriToResourceName(DatabusUtils.navigateUp(node.uri));
       typeFilters = `typeName=Artifact&publisher=${accountName}&group=${groupName}`;
     }
 
