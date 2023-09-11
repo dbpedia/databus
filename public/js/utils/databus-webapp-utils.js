@@ -67,6 +67,10 @@ class DatabusWebappUtils {
     return DatabusUtils.uriToName(uri); 
   }
 
+  uriToResourceName(uri) {
+    return DatabusUtils.uriToResourceName(uri);
+  }
+
   isValidHttpsUrl(url) {
     return DatabusUtils.isValidHttpsUrl(url);
   }
