@@ -54,7 +54,7 @@ var databusApplication = angular.module("databusApplication", [])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "$location", "collectionManager", GroupPageController])
   .controller("ProfileController", ["$scope", "$http", ProfileController])
-  .controller("PublishWizardController", ["$scope", "$http", "focus", "$q", PublishWizardController])
+  .controller("PublishWizardController", ["$scope", "$http", "$interval", "focus", "$q", PublishWizardController])
   .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
     return {
@@ -140,7 +140,8 @@ databusApplication.component('entityCard', {
     desc: '<',
     date: '<',
     type: '<',
-    imageUrl: '<'
+    imageUrl: '<',
+    absolute: '<'
   }
 });
 
@@ -391,7 +392,8 @@ databusApplication.component('uriBreadcrumbs', {
   templateUrl: '/js/components/uri-breadcrumbs/uri-breadcrumbs.html',
   controller: UriBreadcrumbsController,
   bindings: {
-    uri: '<'
+    uri: '<',
+    absolute: '<'
   }
 });
 

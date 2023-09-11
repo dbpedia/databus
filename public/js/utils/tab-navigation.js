@@ -30,8 +30,12 @@ class TabNavigation {
    * Change the tab - set location hash and scroll up
    * @param {*} value 
    */
-  navigateTo(value) {
+  navigateTo(value, scrollToTop) {
     this.location.hash(value);
+
+    if(scrollToTop == true) {
+      window.scrollTo(0, 0);
+    }
   }
 
 }

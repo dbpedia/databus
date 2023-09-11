@@ -84,7 +84,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
   static COLLECTION_FILES_TEMPLATE = {
     prefixes: QueryTemplates.DEFAULT_PREFIXES,
     indent: 1,
-    select: `SELECT DISTINCT ?version ?dataset ?distribution ?title ?description (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?files) ?license ?size ?format (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
+    select: `SELECT DISTINCT ?version ?dataset ?distribution ?title ?description (GROUP_CONCAT(DISTINCT ?file; SEPARATOR=", ") AS ?files) ?license ?size ?format (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) WHERE`,
     body: [
       `GRAPH ?g`,
       `{`,
@@ -100,7 +100,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
       `\t?dataset dct:description ?description.`,
       `}`
     ],
-    aggregate: `GROUP BY ?version ?dataset ?distribution ?title ?description ?license ?size ?format ?preview`
+    aggregate: `GROUP BY ?version ?dataset ?distribution ?title ?description ?license ?size ?format`
   };
 
   /**
@@ -109,7 +109,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
    static GROUP_PAGE_FILE_BROWSER_TEMPLATE = {
     prefixes: QueryTemplates.DEFAULT_PREFIXES,
     indent: 1,
-    select: `SELECT DISTINCT ?file ?version ?artifact ?license ?size ?format ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
+    select: `SELECT DISTINCT ?file ?version ?artifact ?license ?size ?format ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) WHERE`,
     body: [
 
       `GRAPH ?g`,
@@ -126,7 +126,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
       `}`
     ],
-    aggregate: `GROUP BY ?file ?version ?artifact ?license ?size ?format ?compression ?preview`
+    aggregate: `GROUP BY ?file ?version ?artifact ?license ?size ?format ?compression`
   };
 
   /**
@@ -135,7 +135,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
   static NODE_FILE_TEMPLATE = {
     prefixes: QueryTemplates.DEFAULT_PREFIXES,
     indent: 1,
-    select: `SELECT DISTINCT ?file ?license ?size ?format ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) ?preview WHERE`,
+    select: `SELECT DISTINCT ?file ?license ?size ?format ?compression (GROUP_CONCAT(DISTINCT ?var; SEPARATOR=', ') AS ?variant) WHERE`,
     body: [
 
       `GRAPH ?g`,
@@ -150,7 +150,7 @@ SELECT ?distribution SAMPLE(?file) AS ?file SAMPLE(?version) AS ?version SAMPLE(
       `\tOPTIONAL { ?distribution dcat:byteSize ?size . }`,
       `}`
     ],
-    aggregate: `GROUP BY ?file ?license ?size ?format ?compression ?preview`
+    aggregate: `GROUP BY ?file ?license ?size ?format ?compression`
   };
 
   /**
