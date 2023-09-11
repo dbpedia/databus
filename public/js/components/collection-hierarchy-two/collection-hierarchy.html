@@ -398,9 +398,9 @@
 
         <span>
           <a ng-href="{{ $ctrl.utils.navigateUp(groupNode.uri) }}" target="_blank">{{
-            $ctrl.utils.uriToName($ctrl.utils.navigateUp(groupNode.uri)) }}</a>
+            $ctrl.utils.uriToResourceName($ctrl.utils.navigateUp(groupNode.uri)) }}</a>
           <span> » </span>
-          <a ng-href="{{ groupNode.uri }}" target="_blank">{{ $ctrl.utils.uriToName(groupNode.uri) }}</a>
+          <a ng-href="{{ groupNode.uri }}" target="_blank">{{ $ctrl.utils.uriToResourceName(groupNode.uri) }}</a>
         </span>
 
         <div
@@ -604,7 +604,7 @@
         <div class=" ce-content-group-header" ng-click="$ctrl.toggleExpand(artifactView)">
           <type-tag width="48" height="48" style="margin-right:18px" type="'Artifact'"></type-tag>
 
-          <a ng-href="{{ artifactNode.uri }}" target="_blank">{{ $ctrl.utils.uriToName(artifactNode.uri) }}</a>
+          <a ng-href="{{ artifactNode.uri }}" target="_blank">{{ $ctrl.utils.uriToResourceName(artifactNode.uri) }}</a>
 
           <div ng-if="$ctrl.objSize(artifactNode.facetSettings) > 0 && !artifactView.expanded"
             style="display: flex; align-items: center; margin-left: 0.5em;">
