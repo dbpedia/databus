@@ -19,6 +19,9 @@ function UriBreadcrumbsController() {
     var extensions = url.pathname.split('/');
     var pathSoFar = '';
 
+    if(ctrl.absolute == true) {
+      pathSoFar = url.origin;
+    }
 
     for(var e in extensions) {
       var extension = extensions[e];

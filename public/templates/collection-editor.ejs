@@ -424,7 +424,7 @@
                       <input type="text" class="input" ng-model="form.identifier.value"
                         ng-change="onActiveCollectionChanged()" />
                       <div>Collection will be accessible at <span style="color:#3867d6">{{ baseUrl
-                          }}/{{username}}/collections/{{form.identifier.value.length
+                          }}/{{accountName}}/collections/{{form.identifier.value.length
                           > 0 ? form.identifier.value : '...'}}</span></div>
                       <div class="has-text-danger" ng-if="form.identifier.error">{{ form.identifier.error }}</div>
                     </div>
@@ -465,6 +465,16 @@
                         ng-model="collectionManager.activeCollection.description"
                         ng-change="onDescriptionChanged()"></textarea>
                       <div class="has-text-danger" ng-if="form.description.error">{{form.description.error }}</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label optional">Content</div>
+                    <div style="flex: 1">
+                      <div ng-click="tabNavigation.navigateTo('content', true)" class="button is-collection">
+                        <databus-icon color="'#fff'" shape="'edit-thick'" size="20">
+                        </databus-icon>Edit Content</div>
+                  
+                      
                     </div>
                   </div>
                 </div>

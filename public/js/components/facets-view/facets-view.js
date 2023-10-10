@@ -167,6 +167,7 @@ function FacetsViewController($http, $scope) {
         ctrl.viewModel[key].autofill.selectedValues = [];
         ctrl.viewModel[key].autofill.input = '';
 
+
         for (var v in facetData.values) {
 
           var value = facetData.values[v];
@@ -178,7 +179,18 @@ function FacetsViewController($http, $scope) {
           });
         }
 
-        ctrl.viewModel[key].visibleFacetSettings.sort();
+        ctrl.viewModel[key].visibleFacetSettings.sort(function(a, b) {
+          const valueA = a.value.toUpperCase();
+          const valueB = b.value.toUpperCase();
+          if (valueA > valueB) {
+            return 1;
+          }
+          if (valueA < valueB) {
+            return -1;
+          }
+
+          return 0;
+        });
 
         // Show latest versions first
         if(key == DatabusUris.DCT_HAS_VERSION) {

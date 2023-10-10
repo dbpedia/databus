@@ -135,7 +135,7 @@ SELECT ?file WHERE {
     var resourceUriLength = DatabusUtils.getResourcePathLength(uri);
     var diff = resourceUriLength - databusUriLength;
 
-    if (diff < 0 && diff > 3 || diff == 2) {
+    if (diff < 0 && diff > 3 || diff == 1) {
       return;
     }
 
@@ -314,16 +314,15 @@ SELECT ?file WHERE {
   ctrl.searchNode = function (node, nodeView) {
 
     var baseUrl = new URL(node.uri).origin;
-
     var typeFilters = `typeName=Artifact Group`;
-    var resultUriPrefix = undefined;
 
     if (node.property == DATAID_GROUP_PROPERTY) {
-      typeFilters = `typeName=Artifact`;
-      resultUriPrefix = node.uri;
+      var groupName = DatabusUtils.uriToResourceName(node.uri);
+      var accountName = DatabusUtils.uriToResourceName(DatabusUtils.navigateUp(node.uri));
+      typeFilters = `typeName=Artifact&publisher=${accountName}&group=${groupName}`;
     }
 
-    var url = `${baseUrl}/api/search?${typeFilters}&format=JSON_FULL&minRelevance=15&maxResults=10&query=${nodeView.search}`;
+    var url = `${baseUrl}/api/search?${typeFilters}&typeNameWeight=0&format=JSON_FULL&minRelevance=15&maxResults=10&query=${nodeView.search}`;
 
     try {
       $http({ method: 'GET', url: url }).then(function successCallback(response) {
@@ -331,11 +330,8 @@ SELECT ?file WHERE {
         nodeView.searchResults = [];
 
         for (var doc of response.data.docs) {
-          if (resultUriPrefix == undefined || doc.resource[0]['value'].startsWith(resultUriPrefix)) {
-
-            doc.inCollection = ctrl.isInCollection(doc);
-            nodeView.searchResults.push(doc);
-          }
+          doc.inCollection = ctrl.isInCollection(doc);
+          nodeView.searchResults.push(doc);
         }
 
       }, function errorCallback(response) {
@@ -792,7 +788,7 @@ SELECT ?file WHERE {
 
       if (entry.value == '') {
         label = '<i style="color: #a3a3a3;">None</i>';
-      } else if(entry.value == '$latest') {
+      } else if (entry.value == '$latest') {
         label = 'Latest Version';
       } else {
         label = entry.value;
