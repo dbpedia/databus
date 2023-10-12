@@ -15,6 +15,7 @@ const defaultContext = require('../../common/res/context.jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 const UriUtils = require('../../common/utils/uri-utils');
+const DatabusMessage = require('../../common/databus-message');
 
 
 
@@ -64,8 +65,9 @@ module.exports = async function publishAccount(accountName, body) {
 
     // Expected uris
     var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-    var personUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_THIS}`;
-    var profileUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
+
+    var personUri = `${accountUri}${DatabusConstants.WEBID_THIS}`;
+    var profileUri = `${accountUri}${DatabusConstants.WEBID_DOCUMENT}`;
 
     // Compare the specified id to the actual person uri
     var personGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.FOAF_PERSON);
@@ -125,6 +127,8 @@ module.exports = async function publishAccount(accountName, body) {
 
     var exists = await accountExists(accountName);
 
+    
+
     // Save the data using the database manager
     var saveResult = await GstoreHelper.save(accountName, targetPath, compactedGraph);
 
@@ -133,6 +137,13 @@ module.exports = async function publishAccount(accountName, body) {
       result.message = 'Internal database error.\n';
       result.statusCode = 500;
       return result;
+    }
+
+    if(process.send != undefined) {
+      process.send({
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+        resources : accountUri
+      });
     }
 
     result.isSuccess = true;

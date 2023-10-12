@@ -13,6 +13,8 @@ class LookupSearchIndexer {
     var regex = new RegExp(`sparqlEndpoint:\\s(.*)`, `g`);
     content = content.replace(regex, `sparqlEndpoint: ${process.env.DATABUS_DATABASE_URL}/sparql`);
     fs.writeFileSync(this.configPath, content, ['utf8']);
+
+    this.resources = [];
   }
 
   async start() {
@@ -41,7 +43,11 @@ class LookupSearchIndexer {
     if (this.rebuildRequested) {
 
       if (!this.isBuilding) {
-        this.buildIndex();
+        this.rebuildRequested = false;
+
+        this.log(`Rebuilding with ${this.resources.length} resource(s)`);
+        this.buildIndex(this.resources);
+        this.resources = [];
       }
     }
   }
@@ -50,30 +56,43 @@ class LookupSearchIndexer {
     console.log('\x1b[90m%s\x1b[0m', `[SEARCH] ${msg}`);
   }
 
-  requestRebuild() {
+  requestRebuild(resource) {
     this.rebuildRequested = true;
+
+    if(resource != undefined && !this.resources.includes(resource)) {
+      this.resources.push(resource);
+    }
   }
 
-  async buildIndex() {
-    this.rebuildRequested = false;
+  async buildIndex(resources) {
     this.isBuilding = true;
-    await this.buildIndexPromise();
+    await this.buildIndexPromise(resources);
     this.isBuilding = false;
   }
 
-  buildIndexPromise() {
+  buildIndexPromise(resources) {
 
     var self = this;
 
     return new Promise((resolve, reject) => {
-      var indexingProcess = spawn('java', [
-        '-jar', '../search/lookup-indexer.jar',
-        '-conf', this.configPath
-      ]);
 
-      indexingProcess.stdout.on('data', (data) => {
-        // self.log(`[INDEXER] - ${data}`);
-      });
+      var processArgs = [
+        '-jar', '../search/lookup-indexer.jar',
+        '-conf', this.configPath,
+      ];
+
+      if(resources != null && resources.length > 0) {
+        processArgs.push('-r');
+        processArgs.push(resources.join(' '));
+      }
+
+
+      var indexingProcess = spawn('java', processArgs);
+
+      // Uncomment to debug search indexer
+      //indexingProcess.stdout.on('data', (data) => {
+      //   self.log(`[INDEXER] - ${data}`);
+      //});
 
       indexingProcess.stderr.on('data', (data) => {
         self.log(`[INDEXER ERROR] - ${data}`);

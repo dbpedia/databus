@@ -49,7 +49,7 @@ function createFork(onListening) {
     }
 
     if (message.id == DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD) {
-      searchIndexer.requestRebuild();
+      searchIndexer.requestRebuild(message.resource);
     }
   });
 }

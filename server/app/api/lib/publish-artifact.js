@@ -10,6 +10,7 @@ var constructArtifactQuery = require('../../common/queries/constructs/construct-
 var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var autocompleter = require('./dataid-autocomplete');
+const DatabusMessage = require('../../common/databus-message');
 
 module.exports = async function publishArtifact(accountName, graph, logger) {
 
@@ -89,6 +90,13 @@ module.exports = async function publishArtifact(accountName, graph, logger) {
     if (!publishResult.isSuccess) {
       logger.error(artifactUri, `Internal database error`, null);
       return 500;
+    }
+
+    if(process.send != undefined) {
+      process.send({
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+        resource: artifactUri
+      });
     }
 
     logger.info(artifactUri, `Successfully published artifact <${artifactUri}>.`, compactedGraph);

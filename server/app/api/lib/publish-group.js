@@ -10,6 +10,7 @@ var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
 var defaultContext = require('./../../common/res/context.jsonld');
 var autocompleter = require('./dataid-autocomplete');
+const DatabusMessage = require('../../common/databus-message');
 
 module.exports = async function publishGroup(accountName, graph, logger) {
 
@@ -91,6 +92,13 @@ module.exports = async function publishGroup(accountName, graph, logger) {
     if (!publishResult.isSuccess) {
       logger.error(groupUri, `Internal database error`, null);
       return 500;
+    }
+
+    if(process.send != undefined) {
+      process.send({
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+        resource: groupUri
+      });
     }
 
     logger.info(groupUri, `Successfully published group <${groupUri}>.`, compactedGraph);

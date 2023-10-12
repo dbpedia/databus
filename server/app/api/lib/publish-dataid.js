@@ -15,6 +15,7 @@ var constructVersionQuery = require('../../common/queries/constructs/construct-v
 var autocompleter = require('./dataid-autocomplete');
 var fileAnalyzer = require('../../common/file-analyzer');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+const DatabusMessage = require('../../common/databus-message');
 
 
 async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
@@ -346,6 +347,12 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
       return 500;
     }
 
+    if(process.send != undefined) {
+      process.send({
+        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+        resource: versionGraphUri
+      });
+    }
 
     logger.info(versionGraphUri, `Successfully published version <${versionGraphUri}>.`, compactedGraph);
     return 200;
