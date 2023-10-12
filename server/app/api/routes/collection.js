@@ -15,6 +15,7 @@ const getLinkedData = require('../../common/get-linked-data');
 var defaultContext = require('./../../common/res/context.jsonld');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
+const DatabusMessage = require('../../common/databus-message');
 
 module.exports = function (router, protector) {
 
@@ -119,6 +120,13 @@ module.exports = function (router, protector) {
 
       console.log(`Saving collection <${collectionUri}> to ${req.params.account}:${targetPath}`);
       var publishResult = await GstoreHelper.save(req.params.account, targetPath, compactedGraph);
+
+      if(process.send != undefined) {
+        process.send({
+          id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+          resource: collectionUri
+        });
+      }
 
       // Return failure
       if (!publishResult.isSuccess) {

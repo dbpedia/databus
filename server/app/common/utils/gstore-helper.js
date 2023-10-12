@@ -38,14 +38,8 @@ class GstoreHelper {
         json: true
       };
 
-      var res = await rp.post(options);
+      await rp.post(options);
 
-      if(process.send != undefined) {
-        process.send({
-          id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
-        });
-      }
-      
       return { isSuccess: true };
     } catch (err) {
       console.log(err);

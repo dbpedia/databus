@@ -19,7 +19,7 @@ function SearchController($http, $interval, $sce, searchManager) {
     ctrl.search();
   }
 
-  ctrl.availableResourceTypes = ['Collection', 'Artifact', 'Group', 'PersonalProfileDocument'];
+  ctrl.availableResourceTypes = ['Collection', 'Artifact', 'Group', 'PersonalProfileDocument', 'Version' ];
 
   ctrl.$onInit = function () {
 
