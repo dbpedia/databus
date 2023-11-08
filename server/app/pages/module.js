@@ -166,32 +166,9 @@ module.exports = function (router, protector) {
   });
 
 
-  /*
-  router.get('/system/pages/artifacts-by-group', protector.protect(), async function (req, res, next) {
-
-    try {
-      var uri = req.query.uri;
-
-      if(!UriUtils.isResourceUri(uri)) {
-        res.status(400).send('Not a resource uri');
-        return;
-      }
-
-      var splits = UriUtils.splitResourceUri(uri);
-
-      var result = await sparql.dataid.getArtifactsByGroup(splits[0], splits[1]);
-      res.status(200).send(result);
-
-    } catch (err) {
-      console.log(err);
-      res.status(500).send(err);
-    }
-  });*/
-
-
-
   require('./modules/account-page')(router, protector);
   require('./modules/collection-editor')(router, protector);
+  require('./modules/sparql-editor')(router, protector);
   require('./modules/publish-wizard')(router, protector);
   require('./modules/resource-pages')(router, protector);
 

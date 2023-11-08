@@ -26,12 +26,14 @@ const FileBrowserController = require("./components/file-browser/file-browser");
 const FacetsViewController = require("./components/facets-view/facets-view");
 const ExpandableArrowController = require("./components/expandable-arrow/expandable-arrow");
 const YasqeTextController = require("./components/yasqe-text/yasqe-text");
+const YasrViewController = require("./components/yasr-view/yasr-view");
 const CollectionStatisticsController = require("./components/collection-statistics/collection-statistics");
 const CollectionNodeController = require("./components/collection-node/collection-node");
 const CollectionSearchController = require("./components/collection-search/collection-search");
 const CollectionStatusController = require("./components/collection-status/collection-status");
 const CollectionDataTableController = require("./components/collection-data-table/collection-data-table");
 const AccountHistoryController = require("./components/account-history/account-history");
+const SparqlEditorController = require("./page-controller/sparql-editor-controller");
 
 var databusApplication = angular.module("databusApplication", [])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
@@ -54,6 +56,7 @@ var databusApplication = angular.module("databusApplication", [])
   .controller("CollectionsEditorController", ["$scope", "$timeout", "$http", "$location", "collectionManager", CollectionsEditorController])
   .controller("GroupPageController", ["$scope", "$http", "$sce", "$interval", "$location", "collectionManager", GroupPageController])
   .controller("ProfileController", ["$scope", "$http", ProfileController])
+  .controller("SparqlEditorController", ["$scope", "$http", SparqlEditorController])
   .controller("PublishWizardController", ["$scope", "$http", "$interval", "focus", "$q", PublishWizardController])
   .controller("VersionPageController", ["$scope", "$http", "$sce", "$location", "collectionManager", VersionPageController])
   .directive('uploadRanking', function () {
@@ -403,6 +406,20 @@ databusApplication.component('yasqeText', {
   controller: ['$scope', '$element', YasqeTextController ],
   bindings: {
     query: '=',
+    autoSize: '<',
+    readOnly: '<',
+    onChange: '&'
+  }
+});
+
+
+
+databusApplication.component('yasrView', {
+  templateUrl: '/js/components/yasr-view/yasr-view.html',
+  controller: ['$scope', '$element', YasrViewController ],
+  bindings: {
+    data: '=',
+    autoSize: '<',
     readOnly: '<',
     onChange: '&'
   }

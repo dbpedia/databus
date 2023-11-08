@@ -233,6 +233,22 @@
   padding-left: 1.5em;
   padding-right:1.5em;
   cursor: pointer;
+
+  border-top: 1px solid rgba(0, 0, 0, 0);
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0);
+}
+
+.collection-editor-tab svg {
+  fill: #999 !important;
+}
+
+.collection-editor-tab:hover svg {
+  fill: #777 !important;
+}
+
+.collection-editor-tab:hover .section-label {
+  color: #777 !important;
 }
 
 .collection-editor-tab.is-active {

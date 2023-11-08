@@ -26,8 +26,16 @@
 
 @import 'colors';
 @import 'collections';
-@import '../node_modules/codemirror/lib/codemirror.css'; 
 @import '../node_modules/bulma/bulma.sass';
+
+
+@import '../node_modules/codemirror/lib/codemirror.css'; 
+@import '../node_modules/@triply/yasqe/src/scss/yasqe.scss';
+@import '../node_modules/@triply/yasqe/src/scss/buttons.scss'; 
+@import '../node_modules/@triply/yasqe/src/scss/codemirrorMods.scss'; 
+
+@import '../node_modules/@triply/yasr/src/main.scss';
+
 @import 'override-checkbox';
 @import 'checkmarks';
 @import 'yasqe';
@@ -207,7 +215,29 @@ body.has-navbar-fixed-top {
 }
 
 .CodeMirror {
-  height: auto !important;
+  /* height: auto !important; */
+}
+
+.yasqe .CodeMirror-scroll {
+  //padding-bottom: 0 !important;
+}
+
+.yasr_header div {
+  display: flex !important;
+}
+
+.yasr_header .switch {
+  display: none;
+}
+
+.yasr_header .tableFilter {
+  margin-right: 8px;
+}
+
+.yasqe .CodeMirror-sizer {
+  border-right-width: 0 !important;
+  padding-right: 15px;
+  margin-bottom: -20px;
 }
 
 .CodeMirror-line {
