@@ -82,6 +82,8 @@ SELECT DISTINCT * WHERE {
       return;
     }
 
+    $scope.createQueryPage();
+
     var queryPage = $scope.queryData.pages[$scope.queryData.activeTab];
 
     queryPage.query = node.query;
