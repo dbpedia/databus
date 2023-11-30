@@ -14,11 +14,24 @@ function YasqeTextController($scope, $element) {
       autorefresh: true
     });
 
-    if (ctrl.autoSize) {
+    if (ctrl.autoSize || !ctrl.hasSend) {
       var styleSheet = document.createElement("style")
-      styleSheet.innerText = ".CodeMirror { height: auto !important; } .CodeMirror-vscrollbar { display: none !important; } .resizeWrapper { display: none !important; }";
+      styleSheet.innerText = "";
+
+      if (ctrl.autoSize) {
+        styleSheet.innerText += ".CodeMirror { height: auto !important; } .CodeMirror-vscrollbar { display: none !important; } .resizeWrapper { display: none !important; }";
+      }
+
+      if (!ctrl.hasSend) {
+        styleSheet.innerText += ".yasqe_buttons { display: none !important; }";
+      }
+
       ctrl.textField[0].appendChild(styleSheet)
     }
+
+    ctrl.yasqe.on('query', function() {
+      ctrl.onSend();
+    });
 
     ctrl.yasqe.on('change', function () {
       ctrl.query = ctrl.yasqe.getValue();

@@ -23,8 +23,7 @@
     </section>
 
     <div class="collection-editor-header" style="padding: 0;">
-      <div class="container">
-        <div>
+        <div style="padding: 0em 1em;">
           <!--Tabs-->
           <div class="collection-editor-tabs" style="flex-wrap: wrap;">
 
@@ -39,35 +38,39 @@
             </div>
 
             <div class="collection-editor-tab" ng-click="createQueryPage();" style="
-            display: flex; align-items: center; margin-left: 1em;">
+            display: flex; align-items: center; margin-left: 2em; padding-left: 0; padding-right: 0;">
               <databus-icon shape="'add-thick'" size="22" ng-click="deleteQueryPage($index)"></databus-icon>
 
               <div class="section-label" style="margin-left: 10px;">New Query</div>
             </div>
 
 
-          </div>
         </div>
       </div>
     </div>
 
-    <section class="section" style="min-height: 500px;">
-      <div class="container" style="max-width: 1450px;">
+    <section class="hero">
 
-          <yasqe-text query="queryData.pages[queryData.activeTab].query"></yasqe-text>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin: 1em;
+        margin-top: 2em; ">
 
-          <div class="button" style="width: 400px; height: 50px; margin-bottom: 16px;" ng-click="send()">Send</div>
+        <input type="text" class="input" ng-model="queryData.pages[queryData.activeTab].endpoint"
+          ng-change="saveToStorage()" style="width: 600px;"
+          placeholder="SPARQL endpoint URL">
 
-          <div style="display: flex; justify-content: flex-end; margin-bottom: 8px; align-items: center;">
-            <div style="margin-right: 8px;">Insert Example Queries:</div>
-            <div class="button" style="margin-right: 8px;" ng-click="insertExampleQuery(query)"
-              ng-repeat="query in editor.exampleQueries">Example {{$index}}</div>
-          </div>
-
-          <yasr-view data="editor.result"></yasr-view>
+        <better-dropdown root-node="editor.exampleQueries" on-node-clicked="onExampleQueryClicked(node)"></better-dropdown>
       </div>
+
+
+      <yasqe-text has-send="true" on-send="send()" on-change="saveToStorage()" query="queryData.pages[queryData.activeTab].query"></yasqe-text>
+
     </section>
+
+
+    <section class="section" style="min-height: 500px; padding-top: 1.2em;">
+        <yasr-view ng-if="editor.result" data="editor.result"></yasr-view>
+    </section>
+
   </div>
 
   <%- include('footer') -%>
-    send

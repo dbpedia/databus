@@ -10721,8 +10721,13 @@ body.has-navbar-fixed-top {
   fill: rgb(200, 200, 200);
 }
 
-.yasqe_buttons {
-  display: none !important;
+.yasqe .yasqe_buttons .yasqe_share {
+  display: none;
+}
+
+.yasqe .yasqe_buttons .yasqe_queryButton {
+  margin-right: 0.2em;
+  margin-top: 0.2em;
 }
 
 .editable-collection-element {

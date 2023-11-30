@@ -34,6 +34,7 @@ const CollectionStatusController = require("./components/collection-status/colle
 const CollectionDataTableController = require("./components/collection-data-table/collection-data-table");
 const AccountHistoryController = require("./components/account-history/account-history");
 const SparqlEditorController = require("./page-controller/sparql-editor-controller");
+const BetterDropdownController = require("./components/better-dropdown/better-dropdown");
 
 var databusApplication = angular.module("databusApplication", [])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
@@ -408,10 +409,22 @@ databusApplication.component('yasqeText', {
     query: '=',
     autoSize: '<',
     readOnly: '<',
-    onChange: '&'
+    onChange: '&',
+    onSend: '&',
+    hasSend: '<'
   }
 });
 
+databusApplication.component('betterDropdown', {
+  templateUrl: '/js/components/better-dropdown/better-dropdown.html',
+  controller: ['$scope', '$interval', '$element', BetterDropdownController ],
+  bindings: {
+    rootNode: '=',
+    onNodeClicked: '&',
+    icon: '<',
+    label: '<'
+  }
+});
 
 
 databusApplication.component('yasrView', {
