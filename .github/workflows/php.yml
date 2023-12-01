@@ -1,6 +1,8 @@
 name: PHP Composer
 
 on:
+  commit:
+    branches: [ dev ]
   push:
     branches: [ master ]
   pull_request:
