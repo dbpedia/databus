@@ -9,7 +9,7 @@ init();
 ?>
 
 <?php
-$section="dataid";
+$section="version";
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06#ontology--DEV_type=parsed_sorted.nt";
 
 $owl='databus:Part  a owl:Class ;

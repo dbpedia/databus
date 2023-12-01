@@ -28,7 +28,7 @@ $owl='databus:Version  a owl:Class ;
     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 ';
 
-$shacl='<#dataset-exists>
+$shacl='<#version-exists>
 	a sh:NodeShape ;
 	sh:targetNode databus:Version ;
 	sh:property [
