@@ -9,7 +9,7 @@ module.exports = function (router, protector, locals, webdav) {
   require('./routes/account')(router, protector);
   require('./routes/group')(router, protector);
   require('./routes/artifact')(router, protector);
-  require('./routes/dataid')(router, protector);
+  require('./routes/version')(router, protector);
   require('./swagger-page')(router, protector, locals);
 
   router.get('/', cors(), ServerUtils.NOT_HTML_ACCEPTED, async function(req, res, next) {

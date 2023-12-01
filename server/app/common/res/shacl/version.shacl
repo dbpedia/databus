@@ -12,7 +12,7 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
 
-<#dataset-exists>
+<#version-exists>
 	a sh:NodeShape ;
 	sh:targetNode databus:Version ;
 	sh:property [
@@ -28,7 +28,7 @@
 		sh:message "IRI for databus:Version must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
   ] . 
 
-<#title-dataid>
+<#title-version>
 	a sh:NodeShape ;
 	sh:targetClass databus:Version ;
 	sh:property [
@@ -46,7 +46,7 @@
 		sh:uniqueLang true ;
 	] . 
 
-<#abstract-dataid>
+<#abstract-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
@@ -65,7 +65,7 @@
 	    sh:maxLength 300 ;
 	] . 
 
-<#description-dataid>
+<#description-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
