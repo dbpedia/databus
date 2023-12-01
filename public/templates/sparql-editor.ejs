@@ -1,0 +1,76 @@
+<%- include('header') -%>
+
+
+  <script src='/node_modules/@triply/yasr/build/yasr.min.js'></script>
+  <div ng-controller="SparqlEditorController">
+
+    <section style="background-color: slategrey; ">
+      <div style="padding: 0em 1.5em;">
+
+        <div style="display: flex; align-items: center; min-height: 78px; color: white;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="44 0 372 420">
+            <path xmlns="http://www.w3.org/2000/svg"
+              d="M383.476,267.343c-2.544-1.346-5.14-2.493-7.743-3.516l1.863-0.15c0,0-16.608-7.354-18.057-60.722  c-1.438-53.372,15.828-62.478,15.828-62.478l-2.48,0.109c13.045-6.69,24.265-17.267,31.669-31.216  c19.295-36.291,5.488-81.362-30.81-100.657C337.436-10.563,292.374,3.207,273.09,39.53c-7.927,14.899-10.178,31.273-7.677,46.733  l-0.851-1.306c0,0,4.373,19.365-41.032,47.55c-45.397,28.2-65.877,14.159-65.877,14.159l1.302,1.925  c-1.298-0.803-2.544-1.624-3.901-2.333c-36.306-19.294-81.38-5.509-100.667,30.804c-19.281,36.309-5.489,81.365,30.813,100.668  c27.064,14.364,58.974,10.36,81.461-7.655l-0.487,0.946c0,0,16.531-13.599,64.16,11.973c37.601,20.178,43.184,39.956,43.899,47.383  c-0.983,27.57,13.388,54.618,39.389,68.433c36.301,19.299,81.374,5.498,100.657-30.804  C433.571,331.704,419.786,286.624,383.476,267.343z M299.542,277.128c-6.018,2.129-23.203,4.487-59.389-14.921  c-39.187-21.04-45.005-38.615-45.855-43.891c0.557-6.401,0.202-12.791-0.891-19.02l0.239,0.359c0,0-3.189-17.096,41.65-44.943  c40.133-24.908,58.376-19.955,61.771-18.653c2.185,1.485,4.45,2.867,6.825,4.131c4.518,2.398,9.174,4.283,13.888,5.672  c5.52,5.257,15.678,20.178,16.733,59.413c1.078,39.535-10.533,54.779-16.865,60.168C311.122,268.399,305.022,272.34,299.542,277.128  z"
+              fill="#fff" />
+          </svg>
+          <div class="databus-banner-text">
+            <h1 class="title is-2 has-text-left" style="color: white; margin-left:16px; font-size: 1.6em;">SPARQL Editor
+            </h1>
+            <!--uri-breadcrumbs class="header-breadcrumbs" uri="'./sparql'"></uri-breadcrumbs>-->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="collection-editor-header" style="padding: 0;">
+        <div style="padding: 0em 1em;">
+          <!--Tabs-->
+          <div class="collection-editor-tabs" style="flex-wrap: wrap;">
+
+
+            <div class="collection-editor-tab" ng-repeat="queryPage in queryData.pages track by $index"
+              ng-class="{ 'is-active' : $index == queryData.activeTab }" style="display: flex; align-items: center;
+              padding-left: 0; padding-right: 16px;">
+
+              <div ng-click="goToTab($index)" class="section-label"
+                style="min-width: 80px; margin: 0; padding: 1em 1.5em">{{ queryPage.name }}</div>
+              <databus-icon shape="'close'" size="20" ng-click="deleteQueryPage($index)"></databus-icon>
+            </div>
+
+            <div class="collection-editor-tab" ng-click="createQueryPage();" style="
+            display: flex; align-items: center; margin-left: 2em; padding-left: 0; padding-right: 0;">
+              <databus-icon shape="'add-thick'" size="22" ng-click="deleteQueryPage($index)"></databus-icon>
+
+              <div class="section-label" style="margin-left: 10px;">New Query</div>
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <section class="hero">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin: 1em;
+        margin-top: 2em; ">
+
+        <input type="text" class="input" ng-model="queryData.pages[queryData.activeTab].endpoint"
+          ng-change="saveToStorage()" style="width: 600px;"
+          placeholder="SPARQL endpoint URL">
+
+        <better-dropdown root-node="editor.exampleQueries" on-node-clicked="onExampleQueryClicked(node)"></better-dropdown>
+      </div>
+
+
+      <yasqe-text has-send="true" on-send="send()" on-change="saveToStorage()" query="queryData.pages[queryData.activeTab].query"></yasqe-text>
+
+    </section>
+
+
+    <section class="section" style="min-height: 500px; padding-top: 1.2em;">
+        <yasr-view ng-if="editor.result" data="editor.result"></yasr-view>
+    </section>
+
+  </div>
+
+  <%- include('footer') -%>

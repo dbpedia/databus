@@ -1,0 +1,94 @@
+<style>
+  .dataTable {
+    width: 100%;
+    margin-top: .5em;
+    margin-bottom: .5em;  
+    overflow: hidden;
+    text-overflow: ellipsis;  
+  white-space: nowrap;
+
+  }  
+
+  .dataTable .dataTables_paginate {
+    display: flex;
+  }
+
+  .dataTables_paginate {
+    margin-top: .4em;
+    display: flex;
+  }
+
+  .dataTables_paginate .ellipsis  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dbdbdb;
+    border-right: none;
+    background-color: #f3f3f3;
+  }
+
+  .dataTables_paginate > span {
+    display: flex;
+  }
+
+
+  .dataTables_paginate .paginate_button  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dbdbdb;
+    border-right: none;
+  }
+
+  .dataTables_paginate .paginate_button.next {
+    border-right: 1px solid #dbdbdb;
+    border-radius: 0px 6px 6px 0px;
+  }
+
+  .dataTables_paginate .paginate_button.previous {
+    border-radius: 6px 0px 0px 6px;
+  }
+
+
+  .dataTables_paginate .paginate_button.current {
+     background-color: #428bca;
+     color: white;
+  }
+
+  
+
+  .dataTable th {
+    font-size: 1.1em;
+    margin-right: .5em;
+  }  
+
+  .dataTable td {
+    padding-right: 1em;
+  }  
+
+
+  .dataTable th:first-child {
+    width: 48px !important;
+  }  
+
+  .dataTable th:not(:first-child) {
+    cursor: pointer;
+  }  
+
+  .dataTable th:not(:first-child):hover {
+    background-color: #f8f8f8;
+  }  
+
+  .dataTable tbody tr:hover {
+    background-color: #f8f8f8;
+  }  
+</style>
+
+
+<div ng-class="{ 'read-only' : $ctrl.readOnly }">
+  <div id="custom-query" ></div>
+</div>

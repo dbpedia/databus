@@ -7,6 +7,8 @@
   "license": "ISC",
   "dependencies": {
     "@iamadamjowett/angular-click-outside": "^2.10.1",
+    "@triply/yasqe": "^4.2.28",
+    "@triply/yasr": "^4.2.28",
     "angular": "^1.7.8",
     "angular-content-editable": "^1.2.3",
     "angular-drag-and-drop-lists": "^2.1.0",
