@@ -32,7 +32,10 @@ function forceLogin(request, response) {
     response.oidc.login();
   } else {
     response.oidc.login({
-      returnTo: decodeURIComponent(request.query.redirectUrl)
+      returnTo: decodeURIComponent(request.query.redirectUrl),
+      authorizationParams: {
+        prompt: "login"
+      }
     });
   }
 }

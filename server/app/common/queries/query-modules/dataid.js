@@ -180,7 +180,6 @@ instance.getArtifactsByAccount = async function (accountName) {
       let binding = bindings[i];
       binding.name = DatabusUtils.uriToResourceName(binding.uri);
       binding.groupName = DatabusUtils.uriToResourceName(DatabusUtils.navigateUp(binding.uri));
-      console.log(binding);
       result.push(binding);
     }
 
@@ -212,7 +211,6 @@ instance.getArtifactsByAccount = async function (accountName) {
 
     query = exec.formatQuery(query, queryOptions);
 
-    console.log(query);
     // Execute the query to get a list of bindings
     let bindings = await exec.executeSelect(query);
 
@@ -347,7 +345,6 @@ instance.getGroupsByAccount = async function (account) {
   let queryOptions = { ACCOUNT_URI: UriUtils.createResourceUri([account]) };
   let query = exec.formatQuery(require('../sparql/get-groups-by-account.sparql'), queryOptions);
 
-  console.log(query);
   let bindings = await exec.executeSelect(query);
   let result = [];
 
