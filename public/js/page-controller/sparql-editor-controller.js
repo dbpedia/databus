@@ -34,6 +34,16 @@ function SparqlEditorController($scope, $http) {
   simpleQueries.children.push({
     label: "Select all Databus Groups",
     query: `PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX sec: <https://w3id.org/security#>
+PREFIX cert: <http://www.w3.org/ns/auth/cert#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX databus-cv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
 SELECT DISTINCT * WHERE {
   ?s a databus:Group .
 }`
@@ -60,18 +70,45 @@ SELECT DISTINCT * WHERE {
   simpleQueries.children.push({
     label: "Select all Databus Versions",
     query: `PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX sec: <https://w3id.org/security#>
+PREFIX cert: <http://www.w3.org/ns/auth/cert#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX databus-cv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
 SELECT DISTINCT * WHERE {
   ?s a databus:Version .
 }`
   });
 
   intermediateQueries.children.push({
-    label: "Select all Databus Versions",
+    label: "Latest Version of Artifact",
     query: `PREFIX databus: <https://dataid.dbpedia.org/databus#>
-SELECT DISTINCT * WHERE {
-  ?s a databus:Version .
-}`
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX sec: <https://w3id.org/security#>
+PREFIX cert: <http://www.w3.org/ns/auth/cert#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX databus-cv: <https://dataid.dbpedia.org/databus-cv#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
+SELECT ?version WHERE
+{
+  GRAPH ?g
+  {
+    ?version databus:artifact <INSERT_ARTIFACT_URI_HERE> .
+    ?version dct:hasVersion ?v . 
+  }
+} 
+ORDER BY DESC (STR(?v)) LIMIT 1`
   });
+
 
   $scope.editor.exampleQueries.children.push(simpleQueries);
   $scope.editor.exampleQueries.children.push(intermediateQueries);
