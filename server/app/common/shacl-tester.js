@@ -76,8 +76,8 @@ instance.validateArtifactRDF = async function (rdf) {
   return await instance.validateJsonld(rdf, './res/shacl/artifact.shacl');
 }
 
-instance.validateDataidRDF = async function (rdf) {
-  return await instance.validateJsonld(rdf, './res/shacl/dataid.shacl');
+instance.validateVersionRDF = async function (rdf) {
+  return await instance.validateJsonld(rdf, './res/shacl/version.shacl');
 }
 
 instance.validateCollectionRDF = async function (rdf) {

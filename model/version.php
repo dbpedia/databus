@@ -1,5 +1,5 @@
 #!/usr/bin/php
-# Dataset Version - the DataId
+# Dataset Version
 <?php
 error_reporting( E_ALL | E_STRICT );
 require_once("function.php");
@@ -19,7 +19,7 @@ Please note that the fuzzy word `dataset` is disambiguated on the Databus, as it
 
 
 <?php
-$section="dataid" ;
+$section="version" ;
 $sectionExampleURI="https://databus.dbpedia.org/janni/onto_dep_projectx/dbpedia-ontology/2021-12-06";
 $owl='databus:Version  a owl:Class ;
     rdfs:label "Version"@en ;
@@ -28,7 +28,7 @@ $owl='databus:Version  a owl:Class ;
     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .
 ';
 
-$shacl='<#dataset-exists>
+$shacl='<#version-exists>
 	a sh:NodeShape ;
 	sh:targetNode databus:Version ;
 	sh:property [
@@ -66,7 +66,7 @@ $owl='dct:title
 	rdfs:range rdfs:Literal ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .';
 
-$shacl='<#title-dataid>
+$shacl='<#title-version>
 	a sh:NodeShape ;
 	sh:targetClass databus:Version ;
 	sh:property [
@@ -106,7 +106,7 @@ $owl='dct:abstract
 	rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .';
 
-$shacl='<#abstract-dataid>
+$shacl='<#abstract-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
@@ -146,7 +146,7 @@ $owl='dct:description
 	rdfs:label "Description"@en ;
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .';
 
-$shacl='<#description-dataid>
+$shacl='<#description-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
@@ -385,7 +385,7 @@ autonote();
 $owl=
 'databus:artifact a rdf:ObjectProperty ;
     rdfs:label "artifact"@en ;
-    rdfs:comment "Specifies an artifact associated with a dataset in the DataID vocabulary."@en ;
+    rdfs:comment "Specifies an artifact associated with a dataset version."@en ;
     rdfs:domain databus:Version ;
     rdfs:range databus:Artifact ;
     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .';

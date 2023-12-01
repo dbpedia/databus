@@ -3,7 +3,7 @@ var request = require('request');
 var cors = require('cors');
 var defaultContext = require('../../common/res/context.jsonld');
 const publishGroup = require('../lib/publish-group');
-const publishDataId = require('../lib/publish-dataid');
+const publishVersion = require('../lib/publish-version');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const publishArtifact = require('../lib/publish-artifact');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
@@ -120,7 +120,7 @@ module.exports = function (router, protector, webdav) {
 
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
-        var resultCode = await publishDataId(account, expandedGraph, datasetGraphUri, verifyParts, logger);
+        var resultCode = await publishVersion(account, expandedGraph, datasetGraphUri, verifyParts, logger);
 
         if (resultCode != 200) {
           res.status(resultCode).json(logger.getReport());

@@ -1,21 +1,21 @@
-const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
-const UriUtils = require('../../common/utils/uri-utils');
-const DatabusUris = require('../../../../public/js/utils/databus-uris');
-const Constants = require('../../common/constants');
+const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
+const UriUtils = require('../../common/utils/uri-utils.js');
+const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
+const Constants = require('../../common/constants.js');
 const fs = require('fs');
 
-var signer = require('./databus-tractate-suite');
-var shaclTester = require('../../common/shacl-tester');
-var GstoreHelper = require('../../common/utils/gstore-helper');
+var signer = require('./databus-tractate-suite.js');
+var shaclTester = require('../../common/shacl-tester.js');
+var GstoreHelper = require('../../common/utils/gstore-helper.js');
 var jsonld = require('jsonld');
-var sparql = require('../../common/queries/sparql');
+var sparql = require('../../common/queries/sparql.js');
 var defaultContext = require('../../../../model/generated/context.json');
 var constructor = require('../../common/execute-construct.js');
 var constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
-var autocompleter = require('./dataid-autocomplete');
-var fileAnalyzer = require('../../common/file-analyzer');
-const DatabusUtils = require('../../../../public/js/utils/databus-utils');
-const DatabusMessage = require('../../common/databus-message');
+var autocompleter = require('./dataid-autocomplete.js');
+var fileAnalyzer = require('../../common/file-analyzer.js');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
+const DatabusMessage = require('../../common/databus-message.js');
 
 
 async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
@@ -238,7 +238,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   return 200;
 }
 
-module.exports = async function publishDataid(accountName, expandedGraph, versionGraphUri, fetchFileProperties, logger) {
+module.exports = async function publishVersion(accountName, expandedGraph, versionGraphUri, fetchFileProperties, logger) {
 
   try {
 
@@ -308,7 +308,7 @@ module.exports = async function publishDataid(accountName, expandedGraph, versio
     }
 
     // Run SHACL validation
-    var shaclResult = await shaclTester.validateDataidRDF(dataidGraphs);
+    var shaclResult = await shaclTester.validateVersionRDF(dataidGraphs);
 
     // Return failure with SHACL validation message
     if (!shaclResult.isSuccess) {

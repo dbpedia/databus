@@ -2,11 +2,11 @@ const Constants = require('../../common/constants.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
 
-const publishDataId = require('../lib/publish-dataid');
+const publishDataId = require('../lib/publish-version.js');
 
-var sparql = require('../../common/queries/sparql');
+var sparql = require('../../common/queries/sparql.js');
 var request = require('request');
-var GstoreHelper = require('../../common/utils/gstore-helper');
+var GstoreHelper = require('../../common/utils/gstore-helper.js');
 var defaultContext = require('../../common/res/context.jsonld');
 const UriUtils = require('../../common/utils/uri-utils.js');
 const getLinkedData = require('../../common/get-linked-data.js');

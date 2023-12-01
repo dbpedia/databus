@@ -12,9 +12,9 @@ function init () {echo "*auto-generated from model/*.php via [pre-commit hook](h
 function table ($section, $sectionExampleURI, $owl, $shacl, $example, $context){
     global $contextFile, $shaclDir;
 
-    //merge dataid with distribution
+    //merge version with distribution
 	if($section=="distribution"){
-		$section="dataid";
+		$section="version";
 		}
 
     if ($shacl != "missing") {

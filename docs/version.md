@@ -1,4 +1,4 @@
-# Dataset Version - the DataId
+# Dataset Version
 *auto-generated from model/*.php via [pre-commit hook](https://github.com/dbpedia/databus/blob/master/model/README.md)*
 ## Version
 
@@ -30,7 +30,7 @@ databus:Version  a owl:Class ;
 
 ```
 ```turtle
-<#dataset-exists>
+<#version-exists>
 	a sh:NodeShape ;
 	sh:targetNode databus:Version ;
 	sh:property [
@@ -74,7 +74,7 @@ dct:title
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 ```
 ```turtle
-<#title-dataid>
+<#title-version>
 	a sh:NodeShape ;
 	sh:targetClass databus:Version ;
 	sh:property [
@@ -116,7 +116,7 @@ dct:abstract
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description>, dct:description .
 ```
 ```turtle
-<#abstract-dataid>
+<#abstract-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
@@ -159,7 +159,7 @@ dct:description
 	rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/description> .
 ```
 ```turtle
-<#description-dataid>
+<#description-version>
 	a sh:NodeShape ;
     sh:targetClass databus:Version ;
     sh:property [
@@ -426,7 +426,7 @@ Spec (OWL, SHACL, JSON-LD Context)
 ```turtle
 databus:artifact a rdf:ObjectProperty ;
     rdfs:label "artifact"@en ;
-    rdfs:comment "Specifies an artifact associated with a dataset in the DataID vocabulary."@en ;
+    rdfs:comment "Specifies an artifact associated with a dataset version."@en ;
     rdfs:domain databus:Version ;
     rdfs:range databus:Artifact ;
     rdfs:isDefinedBy <https://dataid.dbpedia.org/databus#> .

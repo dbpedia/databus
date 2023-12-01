@@ -81,7 +81,7 @@ function tryCreateKeyPair() {
 async function initializeShacl() {
 
   var shaclFiles = [
-    'account', 'artifact', 'collection', 'dataid', 'group'
+    'account', 'artifact', 'collection', 'version', 'group'
   ];
 
   for(var file of shaclFiles) {

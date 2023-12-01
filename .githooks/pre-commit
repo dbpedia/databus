@@ -10,7 +10,7 @@ cd ./model/
 $PHP init.php 
 $PHP group.php > ../docs/group.md
 $PHP artifact.php > ../docs/artifact.md
-$PHP dataid.php > ../docs/dataid.md
+$PHP version.php > ../docs/version.md
 $PHP distribution.php > ../docs/distribution.md
 $PHP collection.php > ../docs/collection.md
 $PHP account.php > ../docs/account.md
@@ -19,7 +19,7 @@ $PHP finalize.php
 # add created model.md to commit
 git add ../docs/group.md
 git add ../docs/artifact.md
-git add ../docs/dataid.md
+git add ../docs/version.md
 git add ../docs/distribution.md
 git add ../docs/collection.md
 git add ../docs/account.md
