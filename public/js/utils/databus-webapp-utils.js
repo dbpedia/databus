@@ -18,6 +18,9 @@ class DatabusWebappUtils {
   }
 
   logout() {
+    //to actually remove the saved session 
+    localStorage.clear();
+    //redirect User 
     window.location = '/app/logout?redirectUrl=' + encodeURIComponent(window.location);
   }
 
