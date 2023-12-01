@@ -1,0 +1,82 @@
+<style>
+  .better-dropdown {
+    position: relative;
+  }
+
+  .better-dropdown.is-active>.better-dropdown-menu {
+    display: block;
+  }
+
+  .better-dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 10000;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .better-dropdown-menu.is-left {
+    right: 100%;
+    top: -8px;
+  }
+
+  .better-dropdown-content {
+    padding: 4px 0px;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+    border-radius: 6px;
+  }
+
+  .better-dropdown-closer {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 9999;
+  }
+</style>
+
+
+<div class="better-dropdown is-right" ng-class="{ 'is-active': $ctrl.rootNode.isActive }">
+
+  <div class="better-dropdown-closer" ng-if="$ctrl.rootNode.isActive" ng-click="$ctrl.closeAll()"></div>
+  <div class="better-dropdown-trigger" ng-click="$ctrl.toggleNode($ctrl.rootNode)">
+    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+      <span>{{ $ctrl.rootNode.label }}</span>
+      <span class="icon is-small" style="margin: 0;">
+        <i class="fas fa-angle-down" aria-hidden="true"></i>
+      </span>
+    </button>
+  </div>
+  <div class="better-dropdown-menu" id="dropdown-menu" role="menu">
+
+    <div class="better-dropdown-content">
+
+      <div ng-repeat="node in $ctrl.rootNode.children">
+
+        <div ng-if="node.children != null && node.children.length > 0" class="dropdown-item better-dropdown"
+          ng-class="{ 'is-active': node.isActive }">
+
+          <div class="better-dropdown-trigger" ng-click="$ctrl.activateNode($ctrl.rootNode, node)"
+            ng-mouseenter="$ctrl.showNested($ctrl.rootNode, node)" ng-mouseleave="$ctrl.cancelShowNested(node)">
+            <span class="icon is-small" style="margin: 0;">
+              <i class="fas fa-angle-left" aria-hidden="true"></i>
+            </span>
+            <span>{{ node.label }}</span>
+          </div>
+          <div class="better-dropdown-menu is-left" id="dropdown-menu" role="menu">
+            <div class="better-dropdown-content">
+              <div ng-repeat="child in node.children" class="dropdown-item" ng-click="$ctrl.selectNode(child)">
+                <span>{{ child.label }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="node.children == null || node.children.length == 0" class="dropdown-item" ng-click="$ctrl.selectNode(node)">
+          <span>{{ node.label }}</span>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -6,17 +6,13 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 
 module.exports = function (router, protector) {
 
-  router.get('/app/collection-editor', protector.checkSso(), async function (req, res, next) {
+  router.get('/sparql', protector.checkSso(), async function (req, res, next) {
 
     var data = {};
     data.auth = ServerUtils.getAuthInfoFromRequest(req);
 
-    if (data.auth.authenticated) {
-      data.collections = await sparql.collections.getCollectionsByAccount(data.auth.info.accountName);
-    }
-
-    res.render('collection-editor', {
-      title: 'Collection Editor',
+    res.render('sparql-editor', {
+      title: 'Sparql Editor',
       data: data
     });
   });

@@ -12,15 +12,29 @@ const DatabusLogger = require('../../common/databus-logger');
 
 module.exports = function (router, protector, webdav) {
 
-  router.get('/sparql', cors(), function (req, res) {
+  router.get('/sparql', cors(), function (req, res, next) {
+
+    var query = req.body.query;
+
+    if(query == undefined || query == "") {
+      next('route');
+      return;
+    }
+
+
     var url = `${process.env.DATABUS_DATABASE_URL}${req.originalUrl.replace('/system', '')}`;
     request(url).pipe(res);
   });
 
   router.post('/sparql', cors(), async function (req, res) {
 
-    var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
+
     var query = req.body.query;
+
+
+   
+
+    var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var accept = req.headers['accept']
     
 
