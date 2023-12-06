@@ -2,12 +2,13 @@ FROM ubuntu:22.04
 
 # Install node.js, Caddy as proxy server, and java.
 RUN apt-get update && \
-    apt-get -y curl debian-keyring debian-archive-keyring apt-transport-https && \
+    apt-get -y install curl debian-keyring debian-archive-keyring apt-transport-https && \
     curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
     curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
     apt-get update && \
-    apt-get -y nodejs \
+    apt-get -y install \
+      nodejs \
       caddy \
       ca-certificates-java \
       openjdk-17-jdk \
