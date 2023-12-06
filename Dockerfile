@@ -1,23 +1,21 @@
 FROM ubuntu:18.04
-RUN apt-get update
-RUN apt-get install -y curl
 
-# Set up node.js:
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs && \
-    node -v && \
-    npm -v
-
-# Set up Caddy as proxy server:
-RUN apt-get install -y debian-keyring debian-archive-keyring apt-transport-https && \
+# Install node.js, Caddy as proxy server, and java.
+RUN apt-get update && \
+    apt-get -y curl debian-keyring debian-archive-keyring apt-transport-https && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
     curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
     apt-get update && \
-    apt-get install caddy
-
-RUN apt-get -y install ca-certificates-java 
-RUN apt-get -y install openjdk-17-jdk openjdk-17-jre
-RUN java -version
+    apt-get -y nodejs \
+      caddy \
+      ca-certificates-java \
+      openjdk-17-jdk \
+      openjdk-17-jre && \
+    rm -rf /var/lib/apt/lists/* && \
+    node -v && \
+    npm -v && \
+    java -version
 
 # Disable the proxy server by default:
 ENV DATABUS_PROXY_SERVER_ENABLE=false
