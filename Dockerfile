@@ -1,21 +1,12 @@
-FROM ubuntu:22.04
+FROM dockette/nodejs:v16
 
 # Install node.js, Caddy as proxy server, and java.
-RUN apt-get update && \
-    apt-get -y install curl debian-keyring debian-archive-keyring apt-transport-https && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
-    apt-get update && \
-    apt-get -y install \
-      nodejs \
-      caddy \
-      ca-certificates-java \
-      openjdk-17-jdk \
-      openjdk-17-jre && \
-    rm -rf /var/lib/apt/lists/* && \
+RUN apk update --no-cache && apk upgrade --no-cache && \
+    apk add openjdk17-jre && \
+    apk add caddy && \
     node -v && \
     npm -v && \
+    caddy help start && \
     java -version
 
 # Disable the proxy server by default:
@@ -53,4 +44,4 @@ RUN cd /databus/server && \
     npm install
 
 WORKDIR /databus
-ENTRYPOINT [ "/bin/bash", "./setup.sh" ]
+ENTRYPOINT [ "/bin/sh", "./setup.sh" ]
