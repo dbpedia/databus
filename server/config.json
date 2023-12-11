@@ -4,6 +4,6 @@
         "title": "white"
     },
     "defaultBackgrounds":  {
-        "banner": "#81b8b2"
+        "banner": "repeat url(../img/banner-background.png) center / 150px #81b8b2"
     }
 }
