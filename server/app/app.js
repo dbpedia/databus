@@ -22,13 +22,15 @@ var app = express();
 
 var context = JSON.stringify(require('../app/common/res/context.jsonld'), null, 3);
 var titleColor = DatabusUtils.stringOrFallback(process.env.DATABUS_TITLE_COLOR, config.defaultColors.title);
-var bannerColor = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR, config.defaultColors.banner);
+var bannerBackground = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_BACKGROUND, DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR, config.defaultBackgrounds.banner));
 
 app.locals = {
   databus: {
     version: config.version,
+    backgrounds: {
+      banner: bannerBackground
+    },
     colors: {
-      banner: bannerColor
       title: titleColor
     },
     name: process.env.DATABUS_NAME,
