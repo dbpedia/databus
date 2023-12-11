@@ -29,6 +29,7 @@ app.locals = {
     version: config.version,
     colors: {
       banner: bannerColor
+      title: titleColor
     },
     name: process.env.DATABUS_NAME,
     iconUrl: process.env.DATABUS_ORG_ICON,

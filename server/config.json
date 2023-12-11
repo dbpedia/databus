@@ -1,6 +1,7 @@
 {
     "version" : "2.1.0-rc.10",
     "defaultColors":  {
+        "title": "white",
         "banner": "#81b8b2"
     }
 }
