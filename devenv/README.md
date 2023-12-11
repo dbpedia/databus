@@ -29,6 +29,18 @@ sudo apt install php-cli
 
 * `java`
 
+* `sass`:
+
+  * on ubuntu [ruby-sass](https://packages.ubuntu.com/lunar/ruby-sass) and debian [ruby-sass](https://packages.debian.org/bookworm/ruby-sass)
+```
+sudo apt install ruby-sass
+```
+*
+  * on fedora: [rubygem-sass](https://packages.fedoraproject.org/pkgs/rubygem-sass/rubygem-sass/)
+```
+sudo dnf install rubygem-sass
+```
+
 ## Clone Repository & Prepare for Development
 
 ```
