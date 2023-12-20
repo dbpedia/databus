@@ -5,21 +5,25 @@
   <div ng-controller="FrontPageController">
 
     <style>
-      .section.front {
-        background-color: hsl(231, 43%, 98%)
-      }
+      .section.front {}
 
       .frontpage-box {
         background-color: white;
-        padding: 1em;
         border: 1px solid #dbdbdb;
+        border-radius: 10px;
         margin-bottom: 1em;
+
       }
 
       .frontpage-box .headline {
         display: flex;
         align-items: center;
-        margin-bottom: 0.6em;
+        border-bottom: 1px solid #eee;
+        padding: 1em;
+      }
+
+      .frontpage-box .box-content {
+        padding: 1em;
       }
 
       .frontpage-box .abstract {
@@ -29,17 +33,14 @@
       .frontpage-box .headline h1 {
         margin-bottom: 0px;
         font-size: 1.3em;
-        color: #5b798d;
       }
 
       .frontpage-box .headline databus-icon {
         margin-right: .7em;
       }
-    
 
-      .frontpage-box path {
-        fill: #5b798d;
-      }
+
+      .frontpage-box path {}
 
       .frontpage-box h1 {
         font-size: 1.2em;
@@ -68,52 +69,69 @@
 
             <div class="frontpage-box" ng-if="auth.authenticated">
               <div class="headline">
-                <databus-icon shape="'user'" size="32"></databus-icon>
+                <databus-icon class="is-consumer" shape="'user'" size="32"></databus-icon>
                 <h1>Manage your Account</h1>
               </div>
-              <div class="abstract">Publish data, create data collections and manage your account</div>
+              <div class="box-content">
+                <div class="abstract">Publish data, create data collections and manage your account</div>
 
-              <button class="button is-consumer is-active" ng-click="login()">
-                <span>
-                  Go To Account Page
-                </span>
-              </button>
+                <button class="button is-consumer is-active" ng-click="login()">
+                  <span>
+                    Go To Account Page
+                  </span>
+                </button>
+              </div>
             </div>
 
             <div class="frontpage-box" ng-if="!auth.authenticated">
               <div class="headline">
-                <databus-icon shape="'key'" size="32"></databus-icon>
-                <h1>Generate Metadata</h1>
+                <databus-icon class="is-consumer" shape="'key'" size="32"></databus-icon>
+                <h1>Login or Register</h1>
               </div>
-              <button class="button is-consumer is-active" ng-click="login()">
-                <databus-icon shape="'key'" color="'white'" size="20"></databus-icon>
-                <span>
-                  Login
-                </span>
-              </button>
-            </div>
+              <div class="box-content">
+                <div class="abstract">Publish data, create data collections and manage your account</div>
 
-            <div class="frontpage-box" ng-click="utils.goTo('/app/publish-wizard')">
-              <div class="headline">
-                <databus-icon shape="'wand'" size="32"></databus-icon>
-                <h1>Generate Metadata</h1>
+                <button class="button is-consumer is-active" ng-click="login()">
+                  <databus-icon shape="'key'" color="'white'" size="20"></databus-icon>
+                  <span>
+                    Login
+                  </span>
+                </button>
               </div>
-              <div class="abstract">Are you unsure how to set up your metadata? Let the metadata wizard help you!</div>
-
-              <button class="button is-version is-active" ng-click="login()">
-                <span>
-                  Publish Wizard
-                </span>
-              </button>
-
             </div>
 
             <div class="frontpage-box">
-              <databus-icon shape="'gears'" size="32"></databus-icon>
-              <h1>Automate your data pipeline</h1>
-              <a href="/api">
-                <div>Use the API</div>
-              </a>
+              <div class="headline">
+                <databus-icon class="is-version" shape="'wand'" size="32"></databus-icon>
+                <h1>Generate Metadata</h1>
+              </div>
+              <div class="box-content">
+                <div class="abstract">Are you unsure how to set up your metadata? Let the metadata wizard help you!
+                </div>
+                <button class="button is-version is-active" ng-click="utils.goTo('/app/publish-wizard')">
+                  <span>
+                    Publish Wizard
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <div class="frontpage-box">
+
+              <div class="headline">
+                <databus-icon shape="'gears'" size="32"></databus-icon>
+                <h1>Automate your data pipeline</h1>
+              </div>
+              <div class="abstract">Get the most out of the Databus. Automate your data inputs and outputs with the
+                Databus API</div>
+
+              <button class="button is-version is-active" ng-click="utils.goTo('/api')">
+                <span>
+                  Swagger API Documentation
+                </span>
+              </button>
+
+
             </div>
 
 
@@ -156,12 +174,6 @@
 
           <div class="column">
 
-            <div class="frontpage-box">
-              <h1></h1>
-              <a href="/api">
-                <div>Use the API</div>
-              </a>
-            </div>
 
 
             <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW

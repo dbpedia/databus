@@ -69,12 +69,25 @@
 
 .is-version {
 
+    .databus-icon svg {
+        fill: $entity-version; 
+        &.is-white {
+            fill: $white;
+        }
+    }
+
     path {
         fill: $entity-version;
 
         &.is-white {
             fill: $white;
         }
+    }
+
+    &.button {
+        background-color: $entity-version;
+        color: $white;
+        border: none;
     }
 
     &.title {
@@ -102,7 +115,7 @@
 
 .is-consumer {
 
-    databus-icon {
+    .databus-icon svg {
         fill: $entity-consumer; 
         &.is-white {
             fill: $white;

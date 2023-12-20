@@ -10227,17 +10227,28 @@ label.panel-block:hover {
   background-size: 150px;
 }
 
+.is-version .databus-icon svg {
+  fill: #45b192;
+}
+.is-version .databus-icon svg.is-white {
+  fill: #fff;
+}
 .is-version path {
-  fill: #76bfb6;
+  fill: #45b192;
 }
 .is-version path.is-white {
   fill: #fff;
 }
+.is-version.button {
+  background-color: #45b192;
+  color: #fff;
+  border: none;
+}
 .is-version.title {
-  color: #76bfb6;
+  color: #45b192;
 }
 .is-version.tag:not(body) {
-  background-color: #76bfb6;
+  background-color: #45b192;
   color: #fff;
 }
 .is-version.databus-banner {
@@ -10252,28 +10263,28 @@ label.panel-block:hover {
   color: #fff;
 }
 
-.is-consumer databus-icon {
-  fill: #737381;
+.is-consumer .databus-icon svg {
+  fill: #29acbf;
 }
-.is-consumer databus-icon.is-white {
+.is-consumer .databus-icon svg.is-white {
   fill: #fff;
 }
 .is-consumer.button {
-  background-color: #737381;
+  background-color: #29acbf;
   color: #fff;
   border: none;
 }
 .is-consumer.title {
-  color: #737381;
+  color: #29acbf;
 }
 .is-consumer.tag:not(body) {
-  background-color: #737381;
+  background-color: #29acbf;
   color: #fff;
 }
 .is-consumer.databus-banner {
   background-image: url("../img/banner-background.png");
   background-repeat: repeat;
-  background-color: #7e7e8a;
+  background-color: #29acbf;
   background-size: 150px;
 }
 
