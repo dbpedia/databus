@@ -14,7 +14,7 @@ module.exports = function (router, protector, webdav) {
 
   router.get('/sparql', cors(), function (req, res, next) {
 
-    var query = req.body.query;
+    var query = req.query.query;
 
     if(query == undefined || query == "") {
       next('route');
