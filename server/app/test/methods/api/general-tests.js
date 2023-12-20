@@ -81,22 +81,22 @@ async function publishTest() {
 
     // ======== Publish invalid Dataid =======
     delete options.body;
-    try{
+    try {
         response = await rp(options);
         assert(false, 'should not be possible to publish non existent metadata')
-    } catch(err) {
+    } catch (err) {
         assert(err.response.statusCode == 400, 'empty metadata shoud not be publishibly.');
     }
 
-//     search doesnt work
-//     Error: connect ECONNREFUSED 127.0.0.1:8082
-//     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1247:16) {
-//   errno: -111,
-//   code: 'ECONNREFUSED',
-//   syscall: 'connect',
-//   address: '127.0.0.1',
-//   port: 8082
-// }
+    //     search doesnt work
+    //     Error: connect ECONNREFUSED 127.0.0.1:8082
+    //     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1247:16) {
+    //   errno: -111,
+    //   code: 'ECONNREFUSED',
+    //   syscall: 'connect',
+    //   address: '127.0.0.1',
+    //   port: 8082
+    // }
     // // ========= Search Tests ===========
     // // ========= Search existing Data ===========
     // options.method = "GET";
@@ -117,7 +117,7 @@ async function publishTest() {
     response = await rp(options);
     assert(response.statusCode == 204, `Could not delete version ${options.uri}.`);
 
-    // ======== send sparql request ===========
+    // ======== send sparql request POST ===========
     options.method = "POST";
     options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/sparql`;
     options.body = { query: "select distinct * where {?a ?b ?c} LIMIT 2" }
@@ -125,13 +125,22 @@ async function publishTest() {
     response = await rp(options);
     assert(response.statusCode == 200, 'fail')
 
+    // ======== send sparql request GET ===========
+    options.method = "GET";
+    options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/sparql?query=select%20distinct%20%2A%20where%20%7B%3Fa%20%3Fb%20%3Fc%7D%20LIMIT%202`;
+
+    response = await rp(options);
+
+    assert(response.statusCode == 200, 'fail')
+
     // ========= send invalid sparql request =========
+    options.method = "POST";
     options.body = { query: "asd" }
-    
-    try{
+
+    try {
         await rp(options);
         assert(false, 'invalid sparql query shouldnt work.')
-    } catch(err) {
+    } catch (err) {
         assert(err.response.statusCode == 400, "invalid sparql query shouldnt work.")
     }
 
