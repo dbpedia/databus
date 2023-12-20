@@ -1,0 +1,221 @@
+<div>
+
+  <style>
+    .search-results {
+      position: absolute;
+      background-color: #404751;
+      width: 100%;
+      z-index: 1000;
+      top: 100%;
+      box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, .1);
+    }
+
+    .nav-search .results::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    /* Track */
+    .nav-search .results::-webkit-scrollbar-track {
+      background: #353b45;
+    }
+
+    /* Handle */
+    .nav-search .results::-webkit-scrollbar-thumb {
+      background: #b6b6b6;
+    }
+
+    /* Handle on hover */
+    .nav-search .results::-webkit-scrollbar-thumb:hover {
+      background: #a3a3a3;
+    }
+
+
+    .nav-search input {
+      background-color: #404751;
+      border-color: #96a3b2;
+      outline: none;
+      color: white;
+      padding: 1.2em;
+      border-radius: 8px;
+    }
+
+    .nav-search input::placeholder {
+      color: #b2becd;
+      opacity: 1;
+      /* Firefox */
+    }
+
+
+    .nav-search .icon {
+      top: 2px !important;
+    }
+
+    .nav-search input:focus {
+      border-color: #c3d2e4;
+      box-shadow: none;
+    }
+
+    .nav-search .results {
+
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .nav-search .results .result-item {
+      padding: 0.6em .6em;
+      display: flex;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .nav-search .results .result-item:hover {
+      background-color: #454d57;
+    }
+
+    .nav-search .results .result-item uri-breadcrumbs {
+      color: #b9b9b9 !important;
+    }
+
+    .nav-search .results .result-item uri-breadcrumbs a {
+      color: #b9b9b9 !important;
+    }
+
+    .nav-search .results .result-item uri-breadcrumbs a:hover {
+      color: #e7e7e7 !important;
+    }
+
+    .nav-search .results .result-item .item-header {
+      display: flex;
+      color :white
+    }
+
+    .nav-search .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #f5f5f5;
+      padding: .5em 1em;
+      color: white;
+      font-weight: 600;
+    }
+
+    .nav-search .filters {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .nav-search .filters p {
+      font-weight: 600;
+      color: white;
+      margin-right: .6em;
+    }
+
+    .nav-search .filters .grey-out-dark .tag {
+      background-color: #404751;
+    }
+
+    .nav-search .filters .grey-out-dark path {
+      fill: #a7a7a7;
+    }
+
+    .result-item type-tag {
+      margin-right: 8px;
+    }
+
+    .result-item .item-label {
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .result-item .item-abstract {
+      color: white;
+      width: 620px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .item-header a {
+      color: white;
+    }
+  </style>
+
+  <div>
+
+    <div class="click-outside-mask" ng-if="$ctrl.isDropdownVisible" ng-click="$ctrl.isDropdownVisible = false"></div>
+
+    <div class="field" style="display: flex; margin-bottom: 0;">
+      <div class="control has-icons-left " style="flex:1;">
+
+        <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()"
+          ng-attr-placeholder="{{ $ctrl.placeholder }}" ng-focus="$ctrl.isDropdownVisible = true">
+        <span class="icon is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+
+
+
+    </div>
+
+    <div ng-if="$ctrl.searchInput.length > 0 && $ctrl.isDropdownVisible">
+
+
+      <div class="search-results">
+
+
+        <div class="result-header">
+
+          <div>Results ({{ $ctrl.results.length }}):</div>
+
+          <div class="filters">
+
+
+            <p>Filters:</p>
+
+            <div ng-repeat="resourceType in $ctrl.availableResourceTypes" ng-if="$ctrl.filterVisible[resourceType]"
+              ng-click="$ctrl.toggleFilter(resourceType);" style="margin-left:4px;" class="is-clickable">
+              <type-tag width="36" height="36" ng-class="{ 'grey-out-dark' : !$ctrl.filterActive[resourceType] }"
+                type="resourceType">
+              </type-tag>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center; margin: 1em;">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div ng-if="!$ctrl.isSearching" class="results">
+
+          <div ng-if="$ctrl.results.length == 0" style="color: rgb(150, 147, 147);
+            padding: 0.75em"><i>Your search did not match any
+              resource.</i></div>
+
+
+          <div class="result-item" ng-click="$ctrl.navigateTo(result.resource[0])" ng-repeat="result in $ctrl.results">
+            <type-tag width="48" height="48" ng-if="result.typeName[0]" type="result.typeName[0]"></type-tag>
+            <div>
+              <div class="item-header">
+                <p id="const" class="item-label" ng-bind-html="$ctrl.formatResult(result.label[0])"></p>
+                <div ng-if="result.resource[0]">
+                  <uri-breadcrumbs uri="result.resource[0]"></uri-breadcrumbs>
+                </div>
+
+              </div>
+              <div class="item-abstract" ng-bind-html="$ctrl.formatResult(result.abstract)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ const Constants = require('../../common/constants.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
 
-const publishDataId = require('../lib/publish-version.js');
+const publishVersion = require('../lib/publish-version.js');
 
 var sparql = require('../../common/queries/sparql.js');
 var request = require('request');
@@ -49,7 +49,7 @@ module.exports = function (router, protector) {
 
       logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
       
-      var code = await publishDataId(req.params.account, expandedGraph, versionUri, null, logger);
+      var code = await publishVersion(req.params.account, expandedGraph, versionUri, null, logger);
       res.status(code).json(logger.getReport());
 
     } catch (err) {

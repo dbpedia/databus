@@ -44,6 +44,7 @@
 @import 'entities';
 @import 'markdown';
 @import 'normalize';
+@import 'nav';
 
 body,
 html {
@@ -75,11 +76,9 @@ body.has-navbar-fixed-top {
 
 
 @media screen and (max-width: 412px), print {
-
   html {
     font-size: 14px;
   }
-
 }
 
 @media screen and (max-width: 768px), print {
@@ -90,8 +89,6 @@ body.has-navbar-fixed-top {
   .CodeMirror {
     font-size: 12px !important ;
   }
-
-  
 
   .description-markdown h1 {
     font-size: 1.6em !important;
@@ -977,7 +974,6 @@ a.navbar-item.is-active, a.navbar-item {
 
 .navbar-item {
   color: white;
-  background-color: #343a40;
 }
 
 a.navbar-item:focus-within {
@@ -999,22 +995,7 @@ a.navbar-item:hover {
   color: white;
 }
 
-.org-icon {
-  max-width: 512px;
-  max-height: 36px;
-  margin-right: 1em;
-}
 
-.databus-navbar {
-  position: relative;
-  z-index: 2000;
-  height: 78px;
-}
-
-.navbar-dropdown {
-  min-width: 200px;
-  font-size: 1em;
-}
 
 .cookie-dialogue {
   position: fixed;
@@ -1055,138 +1036,26 @@ small pre.version {
   background-color: initial !important;
 }
 
-.databus-navbar {
-  display: flex;
-  background-color: #343a40;
-  align-items: stretch;
 
-}
 
-.databus-navbar-container {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  margin-left: auto;
-  margin-right: auto;
-}
 
-@media screen and (min-width: 1500px),
-print {
-  .databus-navbar-container {
-    max-width: 1500px;
-  }
-}
-
-.databus-navbar-brand {
-  display: flex;
-  margin-left: 1.5em;
-}
-
-.databus-navbar-menu {
-  display: flex !important;
-  flex: 1;
-}
-
-.databus-navbar-item {
-  display: flex;
-  align-items: center;
-}
-
-.databus-navbar-item.is-light:hover {
-  opacity: .5;
-}
-
-a.databus-navbar-item {
-  color: white;
-  margin-right: 1em;
-}
-
-.databus-navbar-item.is-light {
-  opacity: 0.7;
-}
-
-.databus-navbar-group {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  flex-grow: 10;
-}
-
-.databus-navbar-end {
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  justify-self: flex-end;
-  margin-right: 1em;
-  align-items: stretch;
-}
-
-.databus-navbar-item.account-name {
-  padding-right: 1em;
-  padding-left: 1em;
-  margin-right: .5em;
-  justify-content: stretch;
-  display: flex;
-}
-
-.databus-navbar-item.account-name:hover {
-  opacity: 0.8;
-}
-
-.databus-navbar-item.has-dropdown {
-  position: relative;
-  cursor: pointer;
-  align-items: stretch;
-}
-
-.databus-navbar-item.has-dropdown .databus-navbar-dropdown {
-  display: none;
-}
-
-.databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
-  display: block;
-}
-
-.databus-navbar-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #343a40;
-  border-top: 2px solid white;
-  padding-bottom: 8px;
-  min-width: 250px;
-}
-
-.databus-navbar-dropdown-arrow {
-  margin-left: 8px;
-}
-
-.databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
-  opacity: 0.7;
-}
-
-@media screen and (max-width: 1024px),
-print {
-  .databus-navbar-group.is-hidden-for-mobile {
-    display: none;
-  }
-}
 
 .frontpage-banner {
   background-image: url(../img/banner-background.png);
   text-align: left; 
-  padding: 100px; 
+  padding: 50px; 
   position: relative; 
   background-repeat: repeat;
+  height: 160px;
   background-position: center; 
   background-size: 150px;
   color: white;
 }
 
 .frontpage-banner .databus-name {
-  font-size: 6em; 
+  font-size: 3em; 
   font-weight: bolder; 
-  margin: 0;
+  margin: 0px 16px;
   line-height: 1em;
 }
 
@@ -1458,4 +1327,8 @@ print {
 
 .box-separator {
   height: 30px;
+}
+
+.hero-body {
+  padding: 2.5em 1em;
 }

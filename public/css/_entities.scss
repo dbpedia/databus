@@ -101,14 +101,14 @@
 }
 
 .is-consumer {
-    
-    path {
+
+    databus-icon {
         fill: $entity-consumer; 
         &.is-white {
             fill: $white;
         }
     }
-
+    
     &.button {
         background-color: $entity-consumer;
         color: $white;

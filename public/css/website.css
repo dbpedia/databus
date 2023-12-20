@@ -10068,7 +10068,7 @@ label.panel-block:hover {
   background-repeat: no-repeat;
   background-size: contain;
   text-align: center;
-  min-height: 200px;
+  height: 160px;
 }
 .hero.databus-banner .title {
   color: white;
@@ -10252,10 +10252,10 @@ label.panel-block:hover {
   color: #fff;
 }
 
-.is-consumer path {
+.is-consumer databus-icon {
   fill: #737381;
 }
-.is-consumer path.is-white {
+.is-consumer databus-icon.is-white {
   fill: #fff;
 }
 .is-consumer.button {
@@ -10493,6 +10493,169 @@ template {
   display: none;
 }
 
+.databus-navbar {
+  height: 78px;
+}
+
+.databus-navbar-container {
+  z-index: 8000;
+  height: 78px;
+  align-items: center;
+  background-color: #343a40;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.databus-navbar-content {
+  display: flex;
+  height: inherit;
+  justify-content: stretch;
+  align-items: center;
+  width: 100%;
+}
+
+@media screen and (min-width: 1500px), print {
+  .databus-navbar-content {
+    max-width: 1500px;
+    margin: auto;
+  }
+}
+.navbar-dropdown {
+  min-width: 200px;
+  font-size: 1em;
+}
+
+.databus-home-icon {
+  display: flex;
+  align-items: center;
+}
+
+.databus-home-icon .org-icon {
+  max-width: 200px;
+  max-height: 36px;
+  min-height: 1.5em;
+}
+
+.databus-home-icon .org-separator {
+  width: 2px;
+  height: 20px;
+  background-color: white;
+  margin: 0em 1em;
+}
+
+.databus-home-icon .org-subtitle {
+  font-size: 1.2em;
+  color: white;
+  margin-right: 2em;
+  letter-spacing: 1px;
+}
+
+.databus-navbar .nav-search {
+  flex: 1;
+}
+
+.databus-navbar .databus-navbar-item.fill {
+  flex-grow: 1;
+}
+
+.databus-navbar-brand {
+  display: flex;
+  margin-left: 1.5em;
+}
+
+.databus-navbar-menu {
+  display: flex !important;
+  height: inherit;
+  position: relative;
+  flex: 1;
+}
+
+.databus-navbar-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.databus-navbar-item.is-light:hover {
+  opacity: 1;
+}
+
+a.databus-navbar-item {
+  color: white;
+  margin-right: 1em;
+}
+
+.databus-navbar-item.is-light {
+  opacity: 0.7;
+}
+
+.databus-navbar-group {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  flex-grow: 10;
+}
+
+.databus-navbar-end {
+  display: flex;
+  justify-content: flex-end;
+  justify-self: flex-end;
+  margin: 0em 1em;
+  align-items: stretch;
+}
+
+.databus-navbar-item.account-name {
+  padding-right: 1em;
+  padding-left: 1em;
+  margin-right: 0.5em;
+  justify-content: stretch;
+  display: flex;
+}
+
+.databus-navbar-item.account-name:hover {
+  opacity: 0.8;
+}
+
+.databus-navbar-item.has-dropdown {
+  position: relative;
+  cursor: pointer;
+  align-items: stretch;
+}
+
+.databus-navbar-item.has-dropdown .databus-navbar-dropdown {
+  display: none;
+}
+
+.databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
+  display: block;
+}
+
+.databus-navbar-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #404751;
+  border-top: 2px solid white;
+  padding-bottom: 8px;
+  min-width: 250px;
+}
+
+.databus-navbar-dropdown-arrow {
+  margin-left: 8px;
+}
+
+.databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
+  opacity: 0.7;
+}
+
+@media screen and (max-width: 1024px), print {
+  .databus-navbar-group.is-hidden-for-mobile {
+    display: none;
+  }
+}
 body,
 html {
   font-family: "PT Sans", sans-serif;
@@ -11409,7 +11572,6 @@ a.navbar-item.is-active, a.navbar-item {
 
 .navbar-item {
   color: white;
-  background-color: #343a40;
 }
 
 a.navbar-item:focus-within {
@@ -11429,23 +11591,6 @@ a.navbar-item {
 a.navbar-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
-}
-
-.org-icon {
-  max-width: 512px;
-  max-height: 36px;
-  margin-right: 1em;
-}
-
-.databus-navbar {
-  position: relative;
-  z-index: 2000;
-  height: 78px;
-}
-
-.navbar-dropdown {
-  min-width: 200px;
-  font-size: 1em;
 }
 
 .cookie-dialogue {
@@ -11487,133 +11632,22 @@ small pre.version {
   background-color: initial !important;
 }
 
-.databus-navbar {
-  display: flex;
-  background-color: #343a40;
-  align-items: stretch;
-}
-
-.databus-navbar-container {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-@media screen and (min-width: 1500px), print {
-  .databus-navbar-container {
-    max-width: 1500px;
-  }
-}
-.databus-navbar-brand {
-  display: flex;
-  margin-left: 1.5em;
-}
-
-.databus-navbar-menu {
-  display: flex !important;
-  flex: 1;
-}
-
-.databus-navbar-item {
-  display: flex;
-  align-items: center;
-}
-
-.databus-navbar-item.is-light:hover {
-  opacity: 0.5;
-}
-
-a.databus-navbar-item {
-  color: white;
-  margin-right: 1em;
-}
-
-.databus-navbar-item.is-light {
-  opacity: 0.7;
-}
-
-.databus-navbar-group {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  flex-grow: 10;
-}
-
-.databus-navbar-end {
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  justify-self: flex-end;
-  margin-right: 1em;
-  align-items: stretch;
-}
-
-.databus-navbar-item.account-name {
-  padding-right: 1em;
-  padding-left: 1em;
-  margin-right: 0.5em;
-  justify-content: stretch;
-  display: flex;
-}
-
-.databus-navbar-item.account-name:hover {
-  opacity: 0.8;
-}
-
-.databus-navbar-item.has-dropdown {
-  position: relative;
-  cursor: pointer;
-  align-items: stretch;
-}
-
-.databus-navbar-item.has-dropdown .databus-navbar-dropdown {
-  display: none;
-}
-
-.databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
-  display: block;
-}
-
-.databus-navbar-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #343a40;
-  border-top: 2px solid white;
-  padding-bottom: 8px;
-  min-width: 250px;
-}
-
-.databus-navbar-dropdown-arrow {
-  margin-left: 8px;
-}
-
-.databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
-  opacity: 0.7;
-}
-
-@media screen and (max-width: 1024px), print {
-  .databus-navbar-group.is-hidden-for-mobile {
-    display: none;
-  }
-}
 .frontpage-banner {
   background-image: url(../img/banner-background.png);
   text-align: left;
-  padding: 100px;
+  padding: 50px;
   position: relative;
   background-repeat: repeat;
+  height: 160px;
   background-position: center;
   background-size: 150px;
   color: white;
 }
 
 .frontpage-banner .databus-name {
-  font-size: 6em;
+  font-size: 3em;
   font-weight: bolder;
-  margin: 0;
+  margin: 0px 16px;
   line-height: 1em;
 }
 
@@ -11882,4 +11916,8 @@ a.databus-navbar-item {
 
 .box-separator {
   height: 30px;
+}
+
+.hero-body {
+  padding: 2.5em 1em;
 }

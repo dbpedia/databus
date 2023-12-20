@@ -34,6 +34,34 @@ indexFields:
         }
         %VALUES%
       }
+  - fieldName: abstract
+    resourceName: resource
+    query: >
+      SELECT DISTINCT ?resource ?abstract WHERE {
+        {
+          GRAPH ?g1 {
+            ?resource a <https://dataid.dbpedia.org/databus#Group>.
+          }
+          GRAPH ?g2 {
+            ?resource <http://purl.org/dc/terms/abstract> ?abstract.
+          }
+        }
+        %VALUES%
+      }
+  - fieldName: abstract
+    resourceName: resource
+    query: >
+      SELECT DISTINCT ?resource ?abstract WHERE {
+        {
+          GRAPH ?g1 {
+            ?resource a <https://dataid.dbpedia.org/databus#Artifact>.
+          }
+          GRAPH ?g2 {
+            ?resource <http://purl.org/dc/terms/abstract> ?abstract.
+          }
+        }
+        %VALUES%
+      }
   - fieldName: label
     resourceName: resource
     query: >
@@ -44,6 +72,34 @@ indexFields:
           }
           GRAPH ?g2 {
             ?resource <http://purl.org/dc/terms/title> ?label.
+          }
+        }
+        %VALUES%
+      }
+  - fieldName: label
+    resourceName: resource
+    query: >
+      SELECT DISTINCT ?resource ?label WHERE {
+        {
+          GRAPH ?g1 {
+            ?resource a <https://dataid.dbpedia.org/databus#Version>.
+          }
+          GRAPH ?g2 {
+            ?resource <http://purl.org/dc/terms/title> ?label.
+          }
+        }
+        %VALUES%
+      }
+  - fieldName: abstract
+    resourceName: resource
+    query: >
+      SELECT DISTINCT ?resource ?abstract WHERE {
+        {
+          GRAPH ?g1 {
+            ?resource a <https://dataid.dbpedia.org/databus#Version>.
+          }
+          GRAPH ?g2 {
+            ?resource <http://purl.org/dc/terms/abstract> ?abstract.
           }
         }
         %VALUES%
