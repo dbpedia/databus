@@ -20,6 +20,15 @@
   font-weight: bold;
   font-style: italic;
 }
+@font-face {
+  font-family: "Roboto";
+  src: url("./../fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("./../fonts/Roboto-Bold.ttf");
+  font-weight: bold;
+}
 .collection-summary.table {
   background-color: transparent;
 }
@@ -10228,27 +10237,27 @@ label.panel-block:hover {
 }
 
 .is-version .databus-icon svg {
-  fill: #45b192;
+  fill: #4dbca5;
 }
 .is-version .databus-icon svg.is-white {
   fill: #fff;
 }
 .is-version path {
-  fill: #45b192;
+  fill: #4dbca5;
 }
 .is-version path.is-white {
   fill: #fff;
 }
 .is-version.button {
-  background-color: #45b192;
+  background-color: #4dbca5;
   color: #fff;
   border: none;
 }
 .is-version.title {
-  color: #45b192;
+  color: #4dbca5;
 }
 .is-version.tag:not(body) {
-  background-color: #45b192;
+  background-color: #4dbca5;
   color: #fff;
 }
 .is-version.databus-banner {
@@ -10512,7 +10521,7 @@ template {
   z-index: 8000;
   height: 78px;
   align-items: center;
-  background-color: #343a40;
+  background-color: #36404b;
   position: fixed;
   top: 0;
   left: 0;
@@ -10670,6 +10679,7 @@ a.databus-navbar-item {
 body,
 html {
   font-family: "PT Sans", sans-serif;
+  text-rendering: optimizeLegibility;
   line-height: 1.5em;
   background: #fff;
 }
@@ -11542,6 +11552,7 @@ a.navbar-item.is-active, a.navbar-item {
   min-height: 200px;
 }
 
+/*
 .call-to-action {
   background-color: transparent;
   color: #fff;
@@ -11553,7 +11564,7 @@ a.navbar-item.is-active, a.navbar-item {
   border-width: 2px;
   font-size: 1.2em;
   font-weight: 500;
-  margin-right: 0.5em;
+  margin-right: .5em;
 }
 
 .call-to-action.colored {
@@ -11566,8 +11577,7 @@ a.navbar-item.is-active, a.navbar-item {
   background-color: #fff;
   border-color: #fff;
   color: #69aaa9;
-}
-
+}*/
 .open-beta {
   top: 0;
 }
@@ -11641,6 +11651,43 @@ a.navbar-item:hover {
 
 small pre.version {
   background-color: initial !important;
+}
+
+.fill-parent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.databus-banner {
+  position: relative;
+}
+
+.align-content-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.databus-banner h1 {
+  color: white;
+  font-weight: 600;
+  font-size: 3em;
+}
+
+.databus-banner h2 {
+  color: white;
+  font-size: 1.5em;
+}
+
+.version-tag {
+  color: white;
+  float: right;
+  position: absolute;
+  padding: 0.5em;
+  right: 0;
 }
 
 .frontpage-banner {
@@ -11931,4 +11978,8 @@ small pre.version {
 
 .hero-body {
   padding: 2.5em 1em;
+}
+
+databus-icon {
+  display: inline-block;
 }

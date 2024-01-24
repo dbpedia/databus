@@ -24,6 +24,17 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'Roboto';
+  src: url('./../fonts/Roboto-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./../fonts/Roboto-Bold.ttf');
+  font-weight: bold;
+}
+
 @import 'colors';
 @import 'collections';
 @import '../node_modules/bulma/bulma.sass';
@@ -45,10 +56,12 @@
 @import 'markdown';
 @import 'normalize';
 @import 'nav';
+@import 'frontpage';
 
 body,
 html {
   font-family: 'PT Sans', sans-serif;
+  text-rendering: optimizeLegibility;
   line-height: 1.5em;
   background: #fff;
 }
@@ -933,6 +946,7 @@ a.navbar-item.is-active, a.navbar-item {
 
 }
 
+/*
 .call-to-action {
   background-color: transparent;
   color: #fff;
@@ -957,7 +971,7 @@ a.navbar-item.is-active, a.navbar-item {
   background-color: #fff;
   border-color: #fff;
   color: #69aaa9;
-}
+}*/
 
 .open-beta {
   top: 0
@@ -1037,7 +1051,42 @@ small pre.version {
 }
 
 
+.fill-parent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 
+.databus-banner {
+  position: relative;
+}
+
+.align-content-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.databus-banner h1 {
+  color: white;
+  font-weight: 600;
+  font-size: 3em;
+}
+
+.databus-banner h2 {
+  color: white;
+  font-size: 1.5em;
+}
+
+.version-tag {
+  color: white;
+  float: right;
+  position: absolute;
+  padding: 0.5em;
+  right: 0;
+}
 
 
 .frontpage-banner {
@@ -1331,4 +1380,8 @@ small pre.version {
 
 .hero-body {
   padding: 2.5em 1em;
+}
+
+databus-icon {
+  display: inline-block;
 }

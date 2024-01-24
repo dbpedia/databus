@@ -1,0 +1,35 @@
+<!-- Custom CSS -->
+<style>
+  .databus-banner {
+    height: 400px;
+  }
+
+  .banner-gradient {
+    background-image: linear-gradient(to bottom right, #189a43, #0785a8);
+  }
+
+</style>
+
+<!-- The Databus banner -->
+<div class="databus-banner">
+  <!-- Plain color or gradient -->
+  <div class="fill-parent banner-gradient"></div>
+  <!-- Databus background pattern with # # # -->
+  <div class="fill-parent has-background-pattern"></div>
+  <!-- Tag with the current databus version -->
+  <div class="version-tag">
+    <%= databus.version %>
+  </div>
+  <!-- Center div for content -->
+  <div class="fill-parent align-content-center">
+    <!-- Custom content with icon and headers -->
+    <div style="text-align: center;">
+      <databus-icon size="128" color="'white'" shape="'databus'"></databus-icon>
+      <!-- EJS syntax can be used to insert variable values -->
+      <h1>
+        <%= databus.name %>
+      </h1>
+      <h2>DBpedia Data and DBpedia Community Extensions</h2>
+    </div>
+  </div>
+</div>

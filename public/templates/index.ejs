@@ -5,34 +5,54 @@
   <div ng-controller="FrontPageController">
 
     <style>
-      .section.front {}
+      .section.call-to-action {
+        background-color: #3f4c5b;
+        padding: 3em 0em;
+        position: relative;
+      }
+
+      .frontpage-box-frame {
+
+        background-color: #56687a49;
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+
+      }
 
       .frontpage-box {
-        background-color: white;
-        border: 1px solid #dbdbdb;
+        background-color: #56687a;
         border-radius: 10px;
-        margin-bottom: 1em;
+        color: white;
+        width: 380px;
+        padding: 1.2em;
+        position: relative;
+        cursor: pointer;
+      }
 
+      .frontpage-box:hover {
+        background-color: #5f7080;
+      }
+
+      .frontpage-box-arrow {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+      }
+
+      .frontpage-box-frame:not(:last-child) {
+        margin-right: 2em;
       }
 
       .frontpage-box .headline {
         display: flex;
         align-items: center;
-        border-bottom: 1px solid #eee;
-        padding: 1em;
-      }
-
-      .frontpage-box .box-content {
-        padding: 1em;
-      }
-
-      .frontpage-box .abstract {
-        margin-bottom: .6em;
+        margin-bottom: 1em;
       }
 
       .frontpage-box .headline h1 {
         margin-bottom: 0px;
-        font-size: 1.3em;
+        font-weight: 600;
       }
 
       .frontpage-box .headline databus-icon {
@@ -40,152 +60,148 @@
       }
 
 
-      .frontpage-box path {}
-
       .frontpage-box h1 {
         font-size: 1.2em;
         margin-top: 0;
       }
+
+      .has-background-pattern {
+        background-image: url(../img/banner-background.png);
+        background-repeat: repeat;
+        background-position: center;
+        background-size: 150px;
+      }
     </style>
 
-    <section class="frontpage-banner" style="background-color: <%= databus.colors.banner %>;">
-      <div class="container">
-        <div style="display: flex; align-items: center;">
-          <databus-icon size="64" color="'white'" shape="'databus'"></databus-icon>
-          <h1 class="databus-name">
-            <%= databus.name %>
-          </h1>
-        </div>
-      </div>
-      <div class="open-beta">
-        <%= databus.version %>
-      </div>
-    </section>
-    <section class="section front">
-      <div class="container">
-        <div class="columns">
 
-          <div class="column is-4 stats" style="padding-right: 3em;">
+    <%- include('banner') -%>
 
-            <div class="frontpage-box" ng-if="auth.authenticated">
+      <section class="section call-to-action">
+
+        <div class="align-content-center">
+
+          <div class="frontpage-box-frame" ng-if="auth.authenticated">
+            <div class="frontpage-box" >
               <div class="headline">
-                <databus-icon class="is-consumer" shape="'user'" size="32"></databus-icon>
+                <databus-icon color="'white'" shape="'user'" size="32"></databus-icon>
                 <h1>Manage your Account</h1>
               </div>
               <div class="box-content">
                 <div class="abstract">Publish data, create data collections and manage your account</div>
-
-                <button class="button is-consumer is-active" ng-click="login()">
-                  <span>
-                    Go To Account Page
-                  </span>
-                </button>
               </div>
-            </div>
-
-            <div class="frontpage-box" ng-if="!auth.authenticated">
-              <div class="headline">
-                <databus-icon class="is-consumer" shape="'key'" size="32"></databus-icon>
-                <h1>Login or Register</h1>
-              </div>
-              <div class="box-content">
-                <div class="abstract">Publish data, create data collections and manage your account</div>
-
-                <button class="button is-consumer is-active" ng-click="login()">
-                  <databus-icon shape="'key'" color="'white'" size="20"></databus-icon>
-                  <span>
-                    Login
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <div class="frontpage-box">
-              <div class="headline">
-                <databus-icon class="is-version" shape="'wand'" size="32"></databus-icon>
-                <h1>Generate Metadata</h1>
-              </div>
-              <div class="box-content">
-                <div class="abstract">Are you unsure how to set up your metadata? Let the metadata wizard help you!
-                </div>
-                <button class="button is-version is-active" ng-click="utils.goTo('/app/publish-wizard')">
-                  <span>
-                    Publish Wizard
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <div class="frontpage-box">
-
-              <div class="headline">
-                <databus-icon shape="'gears'" size="32"></databus-icon>
-                <h1>Automate your data pipeline</h1>
-              </div>
-              <div class="abstract">Get the most out of the Databus. Automate your data inputs and outputs with the
-                Databus API</div>
-
-              <button class="button is-version is-active" ng-click="utils.goTo('/api')">
-                <span>
-                  Swagger API Documentation
-                </span>
-              </button>
-
-
-            </div>
-
-
-
-
-
-            <p class="section-label">Recent Activity</p>
-            <div ng-if="activityChartData.isLoading" style="text-align:center">
-              <div class="loading-rect placeholder-400" style="min-height: 400px;">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            </div>
-
-            <activity-chart style="display: flex; margin-bottom: 3.4em;" ng-if="!activityChartData.isLoading"
-              data="activityChartData.entries" height="400">
-            </activity-chart>
-
-            <p class="section-label" ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">Most
-              Active Users</p>
-
-            <div style="text-align:center" ng-if="uploadRankingData.isLoading">
-              <div class="loading-rect placeholder-medium">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
-              <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
             </div>
           </div>
 
-          <div class="column">
 
-
-
-            <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW
-              Datasets</p>
-            <div ng-repeat="dataset in recentUploadsData.data" style="margin-bottom: 1em;">
-              <entity-card style="flex: 1; " type="'Version'" uri="dataset.version" label="dataset.title"
-                desc="dataset.abstract" date="utils.formatDate(dataset.date)">
-              </entity-card>
+          <div class="frontpage-box-frame" ng-if="!auth.authenticated">
+          <div class="frontpage-box" ng-if="!auth.authenticated">
+            <div class="headline">
+              <databus-icon color="'white'" shape="'key'" size="32"></databus-icon>
+              <h1>Login or Register</h1>
+            </div>
+            <div class="box-content">
+              <div class="abstract">Publish data, create data collections and manage your account</div>
             </div>
           </div>
         </div>
-      </div>
+
+        <div class="frontpage-box-frame">
+
+          <div class="frontpage-box">
+            <div class="headline">
+              <databus-icon color="'white'" shape="'wand'" size="32"></databus-icon>
+              <h1>Generate Metadata</h1>
+            </div>
+            <div class="box-content">
+              <div class="abstract">Are you unsure how to set up your metadata? Let the metadata wizard help you!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frontpage-box-frame">
+
+          <div class="frontpage-box">
+            <div class="headline">
+              <databus-icon shape="'gears'" color="'white'" size="32"></databus-icon>
+              <h1>Automate</h1>
+            </div>
+
+            <div class="box-content">
+              <div class="abstract">Get the most out of the Databus. Automate your data pipelines with the
+                Databus API</div>
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+        </div>
+      </section>
+
+
+      <section class="section front">
+        <div class="container">
+          <div class="columns">
+
+            <div class="column is-4 stats" style="padding-right: 3em;">
+
+
+
+
+
+
+
+
+
+              <p class="section-label">Recent Activity</p>
+              <div ng-if="activityChartData.isLoading" style="text-align:center">
+                <div class="loading-rect placeholder-400" style="min-height: 400px;">
+                  <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+
+              <activity-chart style="display: flex; margin-bottom: 3.4em;" ng-if="!activityChartData.isLoading"
+                data="activityChartData.entries" height="400">
+              </activity-chart>
+
+              <p class="section-label" ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">Most
+                Active Users</p>
+
+              <div style="text-align:center" ng-if="uploadRankingData.isLoading">
+                <div class="loading-rect placeholder-medium">
+                  <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
+                <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
+              </div>
+            </div>
+
+            <div class="column">
+
+              <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW
+                Datasets</p>
+              <div ng-repeat="dataset in recentUploadsData.data" style="margin-bottom: 1em;">
+                <entity-card style="flex: 1; " type="'Version'" uri="dataset.version" label="dataset.title"
+                  desc="dataset.abstract" date="utils.formatDate(dataset.date)">
+                </entity-card>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
   </section>
   </div>

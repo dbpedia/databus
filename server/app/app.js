@@ -16,6 +16,7 @@ const DatabusWebDAV = require("./webdav");
 var DatabusProtect = require('./common/protect/middleware');
 const { env } = require("process");
 var serveIndex = require('serve-index');
+var cors = require('cors');
 
 // Creation of the mighty server app
 var app = express();
@@ -153,7 +154,7 @@ async function initialize(app, memoryStore) {
     console.log(resourceDirectory);
 
     // Serve jsonld and shacl resources in the resource directory
-    app.use('/res', express.static(resourceDirectory, {
+    app.use('/res', cors(), express.static(resourceDirectory, {
       setHeaders : function(res, path, stat) {
 
         if(path.endsWith('.shacl')) {
