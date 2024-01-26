@@ -2,7 +2,7 @@
 version: "3.0"
 services:
   gstore:
-    image: gstore-dev #dbpedia/gstore:dev
+    image: dbpedia/gstore:dev #dbpedia/gstore:dev
     container_name: devenv_gstore
     environment: 
       STORAGE_USER: "dba"

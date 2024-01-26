@@ -78,7 +78,7 @@ https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd58
 <!-- TODO change webdav link to our guide -->
 ℹ️ Explanation and variants:
 * Databus considers "text" as data. Data is any URI that can be accessed to retrieve bytecode. Text is normally encoded in Unicode UTF-8 bytecode.  
-* Data can be kept private, either by Firewall, VPN, HTTP Basic Authentication (`https://user:pass@example.com`), local IPs (`127.0.0.1' or '192'), using `file://`.
+* Data can be kept private, either by Firewall, VPN, HTTP Basic Authentication (`https://user:pass@example.com`), local IPs ('127.0.0.1' or '192.168.x.x'), using `file://`.
 * In the image above, we listed some free public storage options. Note that Databus comes with a built-in [WebDav](https://en.wikipedia.org/wiki/WebDAV) to store your data. 
 
 ## Running the Server
