@@ -17,11 +17,14 @@ module.exports = function (router, protector, locals) {
   var swaggerCss = `<link rel="stylesheet" type="text/css" href="./swagger-ui.css">`;
   var customJs = fs.readFileSync(__dirname + '/swagger-client.js', ['utf8']).toString();
 
-  var opts = JSON.parse(JSON.stringify(locals));
-  opts.title = "API Documentation";
-  opts.data = {};
+  var data = JSON.parse(JSON.stringify(locals));
+  data.title = "API Documentation";
+  data.data = {};
+  
+  var opts = {};
+  opts.views = ['./../public/templates'];
 
- 
+
   swaggerYaml = swaggerYaml
     .replace(/%DATABUS_RESOURCE_BASE_URL%/g, process.env.DATABUS_RESOURCE_BASE_URL);
 
@@ -31,9 +34,9 @@ module.exports = function (router, protector, locals) {
   function hackTheHeader(req, res, next) {
 
     if (req.url == '/') {
-
-      opts.data.auth = ServerUtils.getAuthInfoFromRequest(req);
-      var databusHeader = ejs.render(databusHeaderTemplate, opts);
+      data.data.auth = ServerUtils.getAuthInfoFromRequest(req);
+      opts.title = "API Documentation";
+      var databusHeader = ejs.render(databusHeaderTemplate, data, opts);
 
       var write = res.send;
       res.send = function (chunk) {
@@ -44,7 +47,7 @@ module.exports = function (router, protector, locals) {
         chunk = databusHeader + chunk.substr(index + 6);
         chunk = chunk.replace(`<head>`, `<head>${swaggerCss}`);
         chunk = chunk.replace(`</body>`, `<script>${customJs}</script></body>`);
-        
+
         res.setHeader('Content-Length', chunk.length);
         write.apply(this, arguments);
       };

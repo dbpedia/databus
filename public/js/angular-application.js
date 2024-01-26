@@ -35,6 +35,7 @@ const CollectionDataTableController = require("./components/collection-data-tabl
 const AccountHistoryController = require("./components/account-history/account-history");
 const SparqlEditorController = require("./page-controller/sparql-editor-controller");
 const BetterDropdownController = require("./components/better-dropdown/better-dropdown");
+const NavSearchController = require("./components/nav-search/nav-search-controller");
 
 var databusApplication = angular.module("databusApplication", [])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", HeaderController])
@@ -152,6 +153,16 @@ databusApplication.component('entityCard', {
 databusApplication.component('search', {
   templateUrl: '/js/components/search/search.html',
   controller: ['$http', '$interval', '$sce', 'searchManager', SearchController],
+  bindings: {
+    searchInput: '=',
+    settings: '<',
+  }
+});
+
+
+databusApplication.component('navSearch', {
+  templateUrl: '/js/components/nav-search/nav-search.html',
+  controller: ['$http', '$interval', '$sce', 'searchManager', NavSearchController],
   bindings: {
     searchInput: '=',
     settings: '<',

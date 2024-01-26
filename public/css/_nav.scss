@@ -1,0 +1,339 @@
+// Bar and gap
+.databus-navbar {
+    height: 78px;
+
+
+    // Fixed container
+    .databus-navbar-fixed {
+        z-index: 8000;
+        height: 78px;
+        align-items: center;
+        background-color: $nav-background-dark;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    // Content flexbox
+    .databus-navbar-container {
+        display: flex;
+        height: inherit;
+        justify-content: stretch;
+        align-items: center;
+        width: 100%;
+        padding: 0em 2em;
+    }
+
+    @media screen and (min-width: 1500px),
+    print {
+        .databus-navbar-container {
+            max-width: 1500px;
+            margin: auto;
+        }
+    }
+
+    // Logo section
+    .databus-navbar-brand {
+        display: flex;
+        margin-left: 1.5em;
+    }
+
+    // Content section
+    .databus-navbar-content {
+        display: flex !important;
+        height: inherit;
+        position: relative;
+        flex: 1;
+    }
+
+    // Home navigation
+    .databus-home-icon {
+        display: flex;
+        align-items: center;
+    }
+
+    // Organization icon
+    .databus-home-icon .org-icon {
+        max-width: 200px;
+        max-height: 36px;
+        min-height: 1.5em;
+    }
+
+    // Vertical line
+    .databus-home-icon .org-separator {
+        width: 2px;
+        height: 20px;
+        background-color: white;
+        margin: 0em 1em;
+    }
+
+    // "DATABUS"
+    .databus-home-icon .org-subtitle {
+        font-size: 1.2em;
+        color: white;
+        margin-right: 2em;
+        letter-spacing: 1px;
+    }
+
+    // Navbar content item
+    .databus-navbar-item {
+        display: flex;
+        align-items: center;
+        height: inherit;
+
+        &.fill {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        &.end {
+            margin-left: 1em;
+        }
+
+        &.account-name {
+            cursor: pointer;
+            padding-right: 1em;
+            padding-left: 1em;
+            margin-right: .5em;
+            color: white;
+        }
+
+        &.has-dropdown {
+            cursor: pointer;
+            align-items: stretch;
+        }
+
+        &.link {
+            cursor: pointer;
+            color: $nav-links;
+            padding: 0em .75em;
+            opacity: 60%;
+
+            &:hover {
+                opacity: 100%;
+                background-color: rgba($color: #fff, $alpha: .05);
+            }
+
+            .icon {
+                margin-left: 0;
+                height: initial;
+                width: initial;
+                margin-right: .5em;
+            }
+        }
+
+    }
+
+    .databus-navbar-dropdown {
+        min-width: 200px;
+        font-size: 1em;
+
+        .navbar-dropdown-item {
+            min-width: 200px;
+            font-size: 1em;
+        }
+    }
+
+    // Search
+    .nav-search {
+        flex: 1;
+        
+        // Result list
+        .search-results {
+            position: absolute;
+            background-color: $nav-background-medium;
+            box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, .1);
+            width: 100%;
+            z-index: 1000;
+            top: 100%;
+        }
+
+      
+        input {
+            background-color: $nav-search-background;
+            border-color: #96a3b2;
+            outline: none;
+            color: white;
+            padding: 1.2em;
+            border-radius: 8px;
+        }
+
+        input::placeholder {
+            color: #b2becd;
+            opacity: 1;
+            /* Firefox */
+        }
+
+        .icon {
+            top: 2px !important;
+        }
+
+        .nav-search input:focus {
+            border-color: #c3d2e4;
+            box-shadow: none;
+        }
+
+
+        .results {
+            max-height: 60vh;
+            overflow-y: auto;
+
+            .result-item {
+                padding: .35em .7em;
+                display: flex;
+                cursor: pointer;
+                overflow: hidden;
+
+                &:hover {
+                    background-color: #4e5b6a;
+                }
+
+                &:first-child {
+                    padding-top: .7em;
+                }
+    
+                &:last-child {
+                    padding-bottom: .7em;
+                }
+
+                uri-breadcrumbs {
+                    color: #b9b9b9 !important;
+                }
+        
+                uri-breadcrumbs a {
+                    color: #b9b9b9 !important;
+                }
+        
+                uri-breadcrumbs a:hover {
+                    color: #e7e7e7 !important;
+                }
+        
+                .item-header {
+                    display: flex;
+                    color: white
+                }
+            }
+
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+    
+            /* Track */
+            &::-webkit-scrollbar-track {
+                background: #353b45;
+            }
+    
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+                background: #b6b6b6;
+            }
+    
+            /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+                background: #a3a3a3;
+            }
+    
+           
+    
+        }
+
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #f5f5f5;
+            padding: .5em 1em;
+            color: white;
+            font-weight: 600;
+        }
+
+        .filters {
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .filters p {
+            font-weight: 600;
+            color: white;
+            margin-right: .6em;
+        }
+
+        .filters .grey-out-dark .tag {
+            background-color: #3f4c5b;
+        }
+
+        .filters .grey-out-dark path {
+            fill: #a7a7a7;
+        }
+
+        .result-item type-tag {
+            margin-right: 8px;
+        }
+
+        .result-item .item-label {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .result-item .item-abstract {
+            color: white;
+            width: 620px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .item-header a {
+            color: white;
+        }
+    }
+
+}
+
+
+
+
+
+.databus-navbar-item.is-light:hover {
+    opacity: 1;
+}
+
+
+
+
+.databus-navbar-item.has-dropdown .databus-navbar-dropdown {
+    display: none;
+}
+
+.databus-navbar-item.has-dropdown.is-active .databus-navbar-dropdown {
+    display: block;
+}
+
+.databus-navbar-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #404751;
+    border-top: 2px solid white;
+    padding-bottom: 8px;
+    min-width: 250px;
+}
+
+.databus-navbar-dropdown-arrow {
+    margin-left: 8px;
+}
+
+.databus-navbar-item.has-dropdown:hover .databus-navbar-dropdown-arrow {
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 1024px),
+print {
+    .databus-navbar-group.is-hidden-for-mobile {
+        display: none;
+    }
+}

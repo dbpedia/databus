@@ -1,0 +1,80 @@
+<div>
+
+  <div>
+
+    <div class="click-outside-mask" ng-if="$ctrl.isDropdownVisible" ng-click="$ctrl.isDropdownVisible = false"></div>
+
+    <div class="field" style="display: flex; margin-bottom: 0;">
+      <div class="control has-icons-left " style="flex:1;">
+
+        <input class="input" type="text" ng-model="$ctrl.searchInput" ng-change="$ctrl.search()"
+          ng-attr-placeholder="{{ $ctrl.placeholder }}" ng-focus="$ctrl.isDropdownVisible = true">
+        <span class="icon is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+
+
+
+    </div>
+
+    <div ng-if="$ctrl.searchInput.length > 0 && $ctrl.isDropdownVisible">
+
+
+      <div class="search-results">
+
+
+        <div class="result-header">
+
+          <div>Results ({{ $ctrl.results.length }}):</div>
+
+          <div class="filters">
+
+
+            <p>Filters:</p>
+
+            <div ng-repeat="resourceType in $ctrl.availableResourceTypes" ng-if="$ctrl.filterVisible[resourceType]"
+              ng-click="$ctrl.toggleFilter(resourceType);" style="margin-left:4px;" class="is-clickable">
+              <type-tag width="36" height="36" ng-class="{ 'grey-out-dark' : !$ctrl.filterActive[resourceType] }"
+                type="resourceType">
+              </type-tag>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div ng-if="$ctrl.isSearching" style="display: flex; justify-content: center; margin: 1em;">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div ng-if="!$ctrl.isSearching" class="results">
+
+          <div ng-if="$ctrl.results.length == 0" style="color: rgb(150, 147, 147);
+            padding: 0.75em"><i>Your search did not match any
+              resource.</i></div>
+
+
+          <div class="result-item" ng-click="$ctrl.navigateTo(result.resource[0])" ng-repeat="result in $ctrl.results">
+            <type-tag width="48" height="48" ng-if="result.typeName[0]" type="result.typeName[0]"></type-tag>
+            <div>
+              <div class="item-header">
+                <p id="const" class="item-label" ng-bind-html="$ctrl.formatResult(result.label[0])"></p>
+                <div ng-if="result.resource[0]">
+                  <uri-breadcrumbs uri="result.resource[0]"></uri-breadcrumbs>
+                </div>
+
+              </div>
+              <div class="item-abstract" ng-bind-html="$ctrl.formatResult(result.abstract)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

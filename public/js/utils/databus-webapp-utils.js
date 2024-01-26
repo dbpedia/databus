@@ -9,6 +9,10 @@ class DatabusWebappUtils {
     this.sce = $sce;
   }
 
+  goTo(page) {
+    window.location = page;
+  }
+  
   createAccount() {
     window.location = '/app/account';
   }

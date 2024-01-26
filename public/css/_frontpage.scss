@@ -1,0 +1,90 @@
+.section.call-to-action {
+    background-color: $banner-background;
+    padding: 3em 0em;
+    position: relative;
+}
+
+.frontpage-box-frame {
+
+    background-color: $banner-box-frame;
+    border-radius: 20px;
+    padding: 0px;
+    box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.05);
+
+}
+
+.frontpage-box {
+    background-color: $banner-box-background;
+    border-radius: 20px;
+    display: flex;
+    color: white;
+    width: 380px;
+    padding: 1.2em;
+    position: relative;
+    align-items: center;
+    cursor: pointer;
+}
+
+.frontpage-box.left {
+    background-color: $entity-consumer-bg;
+}
+
+
+.frontpage-box.center {
+    background-color: $entity-version;
+}
+
+
+$frontpage-box-scale-time: 0.4s;
+$frontpage-box-scale-amount: -4px;
+
+.frontpage-box:hover {
+    -moz-transform: translateY($frontpage-box-scale-amount);
+    -webkit-transform: translateY($frontpage-box-scale-amount);
+    -o-transform: translateY($frontpage-box-scale-amount);
+    -ms-transform: translateY($frontpage-box-scale-amount);
+    -webkit-transform: translateY($frontpage-box-scale-amount);
+    transform: translateY($frontpage-box-scale-amount);
+
+    -webkit-transition: transform $frontpage-box-scale-time ease-out;
+    -moz-transition: transform $frontpage-box-scale-time ease-out;
+    -ms-transition: transform $frontpage-box-scale-time ease-out;
+}
+
+.frontpage-box-arrow {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+}
+
+.frontpage-box-frame:not(:last-child) {
+    margin-right: 2em;
+}
+
+.frontpage-box .content {
+    padding: 0;
+    margin-left: 1em;
+}
+
+.frontpage-box .content h1 {
+    margin-bottom: 4px;
+    color: white;
+    font-weight: 600;
+}
+
+.frontpage-box .headline databus-icon {
+    margin-right: .7em;
+}
+
+
+.frontpage-box h1 {
+    font-size: 1.2em;
+    margin-top: 0;
+}
+
+.has-background-pattern {
+    background-image: url(../img/banner-background.png);
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 150px;
+}

@@ -4,70 +4,89 @@
 
   <div ng-controller="FrontPageController">
 
-    <section class="frontpage-banner" style="background-color: <%= databus.colors.banner %>;">
-      <div class="container">
-        <div style="display: flex; align-items: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
-            viewBox="0 0 40.326191 46.198502" version="1.1" id="svg5" style="margin-right: 1.5em; margin-top: 7px">
-            <defs id="defs2" />
-            <g id="layer1" transform="translate(-0.76641155,-0.7702354)">
-              <path id="path42117"
-                style="fill:#fff;stroke:none;stroke-width:0.524959px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-                d="m 0.76949155,0.7702454 v 5.24959 l 29.33129045,-10e-4 6.27262,8.8675006 -0.002,32.0824 4.7212,-0.002 V 0.7702354 Z m 18.43511045,8.3952603 -5.68354,0.006 7.1979,10.5484003 -0.004,27.24663 4.70393,-0.002 0.0167,-28.60108 z m -9.4730904,0.002 -8.96510005,0.002 0.004,37.7960503 16.79563045,-0.004 0.001,-26.29103 z m 13.2512904,0 5.59825,8.2188903 -0.0396,29.57614 4.70307,-0.002 0.006,-31.09587 -4.55858,-6.6940403 z" />
-            </g>
-          </svg>
-          <h1 class="databus-name"><%= databus.name %></h1>
-        </div>
-      </div>
-      <div class="open-beta"><%= databus.version %></div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <div class="columns">
+    <style>
+      
 
-          <div class="column is-4 stats" style="padding-right: 3em;">
-            <p class="section-label">Recent Activity</p>
-            <div ng-if="activityChartData.isLoading" style="text-align:center">
-              <div class="loading-rect placeholder-400" style="min-height: 400px;">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
+      
+    </style>
+
+
+    <%- include('banner') -%>
+
+      <section class="section call-to-action">
+
+        <div class="align-content-center">
+
+          <div class="frontpage-box-frame" ng-if="auth.authenticated">
+            <div class="frontpage-box left" >
+              <databus-icon color="'white'" shape="'user'" size="48"></databus-icon>
+              <div class="content">
+                
+                <h1>Manage your Account</h1>
+                <div class="abstract">Publish data, create data collections and manage your account</div>
               </div>
-            </div>
-
-            <activity-chart style="display: flex; margin-bottom: 3.4em;" ng-if="!activityChartData.isLoading" data="activityChartData.entries"
-              height="400">
-            </activity-chart>
-
-            <p class="section-label" ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">Most Active Users</p>
-
-            <div style="text-align:center" ng-if="uploadRankingData.isLoading">
-              <div class="loading-rect placeholder-medium">
-                <div class="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
-              <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
             </div>
           </div>
 
-          <div class="column">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <p class="section-label">Search</p>
-            </div>
-            <search search-input="searchQuery" settings="searchSettings"></search>
-            <div ng-if="searchQuery.length == 0">
-              <div ng-if="recentUploadsData.isLoading" style="text-align:center">
 
-                <div class="loading-rect" style="min-height: 600px; margin-top: 2em;">
+          <div class="frontpage-box-frame" ng-if="!auth.authenticated">
+          <div class="frontpage-box left" ng-if="!auth.authenticated">
+            <databus-icon color="'white'" shape="'key'" size="48"></databus-icon>
+            <div class="content">
+              <h1>Login or Register</h1>
+              <div class="abstract">Publish data, create data collections and manage your account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frontpage-box-frame">
+
+          <div class="frontpage-box center">
+            <databus-icon color="'white'" shape="'version'" size="48"></databus-icon>
+            <div class="content">
+              <h1>Generate Metadata</h1>
+              <div class="abstract">Generate RDF metadata for your files with the metadata wizard</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frontpage-box-frame">
+
+          <div class="frontpage-box"> <databus-icon shape="'gears'" color="'white'" size="48"></databus-icon>
+             
+            <div class="content">
+              <h1>Automate</h1>  <div class="abstract">Automate your data pipelines with the
+                Databus API</div>
+            </div>
+
+
+
+          </div>
+
+        </div>
+
+
+        </div>
+      </section>
+
+
+      <section class="section front">
+        <div class="container">
+          <div class="columns">
+
+            <div class="column is-4 stats" style="padding-right: 3em;">
+
+
+
+
+
+
+
+
+
+              <p class="section-label">Recent Activity</p>
+              <div ng-if="activityChartData.isLoading" style="text-align:center">
+                <div class="loading-rect placeholder-400" style="min-height: 400px;">
                   <div class="lds-ellipsis">
                     <div></div>
                     <div></div>
@@ -76,21 +95,42 @@
                   </div>
                 </div>
               </div>
-              <br />
-              <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW Datasets</p>
+
+              <activity-chart style="display: flex; margin-bottom: 3.4em;" ng-if="!activityChartData.isLoading"
+                data="activityChartData.entries" height="400">
+              </activity-chart>
+
+              <p class="section-label" ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">Most
+                Active Users</p>
+
+              <div style="text-align:center" ng-if="uploadRankingData.isLoading">
+                <div class="loading-rect placeholder-medium">
+                  <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="!uploadRankingData.isLoading && uploadRankingData.data.length > 0">
+                <uploader-ranking data="uploadRankingData.data"></uploader-ranking>
+              </div>
+            </div>
+
+            <div class="column">
+
+              <p ng-if="!recentUploadsData.isLoading && recentUploadsData.data.length > 0" class="section-label">NEW
+                Datasets</p>
               <div ng-repeat="dataset in recentUploadsData.data" style="margin-bottom: 1em;">
-                <entity-card style="flex: 1; " 
-                  type="'Version'"
-                  uri="dataset.version"
-                  label="dataset.title"  
-                  desc="dataset.abstract"
-                  date="utils.formatDate(dataset.date)">
+                <entity-card style="flex: 1; " type="'Version'" uri="dataset.version" label="dataset.title"
+                  desc="dataset.abstract" date="utils.formatDate(dataset.date)">
                 </entity-card>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+  </div>
+  </section>
   </div>
   <%- include('footer') -%>
