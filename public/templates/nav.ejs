@@ -67,26 +67,23 @@
               </span>
             </button>
           </div>
-          <a ng-if="auth.authenticated" class="databus-navbar-item account-name" href='/app/account'>
-            <span>{{ getAccountName() }}</span>
-          </a>
+
           <div class="click-outside-mask" ng-if="isAccountMenuActive" ng-click="hideAccountMenu()"></div>
           <div ng-if="auth.authenticated" ng-class="{ 'is-active' : isAccountMenuActive }"
-            class="databus-navbar-item has-dropdown">
-            <a class="databus-navbar-item" ng-click="showAccountMenu()">
-              <div style="height:48px; width:48px; background-color: white; border-radius: 24px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 -2 24 24"
-                  style="border-radius: 22px; margin: 2px">
-                  <path class="is-white" fill="#333"
-                    d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z">
-                  </path>
-                </svg>
-              </div>
-              <svg class="databus-navbar-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                viewBox="0 0 24 24">
-                <path fill="white" d="M12 21l-12-18h24z" />
+            class="databus-navbar-item has-dropdown" ng-click="showAccountMenu()">
+            <div>{{ getAccountName() }}</div>
+            <div class="navbar-account-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 -2 24 24"
+                style="border-radius: 22px; margin: 2px">
+                <path class="is-white" fill="#333"
+                  d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z">
+                </path>
               </svg>
-            </a>
+            </div>
+            <svg class="databus-navbar-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+              viewBox="0 0 24 24">
+              <path fill="white" d="M12 21l-12-18h24z" />
+            </svg>
             <div class="databus-navbar-dropdown is-right">
 
               <a class="navbar-item" href="/app/account">

@@ -1,5 +1,27 @@
 // Hoverable Icon
 
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.databus-ribbon {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $banner-background;
+}
+
 .hover-icon::before {
   content: '';
   position: absolute;

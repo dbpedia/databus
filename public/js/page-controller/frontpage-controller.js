@@ -54,6 +54,18 @@ function FrontPageController($scope, $sce, $http) {
     console.log(err);
   });
 
+   // Login function
+   $scope.login = function () {
+    window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
+  }
+
+  $scope.goToPage = function(path) {
+    window.location = path;
+  }
+
+  $scope.account = function() {
+    window.location = '/app/account';
+  }
 
   for(var d in $scope.uploadRankingData) {
     $scope.uploadRankingData[d].uploadSize = DatabusUtils.formatFileSize($scope.uploadRankingData[d].uploadSize);

@@ -14,6 +14,11 @@ function PublishWizardController($scope, $http, $interval, focus, $q) {
     window.location = '/app/account';
   }
 
+     // Login function
+     $scope.login = function () {
+      window.location = '/app/login?redirectUrl=' + encodeURIComponent(window.location);
+    }
+
   $scope.authenticated = data.auth.authenticated;
   $scope.loadRequestCount = 0;
   $scope.texts = data.texts;

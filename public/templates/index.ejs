@@ -4,66 +4,52 @@
 
   <div ng-controller="FrontPageController">
 
-    <style>
-      
-
-      
-    </style>
-
-
     <%- include('banner') -%>
 
+      <!-- Frontpage call to action buttons -->
       <section class="section call-to-action">
-
         <div class="align-content-center">
-
+          <!-- Manage account button -->
           <div class="frontpage-box-frame" ng-if="auth.authenticated">
-            <div class="frontpage-box left" >
+            <div class="frontpage-box left" ng-click="goToPage('/app/account')">
               <databus-icon color="'white'" shape="'user'" size="48"></databus-icon>
               <div class="content">
-                
                 <h1>Manage your Account</h1>
                 <div class="abstract">Publish data, create data collections and manage your account</div>
               </div>
             </div>
           </div>
-
-
+          <!-- Login and register button -->
           <div class="frontpage-box-frame" ng-if="!auth.authenticated">
-          <div class="frontpage-box left" ng-if="!auth.authenticated">
-            <databus-icon color="'white'" shape="'key'" size="48"></databus-icon>
-            <div class="content">
-              <h1>Login or Register</h1>
-              <div class="abstract">Publish data, create data collections and manage your account</div>
+            <div class="frontpage-box left" ng-click="login()">
+              <databus-icon color="'white'" shape="'key'" size="48"></databus-icon>
+              <div class="content">
+                <h1>Login or Register</h1>
+                <div class="abstract">Publish data, create data collections and manage your account</div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="frontpage-box-frame">
-
-          <div class="frontpage-box center">
-            <databus-icon color="'white'" shape="'version'" size="48"></databus-icon>
-            <div class="content">
-              <h1>Generate Metadata</h1>
-              <div class="abstract">Generate RDF metadata for your files with the metadata wizard</div>
+          <!-- Generate metadata center button -->
+          <div class="frontpage-box-frame">
+            <div class="frontpage-box center" ng-click="goToPage('/app/publish-wizard')">
+              <databus-icon color="'white'" shape="'version'" size="48"></databus-icon>
+              <div class="content">
+                <h1>Generate Metadata</h1>
+                <div class="abstract">Generate RDF metadata for your files with the metadata wizard</div>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="frontpage-box-frame">
-
-          <div class="frontpage-box"> <databus-icon shape="'gears'" color="'white'" size="48"></databus-icon>
-             
-            <div class="content">
-              <h1>Automate</h1>  <div class="abstract">Automate your data pipelines with the
-                Databus API</div>
+          <!-- API right button -->
+          <div class="frontpage-box-frame">
+            <div class="frontpage-box" ng-click="goToPage('api')"> 
+              <databus-icon shape="'gears'" color="'white'" size="48"></databus-icon>
+              <div class="content">
+                <h1>API</h1>
+                <div class="abstract">Automate your data pipelines with the
+                  Databus API</div>
+              </div>
             </div>
-
-
-
           </div>
-
-        </div>
 
 
         </div>

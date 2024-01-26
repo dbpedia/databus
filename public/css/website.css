@@ -9952,6 +9952,28 @@ label.panel-block:hover {
   border: 1px solid #e6e6e6;
 }
 
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.databus-ribbon {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6e7ec;
+}
+
 .hover-icon::before {
   content: "";
   position: absolute;
@@ -10589,17 +10611,20 @@ template {
 }
 .databus-navbar .databus-navbar-item.has-dropdown {
   cursor: pointer;
-  align-items: stretch;
+  padding: 0em 0.75em;
+  color: white;
+}
+.databus-navbar .databus-navbar-item.has-dropdown:hover {
+  background-color: #3d4853;
 }
 .databus-navbar .databus-navbar-item.link {
   cursor: pointer;
-  color: #fff;
+  color: #d5d5d5;
   padding: 0em 0.75em;
-  opacity: 60%;
 }
 .databus-navbar .databus-navbar-item.link:hover {
-  opacity: 100%;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #3d4853;
+  color: white;
 }
 .databus-navbar .databus-navbar-item.link .icon {
   margin-left: 0;
@@ -10620,14 +10645,15 @@ template {
 }
 .databus-navbar .nav-search .search-results {
   position: absolute;
-  background-color: #434f5c;
+  background-color: #3d4853;
   box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  min-width: 100%;
+  max-width: 2000px;
   z-index: 1000;
   top: 100%;
 }
 .databus-navbar .nav-search input {
-  background-color: #434f5c;
+  background-color: #3d4853;
   border-color: #96a3b2;
   outline: none;
   color: white;
@@ -10713,7 +10739,7 @@ template {
   margin-right: 0.6em;
 }
 .databus-navbar .nav-search .filters .grey-out-dark .tag {
-  background-color: #3f4c5b;
+  background-color: #3d4853;
 }
 .databus-navbar .nav-search .filters .grey-out-dark path {
   fill: #a7a7a7;
@@ -10735,6 +10761,13 @@ template {
 .databus-navbar .nav-search .item-header a {
   color: white;
 }
+.databus-navbar .navbar-account-icon {
+  height: 48px;
+  width: 48px;
+  background-color: white;
+  border-radius: 24px;
+  margin-left: 0.5em;
+}
 
 .databus-navbar-item.is-light:hover {
   opacity: 1;
@@ -10752,8 +10785,7 @@ template {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #404751;
-  border-top: 2px solid white;
+  background-color: #3d4853;
   padding-bottom: 8px;
   min-width: 250px;
 }

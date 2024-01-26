@@ -23,7 +23,8 @@
     </style>
 
 
-    <div style="display: flex; align-items: flex-end; justify-content: flex-end;">
+    <div style="display: flex; align-items: flex-end; justify-content: flex-end;
+      position: fixed; right: 0; z-index: 100000;" ng-if="authenticated">
 
       <div class="field override-checkbox" style="margin: .5em 1em;" ng-class="{ 'is-override' : nerdMode.enabled }">
         <input id="check--nerdMode" name="check--nerdMode" class="is-checkradio" type="checkbox"
@@ -36,582 +37,361 @@
     </div>
 
 
-
-    <!-- TODO: FIX THIS!-->
-    <div class="section placeholder" ng-if="!authenticated">
+    <div class="section" style="min-height: 700px; position: relative;">
       <div class="container">
-        <p class="collection-editor-info-text">You need to be logged in to publish data.</p>
+        <div class="wizard-info content" style="padding-top: 0;">
+          <h1 class="title">Metadata Wizard</h1>
+          <p>The metadata wizard can help you generate Databus metadata for your files. Fill out the form below to
+            generate JSON-LD metadata that can be published via the Databus API.</p>
+          <p ng-if="nerdMode.enabled"><b>NERD MODE ENABLED</b> Send JSON-LD inputs against the Databus API directly. You know what to do.</p>
+        </div>
         <br />
-        <p class="collection-editor-info-text">Don't have an account yet? Create one now!</p>
-        <br /> <br />
-        <div class="collection-editor-info-text">
-          <button class="button is-consumer" ng-click="logMeIn()" style="width: 100px; height: 40px">
-            <span class="icon has-text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                <path class="is-white"
-                  d="M12.451 17.337l-2.451 2.663h-2v2h-2v2h-6v-5l6.865-6.949c1.08 2.424 3.095 4.336 5.586 5.286zm11.549-9.337c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-3-3c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
-              </svg>
-            </span>
-            <span>
-              Login
-            </span>
-          </button>
-        </div>
       </div>
-    </div>
-    <div class="section placeholder" ng-if="authenticated && !hasAccount">
-      <div class="container">
-        <p class="collection-editor-info-text">You need to create a user account in order to publish data.</p>
-        <br />
-        <div class="collection-editor-info-text">
-          <button class="button is-secondary" ng-click="createAccount()" style="width: 200px; height: 40px">
-            <span>
-              Create Account
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
 
-    <!-- Loading Bubbles -->
-    <section class="section placeholder" ng-if="authenticated && hasAccount && isAccountDataLoading">
-      <div class="container">
-        <div class="lds-ellipsis">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WIZARD -->
-    <section ng-if="authenticated && hasAccount && !isAccountDataLoading">
-      <div class="container">
-        <div ng-if="nerdMode.enabled">
-          <div class="wizard-info content" style="padding-top: 0;">
-            <h1 class="title">Publish Wizard</h1>
-            <p>Nerd mode. You know what to do. You can send JSON bodies to the publish API directly and choose a log level.</p>
-          </div>
-          <div class="databus-settings-box-header">PUBLISH</div>
-          <div class="databus-settings-box">
-            
-            <div class="box-content">
-              <div class="row">
-                <div class="row-label optional">JSON Body</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 540px; resize: vertical;" class="input" type="text"
-                    ng-model="nerdMode.customJson"></textarea>
+      <div class="fill center-content" ng-if="!authenticated || !hasAccount">
+        <!-- Frontpage call to action buttons -->
+        <div class="section databus-ribbon">
+          <div class="align-content-center">
+            <!-- Login and register button -->
+            <div class="frontpage-box-frame" ng-if="!authenticated">
+              <div class="frontpage-box left" ng-click="login()">
+                <databus-icon color="'white'" shape="'key'" size="48"></databus-icon>
+                <div class="content">
+                  <h1>Login or Register</h1>
+                  <div class="abstract">Login or register to use the metadata wizard</div>
                 </div>
               </div>
-              <div class="row">
-                <div class="row-label optional">Log Level</div>
-                <div style="flex: 1">
-                  <select class="dropdown" ng-model="nerdMode.logLevel" ng-options="x for x in nerdMode.logLevelOptions">
-                  </select>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div style="width: 100%; margin-top: 2em">
-                  <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
-                    <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
-                      ng-model="agreeCCZero">
-                    <label for="check--agree">
-                      <span>I hereby agree to publish this metadata under the <a
-                          href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
-                        license</span>
-                    </label>
-                  </div>
-                  <p class="control" style="width: 100%; margin-top: 1em;">
-                    <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
-                      ng-disabled="isPublishing || !agreeCCZero" class="button is-primary" ng-click="customPublish()">
-                      <span>Publish</span>
-                    </button>
-                  </p>
+            </div>
+            <!-- Create account button -->
+            <div class="frontpage-box-frame" ng-if="auth.authenticated && !hasAccount">
+              <div class="frontpage-box left" ng-click="createAccount()">
+                <databus-icon color="'white'" shape="'user'" size="48"></databus-icon>
+                <div class="content">
+                  <h1>Create Account</h1>
+                  <div class="abstract">Create an account to use the metadata wizard</div>
                 </div>
               </div>
             </div>
           </div>
-
-
         </div>
-        <div ng-if="!nerdMode.enabled">
-          <!-- INFO -->
-          <div class="wizard-info content" style="padding-top: 0;">
-            <h1 class="title">Publish Wizard</h1>
-            <p>This form will help you set up a DataId. A DataId is a metadata document containing
-              important information about your files. This metadata document will make your data more understandable and
-              reusable for you and other users.</p>
+      </div>
+
+      <!-- Loading Bubbles -->
+      <section class="section placeholder" ng-if="authenticated && hasAccount && isAccountDataLoading">
+        <div class="container">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
           </div>
+        </div>
+      </section>
 
-          <!-- GROUP BOX-->
-          <div class="databus-settings-box-header">GROUP INFO</div>
-          <div class="databus-settings-box" ng-init="group=session.formData.group">
+      <!-- WIZARD -->
+      <div ng-if="authenticated && hasAccount && !isAccountDataLoading">
+        <div class="container">
+          <div ng-if="nerdMode.enabled">
 
-            <div class="databus-settings-box-note">
-              <div class="hover-note" ng-if="group.errors.length == 0">
-                <databus-icon shape="'check'" color="'#65bdb2'" size="24">
-                </databus-icon>
-              </div>
-              <div class="hover-note">
-                <!-- todo: link to Docu -->
-                <databus-icon shape="'info'" size="24">
-                </databus-icon>
-              </div>
-            </div>
-            <div class="box-content">
-              <div class="row">
-                <div class="row-label">Group Metadata</div>
+            <div class="databus-settings-box-header">PUBLISH</div>
+            <div class="databus-settings-box">
 
-                <div class="control">
-                  <label class="radio">
-                    <input type="radio" ng-model="group.generateMetadata" value="create" name="group-metadata"
-                      ng-change="session.setCreateNewGroup(group.generateMetadata)">
-                    Create New
-                  </label>
-                  <label class="radio">
-                    <input type="radio" ng-model="group.generateMetadata" value="existing" name="group-metadata"
-                      ng-disabled="session.accountData.groups.length == 0"
-                      ng-change="session.setCreateNewGroup(group.generateMetadata)">
-                    Use Existing Group
-                  </label>
-                </div>
-
-              </div>
-              <div class="row" ng-if="group.generateMetadata == 'existing'">
-                <div class="row-label">Name</div>
-                <div style="flex: 1">
-                  <div class="dropdown is-hoverable">
-                    <div class="dropdown-trigger">
-                      <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                        <span>{{ group.name }}</span>
-                        <span class="icon is-small">
-                          <i class="fas fa-angle-down" aria-hidden="true"></i>
-                        </span>
-                      </button>
-                    </div>
-                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                      <div class="dropdown-content">
-
-                        <div class="dropdown-item" style="cursor: pointer;"
-                          ng-repeat="grp in session.accountData.groups" ng-click="session.selectGroup(grp)">
-                          {{ grp.name }}
-                        </div>
-                      </div>
-                    </div>
+              <div class="box-content">
+                <div class="row">
+                  <div class="row-label optional">JSON Body</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 540px; resize: vertical;" class="input" type="text"
+                      ng-model="nerdMode.customJson"></textarea>
                   </div>
                 </div>
-              </div>
-              <div class="row" ng-if="group.generateMetadata == 'create'">
-                <div class="row-label">Name</div>
-                <div style="flex: 1">
-                  <input class="input" type="text" ng-model="group.name">
-                  <span ng-if="hasError(group.errors, 'err_invalid_group_title')" class="help is-danger">{{
-                    texts.errors['err_invalid_group_title'] }}</span>
-                  <span ng-if="hasError(group.warnings, 'warning_group_exists')" style="color: #3d8d83" class="help">{{
-                    texts.errors['warning_group_exists'] }}</span>
+                <div class="row">
+                  <div class="row-label optional">Log Level</div>
+                  <div style="flex: 1">
+                    <select class="dropdown" ng-model="nerdMode.logLevel"
+                      ng-options="x for x in nerdMode.logLevelOptions">
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="row" ng-if="group.generateMetadata != 'none'">
-                <div class="row-label optional">Title</div>
-                <div style="flex: 1">
-                  <input class="input" type="text" ng-model="group.title">
-                </div>
-              </div>
-              <div class="row" ng-if="group.generateMetadata != 'none'">
-                <div class="row-label optional">Abstract</div>
-                <div style="flex: 1">
-                  <div>
-                    <div class="field override-checkbox" style="margin-bottom: .5em;"
-                      ng-class="{ 'is-override' : group.generateAbstract }">
-                      <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
-                        type="checkbox" ng-model="group.generateAbstract">
-                      <label for="check--generate--abstract">
-                        <span>Generate Abstract From Description</span>
+
+
+                <div class="row">
+                  <div style="width: 100%; margin-top: 2em">
+                    <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
+                      <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
+                        ng-model="agreeCCZero">
+                      <label for="check--agree">
+                        <span>I hereby agree to publish this metadata under the <a
+                            href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
+                          license</span>
                       </label>
                     </div>
-                    <textarea wrap="hard" ng-disabled="group.generateAbstract"
-                      style="min-height: 120px; resize: vertical;" class="input" type="text"
-                      ng-model="group.abstract"></textarea>
+                    <p class="control" style="width: 100%; margin-top: 1em;">
+                      <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                        ng-disabled="isPublishing || !agreeCCZero" class="button is-primary" ng-click="customPublish()">
+                        <span>Publish</span>
+                      </button>
+                    </p>
                   </div>
                 </div>
               </div>
-              <div class="row" ng-if="group.generateMetadata != 'none'">
-                <div class="row-label optional">Description</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
-                    ng-model="group.description"></textarea>
-                </div>
-              </div>
             </div>
+
+
           </div>
 
+          <div ng-if="!nerdMode.enabled">
 
-          <div ng-if="!session.formData.group.publishGroupOnly">
 
-            <!-- ARTIFACT BOX-->
-            <div class="databus-settings-box-header">ARTIFACT INFO</div>
-            <div class="databus-settings-box" ng-init="artifact=session.formData.artifact">
+            <!-- GROUP BOX-->
+            <div class="databus-settings-box-header">GROUP INFO</div>
+            <div class="databus-settings-box" ng-init="group=session.formData.group">
+
               <div class="databus-settings-box-note">
-                <div class="hover-note" ng-if="artifact.errors.length == 0">
+                <div class="hover-note" ng-if="group.errors.length == 0">
                   <databus-icon shape="'check'" color="'#65bdb2'" size="24">
                   </databus-icon>
                 </div>
-                <div class="hover-note" ng-if="artifact.errors.length > 0">
-                  <databus-icon shape="'error'" color="'red'" size="24">
-                  </databus-icon>
-                  <div class="hover-dropdown has-error content">
-                    <ul>
-                      <li ng-repeat="error in artifact.errors">
-                        {{ texts.errors[error] }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
                 <div class="hover-note">
+                  <!-- todo: link to Docu -->
                   <databus-icon shape="'info'" size="24">
                   </databus-icon>
-                  <div class="hover-dropdown content">
-                    <ul>
-                      <li ng-repeat="hint in texts.hints.artifact">{{ hint }}</li>
-                    </ul>
-                  </div>
                 </div>
               </div>
               <div class="box-content">
-                <div class="box-content">
-                  <div class="row">
-                    <div class="row-label">Artifact Metadata</div>
-                    <div class="control">
-                      <label class="radio">
-                        <input type="radio" ng-model="artifact.generateMetadata" value="create" name="artifact-metadata"
-                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
-                        Create New
-                      </label>
-                      <label class="radio">
-                        <input type="radio" ng-model="artifact.generateMetadata" value="existing"
-                          name="artifact-metadata" ng-disabled="!session.currentGroupHasArtifacts()"
-                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
-                        Use Existing Artifact
-                      </label>
-                      <label class="radio">
-                        <input type="radio" ng-model="artifact.generateMetadata" value="none" name="artifact-metadata"
-                          ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
-                        None
-                      </label>
-                    </div>
+                <div class="row">
+                  <div class="row-label">Group Metadata</div>
+
+                  <div class="control">
+                    <label class="radio">
+                      <input type="radio" ng-model="group.generateMetadata" value="create" name="group-metadata"
+                        ng-change="session.setCreateNewGroup(group.generateMetadata)">
+                      Create New
+                    </label>
+                    <label class="radio">
+                      <input type="radio" ng-model="group.generateMetadata" value="existing" name="group-metadata"
+                        ng-disabled="session.accountData.groups.length == 0"
+                        ng-change="session.setCreateNewGroup(group.generateMetadata)">
+                      Use Existing Group
+                    </label>
                   </div>
 
-                  <div class="row" ng-if="artifact.generateMetadata == 'existing'">
-                    <div class="row-label">Name</div>
-                    <div style="flex: 1">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                            <span>{{ artifact.name }}</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </button>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
+                </div>
+                <div class="row" ng-if="group.generateMetadata == 'existing'">
+                  <div class="row-label">Name</div>
+                  <div style="flex: 1">
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span>{{ group.name }}</span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
 
-                            <div class="dropdown-item" style="cursor: pointer;"
-                              ng-repeat="art in session.currentGroup.artifacts" ng-click="session.selectArtifact(art)">
-                              {{ art.name }}
-                            </div>
+                          <div class="dropdown-item" style="cursor: pointer;"
+                            ng-repeat="grp in session.accountData.groups" ng-click="session.selectGroup(grp)">
+                            {{ grp.name }}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="row" ng-if="artifact.generateMetadata == 'create'">
-                    <div class="row-label">Name</div>
-                    <div style="flex: 1">
-                      <input class="input" type="text" ng-model="artifact.name">
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_title')" class="help is-danger">{{
-                        texts.errors['err_invalid_artifact_title'] }}</span>
-                      <span ng-if="hasError(artifact.warnings, 'warning_artifact_exists')" style="color: #3d8d83"
-                        class="help">{{
-                        texts.errors['warning_artifact_exists'] }}</span>
-                    </div>
+                </div>
+                <div class="row" ng-if="group.generateMetadata == 'create'">
+                  <div class="row-label">Name</div>
+                  <div style="flex: 1">
+                    <input class="input" type="text" ng-model="group.name">
+                    <span ng-if="hasError(group.errors, 'err_invalid_group_title')" class="help is-danger">{{
+                      texts.errors['err_invalid_group_title'] }}</span>
+                    <span ng-if="hasError(group.warnings, 'warning_group_exists')" style="color: #3d8d83"
+                      class="help">{{
+                      texts.errors['warning_group_exists'] }}</span>
                   </div>
-                  <div class="row" ng-if="artifact.generateMetadata != 'none'">
-                    <div class="row-label optional">Title</div>
-                    <div style="flex: 1">
-                      <input class="input" type="text" ng-model="artifact.title">
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
-                        texts.errors['err_invalid_artifact_label'] }}</span>
-
-                    </div>
+                </div>
+                <div class="row" ng-if="group.generateMetadata != 'none'">
+                  <div class="row-label optional">Title</div>
+                  <div style="flex: 1">
+                    <input class="input" type="text" ng-model="group.title">
                   </div>
-                  <!-- ARTIFACT ABSTRACT -->
-                  <div class="row" ng-if="artifact.generateMetadata != 'none'">
-                    <div class="row-label optional">Abstract</div>
-                    <div style="flex: 1">
-                      <div>
-                        <div class="field override-checkbox" style="margin-bottom: .25em;"
-                          ng-class="{ 'is-override' : artifact.generateAbstract }">
-                          <input id="check--generate--abstract--artifact" name="check--generate--abstract"
-                            class="is-checkradio" type="checkbox" ng-model="artifact.generateAbstract">
-                          <label for="check--generate--abstract--artifact">
-                            <span>Generate Abstract From Description</span>
-                          </label>
-                        </div>
-                        <textarea wrap="hard" ng-disabled="artifact.generateAbstract"
-                          style="min-height: 120px; resize: vertical;" class="input" type="text"
-                          ng-model="artifact.abstract"></textarea>
+                </div>
+                <div class="row" ng-if="group.generateMetadata != 'none'">
+                  <div class="row-label optional">Abstract</div>
+                  <div style="flex: 1">
+                    <div>
+                      <div class="field override-checkbox" style="margin-bottom: .5em;"
+                        ng-class="{ 'is-override' : group.generateAbstract }">
+                        <input id="check--generate--abstract" name="check--generate--abstract" class="is-checkradio"
+                          type="checkbox" ng-model="group.generateAbstract">
+                        <label for="check--generate--abstract">
+                          <span>Generate Abstract From Description</span>
+                        </label>
                       </div>
+                      <textarea wrap="hard" ng-disabled="group.generateAbstract"
+                        style="min-height: 120px; resize: vertical;" class="input" type="text"
+                        ng-model="group.abstract"></textarea>
                     </div>
                   </div>
-                  <!-- ARTIFACT DESCRIPTION -->
-                  <div class="row" ng-if="artifact.generateMetadata != 'none'">
-                    <div class="row-label optional">Description</div>
-                    <div style="flex: 1">
-                      <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
-                        ng-model="artifact.description"></textarea>
-                      <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_description')"
-                        class="help is-danger">{{
-                        texts.errors['err_invalid_group_description'] }}</span>
-                    </div>
+                </div>
+                <div class="row" ng-if="group.generateMetadata != 'none'">
+                  <div class="row-label optional">Description</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                      ng-model="group.description"></textarea>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- VERSION BOX-->
-            <div class="databus-settings-box-header">VERSION INFO</div>
-            <div class="databus-settings-box" ng-init="version=session.formData.version">
 
-              <div class="databus-settings-box-note">
+            <div ng-if="!session.formData.group.publishGroupOnly">
 
-                <div class="hover-note" ng-if="version.errors.length == 0">
-                  <databus-icon shape="'check'" color="'#65bdb2'" size="24">
-                  </databus-icon>
-                </div>
-                <div class="hover-note" ng-if="version.errors.length > 0">
-                  <databus-icon shape="'error'" color="'red'" size="24">
-                  </databus-icon>
-                </div>
-                <!-- TODO: Link to docu! -->
-                <div class="hover-note">
-                  <databus-icon shape="'info'" size="24">
-                  </databus-icon>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div class="row-label">Version Metadata</div>
-                <div class="control">
-                  <label class="radio">
-                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="create"
-                      ng-change="session.setCreateNewVersion(version.generateMetadata)">
-                    Create New
-                  </label>
-                  <label class="radio">
-                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata"
-                      ng-disabled="session.availableVersions.length == 0"
-                      ng-change="session.setCreateNewVersion(version.generateMetadata)" value="existing">
-                    Use Existing Version
-                  </label>
-                  <label class="radio">
-                    <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="none"
-                      ng-change="session.setCreateNewVersion(version.generateMetadata)">
-                    None
-                  </label>
-                </div>
-              </div>
-
-              <!-- VERSION NAME -->
-              <div class="row" ng-if="version.generateMetadata == 'create'">
-                <div class="row-label">Name</div>
-                <div style="width: 100%;">
-                  <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
-                    <input class="control input" type="text" ng-model="version.name">
-                    <div class="control">
-                      <div class="dropdown is-hoverable">
-                        <div class="dropdown-trigger">
-                          <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                            <span>Presets</span>
-                            <span class="icon is-small">
-                              <i class="fas fa-angle-down" aria-hidden="true"></i>
-                            </span>
-                          </a>
-                        </div>
-                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                          <div class="dropdown-content">
-                            <a class="dropdown-item" ng-click="session.formData.createVersionName(0)">
-                              Date YYYY-MM-DD
-                            </a>
-                            <a class="dropdown-item" ng-click="session.formData.createVersionName(1)">
-                              Date YYYY-MM-DDTHH
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+              <!-- ARTIFACT BOX-->
+              <div class="databus-settings-box-header">ARTIFACT INFO</div>
+              <div class="databus-settings-box" ng-init="artifact=session.formData.artifact">
+                <div class="databus-settings-box-note">
+                  <div class="hover-note" ng-if="artifact.errors.length == 0">
+                    <databus-icon shape="'check'" color="'#65bdb2'" size="24">
+                    </databus-icon>
+                  </div>
+                  <div class="hover-note" ng-if="artifact.errors.length > 0">
+                    <databus-icon shape="'error'" color="'red'" size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown has-error content">
+                      <ul>
+                        <li ng-repeat="error in artifact.errors">
+                          {{ texts.errors[error] }}
+                        </li>
+                      </ul>
                     </div>
                   </div>
-                  <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83" class="help">{{
-                    texts.errors['warning_version_exists'] }}</span>
-                  <span ng-if="hasError(version.errors, 'err_invalid_version_name')" class="help is-danger">{{
-                    texts.errors['err_invalid_version_name'] }}</span>
-                </div>
-              </div>
-
-
-              <div class="row" ng-if="version.generateMetadata == 'existing'">
-                <div class="row-label">Name</div>
-                <div style="flex: 1">
-                  <div class="dropdown is-hoverable">
-                    <div class="dropdown-trigger">
-                      <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                        <span>{{ version.name }}</span>
-                        <span class="icon is-small">
-                          <i class="fas fa-angle-down" aria-hidden="true"></i>
-                        </span>
-                      </button>
-                    </div>
-                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                      <div class="dropdown-content">
-                        <div class="dropdown-item" style="cursor: pointer;" ng-repeat="uri in session.availableVersions"
-                          ng-click="session.selectVersion(uri)">
-                          {{ utils.uriToName(uri) }}
-                        </div>
-                      </div>
+                  <div class="hover-note">
+                    <databus-icon shape="'info'" size="24">
+                    </databus-icon>
+                    <div class="hover-dropdown content">
+                      <ul>
+                        <li ng-repeat="hint in texts.hints.artifact">{{ hint }}</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
-                <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83" class="help">{{
-                  texts.errors['warning_version_exists'] }}</span>
-              </div>
-
-              <!-- VERSION TITLE -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">Title</div>
-                <div style="flex: 1">
-                  <div>
-                    <div class="field override-checkbox" style="margin-bottom: .5em;"
-                      ng-class="{ 'is-override' : version.useArtifactTitle }">
-                      <input id="check--use--artifact--title" name="check--generate--abstract" class="is-checkradio"
-                        type="checkbox" ng-model="version.useArtifactTitle">
-                      <label for="check--use--artifact--title">
-                        <span>Use Artifact Title</span>
-                      </label>
-                    </div>
-                    <input ng-disabled="version.useArtifactTitle" class="input" type="text" ng-model="version.title">
-                    <span ng-if="hasError(version.errors, 'err_invalid_version_title')" class="help is-danger">{{
-                      texts.errors['err_invalid_version_title'] }}</span>
-                  </div>
-                </div>
-              </div>
-              <!-- VERSION ABSTRACT -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">Abstract</div>
-                <div style="flex: 1">
-                  <div>
-                    <div class="field override-checkbox" style="margin-bottom: .5em;"
-                      ng-class="{ 'is-override' : version.generateAbstract }">
-                      <input id="check--generate--abstract--version" name="check--generate--abstract"
-                        class="is-checkradio" type="checkbox" ng-model="version.generateAbstract">
-                      <label for="check--generate--abstract--version">
-                        <span>Generate Abstract From Description</span>
-                      </label>
-                    </div>
-                    <textarea wrap="hard" ng-disabled="version.generateAbstract"
-                      style="min-height: 120px; resize: vertical;" class="input" type="text"
-                      ng-model="version.abstract"></textarea>
-                    <span ng-if="hasError(version.errors, 'err_invalid_version_abstract')" class="help is-danger">{{
-                      texts.errors['err_invalid_version_abstract'] }}</span>
-                  </div>
-                </div>
-              </div>
-              <!-- VERSION DESCRIPTION -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">Description</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
-                    ng-model="version.description"></textarea>
-                  <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
-                    texts.errors['err_invalid_version_description'] }}</span>
-                </div>
-              </div>
-
-              <!-- LICENSE URI -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">License URI</div>
-                <div style="flex: 1">
-                  <div style="width: 100%;">
-                    <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
-                      <input class="control input" type="text" ng-model="version.license">
+                <div class="box-content">
+                  <div class="box-content">
+                    <div class="row">
+                      <div class="row-label">Artifact Metadata</div>
                       <div class="control">
-                        <div class="dropdown is-hoverable" style="position: relative;">
+                        <label class="radio">
+                          <input type="radio" ng-model="artifact.generateMetadata" value="create"
+                            name="artifact-metadata"
+                            ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
+                          Create New
+                        </label>
+                        <label class="radio">
+                          <input type="radio" ng-model="artifact.generateMetadata" value="existing"
+                            name="artifact-metadata" ng-disabled="!session.currentGroupHasArtifacts()"
+                            ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
+                          Use Existing Artifact
+                        </label>
+                        <label class="radio">
+                          <input type="radio" ng-model="artifact.generateMetadata" value="none" name="artifact-metadata"
+                            ng-change="session.setCreateNewArtifact(artifact.generateMetadata)">
+                          None
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="row" ng-if="artifact.generateMetadata == 'existing'">
+                      <div class="row-label">Name</div>
+                      <div style="flex: 1">
+                        <div class="dropdown is-hoverable">
                           <div class="dropdown-trigger">
-                            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                              <span>Select License</span>
+                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                              <span>{{ artifact.name }}</span>
                               <span class="icon is-small">
                                 <i class="fas fa-angle-down" aria-hidden="true"></i>
                               </span>
-                            </a>
+                            </button>
                           </div>
-                          <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
-                            <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
-                              <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
-                                ng-change="filterLicenses(licenseQuery)" />
-                              <div style="padding: 0.5em; color: #888" ng-if="filteredLicenseList == undefined">The content of
-                                this dropdown relies on the license service provided by <a href="https://dalicc.net"
-                                  target="_blank">https://dalicc.net</a>. If you are unable to find any licenses, this
-                                might be due to the service being temporarily unavailable.</div>
-                              <div ng-repeat="license in filteredLicenseList"
-                                style="padding: 0.5em 0.25em;" ng-click="version.license=license.id.value">
-                                {{ license.title.value }}
+                          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+
+                              <div class="dropdown-item" style="cursor: pointer;"
+                                ng-repeat="art in session.currentGroup.artifacts"
+                                ng-click="session.selectArtifact(art)">
+                                {{ art.name }}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
-                      texts.errors['err_invalid_version_license'] }}</span>
+                    <div class="row" ng-if="artifact.generateMetadata == 'create'">
+                      <div class="row-label">Name</div>
+                      <div style="flex: 1">
+                        <input class="input" type="text" ng-model="artifact.name">
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_title')" class="help is-danger">{{
+                          texts.errors['err_invalid_artifact_title'] }}</span>
+                        <span ng-if="hasError(artifact.warnings, 'warning_artifact_exists')" style="color: #3d8d83"
+                          class="help">{{
+                          texts.errors['warning_artifact_exists'] }}</span>
+                      </div>
+                    </div>
+                    <div class="row" ng-if="artifact.generateMetadata != 'none'">
+                      <div class="row-label optional">Title</div>
+                      <div style="flex: 1">
+                        <input class="input" type="text" ng-model="artifact.title">
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_label')" class="help is-danger">{{
+                          texts.errors['err_invalid_artifact_label'] }}</span>
+
+                      </div>
+                    </div>
+                    <!-- ARTIFACT ABSTRACT -->
+                    <div class="row" ng-if="artifact.generateMetadata != 'none'">
+                      <div class="row-label optional">Abstract</div>
+                      <div style="flex: 1">
+                        <div>
+                          <div class="field override-checkbox" style="margin-bottom: .25em;"
+                            ng-class="{ 'is-override' : artifact.generateAbstract }">
+                            <input id="check--generate--abstract--artifact" name="check--generate--abstract"
+                              class="is-checkradio" type="checkbox" ng-model="artifact.generateAbstract">
+                            <label for="check--generate--abstract--artifact">
+                              <span>Generate Abstract From Description</span>
+                            </label>
+                          </div>
+                          <textarea wrap="hard" ng-disabled="artifact.generateAbstract"
+                            style="min-height: 120px; resize: vertical;" class="input" type="text"
+                            ng-model="artifact.abstract"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ARTIFACT DESCRIPTION -->
+                    <div class="row" ng-if="artifact.generateMetadata != 'none'">
+                      <div class="row-label optional">Description</div>
+                      <div style="flex: 1">
+                        <textarea wrap="hard" style="min-height: 240px; resize: vertical;" class="input" type="text"
+                          ng-model="artifact.description"></textarea>
+                        <span ng-if="hasError(artifact.errors, 'err_invalid_artifact_description')"
+                          class="help is-danger">{{
+                          texts.errors['err_invalid_group_description'] }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-
-              <!-- LICENSE ATTRIBUTION -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">Attribution</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
-                    ng-model="version.attribution"></textarea>
-                </div>
-              </div>
-
-              <!-- DERIVED FROM -->
-              <div class="row" ng-if="version.generateMetadata != 'none'">
-                <div class="row-label">Derived From</div>
-                <div style="flex: 1">
-                  <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
-                    ng-model="version.wasDerivedFrom"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- FILES -->
-            <div ng-if="version.generateMetadata != 'none'" ng-init="files=session.formData.files">
-              <div class="databus-settings-box-header">FILES INFO</div>
-              <div class="databus-settings-box">
+              <!-- VERSION BOX-->
+              <div class="databus-settings-box-header">VERSION INFO</div>
+              <div class="databus-settings-box" ng-init="version=session.formData.version">
 
                 <div class="databus-settings-box-note">
 
-                  <div class="hover-note" ng-if="files.errors.length == 0">
+                  <div class="hover-note" ng-if="version.errors.length == 0">
                     <databus-icon shape="'check'" color="'#65bdb2'" size="24">
                     </databus-icon>
                   </div>
-                  <div class="hover-note" ng-if="files.errors.length > 0">
+                  <div class="hover-note" ng-if="version.errors.length > 0">
                     <databus-icon shape="'error'" color="'red'" size="24">
                     </databus-icon>
                   </div>
@@ -621,203 +401,433 @@
                     </databus-icon>
                   </div>
                 </div>
+
+
                 <div class="row">
-                  <div class="row-label">Add Files</div>
-                  <div class="databus-settings-info">
-                    <div>Enter file URLs divided by newlines and click <b>Add URLs</b> to add file entries to your
-                      metadata document. The file URLs can be used by other users to download your files.</div>
-                  </div>
-                  <div class="control" style="width: 100%; margin-bottom: 0.5em;">
-                    <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;" class="input"
-                      type="text-area" placeholder="Enter file URLs (seperated by newline)">
-                      </textarea>
-                  </div>
+                  <div class="row-label">Version Metadata</div>
                   <div class="control">
-                    <a class="button" ng-click="addFiles(session.addFileInput)">
-                      Add URLs
-                    </a>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="row-label">Add Files From Resource Page</div>
-                  <div class="databus-settings-info">
-                    <div>Searches the HTML document of the entered URL for any links to files and adds the file URLs to the version.
-                    </div>
-                  </div>
-                  <div class="field has-addons">
-                    <div class="control" style="width: 100%;">
-                      <input ng-model="session.fetchFilesInput" class="input" type="text"
-                        placeholder="Enter a resource page URL">
-                    </div>
-                    <div class="control">
-                      <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
-                        Fetch URLs
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="row-label">
-                    <div>Content Variants</div>
-
-                    <div class="databus-settings-box-note">
-                      <div class="hover-note">
-                        <div class="hover-dropdown content"
-                          style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
-                          <ul style="margin-top: 0; margin-left: 1.5em;">
-                            <li ng-repeat="hint in hints.variants">{{ hint }}</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="databus-settings-info">
-                    <div>Content variants are facets that you can add to your files. This can be helpful when your files
-                      exist in multiple languages or your dataset is partitioned into multiple files in any other way.
-                      Content variants can help other Databus users to find the correct files for their use case. Read more about content variants <a href="https://dbpedia.gitbook.io/databus/model/content-variants" target="_blank">here</a>.</div>
-                  </div>
-
-                  <div class="field has-addons">
-                    <div class="control" style="width: 100%;">
-                      <input ng-model="session.contentVariantInput" class="input" type="text"
-                        placeholder="Enter a content variant tag">
-                    </div>
-                    <div class="control">
-                      <a class="button"
-                        ng-click="session.formData.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
-                        Add Content Variant
-                      </a>
-                    </div>
-                  </div>
-                  <div class="content-variants-panel">
-                    <div style="border: 1px solid #dbdbdb;" class="content-variant-box"
-                      ng-repeat="variant in version.contentVariants">
-                      <div>
-                        <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">{{
-                          variant.label }}</div>
-                        <div style="display: flex; align-items: center; padding: .5em;">
-                          <div style="flex: 1; display: flex; align-items: center;">
-                            <div class="field has-addons" style="margin: 0; margin-right: 0.5em;">
-                              <div class="control">
-                                <input class="input" style="min-width: 400px;" ng-model="variant.fillRegex" type="text"
-                                  placeholder="Enter a String or Regex (e.g: .* for full file name)">
-                              </div>
-                              <div class="control">
-                                <div class="button" ng-click="session.formData.fill(variant)">
-                                  Fill
-                                </div>
-                              </div>
-                              <div class="control">
-                                <div class="button" ng-click="session.formData.fillByRegex(variant)">
-                                  Fill by Regex on Filename
-                                </div>
-                              </div>
-
-                            </div>
-                            <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
-                              name="to lowercase">
-                            <label for="scales">To Lowercase</label>
-
-                            <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
-                              type="checkbox" name="prune">
-                            <label for="scales">Remove Whitespaces</label>
-
-                            <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox" type="checkbox"
-                              name="prune">
-                            <label for="scales">Overwrite</label>
-                          </div>
-
-                          <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
-                            on-click="session.formData.removeContentVariant(variant)" size="24"></databus-icon>
-                        </div>
-                      </div>
-                    </div>
+                    <label class="radio">
+                      <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="create"
+                        ng-change="session.setCreateNewVersion(version.generateMetadata)">
+                      Create New
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="version-metadata" ng-model="version.generateMetadata"
+                        ng-disabled="session.availableVersions.length == 0"
+                        ng-change="session.setCreateNewVersion(version.generateMetadata)" value="existing">
+                      Use Existing Version
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="version-metadata" ng-model="version.generateMetadata" value="none"
+                        ng-change="session.setCreateNewVersion(version.generateMetadata)">
+                      None
+                    </label>
                   </div>
                 </div>
 
-
-                <div class="row">
-                  <div class="row-label">File Table</div>
-
-                  <span ng-if="hasError(files.errors, 'err_no_files')" class="help is-danger">{{
-                    texts.errors['err_no_files'] }}</span>
-
-                  <table-editor ng-if="utils.objSize(version.files) > 0" model="version"
-                    on-remove-file="removeFile(file)">
-                  </table-editor>
-                  <div ng-if="loadRequestCount == 0 && utils.objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
-                border-top: solid 1px #dbdbdb;">
-                    <div class="hint-box">
-                      <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
-                        and clicking the respective button.</div>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
-               margin: -0.5em; margin-top: .5em;
-                border-top: solid 1px #dbdbdb;">
-                  <div class="loading-rect">
-                    <div class="lds-ellipsis">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- ARTIFACT INFO BOX-->
-              <div class="databus-settings-box-header">SIGNATURE</div>
-              <div class="databus-settings-box">
-
-                <div class="row">
-                  <div class="row-label">Publisher</div>
-                  <div class="databus-settings-info">
-                    <div>Every dataset on the Databus needs to be signed by the publisher. Databus uses cryptographic
-                      keypairs and public keys exposed via WebId to enable decentralized dataset validation. You can
-                      either use your Databus account as a WebId and let the Databus sign your metadata or sign it with
-                      your own private key and WebId. For more information, please refer to the <a
-                        href="https://dbpedia.gitbook.io/databus/usage" target="_blank">Gitbook</a>.</div>
-                  </div>
+                <!-- VERSION NAME -->
+                <div class="row" ng-if="version.generateMetadata == 'create'">
+                  <div class="row-label">Name</div>
                   <div style="width: 100%;">
-                    <div class="field">
+                    <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                      <input class="control input" type="text" ng-model="version.name">
                       <div class="control">
                         <div class="dropdown is-hoverable">
                           <div class="dropdown-trigger">
-                            <button style="justify-content: space-between; min-width: 400px;" class="button"
-                              aria-haspopup="true" aria-controls="dropdown-menu4">
-                              <span>{{ session.formData.signature.selectedPublisherUri}}</span>
+                            <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                              <span>Presets</span>
                               <span class="icon is-small">
                                 <i class="fas fa-angle-down" aria-hidden="true"></i>
                               </span>
-                            </button>
+                            </a>
                           </div>
                           <div class="dropdown-menu" id="dropdown-menu" role="menu">
                             <div class="dropdown-content">
-                              <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
-                                ng-repeat="uri in session.formData.signature.publisherUris">
-                                {{ uri }}
+                              <a class="dropdown-item" ng-click="session.formData.createVersionName(0)">
+                                Date YYYY-MM-DD
+                              </a>
+                              <a class="dropdown-item" ng-click="session.formData.createVersionName(1)">
+                                Date YYYY-MM-DDTHH
                               </a>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83"
+                      class="help">{{
+                      texts.errors['warning_version_exists'] }}</span>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_name')" class="help is-danger">{{
+                      texts.errors['err_invalid_version_name'] }}</span>
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="row-label">Signature</div>
-                  <div style="width: 100%;">
-                    <div class="field">
+
+                <div class="row" ng-if="version.generateMetadata == 'existing'">
+                  <div class="row-label">Name</div>
+                  <div style="flex: 1">
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span>{{ version.name }}</span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                          <div class="dropdown-item" style="cursor: pointer;"
+                            ng-repeat="uri in session.availableVersions" ng-click="session.selectVersion(uri)">
+                            {{ utils.uriToName(uri) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <span ng-if="hasError(version.warnings, 'warning_version_exists')" style="color: #3d8d83"
+                    class="help">{{
+                    texts.errors['warning_version_exists'] }}</span>
+                </div>
+
+                <!-- VERSION TITLE -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">Title</div>
+                  <div style="flex: 1">
+                    <div>
+                      <div class="field override-checkbox" style="margin-bottom: .5em;"
+                        ng-class="{ 'is-override' : version.useArtifactTitle }">
+                        <input id="check--use--artifact--title" name="check--generate--abstract" class="is-checkradio"
+                          type="checkbox" ng-model="version.useArtifactTitle">
+                        <label for="check--use--artifact--title">
+                          <span>Use Artifact Title</span>
+                        </label>
+                      </div>
+                      <input ng-disabled="version.useArtifactTitle" class="input" type="text" ng-model="version.title">
+                      <span ng-if="hasError(version.errors, 'err_invalid_version_title')" class="help is-danger">{{
+                        texts.errors['err_invalid_version_title'] }}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- VERSION ABSTRACT -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">Abstract</div>
+                  <div style="flex: 1">
+                    <div>
+                      <div class="field override-checkbox" style="margin-bottom: .5em;"
+                        ng-class="{ 'is-override' : version.generateAbstract }">
+                        <input id="check--generate--abstract--version" name="check--generate--abstract"
+                          class="is-checkradio" type="checkbox" ng-model="version.generateAbstract">
+                        <label for="check--generate--abstract--version">
+                          <span>Generate Abstract From Description</span>
+                        </label>
+                      </div>
+                      <textarea wrap="hard" ng-disabled="version.generateAbstract"
+                        style="min-height: 120px; resize: vertical;" class="input" type="text"
+                        ng-model="version.abstract"></textarea>
+                      <span ng-if="hasError(version.errors, 'err_invalid_version_abstract')" class="help is-danger">{{
+                        texts.errors['err_invalid_version_abstract'] }}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- VERSION DESCRIPTION -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">Description</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                      ng-model="version.description"></textarea>
+                    <span ng-if="hasError(version.errors, 'err_invalid_version_description')" class="help is-danger">{{
+                      texts.errors['err_invalid_version_description'] }}</span>
+                  </div>
+                </div>
+
+                <!-- LICENSE URI -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">License URI</div>
+                  <div style="flex: 1">
+                    <div style="width: 100%;">
+                      <div class="field has-addons" style="width: 100%; margin-bottom: 0;">
+                        <input class="control input" type="text" ng-model="version.license">
+                        <div class="control">
+                          <div class="dropdown is-hoverable" style="position: relative;">
+                            <div class="dropdown-trigger">
+                              <a class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                <span>Select License</span>
+                                <span class="icon is-small">
+                                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                              </a>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu" style="right: 0; left: initial;">
+                              <div class="dropdown-content" style="min-width: 500px; padding: 4px;">
+                                <input placeholder="Search for a license" class="input" ng-model="licenseQuery"
+                                  ng-change="filterLicenses(licenseQuery)" />
+                                <div style="padding: 0.5em; color: #888" ng-if="filteredLicenseList == undefined">The
+                                  content of
+                                  this dropdown relies on the license service provided by <a href="https://dalicc.net"
+                                    target="_blank">https://dalicc.net</a>. If you are unable to find any licenses, this
+                                  might be due to the service being temporarily unavailable.</div>
+                                <div ng-repeat="license in filteredLicenseList" style="padding: 0.5em 0.25em;"
+                                  ng-click="version.license=license.id.value">
+                                  {{ license.title.value }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <span ng-if="hasError(version.errors, 'err_invalid_version_license')" class="help is-danger">{{
+                        texts.errors['err_invalid_version_license'] }}</span>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- LICENSE ATTRIBUTION -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">Attribution</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                      ng-model="version.attribution"></textarea>
+                  </div>
+                </div>
+
+                <!-- DERIVED FROM -->
+                <div class="row" ng-if="version.generateMetadata != 'none'">
+                  <div class="row-label">Derived From</div>
+                  <div style="flex: 1">
+                    <textarea wrap="hard" style="min-height: 180px; resize: vertical" class="input" type="text"
+                      ng-model="version.wasDerivedFrom"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FILES -->
+              <div ng-if="version.generateMetadata != 'none'" ng-init="files=session.formData.files">
+                <div class="databus-settings-box-header">FILES INFO</div>
+                <div class="databus-settings-box">
+
+                  <div class="databus-settings-box-note">
+
+                    <div class="hover-note" ng-if="files.errors.length == 0">
+                      <databus-icon shape="'check'" color="'#65bdb2'" size="24">
+                      </databus-icon>
+                    </div>
+                    <div class="hover-note" ng-if="files.errors.length > 0">
+                      <databus-icon shape="'error'" color="'red'" size="24">
+                      </databus-icon>
+                    </div>
+                    <!-- TODO: Link to docu! -->
+                    <div class="hover-note">
+                      <databus-icon shape="'info'" size="24">
+                      </databus-icon>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label">Add Files</div>
+                    <div class="databus-settings-info">
+                      <div>Enter file URLs divided by newlines and click <b>Add URLs</b> to add file entries to your
+                        metadata document. The file URLs can be used by other users to download your files.</div>
+                    </div>
+                    <div class="control" style="width: 100%; margin-bottom: 0.5em;">
+                      <textarea ng-model="session.addFileInput" style="min-height: 160px; resize: vertical;"
+                        class="input" type="text-area" placeholder="Enter file URLs (seperated by newline)">
+                      </textarea>
+                    </div>
+                    <div class="control">
+                      <a class="button" ng-click="addFiles(session.addFileInput)">
+                        Add URLs
+                      </a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label">Add Files From Resource Page</div>
+                    <div class="databus-settings-info">
+                      <div>Searches the HTML document of the entered URL for any links to files and adds the file URLs
+                        to
+                        the version.
+                      </div>
+                    </div>
+                    <div class="field has-addons">
+                      <div class="control" style="width: 100%;">
+                        <input ng-model="session.fetchFilesInput" class="input" type="text"
+                          placeholder="Enter a resource page URL">
+                      </div>
                       <div class="control">
-                          <div class="field override-checkbox"  ng-class="{ 'is-override' : session.formData.signature.autoGenerateSignature }">
-                            <input id="check--autogeneratesignature" name="check--autogeneratesignature" 
+                        <a class="button" ng-click="fetchFiles(session.fetchFilesInput)">
+                          Fetch URLs
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="row-label">
+                      <div>Content Variants</div>
+
+                      <div class="databus-settings-box-note">
+                        <div class="hover-note">
+                          <div class="hover-dropdown content"
+                            style="transform: translateX(-120px) translateY(35px); top: initial; right: initial;">
+                            <ul style="margin-top: 0; margin-left: 1.5em;">
+                              <li ng-repeat="hint in hints.variants">{{ hint }}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="databus-settings-info">
+                      <div>Content variants are facets that you can add to your files. This can be helpful when your
+                        files
+                        exist in multiple languages or your dataset is partitioned into multiple files in any other way.
+                        Content variants can help other Databus users to find the correct files for their use case. Read
+                        more about content variants <a href="https://dbpedia.gitbook.io/databus/model/content-variants"
+                          target="_blank">here</a>.</div>
+                    </div>
+
+                    <div class="field has-addons">
+                      <div class="control" style="width: 100%;">
+                        <input ng-model="session.contentVariantInput" class="input" type="text"
+                          placeholder="Enter a content variant tag">
+                      </div>
+                      <div class="control">
+                        <a class="button"
+                          ng-click="session.formData.addContentVariant(session.contentVariantInput); session.contentVariantInput = '';">
+                          Add Content Variant
+                        </a>
+                      </div>
+                    </div>
+                    <div class="content-variants-panel">
+                      <div style="border: 1px solid #dbdbdb;" class="content-variant-box"
+                        ng-repeat="variant in version.contentVariants">
+                        <div>
+                          <div style="border-bottom: 1px solid #dbdbdb; padding: .2em .5em; background-color: #f6f6f6;">
+                            {{
+                            variant.label }}</div>
+                          <div style="display: flex; align-items: center; padding: .5em;">
+                            <div style="flex: 1; display: flex; align-items: center;">
+                              <div class="field has-addons" style="margin: 0; margin-right: 0.5em;">
+                                <div class="control">
+                                  <input class="input" style="min-width: 400px;" ng-model="variant.fillRegex"
+                                    type="text" placeholder="Enter a String or Regex (e.g: .* for full file name)">
+                                </div>
+                                <div class="control">
+                                  <div class="button" ng-click="session.formData.fill(variant)">
+                                    Fill
+                                  </div>
+                                </div>
+                                <div class="control">
+                                  <div class="button" ng-click="session.formData.fillByRegex(variant)">
+                                    Fill by Regex on Filename
+                                  </div>
+                                </div>
+
+                              </div>
+                              <input style="margin: .5em;" ng-model="variant.toLower" class="checkbox" type="checkbox"
+                                name="to lowercase">
+                              <label for="scales">To Lowercase</label>
+
+                              <input style="margin: .5em;" ng-model="variant.pruneWhitespaces" class="checkbox"
+                                type="checkbox" name="prune">
+                              <label for="scales">Remove Whitespaces</label>
+
+                              <input style="margin: .5em;" ng-model="variant.overwrite" class="checkbox" type="checkbox"
+                                name="prune">
+                              <label for="scales">Overwrite</label>
+                            </div>
+
+                            <databus-icon shape="'delete'" style="margin-right: .4em;" class='artifact-icon'
+                              on-click="session.formData.removeContentVariant(variant)" size="24"></databus-icon>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+                    <div class="row-label">File Table</div>
+
+                    <span ng-if="hasError(files.errors, 'err_no_files')" class="help is-danger">{{
+                      texts.errors['err_no_files'] }}</span>
+
+                    <table-editor ng-if="utils.objSize(version.files) > 0" model="version"
+                      on-remove-file="removeFile(file)">
+                    </table-editor>
+                    <div ng-if="loadRequestCount == 0 && utils.objSize(version.files) == 0" style="margin: -0.5em; background-color: #f6f6f6; margin-top: .5em;
+                border-top: solid 1px #dbdbdb;">
+                      <div class="hint-box">
+                        <div>Add files by entering a file URL or resource page URL in the <b>input fields above</b>
+                          and clicking the respective button.</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div ng-if="loadRequestCount > 0" style="background-color: #f6f6f6;
+               margin: -0.5em; margin-top: .5em;
+                border-top: solid 1px #dbdbdb;">
+                    <div class="loading-rect">
+                      <div class="lds-ellipsis">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- ARTIFACT INFO BOX-->
+                <div class="databus-settings-box-header">SIGNATURE</div>
+                <div class="databus-settings-box">
+
+                  <div class="row">
+                    <div class="row-label">Publisher</div>
+                    <div class="databus-settings-info">
+                      <div>Every dataset on the Databus needs to be signed by the publisher. Databus uses cryptographic
+                        keypairs and public keys exposed via WebId to enable decentralized dataset validation. You can
+                        either use your Databus account as a WebId and let the Databus sign your metadata or sign it
+                        with
+                        your own private key and WebId. For more information, please refer to the <a
+                          href="https://dbpedia.gitbook.io/databus/usage" target="_blank">Gitbook</a>.</div>
+                    </div>
+                    <div style="width: 100%;">
+                      <div class="field">
+                        <div class="control">
+                          <div class="dropdown is-hoverable">
+                            <div class="dropdown-trigger">
+                              <button style="justify-content: space-between; min-width: 400px;" class="button"
+                                aria-haspopup="true" aria-controls="dropdown-menu4">
+                                <span>{{ session.formData.signature.selectedPublisherUri}}</span>
+                                <span class="icon is-small">
+                                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                              </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                              <div class="dropdown-content">
+                                <a ng-click="onSelectPublisher(uri)" class="dropdown-item"
+                                  ng-repeat="uri in session.formData.signature.publisherUris">
+                                  {{ uri }}
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="row-label">Signature</div>
+                    <div style="width: 100%;">
+                      <div class="field">
+                        <div class="control">
+                          <div class="field override-checkbox"
+                            ng-class="{ 'is-override' : session.formData.signature.autoGenerateSignature }">
+                            <input id="check--autogeneratesignature" name="check--autogeneratesignature"
                               class="is-checkradio" type="checkbox"
                               ng-model="session.formData.signature.autoGenerateSignature">
                             <label for="check--autogeneratesignature">
@@ -825,143 +835,146 @@
                             </label>
                           </div>
 
-                      </div>
-                      <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
-                        <pre style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
-                        <div style="display: flex; margin-bottom: 8px;">
-                          <div style="margin-right: 8px;" class="button" ng-click="createTractate()"
-                            ng-disabled="creatingTractate">Create
-                            Tractate</div>
-                          <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
                         </div>
-                        <div class="databus-settings-info" style="margin-bottom: 10px">
-                          <div>Click the <b>Create Tractate</b> button to generate the tractate for your metadata
-                            document. The Databus tractate is a minimal canonicalized form of your document containing
-                            the most crucial pieces of information. Sign the tractate with your private key and post the
-                            signature into the field below.</div>
+                        <div class="control" ng-if="!session.formData.signature.autoGenerateSignature">
+                          <pre
+                            style="margin-bottom: 8px; margin-top: 8px;">{{ session.formData.signature.tractate}}</pre>
+                          <div style="display: flex; margin-bottom: 8px;">
+                            <div style="margin-right: 8px;" class="button" ng-click="createTractate()"
+                              ng-disabled="creatingTractate">Create
+                              Tractate</div>
+                            <div ng-click="copyTracateToClipboard()" class="button">Copy to Clipboard</div>
+                          </div>
+                          <div class="databus-settings-info" style="margin-bottom: 10px">
+                            <div>Click the <b>Create Tractate</b> button to generate the tractate for your metadata
+                              document. The Databus tractate is a minimal canonicalized form of your document containing
+                              the most crucial pieces of information. Sign the tractate with your private key and post
+                              the
+                              signature into the field below.</div>
+                          </div>
+                          <textarea ng-model="session.formData.signature.userSignature" class="textarea"
+                            style="resize: vertical" placeholder="Signature"></textarea>
                         </div>
-                        <textarea ng-model="session.formData.signature.userSignature" class="textarea"
-                          style="resize: vertical" placeholder="Signature"></textarea>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-        </div>
 
 
 
-        <div class="databus-settings-box-header">Publish</div>
-        <div class="databus-settings-box" ng-init="artifact=session.formData.artifact">
 
-          <div class="row">
-            <div class="row-label">Group Metadata</div>
-            <pre ng-if="session.formData.group.errors.length == 0"
-              style="width: 100%;">{{ session.inputs.group["@graph"] | json }}</pre>
-            <pre ng-if="session.formData.group.errors.length > 0" style="width: 100%;">
+            <div class="databus-settings-box-header">Publish</div>
+            <div class="databus-settings-box" ng-init="artifact=session.formData.artifact">
+
+              <div class="row">
+                <div class="row-label">Group Metadata</div>
+                <pre ng-if="session.formData.group.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.group["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.group.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the metadata
                 </pre>
-          </div>
-          <div class="row" ng-if="session.formData.artifact.generateMetadata != 'none'">
-            <div class="row-label">Artifact Metadata</div>
-            <pre ng-if="session.formData.artifact.errors.length == 0"
-              style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
-            <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
+              </div>
+              <div class="row" ng-if="session.formData.artifact.generateMetadata != 'none'">
+                <div class="row-label">Artifact Metadata</div>
+                <pre ng-if="session.formData.artifact.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.artifact["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.artifact.errors.length > 0" style="width: 100%;">
                   Fix all errors to preview the artifact metadata
                 </pre>
-          </div>
-          <div class="row" ng-if="session.formData.version.generateMetadata != 'none'">
-            <div class="row-label">Version Metadata</div>
-            <pre ng-if="session.formData.version.errors.length == 0 && session.formData.files.errors.length == 0"
-              style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
-            <pre ng-if="session.formData.version.errors.length > 0 || session.formData.files.errors.length > 0" style="width: 100%;">
+              </div>
+              <div class="row" ng-if="session.formData.version.generateMetadata != 'none'">
+                <div class="row-label">Version Metadata</div>
+                <pre ng-if="session.formData.version.errors.length == 0 && session.formData.files.errors.length == 0"
+                  style="width: 100%;">{{ session.inputs.dataid["@graph"] | json }}</pre>
+                <pre ng-if="session.formData.version.errors.length > 0 || session.formData.files.errors.length > 0"
+                  style="width: 100%;">
                   Fix all errors to preview the version metatdata
                 </pre>
-          </div>
-          <div class="row">
-            <div class="row-label">Full Publish Request Body</div>
-            <pre ng-if="session.isReadyForUpload && session.showFullInput"
-              style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
+              </div>
+              <div class="row">
+                <div class="row-label">Full Publish Request Body</div>
+                <pre ng-if="session.isReadyForUpload && session.showFullInput"
+                  style="width: 100%; position: relative;"><div ng-click="session.showFullInput = false" 
                   style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Hide</div>{{ session.inputs.all | json }}</pre>
-            <pre ng-if="session.isReadyForUpload && !session.showFullInput"
-              style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
-            <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
+                <pre ng-if="session.isReadyForUpload && !session.showFullInput"
+                  style="width: 100%; position: relative;"><div ng-click="session.showFullInput = true" style="position: absolute; padding: 10px 20px; cursor:pointer; top: 8px; right: 8px; border: 1px solid #dbdbdb;">Show</div>...</pre>
+                <pre ng-if="!session.isReadyForUpload" style="width: 100%;">
                   Fix all errors to preview the full request body
                 </pre>
-          </div>
-
-
-          <div class="row">
-            <div class="row-label">Publish Consent</div>
-            <div style="width: 100%;">
-              <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
-                <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
-                  ng-model="agreeCCZero">
-                <label for="check--agree">
-                  <span>I hereby agree to publish this metadata under the <a
-                      href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
-                    license</span>
-                </label>
               </div>
-              <p class="control" style="width: 100%;">
-                <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
-                  ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary"
-                  ng-click="publish()">
-                  <span>Publish</span>
-                </button>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="databus-settings-box-header">Result</div>
-        <div class="databus-settings-box">
 
 
-          <div class="box-content">
-            <div class="row" ng-if="!isPublishing">
-
-              <div style="width: 100%">
-                <div ng-repeat="entry in publishLog" style="margin-bottom: .25em;">
-
-                  <div style="width: 100%; font-family: monospace; padding: .75em; 
-                  background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
-                    ng-click="entry.expanded = !entry.expanded">
-
-                    <databus-icon ng-if="!entry.expanded" shape="'right'" size="16">
-                    </databus-icon>
-                    <databus-icon ng-if="entry.expanded" shape="'down'" size="16">
-                    </databus-icon>
-
-                    <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{
-                      entry.msg }}</div>
-                    <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
-                    <databus-icon ng-if="entry.level!='error'" color="'#65bdb2'" shape="'check'" size="24">
-                    </databus-icon>
+              <div class="row">
+                <div class="row-label">Publish Consent</div>
+                <div style="width: 100%;">
+                  <div class="field override-checkbox" ng-class="{ 'is-override' : agreeCCZero }">
+                    <input id="check--agree" name="check--agree" class="is-checkradio" type="checkbox"
+                      ng-model="agreeCCZero">
+                    <label for="check--agree">
+                      <span>I hereby agree to publish this metadata under the <a
+                          href="http://dalicc.net/licenselibrary/Cc010Universal" target="_blank">CC0 1.0</a>
+                        license</span>
+                    </label>
                   </div>
-                  <div ng-if="entry.expanded">
-                    <pre style="width: 100%; border-top: 1px solid #dbdbdb;">{{ entry.payload | json }}</pre>
-                  </div>
+                  <p class="control" style="width: 100%;">
+                    <button style="width: 100%; height: 3em;" ng-class=" { 'is-loading' : isPublishing }"
+                      ng-disabled="isPublishing || !session.isReadyForUpload || !agreeCCZero" class="button is-primary"
+                      ng-click="publish()">
+                      <span>Publish</span>
+                    </button>
+                  </p>
                 </div>
               </div>
+            </div>
+            <div class="databus-settings-box-header">Result</div>
+            <div class="databus-settings-box">
 
+
+              <div class="box-content">
+                <div class="row" ng-if="!isPublishing">
+
+                  <div style="width: 100%">
+                    <div ng-repeat="entry in publishLog" style="margin-bottom: .25em;">
+
+                      <div style="width: 100%; font-family: monospace; padding: .75em; 
+                  background-color: #f5f5f5;display: flex; align-items: center; cursor:pointer"
+                        ng-click="entry.expanded = !entry.expanded">
+
+                        <databus-icon ng-if="!entry.expanded" shape="'right'" size="16">
+                        </databus-icon>
+                        <databus-icon ng-if="entry.expanded" shape="'down'" size="16">
+                        </databus-icon>
+
+                        <div style="flex: 1; margin-left: .75em;" ng-if="entry.level=='error'" style="color:red">{{
+                          entry.msg }}</div>
+                        <div style="flex: 1; margin-left: .75em;" ng-if="entry.level!='error'">{{ entry.msg }}</div>
+                        <databus-icon ng-if="entry.level!='error'" color="'#65bdb2'" shape="'check'" size="24">
+                        </databus-icon>
+                      </div>
+                      <div ng-if="entry.expanded">
+                        <pre style="width: 100%; border-top: 1px solid #dbdbdb;">{{ entry.payload | json }}</pre>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <p class="control" style="width: 100%; margin-top: 1em;">
+                    <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
+                      <span>Reset Form</span>
+                    </button>
+                  </p>
+                </div>
+              </div>
             </div>
-            <div class="row">
-              <p class="control" style="width: 100%; margin-top: 1em;">
-                <button style="width: 100%; height: 3em;" class="button" ng-click="createNewSession()">
-                  <span>Reset Form</span>
-                </button>
-              </p>
-            </div>
+
           </div>
         </div>
 
       </div>
+      </section>
 
-  </div>
-  </section>
-
-  </div>
-  <%- include('footer') -%>
+    </div>
+    <%- include('footer') -%>

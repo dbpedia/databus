@@ -102,18 +102,23 @@
 
         &.has-dropdown {
             cursor: pointer;
-            align-items: stretch;
+
+            padding: 0em .75em;
+            color: white;
+
+            &:hover {
+                background-color: $nav-background-medium;
+            }
         }
 
         &.link {
             cursor: pointer;
             color: $nav-links;
             padding: 0em .75em;
-            opacity: 60%;
 
             &:hover {
-                opacity: 100%;
-                background-color: rgba($color: #fff, $alpha: .05);
+                background-color: $nav-background-medium;
+                color: white;
             }
 
             .icon {
@@ -139,18 +144,19 @@
     // Search
     .nav-search {
         flex: 1;
-        
+
         // Result list
         .search-results {
             position: absolute;
             background-color: $nav-background-medium;
             box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, .1);
-            width: 100%;
+            min-width: 100%;
+            max-width: 2000px;
             z-index: 1000;
             top: 100%;
         }
 
-      
+
         input {
             background-color: $nav-search-background;
             border-color: #96a3b2;
@@ -193,7 +199,7 @@
                 &:first-child {
                     padding-top: .7em;
                 }
-    
+
                 &:last-child {
                     padding-bottom: .7em;
                 }
@@ -201,15 +207,15 @@
                 uri-breadcrumbs {
                     color: #b9b9b9 !important;
                 }
-        
+
                 uri-breadcrumbs a {
                     color: #b9b9b9 !important;
                 }
-        
+
                 uri-breadcrumbs a:hover {
                     color: #e7e7e7 !important;
                 }
-        
+
                 .item-header {
                     display: flex;
                     color: white
@@ -219,27 +225,27 @@
             &::-webkit-scrollbar {
                 width: 8px;
             }
-    
+
             /* Track */
             &::-webkit-scrollbar-track {
                 background: #353b45;
             }
-    
+
             /* Handle */
             &::-webkit-scrollbar-thumb {
                 background: #b6b6b6;
             }
-    
+
             /* Handle on hover */
             &::-webkit-scrollbar-thumb:hover {
                 background: #a3a3a3;
             }
-    
-           
-    
+
+
+
         }
 
-        
+
         .result-header {
             display: flex;
             align-items: center;
@@ -263,7 +269,7 @@
         }
 
         .filters .grey-out-dark .tag {
-            background-color: #3f4c5b;
+            background-color: $nav-background-medium;
         }
 
         .filters .grey-out-dark path {
@@ -292,6 +298,15 @@
         }
     }
 
+    .navbar-account-icon {
+        height: 48px;
+        width: 48px;
+        background-color: white;
+        border-radius: 24px;
+        margin-left: .5em;
+    }
+
+    
 }
 
 
@@ -317,8 +332,7 @@
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #404751;
-    border-top: 2px solid white;
+    background-color: $nav-background-medium;
     padding-bottom: 8px;
     min-width: 250px;
 }
