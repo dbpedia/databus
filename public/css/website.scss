@@ -1,41 +1,9 @@
 @charset "utf-8";
 
-@font-face {
-  font-family: 'PT Sans';
-  src: url('./../fonts/PTSans-Regular.ttf');
-}
-
-@font-face {
-  font-family: "PT Sans";
-  src: url("./../fonts/PTSans-Bold.ttf");
-  font-weight: bold;
-}
-
-@font-face {
-  font-family: "PT Sans";
-  src: url("./../fonts/PTSans-Italic.ttf");
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "PT Sans";
-  src: url("./../fonts/PTSans-BoldItalic.ttf");
-  font-weight: bold;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Roboto';
-  src: url('./../fonts/Roboto-Regular.ttf');
-}
-
-@font-face {
-  font-family: 'Roboto';
-  src: url('./../fonts/Roboto-Bold.ttf');
-  font-weight: bold;
-}
-
+@import 'fonts';
 @import 'colors';
+
+
 @import 'collections';
 @import '../node_modules/bulma/bulma.sass';
 
@@ -44,9 +12,7 @@
 @import '../node_modules/@triply/yasqe/src/scss/yasqe.scss';
 @import '../node_modules/@triply/yasqe/src/scss/buttons.scss'; 
 @import '../node_modules/@triply/yasqe/src/scss/codemirrorMods.scss'; 
-
 @import '../node_modules/@triply/yasr/src/main.scss';
-
 @import 'override-checkbox';
 @import 'checkmarks';
 @import 'yasqe';
@@ -57,6 +23,11 @@
 @import 'normalize';
 @import 'nav';
 @import 'frontpage';
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
 
 body,
 html {

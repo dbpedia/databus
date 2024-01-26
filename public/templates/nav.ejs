@@ -1,30 +1,28 @@
 <nav ng-controller="HeaderController" id="navbar" class="databus-navbar">
-  <div class="databus-navbar-container">
+  <div class="databus-navbar-fixed">
 
-    <div class="databus-navbar-content">
-      <div class="databus-navbar-brand">
-        <a class="databus-home-icon" href="/">
-          <% if(databus.iconUrl !=null && databus.iconUrl.length> 0) { %>
-            <!-- ORG ICON -->
-            <img class="org-icon" src="<%= databus.iconUrl %>" />
-            <div class="org-separator"></div>
-            <div class="org-subtitle">databus</div>
+    <div class="databus-navbar-container">
+      <a class="databus-home-icon" href="/">
+        <% if(databus.iconUrl !=null && databus.iconUrl.length> 0) { %>
+          <!-- ORG ICON -->
+          <img class="org-icon" src="<%= databus.iconUrl %>" />
+          <div class="org-separator"></div>
+          <div class="org-subtitle">databus</div>
 
-            <% } else { %>
-              <!-- DATABUS ICON -->
-              <databus-icon size="25" color="white" shape="'databus'"></databus-icon>
-              <% } %>
-        </a>
-      </div>
+          <% } else { %>
+            <!-- DATABUS ICON -->
+            <databus-icon size="25" color="white" shape="'databus'"></databus-icon>
+            <% } %>
+      </a>
 
-      <div class="databus-navbar-menu">
+      <div class="databus-navbar-content">
         <div class="databus-navbar-item fill">
           <nav-search class="nav-search" search-input="searchQuery" class="searchinput"
             settings="searchSettings"></nav-search>
         </div>
 
-        <div class="databus-navbar-end">
-          <a class="databus-navbar-item is-light" target="_blank" href="https://dbpedia.gitbook.io/databus">
+        <div class="databus-navbar-item end">
+          <a class="databus-navbar-item link" target="_blank" href="https://dbpedia.gitbook.io/databus">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24 ">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +34,7 @@
               Gitbook
             </span>
           </a>
-          <a class="databus-navbar-item is-light" href="/sparql">
+          <a class="databus-navbar-item link" href="/sparql">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="44 0 372 420">
                 <path xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +46,7 @@
               SPARQL
             </span>
           </a>
-          <a class="databus-navbar-item is-light" href="/api" target="_blank">
+          <a class="databus-navbar-item link" href="/api" target="_blank">
             <span class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path xmlns="http://www.w3.org/2000/svg"

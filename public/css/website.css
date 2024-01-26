@@ -10125,10 +10125,6 @@ label.panel-block:hover {
   margin-bottom: 1em;
 }
 
-.navbar-db {
-  background-color: #24292e;
-}
-
 .databus-settings-box {
   border: 1px solid #dbdbdb;
   border-radius: 8px;
@@ -10237,27 +10233,27 @@ label.panel-block:hover {
 }
 
 .is-version .databus-icon svg {
-  fill: #4dbca5;
+  fill: #47b49f;
 }
 .is-version .databus-icon svg.is-white {
   fill: #fff;
 }
 .is-version path {
-  fill: #4dbca5;
+  fill: #47b49f;
 }
 .is-version path.is-white {
   fill: #fff;
 }
 .is-version.button {
-  background-color: #4dbca5;
+  background-color: #47b49f;
   color: #fff;
   border: none;
 }
 .is-version.title {
-  color: #4dbca5;
+  color: #47b49f;
 }
 .is-version.tag:not(body) {
-  background-color: #4dbca5;
+  background-color: #47b49f;
   color: #fff;
 }
 .is-version.databus-banner {
@@ -10293,7 +10289,7 @@ label.panel-block:hover {
 .is-consumer.databus-banner {
   background-image: url("../img/banner-background.png");
   background-repeat: repeat;
-  background-color: #29acbf;
+  background-color: #28b0c5;
   background-size: 150px;
 }
 
@@ -10516,133 +10512,232 @@ template {
 .databus-navbar {
   height: 78px;
 }
-
-.databus-navbar-container {
+.databus-navbar .databus-navbar-fixed {
   z-index: 8000;
   height: 78px;
   align-items: center;
-  background-color: #36404b;
+  background-color: #353e47;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
 }
-
-.databus-navbar-content {
+.databus-navbar .databus-navbar-container {
   display: flex;
   height: inherit;
   justify-content: stretch;
   align-items: center;
   width: 100%;
+  padding: 0em 2em;
 }
-
 @media screen and (min-width: 1500px), print {
-  .databus-navbar-content {
+  .databus-navbar .databus-navbar-container {
     max-width: 1500px;
     margin: auto;
   }
 }
-.navbar-dropdown {
-  min-width: 200px;
-  font-size: 1em;
-}
-
-.databus-home-icon {
-  display: flex;
-  align-items: center;
-}
-
-.databus-home-icon .org-icon {
-  max-width: 200px;
-  max-height: 36px;
-  min-height: 1.5em;
-}
-
-.databus-home-icon .org-separator {
-  width: 2px;
-  height: 20px;
-  background-color: white;
-  margin: 0em 1em;
-}
-
-.databus-home-icon .org-subtitle {
-  font-size: 1.2em;
-  color: white;
-  margin-right: 2em;
-  letter-spacing: 1px;
-}
-
-.databus-navbar .nav-search {
-  flex: 1;
-}
-
-.databus-navbar .databus-navbar-item.fill {
-  flex-grow: 1;
-}
-
-.databus-navbar-brand {
+.databus-navbar .databus-navbar-brand {
   display: flex;
   margin-left: 1.5em;
 }
-
-.databus-navbar-menu {
+.databus-navbar .databus-navbar-content {
   display: flex !important;
   height: inherit;
   position: relative;
   flex: 1;
 }
-
-.databus-navbar-item {
+.databus-navbar .databus-home-icon {
   display: flex;
   align-items: center;
+}
+.databus-navbar .databus-home-icon .org-icon {
+  max-width: 200px;
+  max-height: 36px;
+  min-height: 1.5em;
+}
+.databus-navbar .databus-home-icon .org-separator {
+  width: 2px;
+  height: 20px;
+  background-color: white;
+  margin: 0em 1em;
+}
+.databus-navbar .databus-home-icon .org-subtitle {
+  font-size: 1.2em;
+  color: white;
+  margin-right: 2em;
+  letter-spacing: 1px;
+}
+.databus-navbar .databus-navbar-item {
+  display: flex;
+  align-items: center;
+  height: inherit;
+}
+.databus-navbar .databus-navbar-item.fill {
+  flex-grow: 1;
   position: relative;
+}
+.databus-navbar .databus-navbar-item.end {
+  margin-left: 1em;
+}
+.databus-navbar .databus-navbar-item.account-name {
+  cursor: pointer;
+  padding-right: 1em;
+  padding-left: 1em;
+  margin-right: 0.5em;
+  color: white;
+}
+.databus-navbar .databus-navbar-item.has-dropdown {
+  cursor: pointer;
+  align-items: stretch;
+}
+.databus-navbar .databus-navbar-item.link {
+  cursor: pointer;
+  color: #fff;
+  padding: 0em 0.75em;
+  opacity: 60%;
+}
+.databus-navbar .databus-navbar-item.link:hover {
+  opacity: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.databus-navbar .databus-navbar-item.link .icon {
+  margin-left: 0;
+  height: initial;
+  width: initial;
+  margin-right: 0.5em;
+}
+.databus-navbar .databus-navbar-dropdown {
+  min-width: 200px;
+  font-size: 1em;
+}
+.databus-navbar .databus-navbar-dropdown .navbar-dropdown-item {
+  min-width: 200px;
+  font-size: 1em;
+}
+.databus-navbar .nav-search {
+  flex: 1;
+}
+.databus-navbar .nav-search .search-results {
+  position: absolute;
+  background-color: #434f5c;
+  box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  z-index: 1000;
+  top: 100%;
+}
+.databus-navbar .nav-search input {
+  background-color: #434f5c;
+  border-color: #96a3b2;
+  outline: none;
+  color: white;
+  padding: 1.2em;
+  border-radius: 8px;
+}
+.databus-navbar .nav-search input::placeholder {
+  color: #b2becd;
+  opacity: 1;
+  /* Firefox */
+}
+.databus-navbar .nav-search .icon {
+  top: 2px !important;
+}
+.databus-navbar .nav-search .nav-search input:focus {
+  border-color: #c3d2e4;
+  box-shadow: none;
+}
+.databus-navbar .nav-search .results {
+  max-height: 60vh;
+  overflow-y: auto;
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
+}
+.databus-navbar .nav-search .results .result-item {
+  padding: 0.35em 0.7em;
+  display: flex;
+  cursor: pointer;
+  overflow: hidden;
+}
+.databus-navbar .nav-search .results .result-item:hover {
+  background-color: #4e5b6a;
+}
+.databus-navbar .nav-search .results .result-item:first-child {
+  padding-top: 0.7em;
+}
+.databus-navbar .nav-search .results .result-item:last-child {
+  padding-bottom: 0.7em;
+}
+.databus-navbar .nav-search .results .result-item uri-breadcrumbs {
+  color: #b9b9b9 !important;
+}
+.databus-navbar .nav-search .results .result-item uri-breadcrumbs a {
+  color: #b9b9b9 !important;
+}
+.databus-navbar .nav-search .results .result-item uri-breadcrumbs a:hover {
+  color: #e7e7e7 !important;
+}
+.databus-navbar .nav-search .results .result-item .item-header {
+  display: flex;
+  color: white;
+}
+.databus-navbar .nav-search .results::-webkit-scrollbar {
+  width: 8px;
+}
+.databus-navbar .nav-search .results::-webkit-scrollbar-track {
+  background: #353b45;
+}
+.databus-navbar .nav-search .results::-webkit-scrollbar-thumb {
+  background: #b6b6b6;
+}
+.databus-navbar .nav-search .results::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+.databus-navbar .nav-search .result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #f5f5f5;
+  padding: 0.5em 1em;
+  color: white;
+  font-weight: 600;
+}
+.databus-navbar .nav-search .filters {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+.databus-navbar .nav-search .filters p {
+  font-weight: 600;
+  color: white;
+  margin-right: 0.6em;
+}
+.databus-navbar .nav-search .filters .grey-out-dark .tag {
+  background-color: #3f4c5b;
+}
+.databus-navbar .nav-search .filters .grey-out-dark path {
+  fill: #a7a7a7;
+}
+.databus-navbar .nav-search .result-item type-tag {
+  margin-right: 8px;
+}
+.databus-navbar .nav-search .result-item .item-label {
+  font-weight: 600;
+  margin-right: 8px;
+}
+.databus-navbar .nav-search .result-item .item-abstract {
+  color: white;
+  width: 620px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.databus-navbar .nav-search .item-header a {
+  color: white;
 }
 
 .databus-navbar-item.is-light:hover {
   opacity: 1;
-}
-
-a.databus-navbar-item {
-  color: white;
-  margin-right: 1em;
-}
-
-.databus-navbar-item.is-light {
-  opacity: 0.7;
-}
-
-.databus-navbar-group {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  flex-grow: 10;
-}
-
-.databus-navbar-end {
-  display: flex;
-  justify-content: flex-end;
-  justify-self: flex-end;
-  margin: 0em 1em;
-  align-items: stretch;
-}
-
-.databus-navbar-item.account-name {
-  padding-right: 1em;
-  padding-left: 1em;
-  margin-right: 0.5em;
-  justify-content: stretch;
-  display: flex;
-}
-
-.databus-navbar-item.account-name:hover {
-  opacity: 0.8;
-}
-
-.databus-navbar-item.has-dropdown {
-  position: relative;
-  cursor: pointer;
-  align-items: stretch;
 }
 
 .databus-navbar-item.has-dropdown .databus-navbar-dropdown {
@@ -10676,6 +10771,93 @@ a.databus-navbar-item {
     display: none;
   }
 }
+.section.call-to-action {
+  background-color: #e6e7ec;
+  padding: 3em 0em;
+  position: relative;
+}
+
+.frontpage-box-frame {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 0px;
+  box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.05);
+}
+
+.frontpage-box {
+  background-color: #366281;
+  border-radius: 20px;
+  display: flex;
+  color: white;
+  width: 380px;
+  padding: 1.2em;
+  position: relative;
+  align-items: center;
+  cursor: pointer;
+}
+
+.frontpage-box.left {
+  background-color: #28b0c5;
+}
+
+.frontpage-box.center {
+  background-color: #47b49f;
+}
+
+.frontpage-box:hover {
+  -moz-transform: translateY(-4px);
+  -webkit-transform: translateY(-4px);
+  -o-transform: translateY(-4px);
+  -ms-transform: translateY(-4px);
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  -webkit-transition: transform 0.4s ease-out;
+  -moz-transition: transform 0.4s ease-out;
+  -ms-transition: transform 0.4s ease-out;
+}
+
+.frontpage-box-arrow {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+.frontpage-box-frame:not(:last-child) {
+  margin-right: 2em;
+}
+
+.frontpage-box .content {
+  padding: 0;
+  margin-left: 1em;
+}
+
+.frontpage-box .content h1 {
+  margin-bottom: 4px;
+  color: white;
+  font-weight: 600;
+}
+
+.frontpage-box .headline databus-icon {
+  margin-right: 0.7em;
+}
+
+.frontpage-box h1 {
+  font-size: 1.2em;
+  margin-top: 0;
+}
+
+.has-background-pattern {
+  background-image: url(../img/banner-background.png);
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 150px;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
 body,
 html {
   font-family: "PT Sans", sans-serif;

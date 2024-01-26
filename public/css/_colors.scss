@@ -1,4 +1,23 @@
 // COLOR PALETTE
+
+// Navbar
+$nav-background-dark: #353e47;
+$nav-background-medium: #434f5c;
+$nav-search-border: #fff;
+$nav-links: #fff;
+$nav-search-background: $nav-background-medium;
+
+// Action Banner
+$banner-background: #e6e7ec;
+$banner-box-frame: #fff;
+$banner-box-background:  #366281;
+$banner-box-background-hover: rgb(255 255 255 / 13%);
+
+// Backgrounds
+$background-white: #fff;
+$background-light: #fff;
+
+
 $link: #3867d6;
 
 $highlight: #f5f5f5;
@@ -9,7 +28,6 @@ $icon-color: #b5b5b5;
 $yasqe-disabled-background: $background;
 $yasqe-disabled-border: #e6e6e6;
 
-$navbar-background: #24292e;
 
 $topic-header: #7a7a7a;
 $grey-light: #dbdbdb;
@@ -30,12 +48,12 @@ $entity-artifact: #66a0c9;
 $entity-artifact-bg: #7BA0BB;
     
 $entity-consumer: #29acbf;
-$entity-consumer-bg: #29acbf;
+$entity-consumer-bg: #28b0c5;
 
 $entity-group: #6e7699;
 $entity-group-bg: #7B89AB;
 
-$entity-version: #4dbca5;
+$entity-version: #47b49f;
 $entity-version-bg: #89BDB7;
 
 $entity-collection: #81b180;
