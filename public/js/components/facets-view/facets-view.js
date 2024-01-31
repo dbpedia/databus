@@ -119,6 +119,8 @@ function FacetsViewController($http, $scope) {
 
     // wrap the node in the query node class
     ctrl.node = QueryNode.createFrom(ctrl.node);
+
+    // Holds the view state as json
     ctrl.viewModel = {};
 
     if (ctrl.facets == undefined) {
@@ -136,12 +138,14 @@ function FacetsViewController($http, $scope) {
     }).then(function (result) {
 
       // Facets data has been loaded
-      // Fix artifact facet values for groups
-      if (ctrl.resourceType == 'group' && result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY] != undefined) {
-        for (var i in result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values) {
-          var value = result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values[i];
-          result.data[DatabusUris.DATABUS_ARTIFACT_PROPERTY].values[i]
-            = DatabusUtils.uriToName(value);
+      ctrl.facetsData = result.data;
+
+      // Fix artifact facet values for groups, change URIs into artifact names
+      var artifactFacetData = ctrl.facetsData[DatabusUris.DATABUS_ARTIFACT_PROPERTY];
+
+      if (artifactFacetData != null) {
+        for (var i in artifactFacetData.values) {
+          artifactFacetData.values[i] = DatabusUtils.uriToName(artifactFacetData.values[i]);
         }
       }
 
@@ -153,9 +157,9 @@ function FacetsViewController($http, $scope) {
 
       // Prepare visible facet settings and autofill data based on the facet data returned by the API
       // Create key base entries (unset, not overriden)
-      for (var key in result.data) {
+      for (var key in ctrl.facetsData) {
 
-        var facetData = result.data[key];
+        var facetData = ctrl.facetsData[key];
 
         // Create a view data object for each facet
         ctrl.viewModel[key] = {};
@@ -169,9 +173,7 @@ function FacetsViewController($http, $scope) {
 
 
         for (var v in facetData.values) {
-
           var value = facetData.values[v];
-
           ctrl.viewModel[key].visibleFacetSettings.push({
             value: value,
             checked: false,
@@ -179,7 +181,7 @@ function FacetsViewController($http, $scope) {
           });
         }
 
-        ctrl.viewModel[key].visibleFacetSettings.sort(function(a, b) {
+        ctrl.viewModel[key].visibleFacetSettings.sort(function (a, b) {
           const valueA = a.value.toUpperCase();
           const valueB = b.value.toUpperCase();
           if (valueA > valueB) {
@@ -193,8 +195,8 @@ function FacetsViewController($http, $scope) {
         });
 
         // Show latest versions first
-        if(key == DatabusUris.DCT_HAS_VERSION) {
-          ctrl.viewModel[key].visibleFacetSettings.reverse(); 
+        if (key == DatabusUris.DCT_HAS_VERSION) {
+          ctrl.viewModel[key].visibleFacetSettings.reverse();
         }
 
         // Only show the top few
@@ -235,6 +237,7 @@ function FacetsViewController($http, $scope) {
 
         // If we're a group node, check for artifact nodes and add them as facets
         if (ctrl.resourceType == 'group') {
+
           for (var i in ctrl.node.childNodes) {
             var artifactNode = ctrl.node.childNodes[i];
             var facetValue = DatabusUtils.uriToName(artifactNode.uri)
@@ -246,12 +249,28 @@ function FacetsViewController($http, $scope) {
 
           if (ctrl.node.childNodes.length == 0) {
 
+
+            ctrl.updateArtifactFilters(ctrl.node);
+
+            var artifactFacetData = ctrl.facetsData[DatabusUris.DATABUS_ARTIFACT_PROPERTY];
+
+            if (artifactFacetData != null) {
+
+              // Add artifact nodes 
+              for (var i in artifactFacetData.values) {
+                artifactFacetData.values[i] = DatabusUtils.uriToName(artifactFacetData.values[i]);
+              }
+            }
+
+            /*
             // Add artifact nodes per default
             for (var v of ctrl.viewModel[DatabusUris.DATABUS_ARTIFACT_PROPERTY].visibleFacetSettings) {
               var childUri = ctrl.node.uri + '/' + v.value;
               var artifactNode = new QueryNode(childUri, 'databus:artifact');
               QueryNode.addChild(ctrl.node, artifactNode);
-            }
+            }*/
+
+
           }
         }
 
@@ -262,6 +281,57 @@ function FacetsViewController($http, $scope) {
       ctrl.isLoading = false;
     });
   }
+
+  ctrl.updateArtifactFilters = function (groupNode) {
+
+      // Clear all child nodes
+    groupNode.childNodes.length = 0;
+
+    var hasCheckedArtifactFacets = false;
+
+    for (var setting of ctrl.viewModel[DatabusUris.DATABUS_ARTIFACT_PROPERTY].visibleFacetSettings) {
+      hasCheckedArtifactFacets = hasCheckedArtifactFacets || setting.checked;
+    }
+
+    if (hasCheckedArtifactFacets) {
+
+      for (var setting of ctrl.viewModel[DatabusUris.DATABUS_ARTIFACT_PROPERTY].visibleFacetSettings) {
+        if (setting.checked) {
+          var artifactUri = `${groupNode.uri}/${setting.value}`;
+          if (QueryNode.findChildByUri(groupNode, artifactUri) == null) {
+            var artifactNode = new QueryNode(artifactUri, 'databus:artifact');
+            QueryNode.addChild(groupNode, artifactNode);
+          }
+        }
+      }
+
+    } else {
+
+      var latestVersionSetting = QueryNode.findFacetSetting(groupNode,
+        DatabusUris.DCT_HAS_VERSION,
+        DatabusConstants.FACET_LATEST_VERSION_VALUE);
+
+      if (latestVersionSetting != undefined && latestVersionSetting.checked) {
+
+        var artifactFacetData = ctrl.facetsData[DatabusUris.DATABUS_ARTIFACT_PROPERTY];
+
+        if (artifactFacetData != null) {
+
+          // Add artifact nodes 
+          for (var value of artifactFacetData.values) {
+            var artifactUri = `${groupNode.uri}/${value}`;
+            if (QueryNode.findChildByUri(groupNode, artifactUri) == null) {
+              var artifactNode = new QueryNode(artifactUri, 'databus:artifact');
+              QueryNode.addChild(groupNode, artifactNode);
+            }
+          }
+
+        }
+      }
+    }
+
+  }
+
 
   ctrl.getFacetLabel = function (value) {
     if (value == DatabusConstants.FACET_LATEST_VERSION_VALUE) {
@@ -281,21 +351,15 @@ function FacetsViewController($http, $scope) {
 
     if (ctrl.resourceType == 'group' && key == DatabusUris.DATABUS_ARTIFACT_PROPERTY) {
 
-      var childUri = ctrl.node.uri + '/' + value;
-
-      if (targetState) {
-        var artifactNode = new QueryNode(childUri, 'databus:artifact');
-        QueryNode.addChild(ctrl.node, artifactNode);
-      } else {
-        QueryNode.removeChildByUri(ctrl.node, childUri);
-      }
-
       var visibleSetting = ctrl.getOrCreateVisibleFacetSetting(key, value);
 
       if (visibleSetting != null) {
         visibleSetting.checked = targetState;
         visibleSetting.isOverride = targetState;
       }
+
+      ctrl.updateArtifactFilters(ctrl.node);
+
     }
     else {
       // apply change to view model
