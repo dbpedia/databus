@@ -240,7 +240,7 @@ version: '3.5'
 services:
 
   db:
-    image: tenforce/virtuoso
+    image: docker.io/tenforce/virtuoso
     ports:
       - 8895:8890
     volumes:
@@ -254,7 +254,7 @@ services:
   # and apply internal path as environment variable.
 
   databus_client:
-    image: dbpedia/databus-client:latest
+    image: docker.io/dbpedia/databus-client:latest
     environment:
       - SOURCE=/databus-client/query.sparql
       - ENDPOINT=https://dev.databus.dbpedia.org/sparql

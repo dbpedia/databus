@@ -11,7 +11,7 @@ In the `.env` file the `DATABUS_PROXY_SERVER_ENABLE` needs to be set to `true` a
 ```
 services:
   databus:
-    image: "dbpedia/databus"
+    image: "docker.io/dbpedia/databus"
     ports:
   ... 
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect
