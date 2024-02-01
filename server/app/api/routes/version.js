@@ -13,6 +13,8 @@ const getLinkedData = require('../../common/get-linked-data.js');
 const DatabusLogger = require('../../common/databus-logger.js');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const jsonld = require('jsonld');
+var cors = require('cors');
+
 
 module.exports = function (router, protector) {
 
@@ -58,7 +60,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/:group/:artifact/:version', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
+  router.get('/:account/:group/:artifact/:version', ServerUtils.NOT_HTML_ACCEPTED, cors(), async function (req, res, next) {
 
     if (req.params.account.length < 4) {
       next('route');

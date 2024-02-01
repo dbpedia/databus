@@ -10,6 +10,7 @@ const publishArtifact = require('../lib/publish-artifact');
 const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 const jsonld = require('jsonld');
+var cors = require('cors');
 
 const sparql = require("../../common/queries/sparql");
 
@@ -66,7 +67,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/:group/:artifact', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
+  router.get('/:account/:group/:artifact', ServerUtils.NOT_HTML_ACCEPTED, cors(), async function (req, res, next) {
 
     if (req.params.account.length < 4) {
       next('route');

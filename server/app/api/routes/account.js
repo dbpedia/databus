@@ -21,6 +21,7 @@ const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const publishAccount = require('../lib/publish-account');
+var cors = require('cors');
 
 module.exports = function (router, protector) {
 
@@ -403,7 +404,7 @@ module.exports = function (router, protector) {
   });
 
   /* GET an account. */
-  router.get('/:account', ServerUtils.NOT_HTML_ACCEPTED, async function (req, res, next) {
+  router.get('/:account', ServerUtils.NOT_HTML_ACCEPTED, cors(), async function (req, res, next) {
 
     if (req.params.account.length < 4) {
       next('route');

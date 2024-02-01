@@ -16,6 +16,7 @@ var defaultContext = require('./../../common/res/context.jsonld');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 const DatabusMessage = require('../../common/databus-message');
+var cors = require('cors');
 
 module.exports = function (router, protector) {
 
@@ -185,7 +186,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/:account/collections/:collection', ServerUtils.SPARQL_ACCEPTED, async function (req, res, next) {
+  router.get('/:account/collections/:collection', ServerUtils.SPARQL_ACCEPTED, cors(), async function (req, res, next) {
 
     sparql.collections.getCollectionQuery(req.params.account, req.params.collection).then(function (result) {
       if (result != null) {
@@ -199,7 +200,7 @@ module.exports = function (router, protector) {
     });
   });
 
-  router.get('/:account/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, function (req, res, next) {
+  router.get('/:account/collections/:collection', ServerUtils.NOT_HTML_ACCEPTED, cors(), function (req, res, next) {
 
     if (req.params.account.length < 4) {
       next('route');

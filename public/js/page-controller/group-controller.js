@@ -4,6 +4,7 @@ const DataIdCreator = require("../publish/dataid-creator");
 const QueryBuilder = require("../query-builder/query-builder");
 const QueryNode = require("../query-builder/query-node");
 const QueryTemplates = require("../query-builder/query-templates");
+const DatabusConstants = require("../utils/databus-constants");
 const DatabusUtils = require("../utils/databus-utils");
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const TabNavigation = require("../utils/tab-navigation");
@@ -143,7 +144,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
   $scope.fileSelector.config.columns.push({ field: 'compression', label: 'Compression', width: '6%' });
 
   $scope.groupNode = new QueryNode($scope.group.uri, 'databus:group');
-  $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', '$latest', true);
+  $scope.groupNode.setFacet('http://purl.org/dc/terms/hasVersion', DatabusConstants.FACET_LATEST_VERSION_VALUE, true);
 
   $scope.onFacetSettingsChanged = function () {
     $scope.fileSelector.query = QueryBuilder.build({
