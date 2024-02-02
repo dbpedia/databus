@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM docker.io/ubuntu:22.04
 
 # Install node.js, Caddy as proxy server, and java.
 RUN apt-get update && \

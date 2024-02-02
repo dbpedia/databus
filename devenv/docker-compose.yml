@@ -2,7 +2,7 @@
 version: "3.0"
 services:
   gstore:
-    image: dbpedia/gstore:dev #dbpedia/gstore:dev
+    image: docker.io/dbpedia/gstore:dev
     container_name: devenv_gstore
     environment: 
       STORAGE_USER: "dba"
@@ -15,7 +15,7 @@ services:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
   virtuoso:
-    image: "openlink/virtuoso-opensource-7:latest"
+    image: "docker.io/openlink/virtuoso-opensource-7:latest"
     container_name: devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"
