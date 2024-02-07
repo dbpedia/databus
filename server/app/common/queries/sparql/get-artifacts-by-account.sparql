@@ -7,9 +7,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?artifact as ?uri ?title ?abstract ?description WHERE
 {
-  GRAPH ?g {
-    ?artifact a databus:Artifact .
-    ?artifact databus:account <%ACCOUNT_URI%> .
+  {
+    SELECT DISTINCT ?artifact WHERE {
+      GRAPH ?g1 {
+        ?artifact a databus:Artifact .
+        ?artifact databus:account <%ACCOUNT_URI%> .
+      }
+    }
+  }
+  GRAPH ?g2 {
     OPTIONAL { ?artifact dct:title ?title . }
     OPTIONAL { ?artifact dct:abstract ?abstract . }
     OPTIONAL { ?artifact dct:description ?description . }
