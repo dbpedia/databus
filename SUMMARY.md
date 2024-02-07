@@ -18,7 +18,7 @@
   * [Metadata](docs/model/metadata/README.md)
     * [Group](docs/group.md)
     * [Artifact](docs/artifact.md)
-    * [Version](docs/dataid.md)
+    * [Version](docs/version.md)
     * [Distribution](docs/distribution.md)
     * [Collection](docs/collection.md)
   * [Content Variants](docs/content-variants.md)
