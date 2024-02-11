@@ -79,7 +79,7 @@ dct:title
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
 	    sh:maxLength 100 ;
-		sh:message "dct:title must have less than 100 characters and each language must occure only once."@en ;
+		sh:message "dct:title must have less than 100 characters and each language must occur only once."@en ;
 		sh:uniqueLang true ;
 	] . 
 ```
@@ -117,7 +117,7 @@ dct:abstract
 	sh:property [
 		sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once."@en ;
+	    sh:message "dct:abstract must have less than 300 characters and each language must occur only once."@en ;
 	    sh:uniqueLang true;
 	    sh:maxLength 300 ;
 	] . 
@@ -156,7 +156,7 @@ dct:description
         sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
-		sh:message "Each language of dct:description must occure only once."@en ;
+		sh:message "Each language of dct:description must occur only once."@en ;
 		sh:uniqueLang true ;
 	] . 
 ```
