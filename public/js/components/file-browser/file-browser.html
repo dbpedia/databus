@@ -50,9 +50,9 @@
           ng-repeat-start="binding in $ctrl.queryResult.bindings | limitTo:$ctrl.tableLimit | orderBy:$ctrl.sortProperty:$ctrl.sortReverse">
 
           <td ng-repeat='column in $ctrl.config.columns' style="cursor:pointer;"
-            ng-click="binding.epxanded = !binding.epxanded">
+            ng-click="binding.expanded = !binding.expanded">
             <div ng-if="$first" style="margin-right:1em;  cursor:pointer;"
-              ng-class="{ right : !binding.epxanded, down : binding.epxanded }" class="arrow"></div>{{
+              ng-class="{ right : !binding.expanded, down : binding.expanded }" class="arrow"></div>{{
             $ctrl.getCellValues(binding, column); }}
           </td>
           <td style="text-align: right;">
@@ -65,7 +65,7 @@
               </svg></a>
           </td>
         </tr>
-        <tr ng-repeat-end ng-if="binding.epxanded">
+        <tr ng-repeat-end ng-if="binding.expanded">
           <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0; max-width: 0px;">
             <div>
               <pre ng-if="binding.preview.value != null">{{ binding.preview.value }}</pre>

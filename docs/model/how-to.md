@@ -63,7 +63,7 @@ The metadata publisher has complete control over the names of the Databus identi
 
 1. **The account name**
 
-* The account name is chosen on account creation, i.e. when registering at the particular Datbaus instane. It is advised to use your personal username or the name of your institution/company. In other words, the account name is the identifier of the data owner/publisher. E.g. DBpedia publishes the regular releases under the account name _dbpedia_.
+* The account name is chosen on account creation, i.e. when registering at the particular Datbaus instance. It is advised to use your personal username or the name of your institution/company. In other words, the account name is the identifier of the data owner/publisher. E.g. DBpedia publishes the regular releases under the account name _dbpedia_.
 
 2. **The group name**
 

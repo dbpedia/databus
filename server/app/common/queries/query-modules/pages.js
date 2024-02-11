@@ -100,7 +100,7 @@ function createActivityChartData(bindings) {
   let date = new Date();
   date.setDate(1);
 
-  // Go back 12 month, substracting the monthly uploaded amount from the
+  // Go back 12 month, subtracting the monthly uploaded amount from the
   // total uploaded amount
   for (let i = 0; i < 12; i++) {
 

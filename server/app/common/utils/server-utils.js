@@ -49,7 +49,7 @@ class ServerUtils {
 
   /**
    * placeHolderMappings is a map string => string. This function replaces all
-   * occurrances of %key% in query with value.
+   * occurrences of %key% in query with value.
    */
   static formatTemplate(query, placeholderMappings) {
 

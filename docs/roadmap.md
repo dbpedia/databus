@@ -6,7 +6,7 @@ license can be any URI at the moment, however, these URIs are not validated and 
 
 ### Mappings
 
-We implemted a prototypical CSV to RDF conversion with TARQL in the Databus Download Client. We  to integrate a full RML engine. At the moment, "[FunMap: Efficient Execution of Functional Mappings for Knowledge Graph Creation](https://arxiv.org/abs/2008.13482)" by DBpedia Member TIB seems the best candidate.&#x20;
+We implemented a prototypical CSV to RDF conversion with TARQL in the Databus Download Client. We  to integrate a full RML engine. At the moment, "[FunMap: Efficient Execution of Functional Mappings for Knowledge Graph Creation](https://arxiv.org/abs/2008.13482)" by DBpedia Member TIB seems the best candidate.&#x20;
 
 ### More Download As Options
 

@@ -73,7 +73,7 @@ curl -X 'POST' \
 }'
 ```
 
-If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abtract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria). For a full list of inferrable properties check out the [autocompletion page](../auto-completion.md)
+If the Databus should NOT infer a certain metadatum (for example not auto-generating the `abstract` from the `description` field), it can be set explicitly and the Databus will accept it (if it fits its criteria). For a full list of inferable properties check out the [autocompletion page](../auto-completion.md)
 
 #### Property Description
 

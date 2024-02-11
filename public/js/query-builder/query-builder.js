@@ -228,7 +228,7 @@ class QueryBuilder {
 
       var facetUri = facetUris[i];
 
-      // We only add facets to the node if the facet is not overriden by any child nodes
+      // We only add facets to the node if the facet is not overridden by any child nodes
       if (!this.hasFacetOverride(node, facetUri)) {
 
         // We create the subquery while merging the facet settings from this node to the root of the query tree
@@ -246,7 +246,7 @@ class QueryBuilder {
     }
 
     // ======= SPECIAL TREATMENT OF VERSION/LATEST =======
-    // Treat as if overriden (leaf nodes already excluded)
+    // Treat as if overridden (leaf nodes already excluded)
     // ===================================================
     if (facetUri == 'http://purl.org/dc/terms/hasVersion') {
       for (var i in node.facetSettings[facetUri]) {
@@ -366,7 +366,7 @@ class QueryBuilder {
   }
 
   /**
-   * Create a list of all the node facets and all overriden ancestor facets that might not be explicitly
+   * Create a list of all the node facets and all overridden ancestor facets that might not be explicitly
    * included in the node facet list
    * @param {*} node 
    */
@@ -442,7 +442,7 @@ class QueryBuilder {
   }
 
   /**
-   * Appens a line to the global result prepending a specified number of tab characters
+   * Appends a line to the global result prepending a specified number of tab characters
    * @param {*} line 
    * @param {*} indent 
    */
@@ -453,7 +453,7 @@ class QueryBuilder {
   }
 
   /**
-   * Appens a line to the global result prepending a specified number of tab characters
+   * Appends a line to the global result prepending a specified number of tab characters
    * @param {*} line 
    * @param {*} indent 
    */

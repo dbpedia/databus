@@ -166,7 +166,7 @@ SELECT ?file WHERE
 
 ### Download and convert selected data
 
-In order to download the data we need to pass the query as the _`-s`_ argument. Additionaly we need to specify where the query needs to be asked to. This is done using the `-e` argument. Furthermore if we want to convert the files to _.nt_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. 
+In order to download the data we need to pass the query as the _`-s`_ argument. Additionally we need to specify where the query needs to be asked to. This is done using the `-e` argument. Furthermore if we want to convert the files to _.nt_ we need to specify if in the _`-f`_ parameter and finally we need to tell the client the desired compression. 
 
 ```
 java -jar target/databus-client-v2.1-beta.jar \

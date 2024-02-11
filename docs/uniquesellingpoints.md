@@ -6,7 +6,7 @@ description: >-
 
 # 🚀 Unique Features (Draft)
 
-## High-degree of Automation and Re-use
+## High-degree of Automation and Reuse
 
 Over three years, we implemented and designed the Databus to build a solid foundation for automating many tedious processes in Knowledge Engineering including upload, download, low-level conversions, quality tests, generating statistics and tracking provenance (includes private key signature for authenticity). We fireproofed it using the DBpedia Snapshot release process. The result is that we **saved 92% cost in work hours while being 10 times more productive** (increase in release frequency). In particular:
 
@@ -16,7 +16,7 @@ Over three years, we implemented and designed the Databus to build a solid found
 * concepts were inspired by solid frameworks such as Maven, Git/Github, Linked Data, Steam
 * License URLs are mapped to [Dalicc](https://dalicc.net) to make them machine-understandable (see [Roadmap](roadmap.md))
 * Mappings are collected centrally to transform data and can be re-used (see [Roadmap](roadmap.md))
-* Additional metadata is computed by re-usable apps called Mods, which detect compression and format (TrueType Mod), count triples and statistics (VOID Mod), online checks (OnlineCheck Mod), syntax and encoding analysis.
+* Additional metadata is computed by reusable apps called Mods, which detect compression and format (TrueType Mod), count triples and statistics (VOID Mod), online checks (OnlineCheck Mod), syntax and encoding analysis.
 * We envision a lot more smart Mods that provide a new class of applications built on Databus metadata, such as data search, classifying data with ontologies and contextualization, automatic patching/repair and automatic selection of data to train AI.
 
 ## Low-code Application Deployment
@@ -69,7 +69,7 @@ Analogous to [Feature Creep](https://en.wikipedia.org/wiki/Feature\_creep) in so
 
 ## Interoperability
 
-The DataID model is a stable vocabulary bult on DCAT (a W3C vocabulary to describe datasets), DCMI (Dublin Core Metadata Initiative vocabulary to describe resources) and Prov-O (W3C provenance vocabulary) and forms the core of the Databus. DataID and Databus patches several shortcomings of DCAT and DCMI:
+The DataID model is a stable vocabulary built on DCAT (a W3C vocabulary to describe datasets), DCMI (Dublin Core Metadata Initiative vocabulary to describe resources) and Prov-O (W3C provenance vocabulary) and forms the core of the Databus. DataID and Databus patches several shortcomings of DCAT and DCMI:
 
 * DataID/Databus contains the "right" kind of information to re-publish to other repositories automatically, including platforms such as Kaggle, CKAN, Zenodo as well as the automated generation of Data Management Plan (DMP) deliverables for e.g. Horizon Europe research projects (these were implemented by third-parties and not included with the Databus software).
 * Databus distinguishes between version of a dataset and the dataset artifact, an important individuation that allows to discover updates, i.e. new versions of the same dataset (artifact). Databus also distinguishes between compression (\~ dozen of [lossless compression formats](https://commons.apache.org/proper/commons-compress/)) and [IANA Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml) or mimetypes (over 1400 formats) and other formats that describe the actual format of files.

@@ -136,9 +136,9 @@ async function apiKeyTests() {
     // ======== Create already existing API Key =========
     try{
         response = await rp(options);
-        assert(false, 'creating already existing API key shouldnt be possible.')
+        assert(false, 'creating already existing API key shouldn't be possible.')
     } catch(err) {
-        assert(err.response.statusCode == 400, 'API key could be created. Shouldnt have been possible, because it already exists.');
+        assert(err.response.statusCode == 400, 'API key could be created. Shouldn't have been possible, because it already exists.');
     }
 
     // ========= Delete API Key ===========

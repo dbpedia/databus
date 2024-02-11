@@ -85,7 +85,7 @@ async function publishTest() {
         response = await rp(options);
         assert(false, 'should not be possible to publish non existent metadata')
     } catch (err) {
-        assert(err.response.statusCode == 400, 'empty metadata shoud not be publishibly.');
+        assert(err.response.statusCode == 400, 'empty metadata should not be publishibly.');
     }
 
     //     search doesnt work
@@ -103,7 +103,7 @@ async function publishTest() {
     // options.uri = `${process.env.DATABUS_RESOURCE_BASE_URL}/api/search?query=${params_nerd.ARTIFACT_NAME}&typeName=Artifact&partRequired=true`;
 
     // response = await rp(options);
-    // assert(response.statusCode == 200, "couldnt find test artifact")
+    // assert(response.statusCode == 200, "couldn't find test artifact")
 
     // // ========= Search non existing Data =========
 
@@ -139,9 +139,9 @@ async function publishTest() {
 
     try {
         await rp(options);
-        assert(false, 'invalid sparql query shouldnt work.')
+        assert(false, 'invalid sparql query shouldn't work.')
     } catch (err) {
-        assert(err.response.statusCode == 400, "invalid sparql query shouldnt work.")
+        assert(err.response.statusCode == 400, "invalid sparql query shouldn't work.")
     }
 
 }

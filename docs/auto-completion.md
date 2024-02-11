@@ -5,7 +5,7 @@ When trying to publish data on the Databus, the HTTP API accepts not only fully 
 ## Properties
 
 
-The following table shows a list of inferrable properties that can optionally be omitted in the input.
+The following table shows a list of inferable properties that can optionally be omitted in the input.
 
 ### Version
 | Property   | Value inferred from |

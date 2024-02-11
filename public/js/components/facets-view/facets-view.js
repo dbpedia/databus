@@ -152,7 +152,7 @@ function FacetsViewController($http, $scope) {
       // ---- IS_CHECKED
 
       // Prepare visible facet settings and autofill data based on the facet data returned by the API
-      // Create key base entries (unset, not overriden)
+      // Create key base entries (unset, not overridden)
       for (var key in result.data) {
 
         var facetData = result.data[key];

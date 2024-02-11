@@ -80,7 +80,7 @@ $shacl='<#title-version>
         sh:property [
 		sh:path dct:title ;
 		sh:severity sh:Violation ;
-		sh:message "Besides the required occurance of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:message "Besides the required occurrence of dct:title without language tag, dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . ';
 
@@ -120,7 +120,7 @@ $shacl='<#abstract-version>
 	sh:property [
 		sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "Besides the required occurance of dct:abstract without language tag, each occurance of dct:abstract must have less than 300 characters and each language must occur only once. "@en ;
+	    sh:message "Besides the required occurrence of dct:abstract without language tag, each occurrence of dct:abstract must have less than 300 characters and each language must occur only once. "@en ;
 	    sh:uniqueLang true;
 	    sh:maxLength 300 ;
 	] . ';
@@ -160,7 +160,7 @@ $shacl='<#description-version>
         sh:property [
 		sh:path dct:description ;
 		sh:severity sh:Violation ;
-		sh:message "Besides the required occurance of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
+		sh:message "Besides the required occurrence of dct:description without language tag, dct:title can be used with language tag, but each language only once."@en ;
 		sh:uniqueLang true ;
 	] . ';
 
