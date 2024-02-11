@@ -88,7 +88,7 @@ async function publishTest() {
         assert(err.response.statusCode == 400, 'empty metadata should not be publishibly.');
     }
 
-    //     search doesnt work
+    //     search doesn't work
     //     Error: connect ECONNREFUSED 127.0.0.1:8082
     //     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1247:16) {
     //   errno: -111,

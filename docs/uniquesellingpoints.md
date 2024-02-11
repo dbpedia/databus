@@ -79,7 +79,7 @@ The DataID model is a stable vocabulary built on DCAT (a W3C vocabulary to descr
 ## Standardized, de-central and scalable
 
 * implemented using the open W3C standards Linked Data, RDF, SPARQL, OWL, SHACL, DCAT, Prov-O complemented by our own stable DCAT extension DataID.
-* Building the Databus with Linked Data and SPARQL easily allows the Databus initative to scale regarding performance and extensibility. Databus provides stable, resolvable identifiers for account, group, dataset, version, distribution, file and collections, so it easy to:
+* Building the Databus with Linked Data and SPARQL easily allows the Databus initiative to scale regarding performance and extensibility. Databus provides stable, resolvable identifiers for account, group, dataset, version, distribution, file and collections, so it easy to:
   * comprise dataset collections of identifiers from different Databuses residing at different levels in one organisation (personal, team, project, department, whole organisation) and external Databus deployments.
   * use identifiers in other applications to provide additional information such as additional metadata, annotations and software-data dependencies
   * federate SPARQL queries over the Databus SPARQL endpoint with other Databuses, other SPARQL endpoints using Databus identifiers and Mods (our metadata enrichment extensions)
