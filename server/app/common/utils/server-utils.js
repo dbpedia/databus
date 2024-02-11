@@ -19,7 +19,7 @@ class ServerUtils {
       var exponentHex = exponentRaw.stream.hexDump(exponentStart, exponentEnd);
       var exponent = Hex.decode(exponentHex);
 
-      return { success: true, msg: { moduls: modulus, exponent: exponent } };
+      return { success: true, msg: { modulus: modulus, exponent: exponent } };
     }
     catch (err) {
       console.log(err)
