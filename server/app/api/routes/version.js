@@ -130,7 +130,7 @@ module.exports = function (router, protector) {
       req.params.version);
 
     if (!exists) {
-      res.status(204).send(`The verison <${versionUri}> does not exist.`);
+      res.status(204).send(`The version <${versionUri}> does not exist.`);
       return;
     }
 

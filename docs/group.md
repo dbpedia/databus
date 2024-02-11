@@ -118,7 +118,7 @@ dct:abstract
 	sh:property [
 		sh:path dct:abstract ;
 	    sh:severity sh:Violation ;
-	    sh:message "dct:abstract must have less than 300 characters and each language must occure only once. "@en ;
+	    sh:message "dct:abstract must have less than 300 characters and each language must occur only once. "@en ;
 	    sh:uniqueLang true;
 	    sh:maxLength 300 ;
 	] . 

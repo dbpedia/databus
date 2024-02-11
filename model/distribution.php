@@ -135,7 +135,7 @@ $shacl='<#has-compression>
 	a sh:PropertyShape ;
 	sh:targetClass databus:Part ;
 	sh:severity sh:Violation ;
-	sh:message """Required property databus:compression MUST occur exactly once AND have xsd:string as value AND should not inlcude a \'.\' in front """@en ;
+	sh:message """Required property databus:compression MUST occur exactly once AND have xsd:string as value AND should not include a \'.\' in front """@en ;
 	sh:pattern "^[a-z0-9]{1,8}$" ;
 	sh:path databus:compression;
 	sh:minCount 1 ;
@@ -299,7 +299,7 @@ TODO ??
 ##  Content variants
 TODO ??
 
-The shape `<#parts-are-distinguishable-by-cv>` relies on a ordering of results in the *GROUP BY* and consequentially *GROUP_CONCAT* instruction that is agnostic of the ordering of properties in the data. This seems to work for Apache JENA and Virtuoso but has not been tested with other SPARQL engines.
+The shape `<#parts-are-distinguishable-by-cv>` relies on a ordering of results in the *GROUP BY* and consequently *GROUP_CONCAT* instruction that is agnostic of the ordering of properties in the data. This seems to work for Apache JENA and Virtuoso but has not been tested with other SPARQL engines.
 
 <?php
 $owl='missing';

@@ -145,7 +145,7 @@ PUT /$username/$group/$artifact/$version
 | 200 | `OK` | Artifact version updated |
 | 201 | `CREATED` | Artifact version created | 
 | 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
-| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targeting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
 ### Remove Version
@@ -161,7 +161,7 @@ DELETE /$username/$group/$artifact/$version
 | Status Codes | Status | Description |
 | :--- | :--- | :--- | 
 | 204 | `NO CONTENT` | Artifact version deleted successfully |
-| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targeting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 
 
 ## Generic
@@ -193,5 +193,5 @@ PUT /system/publish
 | :--- | :--- | :--- | 
 | 200 | `OK` | Content created or updated |
 | 400 | `BAD REQUEST` | Request or request data was formatted incorrectly | 
-| 403 | `FORBIDDEN` | Invalid API Token or request targetting the namespace of another user | 
+| 403 | `FORBIDDEN` | Invalid API Token or request targeting the namespace of another user | 
 | 500 | `INTERNAL SERVER ERROR` | Internal server error | 

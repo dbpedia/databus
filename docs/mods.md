@@ -54,7 +54,7 @@ While the [Databus Model](model.md) is quite minimal and supports only necessary
 
 There are currently some basic examples for Databus Mods, applicable to various file types, showcasing for what Databus Mods can be used:
 
-1. Mimetype Mod: On the publishing of any file, this mod finds the correspnding mimetype and saves it
+1. Mimetype Mod: On the publishing of any file, this mod finds the corresponding mimetype and saves it
 2. VOID Mod: Collects [VOID](https://www.w3.org/TR/void/) metadata for RDF files and saves them in an SPARQL endpoint.
 3. Filemetrics Mod: Collects some addidional metrics not captured by the minimal model for any file, e.g. checking if it is sorted, the uncompressed size and some more
 

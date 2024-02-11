@@ -41,7 +41,7 @@ and then copy raw links to file data:
 
 For example a link to our readme as of July 2023 will be: [https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md](https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md)
 
-**!NOTE! If you use links referring not to commit, but to branch, the files there may be changing over time, which will break corrspondence with the file hashes stored in Databus**
+**!NOTE! If you use links referring not to commit, but to branch, the files there may be changing over time, which will break correspondence with the file hashes stored in Databus**
 
 #### Google Drive
 
