@@ -1,5 +1,10 @@
 <%- include('header') -%>
 
+  <style>
+    
+
+  </style>
+
 
   <script src='/node_modules/@triply/yasr/build/yasr.min.js'></script>
   <div ng-controller="SparqlEditorController">
@@ -23,26 +28,26 @@
     </section>
 
     <div class="collection-editor-header" style="padding: 0;">
-        <div style="padding: 0em 1em;">
-          <!--Tabs-->
-          <div class="collection-editor-tabs" style="flex-wrap: wrap;">
+      <div style="padding: 0em 1em;">
+        <!--Tabs-->
+        <div class="collection-editor-tabs" style="flex-wrap: wrap;">
 
 
-            <div class="collection-editor-tab" ng-repeat="queryPage in queryData.pages track by $index"
-              ng-class="{ 'is-active' : $index == queryData.activeTab }" style="display: flex; align-items: center;
+          <div class="collection-editor-tab" ng-repeat="queryPage in queryData.pages track by $index"
+            ng-class="{ 'is-active' : $index == queryData.activeTab }" style="display: flex; align-items: center;
               padding-left: 0; padding-right: 16px;">
 
-              <div ng-click="goToTab($index)" class="section-label"
-                style="min-width: 80px; margin: 0; padding: 1em 1.5em">{{ queryPage.name }}</div>
-              <databus-icon shape="'close'" size="20" ng-click="deleteQueryPage($index)"></databus-icon>
-            </div>
+            <div ng-click="goToTab($index)" class="section-label"
+              style="min-width: 80px; margin: 0; padding: 1em 1.5em">{{ queryPage.name }}</div>
+            <databus-icon shape="'close'" size="20" ng-click="deleteQueryPage($index)"></databus-icon>
+          </div>
 
-            <div class="collection-editor-tab" ng-click="createQueryPage();" style="
+          <div class="collection-editor-tab" ng-click="createQueryPage();" style="
             display: flex; align-items: center; margin-left: 2em; padding-left: 0; padding-right: 0;">
-              <databus-icon shape="'add-thick'" size="22" ng-click="deleteQueryPage($index)"></databus-icon>
+            <databus-icon shape="'add-thick'" size="22"></databus-icon>
 
-              <div class="section-label" style="margin-left: 10px;">New Query</div>
-            </div>
+            <div class="section-label" style="margin-left: 10px;">New Query</div>
+          </div>
 
 
         </div>
@@ -55,21 +60,32 @@
         margin-top: 2em; ">
 
         <input type="text" class="input" ng-model="queryData.pages[queryData.activeTab].endpoint"
-          ng-change="saveToStorage()" style="width: 600px;"
-          placeholder="SPARQL endpoint URL">
+          ng-change="saveToStorage()" style="width: 600px;" placeholder="SPARQL endpoint URL">
 
-        <better-dropdown root-node="editor.exampleQueries" on-node-clicked="onExampleQueryClicked(node)"></better-dropdown>
+        <better-dropdown root-node="editor.exampleQueries"
+          on-node-clicked="onExampleQueryClicked(node)"></better-dropdown>
       </div>
 
 
-      <yasqe-text has-send="true" on-send="send()" on-change="saveToStorage()" query="queryData.pages[queryData.activeTab].query"></yasqe-text>
+      <yasqe-text has-send="true" on-send="send()" on-change="saveToStorage()"
+        query="queryData.pages[queryData.activeTab].query"></yasqe-text>
 
+    </section>
+
+    <section class="section" ng-if="queryData.pages[queryData.activeTab].err">
+      <div class="error-box">
+        <h1>{{ queryData.pages[queryData.activeTab].err.statusText }}</h1>
+        <div>{{ queryData.pages[queryData.activeTab].err.data }}</div>
+      </div>
     </section>
 
 
     <section class="section" style="min-height: 500px; padding-top: 1.2em;">
-        <yasr-view ng-if="editor.result" data="editor.result"></yasr-view>
+      <yasr-view ng-if="editor.result" data="editor.result"></yasr-view>
     </section>
+
+
+
 
   </div>
 

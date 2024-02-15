@@ -10619,7 +10619,7 @@ template {
 }
 .databus-navbar .databus-navbar-item.link {
   cursor: pointer;
-  color: #d5d5d5;
+  color: #c4c4c4;
   padding: 0em 0.75em;
 }
 .databus-navbar .databus-navbar-item.link:hover {
@@ -10885,6 +10885,37 @@ template {
   background-size: 150px;
 }
 
+.yasqe .yasqe_buttons {
+  right: 16px !important;
+  top: 16px !important;
+}
+
+.yasqe .yasqe_buttons .yasqe_share {
+  display: none;
+}
+
+.yasqe .yasqe_buttons .yasqe_queryButton {
+  margin-right: 0.2em;
+  margin-top: 0.2em;
+}
+
+.error-box {
+  background-color: #ffdbdb;
+  color: #f13232;
+  border: 1px solid #f13232;
+  padding: 1em;
+  white-space: pre-line;
+  display: grid;
+}
+
+.error-box h1 {
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
+
 * {
   margin: 0px;
   padding: 0px;
@@ -11117,15 +11148,6 @@ body.has-navbar-fixed-top {
 
 .element-btn.inactive {
   fill: rgb(200, 200, 200);
-}
-
-.yasqe .yasqe_buttons .yasqe_share {
-  display: none;
-}
-
-.yasqe .yasqe_buttons .yasqe_queryButton {
-  margin-right: 0.2em;
-  margin-top: 0.2em;
 }
 
 .editable-collection-element {

@@ -255,16 +255,24 @@ ORDER BY DESC (STR(?v)) LIMIT 1`
 
     var queryPage = $scope.queryData.pages[$scope.queryData.activeTab];
 
-    var res = await $http.post(queryPage.endpoint, { query: queryPage.query });
+    try {
+      
+      var res = await $http.post(queryPage.endpoint, { query: queryPage.query });
 
-    if ($scope.resultCache == null) {
-      $scope.resultCache = {};
+      if ($scope.resultCache == null) {
+        $scope.resultCache = {};
+      }
+
+      $scope.resultCache[queryPage.name] = res.data;
+      $scope.saveResultCache();
+
+      delete queryPage.err;
+      $scope.editor.result = res.data;
+    } catch(err) {
+      console.log(err);
+      queryPage.err = err;
     }
 
-    $scope.resultCache[queryPage.name] = res.data;
-    $scope.saveResultCache();
-
-    $scope.editor.result = res.data;
     $scope.$apply();
   }
 

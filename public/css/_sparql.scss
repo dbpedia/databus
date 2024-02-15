@@ -1,0 +1,31 @@
+
+.yasqe .yasqe_buttons {
+  right: 16px !important;
+  top: 16px !important;
+}
+
+.yasqe .yasqe_buttons .yasqe_share {
+  display: none;
+}
+
+.yasqe .yasqe_buttons .yasqe_queryButton {
+  margin-right: .2em;
+  margin-top: .2em;
+}
+
+.error-box {
+  background-color: #ffdbdb;
+  color:#f13232;
+  border: 1px solid #f13232;
+  padding: 1em;
+  white-space: pre-line;
+  display: grid;
+}
+
+.error-box h1 {
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
