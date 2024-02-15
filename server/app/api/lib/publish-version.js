@@ -16,6 +16,8 @@ var autocompleter = require('./dataid-autocomplete.js');
 var fileAnalyzer = require('../../common/file-analyzer.js');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const DatabusMessage = require('../../common/databus-message.js');
+const { log } = require('console');
+const { del } = require('request');
 
 
 async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
@@ -81,60 +83,66 @@ async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
  */
 async function constructInput(expandedGraph, versionGraphUri, logger) {
 
-  var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
-  var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATABUS_CONTENT_VARIANT);
-  logger.debug(versionGraphUri, `Detected CV-graphs`, cvGraphs);
+  try {
+    var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
+    var cvGraphs = JsonldUtils.getSubPropertyGraphs(expandedGraph, DatabusUris.DATABUS_CONTENT_VARIANT);
+    logger.debug(versionGraphUri, `Detected CV-graphs`, cvGraphs);
 
-  var distributionUris = versionGraph[DatabusUris.DCAT_DISTRIBUTION];
+    var distributionUris = versionGraph[DatabusUris.DCAT_DISTRIBUTION];
 
-  var dataIdGraphs = [];
-  dataIdGraphs.push(JSON.parse(JSON.stringify(versionGraph)));
-  versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
+    var dataIdGraphs = [];
+    dataIdGraphs.push(JSON.parse(JSON.stringify(versionGraph)));
+    versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [];
 
-  var totalTripleCount = 0;
-  var step = 100;
+    var totalTripleCount = 0;
+    var step = 100;
 
-  var versionGraphCopy = JSON.parse(JSON.stringify(versionGraph));
-  var distributionlessGraphs = [versionGraphCopy].concat(cvGraphs);
+    var versionGraphCopy = JSON.parse(JSON.stringify(versionGraph));
+    var distributionlessGraphs = [versionGraphCopy].concat(cvGraphs);
 
-  // Create sub-dataids with only 100 parts at a time
-  // This will avoid long running or failing construct queries for large inputs
-  for (var i = 0; i < distributionUris.length; i += step) {
+    // Create sub-dataids with only 100 parts at a time
+    // This will avoid long running or failing construct queries for large inputs
+    for (var i = 0; i < distributionUris.length; i += step) {
 
-    var distributionSubset = distributionUris.slice(i, Math.min(distributionUris.length, i + step))
-    var slice = Array.from(distributionlessGraphs);
+      var distributionSubset = distributionUris.slice(i, Math.min(distributionUris.length, i + step))
+      var slice = Array.from(distributionlessGraphs);
 
-    // Add links from Dataset graph to each entry in the subset
-    versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
-    for (var j = 0; j < distributionSubset.length; j++) {
-      versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push(distributionSubset[j]);
-      slice.push(JsonldUtils.getGraphById(expandedGraph, distributionSubset[j][DatabusUris.JSONLD_ID]));
+      // Add links from Dataset graph to each entry in the subset
+      versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION] = [];
+      for (var j = 0; j < distributionSubset.length; j++) {
+        versionGraphCopy[DatabusUris.DCAT_DISTRIBUTION].push(distributionSubset[j]);
+        slice.push(JsonldUtils.getGraphById(expandedGraph, distributionSubset[j][DatabusUris.JSONLD_ID]));
+      }
+
+      var triples = await constructor.executeConstruct(slice, constructVersionQuery);
+      var tripleCount = DatabusUtils.lineCount(triples);
+      logger.debug(versionGraphUri, `Construct fetched ${tripleCount} triples from subgraph`);
+
+      totalTripleCount += tripleCount;
+
+      var unflattenedJsonLd = await jsonld.fromRDF(triples);
+
+      var subGraphs = await jsonld.flatten(unflattenedJsonLd);
+      subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATABUS_PART);
+
+      // Add the constructed graphs to the result graph
+      for (var subGraph of subGraphs) {
+        dataIdGraphs.push(subGraph);
+        var distributionGraphEntry = {};
+        distributionGraphEntry[DatabusUris.JSONLD_ID] = subGraph[DatabusUris.JSONLD_ID];
+        versionGraph[DatabusUris.DCAT_DISTRIBUTION].push(distributionGraphEntry);
+      }
     }
 
-    var triples = await constructor.executeConstruct(slice, constructVersionQuery);
-    var tripleCount = DatabusUtils.lineCount(triples);
-    logger.debug(versionGraphUri, `Construct fetched ${tripleCount} triples from subgraph`);
-
-    totalTripleCount += tripleCount;
-
-    var subGraphs = await jsonld.flatten(await jsonld.fromRDF(triples));
-    subGraphs = JsonldUtils.getTypedGraphs(subGraphs, DatabusUris.DATABUS_PART);
-
-    // Add the constructed graphs to the result graph
-    for (var subGraph of subGraphs) {
-      dataIdGraphs.push(subGraph);
-      var distributionGraphEntry = {};
-      distributionGraphEntry[DatabusUris.JSONLD_ID] = subGraph[DatabusUris.JSONLD_ID];
-      versionGraph[DatabusUris.DCAT_DISTRIBUTION].push(distributionGraphEntry);
+    if (totalTripleCount == 0) {
+      return null;
     }
-  }
 
-  if (totalTripleCount == 0) {
-    return null;
+    logger.debug(versionGraphUri, `${tripleCount} triples selected via construct query.`, dataIdGraphs);
+    return dataIdGraphs;
+  } catch(err) {
+    throw Error(err);
   }
-
-  logger.debug(versionGraphUri, `${tripleCount} triples selected via construct query.`, dataIdGraphs);
-  return dataIdGraphs;
 }
 
 function validateDatasetUri(dataidGraphs, accountUri, logger) {
@@ -221,7 +229,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   //console.log(proofGraph);
   // Validate the proof 
   //console.log(dataidGraphs);
-  
+
   var validationSuccess = await signer.validate(signer.canonicalize(dataidGraphs), proofGraph);
 
   if (!validationSuccess) {
@@ -245,6 +253,15 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
     var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionGraphUri);
     logger.debug(versionGraphUri, `Processing version <${versionGraphUri}>`, versionGraph);
 
+    // Run SHACL validation
+    var shaclResult = await shaclTester.validateVersionInputRDF(expandedGraph);
+
+    console.log(shaclResult);
+    // Return failure with SHACL validation message
+    if (!shaclResult.isSuccess) {
+      logger.error(versionGraphUri, `Input validation failed`, shaclResult);
+      return 400;
+    }
 
     // Run construct query
     var dataidGraphs = await constructInput(expandedGraph, versionGraphUri, logger);
@@ -268,9 +285,7 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
     autocompleter.autocomplete(dataidGraphs, logger);
     logger.debug(versionGraphUri, `Input after auto-completion`, dataidGraphs);
 
-
     logger.debug(versionGraphUri, `fetch-file-properties is set to ${fetchFileProperties}`, null);
-
 
     // Verify parts: SHA256SUM, BYTESIZE, etc
     if (fetchFileProperties == true || fetchFileProperties == null) {
@@ -285,8 +300,8 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
     var cvGraphs = JsonldUtils.getSubPropertyGraphs(dataidGraphs, DatabusUris.DATABUS_CONTENT_VARIANT);
 
     // Apply data fix for byteSize, so omitting DECIMAL passes the SHACL test
-    for(var distribution of distributionGraphs) {
-      if(distribution[DatabusUris.DCAT_BYTESIZE] != null && distribution[DatabusUris.DCAT_BYTESIZE].length > 0) {
+    for (var distribution of distributionGraphs) {
+      if (distribution[DatabusUris.DCAT_BYTESIZE] != null && distribution[DatabusUris.DCAT_BYTESIZE].length > 0) {
         distribution[DatabusUris.DCAT_BYTESIZE][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DECIMAL;
       }
     }
@@ -307,15 +322,6 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
       return 400;
     }
 
-    // Run SHACL validation
-    var shaclResult = await shaclTester.validateVersionRDF(dataidGraphs);
-
-    // Return failure with SHACL validation message
-    if (!shaclResult.isSuccess) {
-      logger.error(versionGraphUri, `SHACL validation failed`, shaclResult);
-      return 400;
-    }
-
     logger.debug(versionGraphUri, `SHACL validation successful`, shaclResult);
     dataidGraphs = await jsonld.flatten(dataidGraphs);
     validationCode = await createOrValidateSignature(dataidGraphs, accountUri, logger);
@@ -325,6 +331,15 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
     }
 
     logger.debug(versionGraphUri, `Signature validation successful.`, null);
+
+    // Run SHACL validation
+    var shaclResult = await shaclTester.validateVersionRDF(dataidGraphs);
+
+    // Return failure with SHACL validation message
+    if (!shaclResult.isSuccess) {
+      logger.error(versionGraphUri, `SHACL validation failed`, shaclResult);
+      return 400;
+    }
 
     // Create compacted graph
     var compactedGraph = await jsonld.compact(dataidGraphs, defaultContext);
@@ -343,11 +358,13 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
 
     // Return failure
     if (!publishResult.isSuccess) {
-      logger.error(versionGraphUri, `Internal database error`, null);
-      return 500;
+      var statusCode = publishResult.statusCode;
+      delete publishResult.statusCode;
+      logger.error(versionGraphUri, `Failed to save version to database.`, publishResult);
+      return statusCode;
     }
 
-    if(process.send != undefined) {
+    if (process.send != undefined) {
       process.send({
         id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
         resource: versionGraphUri

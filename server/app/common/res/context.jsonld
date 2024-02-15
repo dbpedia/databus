@@ -31,6 +31,7 @@
          "@type": "@id"
       },
       "Version": "databus:Version",
+      "Dataset": "dcat:Dataset",
       "publisher": {
          "@id": "dct:publisher",
          "@type": "@id"

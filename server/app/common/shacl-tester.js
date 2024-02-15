@@ -23,6 +23,7 @@ instance.validateJsonld = async function(rdf, shaclFile) {
 
   try {
 
+
     var options = {
       formData: {
         graph: JSON.stringify(rdf),
@@ -58,7 +59,6 @@ instance.validateJsonld = async function(rdf, shaclFile) {
 
   } catch (err) {
 
-    console.log(err);
     if (err.response == undefined) {
       return { isSuccess: false, message: err };
     }
@@ -67,6 +67,9 @@ instance.validateJsonld = async function(rdf, shaclFile) {
   }
 }
 
+instance.validateVersionInputRDF = async function (rdf) {
+  return await instance.validateJsonld(rdf, './shacl/version-input.shacl');
+}
 
 instance.validateGroupRDF = async function (rdf) {
   return await instance.validateJsonld(rdf, './res/shacl/group.shacl');

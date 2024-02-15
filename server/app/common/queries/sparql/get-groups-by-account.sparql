@@ -6,7 +6,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 
 SELECT DISTINCT ?group as ?uri ?title ?abstract ?description WHERE {
-
     ?group a databus:Group .    
     ?group databus:account <%ACCOUNT_URI%> .
     OPTIONAL { ?group dct:title ?title. }

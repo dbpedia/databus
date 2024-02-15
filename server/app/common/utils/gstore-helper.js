@@ -43,7 +43,7 @@ class GstoreHelper {
       return { isSuccess: true };
     } catch (err) {
       console.log(err);
-      return { isSuccess: false };
+      return { isSuccess: false, message: err.message, statusCode: err.statusCode };
     }
 
   }

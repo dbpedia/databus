@@ -1,6 +1,6 @@
 var rdfstore = require('rdfstore');
 var self = {};
-
+var jsonld = require('jsonld');
 
 // Possibly exec stuff on CLI
 const { exec } = require('child_process');
@@ -14,13 +14,19 @@ function escapeQuotes(value) {
  * @param {*} jsonld
  * @param {*} query 
  */
-self.executeConstruct = async function (jsonld, query) {
+self.executeConstruct = async function (data, query) {
 
   try {
 
     var store = await self.createStore();
-    await self.loadJsonld(store, jsonld);
 
+    var nquads = await jsonld.toRDF(data, {
+      format: 'application/n-quads', eventHandler: function (event) {
+        console.log(event);
+      }
+    });
+
+    await self.loadJsonld(store, nquads);
     var quads = await self.queryStore(store, query);
     var triples = self.convertToN3(quads);
 
@@ -81,7 +87,8 @@ self.queryStore = function (store, query) {
 self.loadJsonld = function (store, jsonld) {
   return new Promise(function (resolve, reject) {
     try {
-      store.load("application/ld+json", jsonld, function (err, results) {
+
+      store.load("text/turtle", jsonld, function (err, results) {
         if (err != undefined) {
           reject(err);
         } else {
@@ -93,6 +100,7 @@ self.loadJsonld = function (store, jsonld) {
       reject(err);
     }
   });
+
 }
 
 self.createStore = function () {

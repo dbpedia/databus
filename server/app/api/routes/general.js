@@ -10,6 +10,8 @@ const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const DatabusLogger = require('../../common/databus-logger');
 
+const MSG_NO_GRAPH_FOUND = `No processable graphs found in the input. Your input has to contain at least one graph of either type databus:Group, databus:Artifact or databus:Version.`
+
 module.exports = function (router, protector, webdav) {
 
   router.get('/sparql', cors(), function (req, res, next) {
@@ -30,9 +32,6 @@ module.exports = function (router, protector, webdav) {
 
 
     var query = req.body.query;
-
-
-   
 
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var accept = req.headers['accept']
@@ -129,7 +128,7 @@ module.exports = function (router, protector, webdav) {
       }
 
       if(processedResources == 0) {
-        logger.error(null, `No processable graphs found in the input.`, req.body);
+        logger.error(null, MSG_NO_GRAPH_FOUND, req.body);
         res.status(400).json(logger.getReport());
         return;
       }

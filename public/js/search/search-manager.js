@@ -59,12 +59,16 @@ class SearchManager {
             return;
         }
 
+        /*
+
         var options = {
             method: 'GET',
-            url: `/${ auth.info.accountName } `,
+            url: `/${ auth.info.accountName }`,
             headers: {
                 'Accept': 'application/ld+json',
-                'X-Jsonld-Formatting': 'flatten'
+                'X-Jsonld-Formatting': 'flatten',
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
             }
         }
 
@@ -82,7 +86,7 @@ class SearchManager {
 
             this.searchExtensions.push(searchExtension);
 
-        }
+        })*/
     }
 }
 

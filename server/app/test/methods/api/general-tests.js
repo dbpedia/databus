@@ -62,7 +62,7 @@ async function publishTest() {
     // response = await rp(options);
     // assert(response.statusCode == 204, `Could not delete version ${options.uri}.`);
 
-    // ======== Publish Dataid =======
+    // ======== Publish version =======
     options.method = "POST";
     options.headers = { "x-api-key": params_nerd.APIKEY };
     options.resolveWithFullResponse = true;
@@ -79,7 +79,7 @@ async function publishTest() {
     let response = await rp(options);
     assert(response.statusCode == 200, 'Nerdy metadata could not be published.');
 
-    // ======== Publish invalid Dataid =======
+    // ======== Publish invalid version =======
     delete options.body;
     try {
         response = await rp(options);
@@ -87,6 +87,32 @@ async function publishTest() {
     } catch (err) {
         assert(err.response.statusCode == 400, 'empty metadata shoud not be publishibly.');
     }
+
+    /*
+
+    // ======== Publish malformed version (URI newlines) =======
+    options.body = ServerUtils.formatJsonTemplate(require('../../templates/version.json'), {
+        DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
+        ACCOUNT: params_nerd.ACCOUNT_NAME,
+        GROUP: params_nerd.GROUP_NAME,
+        ARTIFACT: params_nerd.ARTIFACT_NAME,
+        VERSION: params_nerd.VERSION_NAME
+    });
+
+    options.body["@graph"]["@id"] =
+        `${process.env.DATABUS_RESOURCE_BASE_URL}/${params_nerd.ACCOUNT_NAME}/${params_nerd.GROUP_NAME}/new\nline/${params_nerd.VERSION_NAME}`;
+
+    try {
+        response = await rp(options);
+        assert(false, 'Should not be possible to publish metadata with newlines in URIs')
+    } catch (err) {
+        if (err.response != null) {
+            assert(err.response.statusCode == 400, 'Metadata with newlines in URIs should not be publishable and not crash the server.');
+        } else {
+            throw (err);
+        }
+    }
+    */
 
     //     search doesnt work
     //     Error: connect ECONNREFUSED 127.0.0.1:8082

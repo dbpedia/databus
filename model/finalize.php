@@ -58,6 +58,7 @@ function headerFooterShacl($shaclDir){
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix db: <https://databus.dbpedia.org/sys/ont/> .
+@prefix prov: <http://www.w3.org/ns/prov-o#> .
 
 ";
 

@@ -47,7 +47,8 @@ $shacl='<#version-exists>
 
 $example='"@type": "databus:Version",';
 
-$context='"Version": 	"databus:Version" ';
+$context='"Version": 	"databus:Version",
+"Dataset": "dcat:Dataset" ';
 		
 table($section,$sectionExampleURI,$owl,$shacl,$example,$context);
 ?>
@@ -265,7 +266,13 @@ $owl='prov:wasDerivedFrom a owl:ObjectProperty ;
     rdfs:range prov:Entity .
 ';
 
-$shacl='';
+$shacl='<#was-derived-from>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Version ;
+	sh:severity sh:Violation ;
+	sh:message "Value of prov:wasDerivedFrom from must be a valid IRI."@en ;
+	sh:path prov:wasDerivedFrom ;
+	sh:nodeKind sh:IRI .';
 
 $example='"wasDerivedFrom": "https://databus.dbpedia.org/dbpedia/generic/labels/2022.09.01",';
 
@@ -356,7 +363,7 @@ $shacl='<#has-group>
 	a sh:NodeShape;
 	sh:targetClass databus:Version ;
 	sh:sparql [
-		sh:message "Dataset URI must contain the group URI of the associated group." ;
+		sh:message "Version URI must contain the group URI of the associated group." ;
 		sh:prefixes databus: ;
     sh:select """
 			SELECT $this ?group

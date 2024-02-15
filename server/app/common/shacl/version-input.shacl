@@ -1,0 +1,34 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix databus: <https://dataid.dbpedia.org/databus#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcv: <https://dataid.dbpedia.org/databus-cv#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix db: <https://databus.dbpedia.org/sys/ont/> .
+@prefix prov: <http://www.w3.org/ns/prov-o#> .
+
+# TODO: Auto-generate this and provide as resource instead of full SHACL
+
+<#version-exists>
+	a sh:NodeShape ;
+	sh:targetNode databus:Version ;
+	sh:property [
+	  sh:path [ sh:inversePath rdf:type ] ;
+	  sh:minCount 1 ;
+	  sh:maxCount 1 ;
+	  sh:message "Exactly one subject with an rdf:type of databus:Version must occur."@en ;
+	] . 
+
+<#has-distribution>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Version ;
+	sh:severity sh:Violation ;
+	sh:message "Required property dcat:distribution MUST occur at least once."@en ;
+	sh:path dcat:distribution;
+	sh:minCount 1 .
