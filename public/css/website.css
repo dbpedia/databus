@@ -10099,10 +10099,13 @@ label.panel-block:hover {
 .entity-card .entity-card-header {
   display: flex;
   align-items: center;
-  margin-bottom: -4px;
 }
 .entity-card .entity-card-header .title {
   font-size: 1.2em;
+  margin-bottom: 4px;
+}
+.entity-card .entity-card-header uri-breadcrumbs {
+  font-size: 0.9em;
 }
 .entity-card .entity-card-content {
   margin-top: 0.5em;
