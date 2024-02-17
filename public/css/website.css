@@ -29,6 +29,15 @@
   src: url("./../fonts/Roboto-Bold.ttf");
   font-weight: bold;
 }
+@font-face {
+  font-family: "Inter";
+  src: url("./../fonts/Inter-Regular.ttf");
+}
+@font-face {
+  font-family: "Inter";
+  src: url("./../fonts/Inter-Bold.ttf");
+  font-weight: 600;
+}
 .collection-summary.table {
   background-color: transparent;
 }
@@ -10077,6 +10086,11 @@ label.panel-block:hover {
   transition-duration: 0.5s;
 }
 
+.entity-card {
+  padding: 1.2em;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+}
 .entity-card .entity-card-icon {
   width: auto;
   height: 52px;
@@ -10085,11 +10099,17 @@ label.panel-block:hover {
 .entity-card .entity-card-header {
   display: flex;
   align-items: center;
+  margin-bottom: -4px;
+}
+.entity-card .entity-card-header .title {
+  font-size: 1.2em;
 }
 .entity-card .entity-card-content {
   margin-top: 0.5em;
 }
 .entity-card .entity-card-footer {
+  font-size: 0.8em;
+  color: #626568;
   margin-top: 0.5em;
 }
 
@@ -10682,6 +10702,7 @@ template {
 .databus-navbar .nav-search .results .result-item {
   padding: 0.35em 0.7em;
   display: flex;
+  align-items: center;
   cursor: pointer;
   overflow: hidden;
 }
@@ -10704,7 +10725,7 @@ template {
   color: #e7e7e7 !important;
 }
 .databus-navbar .nav-search .results .result-item .item-header {
-  display: flex;
+  display: box;
   color: white;
 }
 .databus-navbar .nav-search .results::-webkit-scrollbar {
@@ -10745,11 +10766,12 @@ template {
   fill: #a7a7a7;
 }
 .databus-navbar .nav-search .result-item type-tag {
-  margin-right: 8px;
+  margin-right: 12px;
 }
 .databus-navbar .nav-search .result-item .item-label {
   font-weight: 600;
   margin-right: 8px;
+  margin-bottom: -4px;
 }
 .databus-navbar .nav-search .result-item .item-abstract {
   color: white;
@@ -10923,9 +10945,11 @@ template {
 
 body,
 html {
-  font-family: "PT Sans", sans-serif;
+  font-family: "Inter", "PT Sans", sans-serif;
   text-rendering: optimizeLegibility;
   line-height: 1.5em;
+  font-size: 16px;
+  color: rgb(95, 99, 104);
   background: #fff;
 }
 

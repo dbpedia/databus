@@ -32,9 +32,11 @@
 
 body,
 html {
-  font-family: 'PT Sans', sans-serif;
+  font-family: 'Inter', 'PT Sans', sans-serif;
   text-rendering: optimizeLegibility;
   line-height: 1.5em;
+  font-size: 16px;
+  color: rgb(95, 99, 104);
   background: #fff;
 }
 

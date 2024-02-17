@@ -1,10 +1,10 @@
-<div class="entity-card" style="padding: 1em; border: 1px solid #dbdbdb; border-radius: 0em;">
+<div class="entity-card">
   <div class="entity-card-header">
     <img class="entity-card-icon" ng-if="$ctrl.imageUrl" ng-src="{{ $ctrl.imageUrl }}" />
     <type-tag width="48" height="48" style="margin-right:12px" ng-if="$ctrl.type" type="$ctrl.type"></type-tag>
     <div class="dataset-name">
       <a ng-href="{{ $ctrl.uri }}">
-        <p id="const" class="title is-6 search-result" ng-bind-html="$ctrl.formatResult($ctrl.label)"></p>
+        <p id="const" class="title search-result" ng-bind-html="$ctrl.formatResult($ctrl.label)"></p>
       </a>
       <div ng-if="$ctrl.uri" class="subtitle is-6 has-text-link">
         <uri-breadcrumbs absolute="$ctrl.absolute" uri="$ctrl.uri"></uri-breadcrumbs>
@@ -17,6 +17,6 @@
     </div>
   </div>
   <div class="entity-card-footer" ng-if="$ctrl.date">
-    <div style="color: #bbb">{{ $ctrl.date }}</div>
+    <div>{{ $ctrl.date }}</div>
   </div>
 </div>

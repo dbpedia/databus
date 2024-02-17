@@ -189,6 +189,7 @@
             .result-item {
                 padding: .35em .7em;
                 display: flex;
+                align-items: center;
                 cursor: pointer;
                 overflow: hidden;
 
@@ -217,7 +218,7 @@
                 }
 
                 .item-header {
-                    display: flex;
+                    display: box;
                     color: white
                 }
             }
@@ -277,12 +278,13 @@
         }
 
         .result-item type-tag {
-            margin-right: 8px;
+            margin-right: 12px;
         }
 
         .result-item .item-label {
             font-weight: 600;
             margin-right: 8px;
+            margin-bottom: -4px;
         }
 
         .result-item .item-abstract {

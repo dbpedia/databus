@@ -144,6 +144,10 @@
 
 .entity-card {
 
+  padding: 1.2em;
+  border: 1px solid #dbdbdb; 
+  border-radius: 8px;
+
   .entity-card-icon {
     width: auto;
     height: 52px;
@@ -153,6 +157,12 @@
   .entity-card-header {
     display: flex;
     align-items: center;
+    margin-bottom: -4px;
+  }
+
+  .entity-card-header .title {
+    font-size: 1.2em;
+
   }
 
   .entity-card-content {
@@ -160,6 +170,8 @@
   }
 
   .entity-card-footer {
+    font-size: .8em;
+    color: #626568;
     margin-top: 0.5em;
   }
 }
