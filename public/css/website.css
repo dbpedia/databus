@@ -35,7 +35,7 @@
 }
 @font-face {
   font-family: "Inter";
-  src: url("./../fonts/Inter-Bold.ttf");
+  src: url("./../fonts/Inter-SemiBold.ttf");
   font-weight: 600;
 }
 .collection-summary.table {
@@ -10087,7 +10087,7 @@ label.panel-block:hover {
 }
 
 .entity-card {
-  padding: 1.2em;
+  padding: 1.1em;
   border: 1px solid #dbdbdb;
   border-radius: 8px;
 }
