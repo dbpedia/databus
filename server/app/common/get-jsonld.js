@@ -35,6 +35,9 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
 
     var result = JSON.parse(await rp(options));
 
+    console.log(formatting);
+    console.log(process.env.DATABUS_CONTEXT_URL);
+
     if (formatting == undefined || formatting == 'compacted' || formatting == 'compact') {
       // Single out jsonld in order to compact the result with the databus context
       var result = await jsonld.compact(result, defaultContext);
@@ -46,6 +49,7 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
       var result = await jsonld.flatten(result);
     }
 
+    console.log(result);
     return result;
   } catch (err) {
     console.log(err);
