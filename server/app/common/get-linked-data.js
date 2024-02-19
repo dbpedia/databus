@@ -25,8 +25,13 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
     accept = HttpStrings.CONTENT_TYPE_JSONLD;
   }
 
+  let firstAccept = accept;
+
   let indexOfComma = accept.indexOf(",");
-  let firstAccept = accept.substring(0, indexOfComma);
+
+  if(indexOfComma >= 0) {
+    firstAccept = accept.substring(0, indexOfComma);
+  }
 
   console.log(firstAccept);
   console.log(HttpStrings.CONTENT_TYPE_JSONLD);
