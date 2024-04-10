@@ -32,7 +32,8 @@
 
   * [API](docs/usage/api/README.md)
   * [Databus Mods](docs/mods.md)
-  * [Databus Client](docs/databus-client.md)
+  * [Databus Client](docs/usage/databus_client.md)
+  * [Integration with CI (Jenkins)](docs/usage/ci.md)
 * [Running Your Own Databus Server](docs/running-your-own-databus-server/running-own-server.md)
   * [Run with Docker](docs/running-your-own-databus-server/run-with-docker.md)
   * [Configuration](docs/running-your-own-databus-server/configuration.md)

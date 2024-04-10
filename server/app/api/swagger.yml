@@ -110,8 +110,8 @@ paths:
                   "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
                   "@graph": [
                     {
-                      "@type": "Dataset",
-                      "@id": "https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2022-02-09#Dataset",
+                      "@type": "Version",
+                      "@id": "https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2022-02-09",
                       "hasVersion": "2022-02-09",
                       "title": "test_group test_artifact",
                       "description": "version of the test_artifact dataset from DBpedia",
