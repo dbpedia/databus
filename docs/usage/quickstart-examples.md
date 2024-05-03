@@ -211,6 +211,30 @@ SELECT DISTINCT ?distribution, ?file, ?downloadUrl, ?format, ?byteSize WHERE {
 }
 ```
 
+Retrieving download links for the latest version of an artifact:
+```sparql
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+
+SELECT ?file WHERE
+{
+    {
+        SELECT ?v WHERE
+        {
+    	  ?latestVersion databus:artifact <your artifact ID> .
+   	   	  ?latestVersion dct:hasVersion ?v .    
+        } 
+        ORDER BY DESC(STR(?v)) LIMIT 1
+    }
+  ?dataset dct:hasVersion ?v . 
+  ?dataset dcat:distribution ?distribution .
+  ?distribution dcat:downloadURL ?file .
+    
+}
+```
+
 #### Group/Artifact Metadata Example
 
 In the minimal example metadata for the group is missing and the artifact is initialized with the metadata of the dataset. Both can be explicitly set for better documentation:
