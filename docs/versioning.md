@@ -2,7 +2,7 @@
 
 The Version ID must adhere to URI, maven and filename standards, so the characters `\/:"<>|?*` are forbidden. Furthermore it needs to be at least three characters long.
 
-Apart from this rule the VersionIDs can contain any alphanumeric character (regardless of the case) and any of these seperator chars: `-._`. 
+Apart from this rule the VersionIDs can contain any alphanumeric character (regardless of the case) and any of these separator chars: `-._`. 
 
 ### Sortable Timestamps
 

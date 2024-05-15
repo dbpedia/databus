@@ -289,7 +289,7 @@ module.exports = function (router, protector) {
     res.render('version', { title: data.version.title, data: data });
   } catch (err) {
     console.log(err);
-    res.status(404).send('Sorry cant find that!');
+    res.status(404).send('Sorry can't find that!');
   } */
   });
 }

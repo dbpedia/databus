@@ -9,7 +9,7 @@ The main rule for content variant setup is the following:
 
 This ensures that each file in the databus:Version can be selected individually by querying for its unique tuple of *format*, *compression type* and *content variants*.
 
-A content variant is a key-value pair with the key being a sub-property of `databus:contentVariant` and the value being a (preferrably short) string that can be chosen freely. Content variants could describe either a property of the file or its content.
+A content variant is a key-value pair with the key being a sub-property of `databus:contentVariant` and the value being a (preferably short) string that can be chosen freely. Content variants could describe either a property of the file or its content.
 
 
 **Examples:**

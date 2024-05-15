@@ -150,7 +150,7 @@ async function initializeContext() {
 }
 
 async function initializeUserDatabase() {
-  console.log(`Connecting to User Databse...`);
+  console.log(`Connecting to User Database...`);
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
 

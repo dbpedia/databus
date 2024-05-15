@@ -11,7 +11,7 @@ In the following section, we will cover the user interface of the collection edi
 The DBpedia Databus Collections are useful in many ways.
 
 * You can share a specific dataset with your community or colleagues.
-* You can re-use dataset others created
+* You can reuse dataset others created
 * You can plug collections into Databus-ready applications and avoid spending time on the download and setup process
 * You can point to a specific piece of data (e.g. for testing) with a single URI in your publications
 * You can help others to create data queries more easily

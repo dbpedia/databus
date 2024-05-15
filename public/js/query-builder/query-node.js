@@ -1,7 +1,7 @@
 /**
  * A query node is a node in a query tree. A query tree can be built for any hierarchical selection
  * on the databus, such as publishers, groups, artifacts and collections.
- * Each node may declare a range of restrictions. Restrictions can then be overriden again by
+ * Each node may declare a range of restrictions. Restrictions can then be overridden again by
  * any child node in the hierarchy.
  * 
  * EXAMPLE: Group node says: Select everything in English. One specific artifact child node of the
@@ -135,7 +135,7 @@ class QueryNode {
   }
 
    /**
-   * Create a settings object with all the facet settings active for this node (inluding inherited settings)
+   * Create a settings object with all the facet settings active for this node (including inherited settings)
    * @param {*} node 
    */
   createFullFacetSettings() {
