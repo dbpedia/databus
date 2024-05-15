@@ -5,7 +5,6 @@ const DatabusCache = require('../../common/cache/databus-cache');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
-const rp = require('request-promise');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const { dataid } = require('../../common/queries/sparql');

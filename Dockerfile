@@ -1,15 +1,31 @@
-FROM ubuntu:22.04
+FROM node:18 AS installer
+
+COPY ./server/package.json ./server/package-lock.json /server/
+COPY ./public/package.json ./public/package-lock.json /public/
+
+# Set up the NPM projects:
+RUN cd /server && \
+    npm install && \
+    cd ../public && \
+    npm install
+
+
+FROM ubuntu:22.04 AS release
+
+COPY --from=installer /server/node_modules /databus/server/node_modules
+COPY --from=installer /public/node_modules /databus/public/node_modules
 
 # Install node.js, Caddy as proxy server, and java.
 RUN apt-get update && \
-    apt-get -y install curl debian-keyring debian-archive-keyring apt-transport-https && \
+    apt-get -y install curl wget systemctl debian-keyring debian-archive-keyring apt-transport-https && \
+    wget https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.deb && \
+    dpkg -i ./caddy_2.7.6_linux_amd64.deb && \
+    caddy version && \
+    systemctl daemon-reload && systemctl enable --now caddy && \
     curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
     apt-get update && \
     apt-get -y install \
       nodejs \
-      caddy \
       ca-certificates-java \
       openjdk-17-jdk \
       openjdk-17-jre && \
@@ -39,18 +55,7 @@ ENV DATABUS_PROXY_SERVER_HOSTNAME="my-databus.org"
 # Define the volume for the TLS certificate:
 VOLUME /tls
 
-COPY ./server /databus/server
-COPY ./public /databus/public
-COPY ./search /databus/search
-COPY ./model/generated /databus/model/generated
-
-COPY ./setup.sh /databus/setup.sh
-
-# Set up the NPM projects:
-RUN cd /databus/server && \
-    npm install && \
-    cd ../public && \
-    npm install
+COPY . /databus
 
 WORKDIR /databus
 ENTRYPOINT [ "/bin/bash", "./setup.sh" ]

@@ -6,6 +6,7 @@ const ArrayUtils = require('../../common/utils/array-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 const { JSONLD_VALUE } = require('../../../../public/js/utils/databus-uris');
 const knownCompressionExtensions = require('../../common/config/compression-extensions.json');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 var autocompleter = {};
 
@@ -52,8 +53,8 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
     segment += `.${compression}`;
   }
 
-  fileGraph[DatabusUris.DATABUS_FILE] = [];
-  fileGraph[DatabusUris.DATABUS_FILE].push({ '@id': `${baseUri}/${segment}` });
+  fileGraph[DatabusUris.DATABUS_FILE] = [{}];
+  fileGraph[DatabusUris.DATABUS_FILE][0][DatabusUris.JSONLD_ID] = `${baseUri}/${segment}`;
   fileGraph[DatabusUris.JSONLD_ID] = `${baseUri}#${segment}`;
 }
 
@@ -86,9 +87,8 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 
   if (publisherUri == null) {
     versionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
-    versionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}#this`;
+    versionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}${DatabusConstants.WEBID_THIS}`;
   }
-
 
   var timeString = DatabusUtils.timeStringNow();
 
@@ -199,9 +199,9 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 
   for (var fileGraph of fileGraphs) {
 
-    versionGraph[DatabusUris.DCAT_DISTRIBUTION].push({
-      '@id': fileGraph[DatabusUris.JSONLD_ID]
-    });
+
+    versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [{}];
+    versionGraph[DatabusUris.DCAT_DISTRIBUTION][0][DatabusUris.JSONLD_ID] = fileGraph[DatabusUris.JSONLD_ID];
 
     for (var contentVariantProperty of contentVariantProperties) {
 
@@ -223,8 +223,10 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
   var accountUri = UriUtils.navigateUp(artifactUri, 2);
 
-
-  expandedGraphs.push({ '@id': groupUri, '@type': DatabusUris.DATABUS_GROUP });
+  var groupGraph = {};
+  groupGraph[DatabusUris.JSONLD_ID] = groupUri;
+  groupGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_GROUP;
+  expandedGraphs.push(groupGraph);
 
   artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = [{}];
   artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
