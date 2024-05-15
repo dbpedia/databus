@@ -34,7 +34,7 @@
       <div style="display: flex; align-items: center;">
         <div ng-if="!$ctrl.isLoading" style="margin-right: 1em;">{{ $ctrl.numFiles }} file(s) / {{
           $ctrl.totalSize }}</div>
-        <collection-editor-widget selection='$ctrl.node'></collection-editor-widget>
+        <collection-editor-widget ng-if="$ctrl.config.authenticated" selection='$ctrl.node'></collection-editor-widget>
       </div>
     </div>
 

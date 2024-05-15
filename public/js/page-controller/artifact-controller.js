@@ -44,6 +44,7 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
 
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
+  $scope.fileSelector.config.authenticated = $scope.authenticated;
   $scope.fileSelector.config.columns = [];
   $scope.fileSelector.config.columns.push({ field: 'version', label: 'Version', width: '30%' });
   $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '30%' });

@@ -136,6 +136,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
 
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
+  $scope.fileSelector.config.authenticated = $scope.authenticated;
   $scope.fileSelector.config.columns = [];
   $scope.fileSelector.config.columns.push({ field: 'artifact', label: 'Artifact', width: '30%', uriToName: true });
   $scope.fileSelector.config.columns.push({ field: 'version', label: 'Version', width: '21%' });

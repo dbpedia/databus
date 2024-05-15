@@ -167,6 +167,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
 
   $scope.fileSelector = {};
   $scope.fileSelector.config = {};
+  $scope.fileSelector.config.authenticated = $scope.authenticated;
   $scope.fileSelector.config.columns = [];
   $scope.fileSelector.config.columns.push({ field: 'variant', label: 'Variant', width: '45%' });
   $scope.fileSelector.config.columns.push({ field: 'format', label: 'Format', width: '15%' });
