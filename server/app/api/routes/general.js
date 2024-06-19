@@ -9,6 +9,11 @@ const publishArtifact = require('../lib/publish-artifact');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 var jsonld = require('jsonld');
 const DatabusLogger = require('../../common/databus-logger');
+var SparqlParser = require('sparqljs').Parser;
+
+const ALLOWED_QUERY_TYPES = [
+  "SELECT", "ASK", "DESCRIBE", "CONSTRUCT"
+]
 
 const MSG_NO_GRAPH_FOUND = `No processable graphs found in the input. Your input has to contain at least one graph of either type databus:Group, databus:Artifact or databus:Version.`
 
@@ -35,6 +40,20 @@ module.exports = function (router, protector, webdav) {
 
     var sparqlEndpoint = `${process.env.DATABUS_DATABASE_URL}/sparql`;
     var accept = req.headers['accept']
+
+    try {
+      var parser = new SparqlParser({ skipValidation: true });
+      var parsedQuery = parser.parse(query);
+
+      if(!ALLOWED_QUERY_TYPES.includes(parsedQuery.queryType)) {
+        res.status(403).send("FORBIDDEN: SPARQL updates are disabled. Please use the API for write operations.");
+        return;
+      }
+
+    }
+    catch(err) {
+      // Do nothing and let the virtuoso endpoint handle error reporting
+    }
     
 
     if (accept == undefined) {
