@@ -34,6 +34,10 @@ services:
       STORAGE_USER: ${VIRTUOSO_USER}
       STORAGE_PASS:  ${VIRTUOSO_PASSWORD}
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
+      # gstore now is preloading the context for localhost from a configured remote location
+      # only needed for dev env with context at localhost
+      DEFAULT_JSONLD_LOCALHOST_CONTEXT: http://localhost:3000/res/context.jsonld
+      DEFAULT_JSONLD_LOCALHOST_CONTEXT_LOCATION: https://databus.dbpedia.org/res/context.jsonld
     ports:
       - "127.0.0.1:3002:8080"
     volumes:
