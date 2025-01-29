@@ -102,7 +102,7 @@ $context='"maker": {
     "@id": "foaf:primaryTopic",
     "@type": "@id"
   },
-  "name": {"@id": "foaf:name"},
+  "displayName": {"@id": "foaf:name"},
   "account": {
     "@id": "databus:account",
     "@type": "@id"

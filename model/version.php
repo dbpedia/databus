@@ -40,8 +40,8 @@ $shacl='<#version-exists>
 	sh:property [
 		sh:path [ sh:inversePath rdf:type ] ;
 		  sh:nodekind sh:IRI ;
-		sh:pattern "/[a-zA-Z0-9\\\\-_]{4,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}/[a-zA-Z0-9\\\\-_\\\\.]{1,}$" ;
-		sh:message "IRI for databus:Version must match /USER/GROUP/ARTIFACT/VERSION , |USER|>3"@en ;
+		sh:pattern "^[\\\\w+.-]+:\\\\/\\\\/[\\\\w+.:-]+\\\\/[\\\\w+.-]{4,}(?:\\\\/[\\\\w+.-]{3,}){3,3}$" ;
+		sh:message "IRI for databus:Version must be a 4-segment URI and match ^[\\\\w+.-]+:\\\\/\\\\/[\\\\w+.:-]+\\\\/[\\\\w+.-]{4,}(?:\\\\/[\\\\w+.-]{3,}){3,3}$"@en ;
   ] . ';
 
 

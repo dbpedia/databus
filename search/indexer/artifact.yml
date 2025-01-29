@@ -1,0 +1,75 @@
+version: "1.0"
+indexMode: INDEX_SPARQL_ENDPOINT
+sparqlEndpoint: http://virtuoso:8890/sparql
+indexFields:
+  # ARTIFACT LABEL
+  - fieldName: label
+    documentVariable: artifact
+    query: >
+      SELECT DISTINCT ?artifact ?label WHERE {
+        GRAPH ?g {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
+          ?artifact <http://purl.org/dc/terms/title> ?label.
+        }
+        #VALUES#
+      }
+  # ARTIFACT ABSTRACT
+  - fieldName: abstract
+    documentVariable: artifact
+    query: >
+      SELECT DISTINCT ?artifact ?abstract WHERE {
+        GRAPH ?g {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
+          ?artifact <http://purl.org/dc/terms/abstract> ?abstract.
+        }
+        #VALUES#
+      }
+  # ARTIFACT NAME
+  - fieldName: part
+    documentVariable: artifact
+    query: >
+      SELECT ?artifact ?part WHERE {
+        GRAPH ?g {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
+          ?artifact <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # ARTIFACT GROUP
+  - fieldName: group
+    documentVariable: artifact
+    type: uri
+    query: >
+      SELECT ?artifact ?group WHERE {
+        GRAPH ?g {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
+          ?artifact <https://dataid.dbpedia.org/databus#group> ?group .
+        }
+        #VALUES#
+      }
+  # ARTIFACT TYPE NAME
+  - fieldName: typeName
+    type: string
+    documentVariable: artifact
+    query: >
+      SELECT DISTINCT ?artifact ?typeName WHERE {
+        GRAPH ?g {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact> .
+          BIND("Artifact" AS ?typeName)
+        }
+        #VALUES#
+      }
+  # PUBLISHER ACCOUNT NAME
+  - fieldName: publisher
+    documentVariable: artifact
+    query: >
+      SELECT ?artifact ?publisher WHERE {
+        GRAPH ?g1 {
+          ?artifact a <https://dataid.dbpedia.org/databus#Artifact> .
+          ?artifact <https://dataid.dbpedia.org/databus#account> ?account .
+        }
+        GRAPH ?g2 {
+          ?account <http://xmlns.com/foaf/0.1/accountName> ?publisher .
+        }
+        #VALUES#
+      }

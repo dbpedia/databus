@@ -7,7 +7,6 @@ var GstoreHelper = require('../../common/utils/gstore-helper');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructArtifactQuery = require('../../common/queries/constructs/construct-artifact.sparql');
-var defaultContext = require('../../../../model/generated/context.json');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var autocompleter = require('./dataid-autocomplete');
 const DatabusMessage = require('../../common/databus-message');
@@ -73,12 +72,13 @@ module.exports = async function publishArtifact(accountName, graph, logger) {
 
 
     // Compact graph, determine target path
-    var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-
-    if (process.env.DATABUS_CONTEXT_URL != null) {
-      compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      logger.debug(artifactUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
-    }
+    var compactedGraph = await jsonld.compact(expandedGraphs, process.env.DATABUS_CONTEXT_URL);
+    logger.debug(artifactUri, `Compacted with context <${process.env.DATABUS_CONTEXT_URL}>`);
+   
+    //(if (process.env.DATABUS_CONTEXT_URL != null) {
+    //  compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+    //  logger.debug(artifactUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
+    //} l
 
     var targetPath = `${groupName}/${artifactName}/${Constants.DATABUS_FILE_ARTIFACT}`;
     logger.debug(artifactUri, `Saving artifact <${artifactUri}> to ${accountName}:${targetPath}`, compactedGraph);

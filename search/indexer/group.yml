@@ -1,0 +1,64 @@
+version: "1.0"
+indexMode: INDEX_SPARQL_ENDPOINT
+sparqlEndpoint: http://virtuoso:8890/sparql
+indexFields:
+  # GROUP LABEL
+  - fieldName: label
+    documentVariable: group
+    query: >
+      SELECT DISTINCT ?group ?label WHERE {
+        GRAPH ?g {
+          ?group a <https://dataid.dbpedia.org/databus#Group>.
+          ?group <http://purl.org/dc/terms/title> ?label.
+        }
+        #VALUES#
+      }
+  # GROUP ABSTRACT
+  - fieldName: abstract
+    documentVariable: group
+    query: >
+      SELECT DISTINCT ?group ?abstract WHERE {
+        GRAPH ?g {
+          ?group a <https://dataid.dbpedia.org/databus#Group>.
+          ?group <http://purl.org/dc/terms/abstract> ?abstract.
+        }
+        #VALUES#
+      }
+      
+  # GROUP NAME
+  - fieldName: part
+    documentVariable: group
+    query: >
+      SELECT ?group ?part WHERE {
+        GRAPH ?g {
+          ?group a <https://dataid.dbpedia.org/databus#Group>.
+          ?group <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # GROUP TYPE NAME
+  - fieldName: typeName
+    type: string
+    documentVariable: group
+    query: >
+      SELECT DISTINCT ?group ?typeName WHERE {
+        GRAPH ?g {
+          ?group a <https://dataid.dbpedia.org/databus#Group> .
+          BIND("Group" AS ?typeName)
+        }
+        #VALUES#
+      }
+  # PUBLISHER ACCOUNT NAME
+  - fieldName: publisher
+    documentVariable: group
+    query: >
+      SELECT ?group ?publisher WHERE {
+        GRAPH ?g1 {
+          ?group a <https://dataid.dbpedia.org/databus#Group> .
+          ?group <https://dataid.dbpedia.org/databus#account> ?account .
+        }
+        GRAPH ?g2 {
+          ?account <http://xmlns.com/foaf/0.1/accountName> ?publisher .
+        }
+        #VALUES#   
+      }

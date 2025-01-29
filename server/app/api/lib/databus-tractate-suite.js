@@ -1,6 +1,4 @@
-const rdfParser = require("rdf-parse").default;
 const fs = require('fs');
-var rp = require('request-promise');
 const NodeRSA = require('node-rsa');
 var JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 var jsonld = require('jsonld');

@@ -1,21 +1,14 @@
 const ServerUtils = require('../../common/utils/server-utils');
-const DatabusCache = require('../../common/cache/databus-cache');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 
 var GstoreHelper = require('../../common/utils/gstore-helper');
-var shaclTester = require('../../common/shacl-tester');
-var request = require('request');
 var jsonld = require('jsonld');
-var fs = require('fs');
-const pem2jwk = require('pem-jwk').pem2jwk;
 const requestRDF = require('../../common/request-rdf');
 
 const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 
-var constructor = require('../../common/execute-construct.js');
-var constructAccountQuery = require('../../common/queries/constructs/construct-account.sparql');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');

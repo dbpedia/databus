@@ -311,7 +311,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
         var result = response.data.docs[r];
 
         for (var artifact of $scope.artifacts) {
-          if (result.resource[0] == artifact.uri) {
+          if (result.id[0] == artifact.uri) {
             $scope.searchResult.push(artifact);
           }
         }

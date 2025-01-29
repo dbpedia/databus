@@ -1,157 +1,119 @@
-var rp = require('request-promise');
+const axios = require('axios');
 const Constants = require('./constants');
+
 var sparql = {};
 
-var sparqlEndpoint = (process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL) + '/sparql';
-
+const sparqlEndpoint = (process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL) + '/sparql';
 
 /**
- * Uses the request-promise package to send a select query against the sparql endpoint
- * and return a set of bindings or null
- * @param  {[type]} query [description]
- * @return {[type]}       [description]
+ * Executes a SELECT query against the SPARQL endpoint and returns a set of bindings or null
+ * @param  {string} query - The SPARQL query to execute
+ * @return {Array|null} - The bindings or null if an error occurs
  */
 sparql.executeSelect = async function (query) {
+  try {
+    // Prepare the POST request data
+    const data = `query=${encodeURIComponent(query)}`;
 
-   try {
-
-      // Do a POST request with the passed query
-      var options = {
-         method: 'POST',
-         uri: sparqlEndpoint + '?timeout=10000',
-         body: "query=" + encodeURIComponent(query),
-         json: true,
-         headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            "Accept": "application/json"
-         },
-      };
-
-      // Await the response
-      var response = await rp(options);
-
-      bindings = response.results.bindings;
-
-      // Prune the returned bindings
-      for (var i in bindings) {
-         bindings[i] = reduceBinding(bindings[i]);
+    const response = await axios.post(sparqlEndpoint + '?timeout=10000', data, {
+      headers: {
+        'Content-type': Constants.HTTP_CONTENT_TYPE_FORM,
+        'Accept': Constants.HTTP_CONTENT_TYPE_JSON
       }
+    });
 
-      return bindings;
+    let bindings = response.data.results.bindings;
 
-   } catch (err) {
-      console.log(err);
-      return null;
-   }
-}
+    // Prune the returned bindings
+    for (let i in bindings) {
+      bindings[i] = reduceBinding(bindings[i]);
+    }
 
-sparql.executeConstruct = async function (query, format) {
-   try {
-
-      // Do a POST request with the passed query
-      var options = {
-         method: 'POST',
-         uri: `${sparqlEndpoint}?timeout=10000`,
-         body: `query=${encodeURIComponent(query)}`,
-         json: true,
-         headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            "Accept": format
-         },
-      };
-
-      // Await the response
-      var response = await rp(options);
-      return response;
-
-   } catch (err) {
-      console.log(err);
-      return null;
-   }
-}
-
+    return bindings;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
 
 /**
- * Uses the request-promise package to send a select query against the sparql endpoint
- * and return a set of bindings or null
- * @param  {[type]} query [description]
- * @return {[type]}       [description]
+ * Executes a CONSTRUCT query against the SPARQL endpoint and returns the result or null
+ * @param  {string} query - The SPARQL query to execute
+ * @param  {string} format - The desired response format
+ * @return {Object|null} - The response data or null if an error occurs
+ */
+sparql.executeConstruct = async function (query, format) {
+  try {
+    // Prepare the POST request data
+    const data = `query=${encodeURIComponent(query)}`;
+
+    const response = await axios.post(`${sparqlEndpoint}?timeout=10000`, data, {
+      headers: {
+        'Content-type': Constants.HTTP_CONTENT_TYPE_FORM,
+        'Accept': format
+      }
+    });
+
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+/**
+ * Executes an ASK query against the SPARQL endpoint and returns the boolean result or null
+ * @param  {string} query - The SPARQL query to execute
+ * @return {boolean|null} - The boolean result or null if an error occurs
  */
 sparql.executeAsk = async function (query) {
+  try {
+    // Prepare the POST request data
+    const data = `query=${encodeURIComponent(query)}`;
 
-   try {
+    const response = await axios.post(sparqlEndpoint + '?timeout=10000', data, {
+      headers: {
+        'Content-type': Constants.HTTP_CONTENT_TYPE_FORM
+      }
+    });
 
-      // Do a POST request with the passed query
-      var options = {
-         method: 'POST',
-         uri: sparqlEndpoint + '?timeout=10000',
-         body: "query=" + encodeURIComponent(query),
-         json: true,
-         headers: {
-            "Content-type": "application/x-www-form-urlencoded"
-         },
-      };
-
-      // Await the response
-      var response = await rp(options);
-      return response.boolean;
-
-   } catch (err) {
-      console.log(err);
-      return null;
-   }
-}
+    return response.data.boolean;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
 
 /**
- * reduce the binding entry objects to their value
- * @param  {[type]} binding [description]
- * @return {[type]}         [description]
+ * Reduces the binding entry objects to their value
+ * @param  {Object} binding - The binding object to reduce
+ * @return {Object} - The reduced binding object
  */
 function reduceBinding(binding) {
-   for (var key in binding) {
-      binding[key] = binding[key].value;
-   }
+  for (let key in binding) {
+    binding[key] = binding[key].value;
+  }
 
-   return binding;
+  return binding;
 }
 
-
 /**
- * Execute an UPDATE query with auth string
- * Throws an exception!
- 
-sparql.executeUpdate = async function(query, username, password) {
-    var digestRequest = require('request-digest')(username, password);
-    await digestRequest.requestAsync({
-        host: 'http://localhost',
-        path: '/sparql-auth',
-        port: config.sparqlEndpointPort,
-        method: 'POST',
-        json: true,
-        body: "query=" + encodeURIComponent(query),
-        headers: {
-            "Content-type" : "application/x-www-form-urlencoded"
-        }
-      });
-  }*/
-
-/**
- * placeHolderMappings is a map string => string. This function replaces all
- * occurrances of %key% in query with value.
+ * Replaces all occurrences of %key% in the query with the corresponding value from placeholderMappings
+ * @param  {string} query - The query to format
+ * @param  {Object} placeholderMappings - A map of placeholders and their replacement values
+ * @return {string} - The formatted query
  */
 sparql.formatQuery = function (query, placeholderMappings) {
+  if (placeholderMappings === undefined) {
+    return query;
+  }
 
-   if (placeholderMappings == undefined) {
-      return query;
-   }
+  for (let placeholder in placeholderMappings) {
+    const re = new RegExp('%' + placeholder + '%', 'g');
+    query = query.replace(re, placeholderMappings[placeholder]);
+  }
 
-   for (var placeholder in placeholderMappings) {
-      var re = new RegExp('%' + placeholder + '%', "g");
-      query = query.replace(re, placeholderMappings[placeholder]);
-   }
+  return query;
+};
 
-   return query;
-}
-
-
-module.exports = sparql
+module.exports = sparql;

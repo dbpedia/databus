@@ -60,13 +60,13 @@
               resource.</i></div>
 
 
-          <div class="result-item" ng-click="$ctrl.navigateTo(result.resource[0])" ng-repeat="result in $ctrl.results">
+          <div class="result-item" ng-click="$ctrl.navigateTo(result.id[0])" ng-repeat="result in $ctrl.results">
             <type-tag width="48" height="48" ng-if="result.typeName[0]" type="result.typeName[0]"></type-tag>
             <div>
               <div class="item-header">
                 <p id="const" class="item-label" ng-bind-html="$ctrl.formatResult(result.label[0])"></p>
-                <div ng-if="result.resource[0]">
-                  <uri-breadcrumbs uri="result.resource[0]"></uri-breadcrumbs>
+                <div ng-if="result.id[0]">
+                  <uri-breadcrumbs uri="result.id[0]"></uri-breadcrumbs>
                 </div>
 
               </div>

@@ -2,22 +2,18 @@ const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const UriUtils = require('../../common/utils/uri-utils.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
 const Constants = require('../../common/constants.js');
-const fs = require('fs');
 
 var signer = require('./databus-tractate-suite.js');
 var shaclTester = require('../../common/shacl-tester.js');
 var GstoreHelper = require('../../common/utils/gstore-helper.js');
 var jsonld = require('jsonld');
 var sparql = require('../../common/queries/sparql.js');
-var defaultContext = require('../../../../model/generated/context.json');
 var constructor = require('../../common/execute-construct.js');
 var constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
 var autocompleter = require('./dataid-autocomplete.js');
 var fileAnalyzer = require('../../common/file-analyzer.js');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const DatabusMessage = require('../../common/databus-message.js');
-const { log } = require('console');
-const { del } = require('request');
 
 
 async function verifyDataidParts(dataidGraphs, alwaysFetch, logger) {
@@ -342,12 +338,12 @@ module.exports = async function publishVersion(accountName, expandedGraph, versi
     }
 
     // Create compacted graph
-    var compactedGraph = await jsonld.compact(dataidGraphs, defaultContext);
+    var compactedGraph = await jsonld.compact(dataidGraphs, process.env.DATABUS_CONTEXT_URL);
+    //  logger.debug(versionGraphUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
 
-    if (process.env.DATABUS_CONTEXT_URL != null) {
-      compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      logger.debug(versionGraphUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
-    }
+    //if (process.env.DATABUS_CONTEXT_URL != null) {
+    //  compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+    //}
 
     // Create the target path for the gstore
     var targetPath = UriUtils.getPrunedPath(`${versionGraphUri}/${Constants.DATABUS_FILE_DATAID}`);

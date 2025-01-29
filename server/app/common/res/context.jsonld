@@ -25,6 +25,9 @@
       "description": {
          "@id": "dct:description"
       },
+      "name": {
+         "@id": "databus:name"
+      },
       "Artifact": "databus:Artifact",
       "artifact": {
          "@id": "databus:artifact",
@@ -124,7 +127,7 @@
          "@id": "foaf:primaryTopic",
          "@type": "@id"
       },
-      "name": {
+      "displayName": {
          "@id": "foaf:name"
       },
       "account": {

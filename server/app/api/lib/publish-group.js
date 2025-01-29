@@ -1,4 +1,3 @@
-const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
@@ -8,7 +7,6 @@ var shaclTester = require('../../common/shacl-tester');
 var jsonld = require('jsonld');
 var constructor = require('../../common/execute-construct.js');
 var constructGroupQuery = require('../../common/queries/constructs/construct-group.sparql');
-var defaultContext = require('./../../common/res/context.jsonld');
 var autocompleter = require('./dataid-autocomplete');
 const DatabusMessage = require('../../common/databus-message');
 
@@ -74,12 +72,12 @@ module.exports = async function publishGroup(accountName, graph, logger) {
 
 
     // Compact graph, determine target path
-    var compactedGraph = await jsonld.compact(expandedGraphs, defaultContext);
-
-    if(process.env.DATABUS_CONTEXT_URL != null) {
-      compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      logger.debug(groupUri, `Context has been resubstituted with <${process.env.DATABUS_CONTEXT_URL}>`);
-    }
+    var compactedGraph = await jsonld.compact(expandedGraphs, process.env.DATABUS_CONTEXT_URL);
+    logger.debug(groupUri, `Compacted with context <${process.env.DATABUS_CONTEXT_URL}>`);
+    //if(process.env.DATABUS_CONTEXT_URL != null) {
+    //  compactedGraph[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
+      
+    // }
 
     var targetPath = `${groupName}/${Constants.DATABUS_FILE_GROUP}`;
     logger.debug(groupUri, `Saving group <${groupUri}> to ${accountName}:${targetPath}`, compactedGraph);

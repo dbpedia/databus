@@ -1,22 +1,32 @@
 # Starts everything except the databus
 version: "3.0"
+name: databus_nodejs_devenv
 services:
   gstore:
-    image: gstore #dbpedia/gstore:dev
-    container_name: devenv_gstore
+    image: dbpedia/gstore:dev
+    container_name: databus_devenv_gstore
     environment: 
       STORAGE_USER: "dba"
       STORAGE_PASS: "everyoneknows"
       STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
-      GSTORE_LOCALHOST_CONTEXT_FALLBACK_URL: http://172.17.0.1
+      DEFAULT_JSONLD_LOCALHOST_CONTEXT: http://localhost:3000/res/context.jsonld
+      DEFAULT_JSONLD_LOCALHOST_CONTEXT_LOCATION: http://host.docker.internal:3000/res/context.jsonld
     ports:
       - "3002:8080"
     volumes:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
+  lookup:
+    image: lookup:dev
+    container_name: databus_devenv_lookup
+    ports:
+      - "3004:8082"
+    volumes:
+      - ./data/index/:/index
+      - ../search/servlet-config.yml:/resources/config.yml
   virtuoso:
     image: "openlink/virtuoso-opensource-7:latest"
-    container_name: devenv_virtuoso
+    container_name: databus_devenv_virtuoso
     environment:
       DBA_PASSWORD: "everyoneknows"
       SPARQL_UPDATE: "true"
@@ -29,7 +39,30 @@ services:
         echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
-        /virtuoso-entrypoint.sh
-      "
-      
-  
+        /virtuoso-entrypoint.sh"
+  prometheus:
+    image: prom/prometheus
+    container_name: databus_devenv_prometheus
+    ports:
+      - "3005:9090"
+    volumes:
+      - ./data/prometheus:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"  
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana
+    container_name: databus_devenv_grafana
+    ports:
+      - "3006:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana  
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    depends_on:
+      - prometheus

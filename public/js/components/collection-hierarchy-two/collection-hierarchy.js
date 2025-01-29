@@ -190,18 +190,18 @@ SELECT ?file WHERE {
   ctrl.addToCollection = function (source, view, result) {
 
     if (ctrl.isInCollection(result)) {
-      QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
+      QueryNode.removeChildByUri(ctrl.root, result.id[0].value);
     }
     else {
       if (result.typeName[0].value == 'Group') {
-        let node = new QueryNode(result.resource[0].value, DATAID_GROUP_PROPERTY);
+        let node = new QueryNode(result.id[0].value, DATAID_GROUP_PROPERTY);
 
         source.childNodes.push(node);
       }
 
       if (result.typeName[0].value == 'Artifact') {
 
-        var artifactUri = result.resource[0].value;
+        var artifactUri = result.id[0].value;
         let groupUri = DatabusUtils.navigateUp(artifactUri);
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 
@@ -295,7 +295,7 @@ SELECT ?file WHERE {
   }
 
   ctrl.isInCollection = function (result) {
-    let uri = result.resource[0].value;
+    let uri = result.id[0].value;
     let node = QueryNode.findChildByUri(ctrl.root, uri);
     return node != null;
   }

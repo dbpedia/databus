@@ -1,7 +1,6 @@
 var http = require('http');
 var request = require('request');
 var cors = require('cors');
-var defaultContext = require('../../common/res/context.jsonld');
 const publishGroup = require('../lib/publish-group');
 const publishVersion = require('../lib/publish-version');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
@@ -73,7 +72,10 @@ module.exports = function (router, protector, webdav) {
     request.post(options).pipe(res);
   });
 
-  router.post('/api/publish', protector.protect(true), async function (req, res, next) {
+  router.post('/api/register', protector.protect(true), registerData);
+  router.post('/api/publish', protector.protect(true), registerData);
+
+  async function registerData(req, res, next) {
 
     try {
 
@@ -94,10 +96,10 @@ module.exports = function (router, protector, webdav) {
 
       var processedResources = 0;
 
-      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
-      }
+      // if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_CONTEXT_URL) {
+      //  graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
+      //  logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      //}
 
       // Expand JSONLD!
       var expandedGraph = await jsonld.flatten(graph);
@@ -158,8 +160,7 @@ module.exports = function (router, protector, webdav) {
       console.log(err);
       res.status(500).send(err);
     }
-  });
-
+  }
 
   router.get('/api/search', cors(), function (req, res, next) {
 
@@ -171,7 +172,7 @@ module.exports = function (router, protector, webdav) {
       first = false;
     }
 
-    var search = `http://localhost:8082/api/search${queryString}`;
+    var search = `${process.env.LOOKUP_BASE_URL}/api/search${queryString}`;
 
     http.get(search, function (response) {
       response.setEncoding('utf8');

@@ -1,6 +1,7 @@
 // External includes
 var fs = require('fs');
-var rp = require('request-promise');
+const axios = require('axios');
+const jsonld = require('jsonld');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
@@ -10,7 +11,8 @@ const UriUtils = require('./app/common/utils/uri-utils.js');
 const { executeAsk } = require('./app/common/execute-query.js');
 const publishAccount = require('./app/api/lib/publish-account.js');
 const AppJsonFormatter = require('../public/js/utils/app-json-formatter.js');
-
+const MetricsManager = require('./app/api/statistics/metrics-manager.js');
+var defaultContext = require('./app/common/res/context.jsonld');
 
 function writeManifest() {
 
@@ -88,13 +90,19 @@ async function initializeShacl() {
     var shacl = require(`../model/generated/shacl/${file}.shacl`);
     var shaclFile = `${__dirname}/app/common/res/shacl/${file}.shacl`;
 
-    console.log(`Creating SHACL resource }/app/common/res/shacl/${file}.shacl`);
+    console.log(`Creating SHACL resource /app/common/res/shacl/${file}.shacl`);
     fs.writeFileSync(shaclFile, shacl, "utf8");
   }
 }
 
 async function initializeContext() {
 
+  var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
+    
+  console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
+  process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
+
+  /*
   // Load the internal default context
   var context = require('../model/generated/context.json');
   var hasContext = false;
@@ -147,7 +155,9 @@ async function initializeContext() {
   console.log(``);
   fs.writeFileSync(contextFile, contextString, "utf8");
   console.log(`Successfully saved context to ${contextFile}:`);
+  */
 }
+
 
 async function initializeUserDatabase() {
   console.log(`Connecting to User Databse...`);
@@ -185,10 +195,17 @@ module.exports = async function () {
   console.log(`Initializing...`);
   console.log(config);
 
+  if(process.env.METRICS_PORT != undefined) {
+    console.log(`Settings up Prometheus metrics...`);
+    MetricsManager.initialize();
+  }
+
   await initializeUserDatabase();
 
-  await initializeShacl();
+  // await initializeShacl();
   await initializeContext();
+
+  // initializeJsonLd();
 
   writeManifest();
 

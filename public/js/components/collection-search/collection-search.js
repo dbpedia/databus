@@ -48,7 +48,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
   // TODO Fabian
   ctrl.isInCollection = function (result) {
-    let uri = result.resource[0].value;
+    let uri = result.id[0].value;
     let node = QueryNode.findChildByUri(ctrl.root, uri);
 
     return node != null;
@@ -61,11 +61,11 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
     var sourceNode = QueryNode.findChildByUri(ctrl.root, currentSource);
 
     if (result.inCollection) {
-      QueryNode.removeChildByUri(ctrl.root, result.resource[0].value);
+      QueryNode.removeChildByUri(ctrl.root, result.id[0].value);
     }
     else {
       if (result.typeName[0].value == 'Group') {
-        let node = new QueryNode(result.resource[0].value, 'databus:group');
+        let node = new QueryNode(result.id[0].value, 'databus:group');
 
         sourceNode.addChild(node);
         ctrl.onComponentAdded();
@@ -73,7 +73,7 @@ function CollectionSearchController(collectionManager, $http, $interval, $sce) {
 
       if (result.typeName[0].value == 'Artifact') {
 
-        var artifactUri = result.resource[0].value;
+        var artifactUri = result.id[0].value;
         let groupUri = DatabusUtils.navigateUp(artifactUri);
         let groupNode = QueryNode.findChildByUri(ctrl.root, groupUri);
 

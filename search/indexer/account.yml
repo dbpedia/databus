@@ -1,0 +1,38 @@
+version: "1.0"
+indexMode: INDEX_SPARQL_ENDPOINT
+sparqlEndpoint: http://virtuoso:8890/sparql
+indexFields:
+  # ACCOUNT LABEL
+  - fieldName: label
+    documentVariable: account
+    query: >
+      SELECT DISTINCT ?account ?label WHERE {
+        GRAPH ?g {
+          ?person <http://xmlns.com/foaf/0.1/account> ?account .
+          ?person <http://xmlns.com/foaf/0.1/name> ?label.
+        }        
+        #VALUES#
+      }
+  # ACCOUNT NAME
+  - fieldName: part
+    documentVariable: account
+    query: >
+      SELECT ?account ?part WHERE {
+        GRAPH ?g {
+          ?account a <https://dataid.dbpedia.org/databus#Account>.
+          ?account <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # ACCOUNT TYPE NAME
+  - fieldName: typeName
+    type: string
+    documentVariable: account
+    query: >
+      SELECT DISTINCT ?account ?typeName WHERE {
+        GRAPH ?g {
+          ?account a <https://dataid.dbpedia.org/databus#Account> .
+          BIND("Account" AS ?typeName)
+        }
+        #VALUES#
+      }

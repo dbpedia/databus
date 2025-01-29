@@ -1,54 +1,61 @@
 const defaultContext = require('./res/context.jsonld');
-const rp = require('request-promise');
-const request = require('request');
+const axios = require('axios');
 const jsonld = require('jsonld');
 const exec = require('./execute-query');
 const ServerUtils = require('./utils/server-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
 const HttpStrings = require('./http-strings');
 
-
 module.exports = async function getJsonLd(resourceUri, template, formatting) {
 
   try {
 
-    var exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
+    // Check if resource exists
+    const exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
 
     if (!exists) {
       return null;
     }
 
-    var query = ServerUtils.formatQuery(template, {
+    // Format the query
+    const query = ServerUtils.formatQuery(template, {
       RESOURCE_URI: resourceUri
     });
 
-    var headers = {};
-    headers[HttpStrings.HEADER_CONTENT_TYPE] = HttpStrings.CONTENT_TYPE_FORM_URL_ENCODED;
-    headers[HttpStrings.HEADER_ACCEPT] = HttpStrings.CONTENT_TYPE_JSONLD;
-
-    var options = {
-      method: HttpStrings.METHOD_POST,
-      uri: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
-      body: `query=${encodeURIComponent(query)}`,
-      headers: headers,
+    const headers = {
+      [HttpStrings.HEADER_CONTENT_TYPE]: HttpStrings.CONTENT_TYPE_FORM_URL_ENCODED,
+      [HttpStrings.HEADER_ACCEPT]: HttpStrings.CONTENT_TYPE_JSONLD
     };
 
-    var result = JSON.parse(await rp(options));
+    // Prepare request options
+    const options = {
+      method: 'POST',
+      url: `${process.env.DATABUS_DATABASE_URL}/sparql?timeout=10000`,
+      headers: headers,
+      data: `query=${encodeURIComponent(query)}`
+    };
 
-    if (formatting == undefined || formatting == 'compacted' || formatting == 'compact') {
-      // Single out jsonld in order to compact the result with the databus context
-      var result = await jsonld.compact(result, defaultContext);
-      if (process.env.DATABUS_CONTEXT_URL != undefined) {
+    // Send the request using axios
+    const response = await axios(options);
+
+    let result = response.data;
+
+    // Format the result based on the requested formatting
+    if (formatting === undefined || formatting === 'compacted' || formatting === 'compact') {
+      // Compact the result with the Databus context
+      result = await jsonld.compact(result, defaultContext);
+      if (process.env.DATABUS_CONTEXT_URL !== undefined) {
         result[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
       }
-    }
-    else if (formatting == 'flatten') {
-      var result = await jsonld.flatten(result);
+    } else if (formatting === 'flatten') {
+      // Flatten the result
+      result = await jsonld.flatten(result);
     }
 
     return result;
+
   } catch (err) {
     console.log(err);
     return null;
   }
-}
+};

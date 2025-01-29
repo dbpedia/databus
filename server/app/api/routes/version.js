@@ -5,7 +5,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
 const publishVersion = require('../lib/publish-version.js');
 
 var sparql = require('../../common/queries/sparql.js');
-var request = require('request');
+const axios = require('axios');
 var GstoreHelper = require('../../common/utils/gstore-helper.js');
 var defaultContext = require('../../common/res/context.jsonld');
 const UriUtils = require('../../common/utils/uri-utils.js');
@@ -14,6 +14,7 @@ const DatabusLogger = require('../../common/databus-logger.js');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const jsonld = require('jsonld');
 var cors = require('cors');
+const DatabusMessage = require('../../common/databus-message.js');
 
 
 module.exports = function (router, protector) {
@@ -79,24 +80,34 @@ module.exports = function (router, protector) {
   });
 
   router.get('/:account/:group/:artifact/:version/:file', async function (req, res, next) {
-
+    
     // Return dataids?
     if (req.params.file == Constants.DATABUS_FILE_DATAID) {
 
-      var repo = req.params.account;
-      var path = `${req.params.group}/${req.params.artifact}/${req.params.version}/${req.params.file}`;
+      const repo = req.params.account;
+      const path = `${req.params.group}/${req.params.artifact}/${req.params.version}/${req.params.file}`;
+      const url = `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`;
 
-      let options = {
-        url: `${process.env.DATABUS_DATABASE_URL}/graph/read?repo=${repo}&path=${path}`,
-        headers: {
-          'Accept': 'application/ld+json'
-        },
-        json: true
-      };
+      try {
+        console.log(`Piping to ${url}`);
 
-      console.log(`Piping to ${options.url}`);
-      request(options).pipe(res);
-      return;
+        // Use axios to fetch data
+        const response = await axios.get(url, {
+          headers: {
+            'Accept': 'application/ld+json'
+          }
+        });
+
+        // Pipe the response data to the client
+        res.setHeader('Content-Type', 'application/ld+json');
+        res.send(response.data);
+        return;
+
+      } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching data from Databus database.');
+        return;
+      }
     }
 
     try {
@@ -106,6 +117,19 @@ module.exports = function (router, protector) {
       if (result == null) {
         res.status(404).send('Sorry can\'t find that!');
         return;
+      }
+
+      // Send message to master to register metrics
+      if (process.send != undefined) {
+        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+        process.send({
+          id: DatabusMessage.FILE_DOWNLOADED,
+          body: {
+            url : fullUrl,
+            target : result.downloadUrl
+          } 
+        });
       }
 
       res.redirect(307, result.downloadUrl);

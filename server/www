@@ -4,20 +4,23 @@
  * Module dependencies.
  */
 
+
+
+
  initializeExtensions();
 
-const numCPUs = require('os').cpus().length;
+let numCPUs = require('os').cpus().length;
 const fs = require('fs');
 const cluster = require('cluster');
 const http = require('http');
-const LookupSearchIndexer = require('./search-indexer');
 const DatabusMessage = require('./app/common/databus-message');
 var initialize = require('./init');
 var searchIndexer = null;
-var config = require('./config.json')
 var runTests = require('./app/test/main.js');
-const { log } = require('console');
-
+const IndexManager = require('./app/indexing/index-manager.js');
+const IndexGroup = require('./app/indexing/index-group.js');
+const DatabusResource = require('./app/common/databus-resource.js');
+const MetricsManager = require('./app/api/statistics/metrics-manager.js');
 
 if (cluster.isMaster) {
   masterProcess();
@@ -48,8 +51,13 @@ function createFork(onListening) {
       });
     }
 
+    if (message.id == DatabusMessage.FILE_DOWNLOADED) {
+      MetricsManager.registerRequest(message.body);
+    }
+
     if (message.id == DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD) {
-      searchIndexer.requestRebuild(message.resource);
+      let databusResource = new DatabusResource(message.resource);
+      searchIndexer.updateResource(message.resource, databusResource.getTypeName());
     }
   });
 }
@@ -80,7 +88,15 @@ async function masterProcess() {
   try {
 
     console.log(`Starting search service...`)
-    searchIndexer = new LookupSearchIndexer(5000);
+
+    let indexGroups = [];
+    indexGroups.push(new IndexGroup("version", ["../search/indexer/version.yml" ]));
+    indexGroups.push(new IndexGroup("artifact", ["../search/indexer/artifact.yml" ]));
+    indexGroups.push(new IndexGroup("group", ["../search/indexer/group.yml" ]));
+    indexGroups.push(new IndexGroup("account", ["../search/indexer/account.yml" ]));
+
+
+    searchIndexer = new IndexManager(indexGroups, 1000);
     await searchIndexer.start();
     console.log(``);
     console.log(`================================================`);
@@ -90,6 +106,16 @@ async function masterProcess() {
     // TODO: Validate startup environment variables
     console.log(`Number of CPUs is ${numCPUs}`);
     console.log(`Master ${process.pid} is running`);
+
+    if(process.env.MAX_WORKERS != undefined) {
+      var maxWorkers = parseInt(process.env.MAX_WORKERS);
+
+      if(numCPUs > maxWorkers) {
+        console.log(`Number of workers restricted to ${maxWorkers} by ENV:MAX_WORKERS.`);
+        numCPUs = maxWorkers;
+      }
+    }
+    
 
     console.log(`================================================`);
     var numStartedWorkers = 0;
@@ -118,6 +144,11 @@ async function masterProcess() {
       createFork();
     });
 
+    if(process.env.METRICS_PORT != null) {
+      var port = normalizePort(process.env.METRICS_PORT || '3001');
+      console.log(`Starting Prometheus metrics server (port ${port})...`);
+      MetricsManager.startServer(port);
+    }
 
   } catch (err) {
     console.log(`Initialization error: \n${err}`);

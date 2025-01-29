@@ -1,0 +1,76 @@
+version: "1.0"
+indexMode: INDEX_SPARQL_ENDPOINT
+sparqlEndpoint: http://virtuoso:8890/sparql
+indexFields:
+  # VERSION LABEL
+  - fieldName: label
+    documentVariable: version
+    query: >
+      SELECT DISTINCT ?version ?label WHERE {
+        GRAPH ?g {
+          ?version a <https://dataid.dbpedia.org/databus#Version>.
+          ?version <http://purl.org/dc/terms/title> ?label.
+        }
+        #VALUES#
+      }
+  # VERSION ABSTRACT
+  - fieldName: abstract
+    documentVariable: version
+    query: >
+      SELECT DISTINCT ?version ?abstract WHERE {
+        GRAPH ?g {
+          ?version a <https://dataid.dbpedia.org/databus#Version>.
+          ?version <http://purl.org/dc/terms/abstract> ?abstract.
+        }
+        #VALUES#
+      }
+      
+  # VERSION NAME
+  - fieldName: part
+    documentVariable: version
+    query: >
+      SELECT ?version ?part WHERE {
+        GRAPH ?g {
+          ?version a <https://dataid.dbpedia.org/databus#Version>.
+          ?version <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # ARTIFACT NAME
+  - fieldName: part
+    documentVariable: version
+    query: >
+      SELECT ?version ?part WHERE {
+        GRAPH ?g {
+          ?version a <https://dataid.dbpedia.org/databus#Version>.
+          ?version <https://dataid.dbpedia.org/databus#artifact> ?artifact .
+          ?artifact <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # VERSION TYPE NAME
+  - fieldName: typeName
+    type: string
+    documentVariable: version
+    query: >
+      SELECT DISTINCT ?version ?typeName WHERE {
+        GRAPH ?g {
+          ?version a <https://dataid.dbpedia.org/databus#Version> .
+          BIND("Version" AS ?typeName)
+        }
+        #VALUES#
+      }
+  # PUBLISHER ACCOUNT NAME
+  - fieldName: publisher
+    documentVariable: version
+    query: >
+      SELECT ?version ?publisher WHERE {
+        GRAPH ?g1 {
+          ?version a <https://dataid.dbpedia.org/databus#Version> .
+          ?version <https://dataid.dbpedia.org/databus#account> ?account .
+        }
+        GRAPH ?g2 {
+          ?account <http://xmlns.com/foaf/0.1/accountName> ?publisher .
+        }
+        #VALUES#   
+      }

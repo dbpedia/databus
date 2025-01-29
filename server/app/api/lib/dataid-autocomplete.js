@@ -106,11 +106,14 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
     versionGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
       DatabusUtils.createAbstractFromDescription(description);
   }
+  
+  var versionName = UriUtils.uriToName(datasetUri);
+  versionGraph[DatabusUris.DATABUS_NAME] = [{}];
+  versionGraph[DatabusUris.DATABUS_NAME][0][DatabusUris.JSONLD_VALUE] =versionName;
 
   if (versionGraph[DatabusUris.DCT_HAS_VERSION] == undefined) {
     versionGraph[DatabusUris.DCT_HAS_VERSION] = [{}];
-    versionGraph[DatabusUris.DCT_HAS_VERSION][0][DatabusUris.JSONLD_VALUE] =
-      UriUtils.uriToName(datasetUri);
+    versionGraph[DatabusUris.DCT_HAS_VERSION][0][DatabusUris.JSONLD_VALUE] = versionName;
   }
 
   versionGraph[DatabusUris.DCT_MODIFIED] = [{}];
@@ -199,9 +202,10 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 
   for (var fileGraph of fileGraphs) {
 
+    var distributionReference = {};
+    distributionReference[DatabusUris.JSONLD_ID] = fileGraph[DatabusUris.JSONLD_ID];
 
-    versionGraph[DatabusUris.DCAT_DISTRIBUTION] = [{}];
-    versionGraph[DatabusUris.DCAT_DISTRIBUTION][0][DatabusUris.JSONLD_ID] = fileGraph[DatabusUris.JSONLD_ID];
+    versionGraph[DatabusUris.DCAT_DISTRIBUTION].push(distributionReference);
 
     for (var contentVariantProperty of contentVariantProperties) {
 
@@ -222,6 +226,7 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
   var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
   var groupUri = UriUtils.navigateUp(artifactUri, 1);
   var accountUri = UriUtils.navigateUp(artifactUri, 2);
+  var artifactName = UriUtils.uriToName(artifactUri);
 
   var groupGraph = {};
   groupGraph[DatabusUris.JSONLD_ID] = groupUri;
@@ -233,6 +238,9 @@ autocompleter.autocompleteArtifact = function (expandedGraphs) {
 
   artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
   artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+  
+  artifactGraph[DatabusUris.DATABUS_NAME] = [{}];
+  artifactGraph[DatabusUris.DATABUS_NAME][0][DatabusUris.JSONLD_VALUE] = artifactName;
 
   if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined
     && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
@@ -248,9 +256,13 @@ autocompleter.autocompleteGroup = function (expandedGraphs) {
   var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_GROUP);
   var groupUri = groupGraph[DatabusUris.JSONLD_ID];
   var accountUri = UriUtils.navigateUp(groupUri, 1);
+  var groupName = UriUtils.uriToName(groupUri);
 
   groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
   groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
+
+  groupGraph[DatabusUris.DATABUS_NAME] = [{}];
+  groupGraph[DatabusUris.DATABUS_NAME][0][DatabusUris.JSONLD_VALUE] = groupName;
 
   if (groupGraph[DatabusUris.DCT_ABSTRACT] == undefined
     && groupGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {

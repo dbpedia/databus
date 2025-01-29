@@ -1,4 +1,3 @@
-const getLinkedData = require('../common/get-linked-data.js');
 const ServerUtils = require('../common/utils/server-utils.js');
 var cors = require('cors');
 
@@ -17,6 +16,4 @@ module.exports = function (router, protector, locals, webdav) {
     var manifest = require('../../manifest.ttl');
     res.status(200).send(`${manifest}`);
   });
-  
-
 }

@@ -18,7 +18,6 @@ const UriUtils = require('../../common/utils/uri-utils');
 const DatabusMessage = require('../../common/databus-message');
 
 
-
 async function accountExists(accountName) {
   let accountUri = UriUtils.createResourceUri([accountName]);
   return await exec.executeAsk(`ASK { ?s <${DatabusUris.FOAF_ACCOUNT}> <${accountUri}> . }`);

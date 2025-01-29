@@ -24,8 +24,8 @@
 	sh:property [
 	  sh:path [ sh:inversePath rdf:type ] ;
 	    sh:nodekind sh:IRI ;
-      sh:pattern "/[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$" ;
-      sh:message "IRI for databus:Group must match /[a-zA-Z0-9\\-_]{4,}/[a-zA-Z0-9\\-_\\.]{3,}$"@en ;
+      sh:pattern "^[\\w+.-]+:\\/\\/[\\w+.:-]+\\/[\\w+.-]{4,}\\/[\\w+.-]{3,}$" ;
+      sh:message "IRI for databus:Group must be a 2-segment URI and match ^[\\w+.-]+:\\/\\/[\\w+.:-]+\\/[\\w+.-]{4,}\\/[\\w+.-]{3,}$"@en ;
 	] .
 
 <#title-group>

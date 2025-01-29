@@ -1,31 +1,41 @@
 version: "1.0"
 indexPath: ./index
-exactMatchBoost: 10
+maxBufferedDocs: 1000000
+logInterval: 10000
+exactMatchBoost: 6
 prefixMatchBoost: 5
 fuzzyMatchBoost: 2
 fuzzyEditDistance: 2
 fuzzyPrefixLength: 2
 maxResults: 100
 format: JSON
-minRelevanceScore: 0.1
-queryFields:
-  - fieldName: label
+minScore: 0.1
+lookupFields:
+  - name: label
     weight: 10
     tokenize: true
     highlight: true
     queryByDefault: true
     allowPartialMatch: true
-  - fieldName: abstract
+  - name: abstract
     weight: 1
     tokenize: true
     highlight: true
     queryByDefault: true
     allowPartialMatch: true
-  - fieldName: part
+  - name: typeName
+    allowPartialMatch: true
+    weight: 0
+    highlight: false
+    required: true
+    exact: true
+    tokenize: true
+  - name: part
     weight: 10
     tokenize: true
+    allowPartialMatch: true
     queryByDefault: true
-  - fieldName: publisher
+  - name: publisher
     weight: 0
     tokenize: true
     queryByDefault: false
@@ -33,7 +43,7 @@ queryFields:
     allowPartialMatch: true
     required: true
     highlight: false
-  - fieldName: group
+  - name: group
     weight: 0
     tokenize: true
     queryByDefault: false
@@ -41,10 +51,4 @@ queryFields:
     allowPartialMatch: true
     required: true
     highlight: false
-  - fieldName: typeName
-    allowPartialMatch: true
-    weight: 0
-    highlight: false
-    required: true
-    exact: true
-    tokenize: true
+  
