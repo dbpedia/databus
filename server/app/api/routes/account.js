@@ -13,14 +13,13 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
-const publishAccount = require('../lib/publish-account');
 var cors = require('cors');
 
 module.exports = function (router, protector) {
 
-
-
+  /*
   router.put('/:account', protector.protect(), async function (req, res, next) {
+
 
     // requesting user does not have an account yet
     if (req.databus.accountName == undefined) {
@@ -54,16 +53,6 @@ module.exports = function (router, protector) {
           res.status(500).send(`Failed to write to user database`);
           return;
         }
-        /** 
-        var result = await publishAccount(req.databus.accountName, req.body);
-
-        if (result.isSuccess) {
-          await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
-          res.status(201).send(result.message);
-          return;
-        }
-
-        res.status(result.statusCode).send(result.message);*/
       }
     }
 
@@ -75,7 +64,7 @@ module.exports = function (router, protector) {
     var result = await publishAccount(req.databus.accountName, req.body);
     res.status(result.statusCode).send(result.message);
   });
-
+  */
   
 
   router.post('/api/account/webid/remove', protector.protect(), async function (req, res, next) {

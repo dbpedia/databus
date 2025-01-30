@@ -2,6 +2,7 @@ const DatabusCollectionUtils = require("../collections/databus-collection-utils"
 var markdownit = require('markdown-it');
 const moment = require("moment/moment");
 const DatabusUris = require("./databus-uris");
+const ApiError = require("../../../server/app/common/utils/api-error");
 
 class DatabusUtils {
 
@@ -502,8 +503,19 @@ class DatabusUtils {
     return errorList;
   }
 
-}
+  static validateNamespace(uri, accountName) {
 
-// export default DatabusUtils;
+    var baseURL = process.env.DATABUS_RESOURCE_BASE_URL;
+
+    if (!uri.startsWith(process.env.DATABUS_RESOURCE_BASE_URL)) {
+      throw new ApiError(`Identifier <${uri}> does not start with the resource base url <${baseURL}> of this Databus.`, 400);
+    }
+
+    var namespacePrefix = `${baseURL}/${accountName}/`;
+    if (!uri.startsWith(namespacePrefix)) {
+      throw new ApiError(`Identifier <${uri}> does not start with the expected namespace prefix <${namespacePrefix}>.`, 403);
+    }
+  }
+}
 
 module.exports = DatabusUtils;

@@ -8,6 +8,7 @@ const Constants = require('../../common/constants');
 var fileAnalyzer = require('../../common/file-analyzer');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var requestRdf = require('../../common/request-rdf');
+const pem2jwk = require('pem-jwk').pem2jwk;
 
 var tractateConfig = {
   header: 'Databus Tractate Version 1.0'
@@ -199,6 +200,13 @@ signer.sign = function (canonicalized) {
 
   return signature;
 };
+
+signer.getModulus = function() {
+  var pkeyPEM = fs.readFileSync(__dirname + '/../../../keypair/public-key.pem', 'utf-8');
+  var publicKeyInfo = pem2jwk(pkeyPEM);
+  let buff = Buffer.from(publicKeyInfo.n, 'base64');
+  return buff.toString('hex');
+}
 
 
 

@@ -14,6 +14,7 @@ class DatabusUris {
   static DATABUS_PART = 'https://dataid.dbpedia.org/databus#Part';
   static DATABUS_VERSION = 'https://dataid.dbpedia.org/databus#Version';
   static DATABUS_GROUP = 'https://dataid.dbpedia.org/databus#Group';
+  static DATABUS_ACCOUNT = 'https://dataid.dbpedia.org/databus#Account';
   static DATABUS_ARTIFACT = 'https://dataid.dbpedia.org/databus#Artifact';
   static DATABUS_VERSION_PROPERTY = 'https://dataid.dbpedia.org/databus#version';
   static DATABUS_GROUP_PROPERTY = 'https://dataid.dbpedia.org/databus#group';
@@ -88,6 +89,7 @@ class DatabusUris {
   static FOAF_PERSON = 'http://xmlns.com/foaf/0.1/Person';
   static FOAF_PRIMARY_TOPIC = 'http://xmlns.com/foaf/0.1/primaryTopic';
   static FOAF_MAKER = 'http://xmlns.com/foaf/0.1/maker';
+  static FOAF_ACCOUNT_NAME = 'http://xmlns.com/foaf/0.1/accountName';
   static FOAF_IMG = 'http://xmlns.com/foaf/0.1/img';
 
   // S4AC

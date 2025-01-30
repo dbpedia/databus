@@ -11,42 +11,32 @@ class AppJsonFormatter {
   static createAccountData(resourceBaseUrl, accountName, accountLabel, accountStatus, accountImage) {
 
     var accountUri = `${resourceBaseUrl}/${accountName}`;
-    var profileUri = `${resourceBaseUrl}/${accountName}${DatabusConstants.WEBID_DOCUMENT}`;
     var personUri = `${resourceBaseUrl}/${accountName}${DatabusConstants.WEBID_THIS}`;
 
     var accountJsonLd = {};
 
+    var accountGraph = {};
+    accountGraph[DatabusUris.JSONLD_ID] = accountUri;
+    accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
+
     var personGraph = {};
     personGraph[DatabusUris.JSONLD_ID] = personUri;
-    personGraph[DatabusUris.JSONLD_TYPE] = [
-      DatabusUris.FOAF_PERSON,
-      DatabusUris.DBP_DBPEDIAN
-    ];
+    personGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSON;
     personGraph[DatabusUris.FOAF_NAME] = accountLabel;
+    personGraph[DatabusUris.FOAF_ACCOUNT] = JsonldUtils.refTo(accountUri);
 
     if (accountStatus != null) {
       personGraph[DatabusUris.FOAF_STATUS] = accountStatus;
     }
 
-    personGraph[DatabusUris.FOAF_ACCOUNT] = {};
-    personGraph[DatabusUris.FOAF_ACCOUNT][DatabusUris.JSONLD_ID] = accountUri;
-
     if (accountImage != null) {
-      personGraph[DatabusUris.FOAF_IMG] = {};
-      personGraph[DatabusUris.FOAF_IMG][DatabusUris.JSONLD_ID] = accountImage;
+      personGraph[DatabusUris.FOAF_IMG] = JsonldUtils.refTo(accountImage);
     }
 
-    var profileGraph = {};
-    profileGraph[DatabusUris.JSONLD_ID] = profileUri;
-    profileGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
-    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = {};
-    profileGraph[DatabusUris.FOAF_PRIMARY_TOPIC][DatabusUris.JSONLD_ID] = personUri;
-    profileGraph[DatabusUris.FOAF_MAKER] = {};
-    profileGraph[DatabusUris.FOAF_MAKER][DatabusUris.JSONLD_ID] = personUri;
 
     accountJsonLd[DatabusUris.JSONLD_GRAPH] = [
-      personGraph,
-      profileGraph
+      accountGraph,
+      personGraph
     ];
 
     return accountJsonLd;

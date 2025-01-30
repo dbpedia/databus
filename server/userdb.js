@@ -87,6 +87,12 @@ class DatabusUserDatabase {
     });
   }
 
+  async hasUser(accountName) {
+    var user = await this.getUserByAccountName(accountName);
+    return user != null;
+  }
+
+
   /**
    * Retrieve a sub string by apikey
    * @param {*} apikey 

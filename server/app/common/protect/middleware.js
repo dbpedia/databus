@@ -14,7 +14,6 @@ var getRandomValues = require('get-random-values');
 var fs = require('fs');
 const Constants = require('../constants');
 const DatabusUserDatabase = require('../../../userdb');
-const DatabusMessage = require('../databus-message');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -216,6 +215,7 @@ class DatabusProtect {
       // console.log(`user: ${JSON.stringify(req.oidc.user)}`);
       req.databus.oidc_name = req.oidc.user.name;
       req.databus.oidc_email = req.oidc.user.email;
+      req.databus.sub = req.oidc.user.sub;
 
       // Looking up the user...
       var user = await this.userdb.getUser(req.oidc.user.sub);

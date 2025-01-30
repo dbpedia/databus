@@ -59,6 +59,8 @@ class Constants {
   static HTTP_CONTENT_TYPE_FORM = 'application/x-www-form-urlencoded';
   
   static HTTP_ACCEPT_RDF = 'text/turtle, application/ld+json, text/plain, application/rdf+xml, application/x-turtle';
+
+  static SHARED_DATABUS_PUBLIC_KEY = 'Databus Public Key';
 }
 
 module.exports = Constants;

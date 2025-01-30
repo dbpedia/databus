@@ -3,6 +3,12 @@ const DatabusUris = require("./databus-uris");
 
 class JsonldUtils {
 
+  static refTo(uri) {
+    var result = {};
+    result[DatabusUris.JSONLD_ID] = uri;
+    return result;
+  }
+  
   static getTypedGraph(graphs, graphType) {
 
     for (var g in graphs) {

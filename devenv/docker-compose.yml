@@ -3,6 +3,7 @@ version: "3.0"
 name: databus_nodejs_devenv
 services:
   gstore:
+    restart: unless-stopped
     image: dbpedia/gstore:dev
     container_name: databus_devenv_gstore
     environment: 
@@ -17,6 +18,7 @@ services:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
   lookup:
+    restart: unless-stopped
     image: lookup:dev
     container_name: databus_devenv_lookup
     ports:
@@ -25,6 +27,7 @@ services:
       - ./data/index/:/index
       - ../search/servlet-config.yml:/resources/config.yml
   virtuoso:
+    restart: unless-stopped
     image: "openlink/virtuoso-opensource-7:latest"
     container_name: databus_devenv_virtuoso
     environment:

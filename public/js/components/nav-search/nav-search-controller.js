@@ -27,7 +27,7 @@ function NavSearchController($http, $interval, $sce, searchManager) {
 
   }
 
-  ctrl.availableResourceTypes = ['Collection', 'Artifact', 'Group', 'PersonalProfileDocument', 'Version' ];
+  ctrl.availableResourceTypes = ['Collection', 'Artifact', 'Group', 'Account', 'Version' ];
 
   ctrl.$onInit = function () {
 

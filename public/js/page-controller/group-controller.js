@@ -105,7 +105,7 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
     var groupUpdate = $scope.dataidCreator.createGroupUpdate();
 
     var relativeUri = new URL($scope.group.uri).pathname;
-    var response = await $http.put(relativeUri, groupUpdate);
+    var response = await $http.post('/api/register', groupUpdate);
 
     if (response.status == 200) {
       $scope.group.title = $scope.formData.group.title;

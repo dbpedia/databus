@@ -1,6 +1,5 @@
 // External includes
 var fs = require('fs');
-const axios = require('axios');
 const jsonld = require('jsonld');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
@@ -9,7 +8,6 @@ const DatabusUserDatabase = require('./userdb.js');
 const DatabusConstants = require('../public/js/utils/databus-constants.js');
 const UriUtils = require('./app/common/utils/uri-utils.js');
 const { executeAsk } = require('./app/common/execute-query.js');
-const publishAccount = require('./app/api/lib/publish-account.js');
 const AppJsonFormatter = require('../public/js/utils/app-json-formatter.js');
 const MetricsManager = require('./app/api/statistics/metrics-manager.js');
 var defaultContext = require('./app/common/res/context.jsonld');
@@ -181,7 +179,7 @@ async function initializeUserDatabase() {
         null, 
         null);
 
-      await publishAccount(user.accountName, accountJsonLd);
+      // await publishAccount(user.accountName, accountJsonLd);
 
       console.log(`Created new default profile for user ${user.accountName}`);
     } 

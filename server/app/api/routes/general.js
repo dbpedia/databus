@@ -1,13 +1,14 @@
 var http = require('http');
 var request = require('request');
+const jsonld = require('jsonld');
 var cors = require('cors');
-const publishGroup = require('../lib/publish-group');
 const publishVersion = require('../lib/publish-version');
-const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const publishArtifact = require('../lib/publish-artifact');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
-var jsonld = require('jsonld');
+const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusLogger = require('../../common/databus-logger');
+const AccountWriter = require('../lib/account-writer');
+const GroupWriter = require('../lib/group-writer');
 var SparqlParser = require('sparqljs').Parser;
 
 const ALLOWED_QUERY_TYPES = [
@@ -75,12 +76,39 @@ module.exports = function (router, protector, webdav) {
   router.post('/api/register', protector.protect(true), registerData);
   router.post('/api/publish', protector.protect(true), registerData);
 
+  async function createUser(sub, accountName) {
+    var accountExists = await protector.hasUser(accountName);
+
+    if(accountExists) {
+      throw new ApiError(`Account <${accountName}> already exists.`, 401);
+    }
+
+    try {
+      await protector.addUser(sub, accountName, accountName);
+
+      return {
+        sub: sub,
+        accountName: accountName
+      };
+    } catch(err) {
+      throw new ApiError(`Failed to write to user database`, 500);
+    }
+  }
+
+
   async function registerData(req, res, next) {
 
     try {
 
       // Get the account namespace
-      var account = req.databus.accountName;
+      var accountName = req.databus.accountName;
+
+
+      var userData = {
+        sub: req.databus.sub,
+        accountName: req.databus.accountName
+      };
+
       var verifyParts = null;
       
       if(req.query['fetch-file-properties'] == "false") {
@@ -92,40 +120,35 @@ module.exports = function (router, protector, webdav) {
       }
 
       var logger = new DatabusLogger(req.query['log-level']);
-      var graph = req.body;
-
       var processedResources = 0;
+      var expandedGraphs = await jsonld.flatten(req.body);
+     
+      var accountGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ACCOUNT);
 
-      // if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_CONTEXT_URL) {
-      //  graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-      //  logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
-      //}
-
-      // Expand JSONLD!
-      var expandedGraph = await jsonld.flatten(graph);
+      for (var accountGraph of accountGraphs) {
+        processedResources++;
+        var accountWriter = new AccountWriter(createUser, logger);
+        await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
+      }
 
       // Publish groups
-      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_GROUP);
+      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_GROUP);
       logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
-      processedResources += groupGraphs.length;
-      // console.log(groupGraphs);
 
       for (var groupGraph of groupGraphs) {
-        var resultCode = await publishGroup(account, groupGraph, logger);
-
-        if (resultCode != 200) {
-          res.status(resultCode).json(logger.getReport());
-          return;
-        }
+        processedResources++;
+        
+        var groupWriter = new GroupWriter(logger);
+        await groupWriter.writeResource(userData, expandedGraphs, groupGraph[DatabusUris.JSONLD_ID]);
       }
 
       // Publish artifacts
-      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_ARTIFACT);
+      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ARTIFACT);
       logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
       processedResources += artifactGraphs.length;
 
       for (var artifactGraph of artifactGraphs) {
-        var resultCode = await publishArtifact(account, artifactGraph, logger);
+        var resultCode = await publishArtifact(accountName, artifactGraph, logger);
 
         if (resultCode != 200) {
           res.status(resultCode).json(logger.getReport());
@@ -134,13 +157,13 @@ module.exports = function (router, protector, webdav) {
       }
 
       // Publish versions
-      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraph, DatabusUris.DATABUS_VERSION);
+      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_VERSION);
       logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
       processedResources += datasetGraphs.length;
 
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
-        var resultCode = await publishVersion(account, expandedGraph, datasetGraphUri, verifyParts, logger);
+        var resultCode = await publishVersion(accountName, expandedGraphs, datasetGraphUri, verifyParts, logger);
 
         if (resultCode != 200) {
           res.status(resultCode).json(logger.getReport());
@@ -159,7 +182,7 @@ module.exports = function (router, protector, webdav) {
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
-    }
+    } 
   }
 
   router.get('/api/search', cors(), function (req, res, next) {

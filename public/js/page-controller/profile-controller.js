@@ -30,7 +30,7 @@ function ProfileController($scope, $http) {
       null, 
       null);
 
-    $http.put(`/${accountName}`, accountJsonLd).then(function (result) {
+    $http.post(`/api/register`, accountJsonLd).then(function (result) {
       window.location.reload(true);
     }, function (err) {
       console.log(err);
@@ -189,7 +189,7 @@ function ProfileController($scope, $http) {
       $scope.editData.about, 
       $scope.editData.imageUrl);
 
-    $http.put(`/${$scope.auth.info.accountName}`, accountJsonLd).then(function (result) {
+    $http.post(`/api/register`, accountJsonLd).then(function (result) {
       DatabusAlert.alert($scope, true, DatabusMessages.ACCOUT_PROFILE_SAVED);
     }, function (err) {
       console.log(err);

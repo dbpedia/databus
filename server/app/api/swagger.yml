@@ -283,10 +283,11 @@ paths:
         - name: typeName
           in: query
           description: The type of entities to return. White space separated list of one or multiples of
+            * Account
             * Group
             * Artifact
+            * Version
             * Collection
-            * PersonalProfileDocument
           schema:
             type: string
           required: false

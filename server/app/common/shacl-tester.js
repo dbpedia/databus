@@ -45,10 +45,10 @@ instance.validateJsonld = async function(rdf, shaclFile) {
     var conforms = validationReport[DatabusUris.SHACL_CONFORMS][0][DatabusUris.JSONLD_VALUE];
     var messages = [];
 
-    if(!conforms) {
+    var conforms = conforms === 'true';
 
+    if(!conforms) {
       var validationResults = JsonldUtils.getTypedGraphs(expandedRes, DatabusUris.SHACL_VALIDATION_RESULT);
-    
       for(var result of validationResults) {
         var message = result[DatabusUris.SHACL_RESULT_MESSAGE][0][DatabusUris.JSONLD_VALUE];
         messages.push(message);
