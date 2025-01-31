@@ -1,4 +1,5 @@
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const ResourceWriter = require('./resource-writer.js');
 
@@ -9,7 +10,7 @@ class GroupWriter extends ResourceWriter {
   }
 
   async onCreateGraphs() {
-      
+
     var inputGroupGraph = JsonldUtils.getGraphById(this.inputGraphs, this.uri);
 
     var groupGraph = {};
@@ -21,11 +22,14 @@ class GroupWriter extends ResourceWriter {
       groupGraph[DatabusUris.DCT_TITLE] = inputGroupGraph[DatabusUris.DCT_TITLE];
     }
 
-    if(inputGroupGraph[DatabusUris.DCT_ABSTRACT] != null) {
-      groupGraph[DatabusUris.DCT_ABSTRACT] = inputGroupGraph[DatabusUris.DCT_ABSTRACT];
-    }
     if(inputGroupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
       groupGraph[DatabusUris.DCT_DESCRIPTION] = inputGroupGraph[DatabusUris.DCT_DESCRIPTION];
+    }
+
+    if(inputGroupGraph[DatabusUris.DCT_ABSTRACT] != null) {
+      groupGraph[DatabusUris.DCT_ABSTRACT] = inputGroupGraph[DatabusUris.DCT_ABSTRACT];
+    } else if (groupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+      groupGraph[DatabusUris.DCT_DESCRIPTION] = DatabusUtils.createAbstractFromDescription(groupGraph[DatabusUris.DCT_DESCRIPTION]);
     }
 
     return [

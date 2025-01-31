@@ -1,17 +1,13 @@
 const ServerUtils = require("../../common/utils/server-utils");
-const DatabusUris = require("../../../../public/js/utils/databus-uris");
 const Constants = require("../../common/constants");
 const GstoreHelper = require('../../common/utils/gstore-helper');
 const JsonldUtils = require("../../../../public/js/utils/jsonld-utils");
 const DatabusLogger = require("../../common/databus-logger");
 const UriUtils = require("../../common/utils/uri-utils");
-
-const publishArtifact = require('../lib/publish-artifact');
-const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
+const ArtifactWriter = require("../lib/artifact-writer");
 const jsonld = require('jsonld');
 var cors = require('cors');
-
 const sparql = require("../../common/queries/sparql");
 
 module.exports = function (router, protector) {
@@ -30,19 +26,8 @@ module.exports = function (router, protector) {
       ]);
 
 
-      // Requesting a PUT on an uri outside of one's namespace is rejected
-      if (req.params.account != req.databus.accountName) {
-        res.status(403).send(MESSAGE_WRONG_NAMESPACE);
-        return;
-      }
-
       var logger = new DatabusLogger(req.query['log-level']);
       var graph = req.body;
-
-      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
-      }
 
       // Expand JSONLD!
       var expandedGraph = await jsonld.flatten(graph);
@@ -56,10 +41,15 @@ module.exports = function (router, protector) {
         return;
       }
 
-      logger.debug(null, `Found graph ${artifactUri} in the input.`, artifactGraph);
-
-      var code = await publishArtifact(req.params.account, artifactGraph, logger);
-      res.status(code).json(logger.getReport());
+      try {
+        var artifactWriter = new ArtifactWriter(logger);
+        await artifactWriter.writeResource(req.databus, expandedGraph, artifactUri);
+      }
+      catch (apiError) {
+        logger.error(apiError.resource, apiError.message, apiError.body);
+        res.status(apiError.statusCode).json(logger.getReport());
+        return;
+      }
 
     } catch (err) {
       console.log(err);

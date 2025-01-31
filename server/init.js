@@ -11,6 +11,10 @@ const { executeAsk } = require('./app/common/execute-query.js');
 const AppJsonFormatter = require('../public/js/utils/app-json-formatter.js');
 const MetricsManager = require('./app/api/statistics/metrics-manager.js');
 var defaultContext = require('./app/common/res/context.jsonld');
+const AccountWriter = require('./app/api/lib/account-writer.js');
+const DatabusLogger = require('./app/common/databus-logger.js');
+const DatabusLogLevel = require('./app/common/databus-log-level.js');
+const JsonldLoader = require('./app/common/utils/jsonld-loader.js');
 
 function writeManifest() {
 
@@ -84,7 +88,7 @@ async function initializeShacl() {
     'account', 'artifact', 'collection', 'version', 'group'
   ];
 
-  for(var file of shaclFiles) {
+  for (var file of shaclFiles) {
     var shacl = require(`../model/generated/shacl/${file}.shacl`);
     var shaclFile = `${__dirname}/app/common/res/shacl/${file}.shacl`;
 
@@ -96,7 +100,7 @@ async function initializeShacl() {
 async function initializeContext() {
 
   var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
-    
+
   console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
   process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
 
@@ -157,48 +161,64 @@ async function initializeContext() {
 }
 
 
-async function initializeUserDatabase() {
+async function initializeUserDatabase(indexer) {
+
+  
   console.log(`Connecting to User Databse...`);
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
 
   console.log(`Verifying user account integrity`);
 
-  for(var user of await userDatabase.getUsers()) {
+  for (var user of await userDatabase.getUsers()) {
     var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
     var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
 
     if (!exists) {
       // Redirect to the specific account page
       console.log(`No profile found for user ${user.accountName}. Creating profile...`);
-     
+
+      var userData = {
+        accountName: user.accountName,
+        sub: user.sub
+      };
+
+
+      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+
       var accountJsonLd = AppJsonFormatter.createAccountData(
-        process.env.DATABUS_RESOURCE_BASE_URL, 
+        accountUri,
         user.accountName,
-        user.accountName, 
-        null, 
+        null,
         null);
 
+      
+      var accountWriter = new AccountWriter(null, new DatabusLogger(DatabusLogLevel.ERROR));
+      await accountWriter.writeResource(userData, accountJsonLd, accountUri);
       // await publishAccount(user.accountName, accountJsonLd);
 
+      indexer.updateResource(accountWriter.uri, accountWriter.resource.getTypeName());
       console.log(`Created new default profile for user ${user.accountName}`);
-    } 
+    }
   }
 
 }
 
 
-module.exports = async function () {
+module.exports = async function (indexer) {
 
   console.log(`Initializing...`);
   console.log(config);
 
-  if(process.env.METRICS_PORT != undefined) {
+  if (process.env.METRICS_PORT != undefined) {
     console.log(`Settings up Prometheus metrics...`);
     MetricsManager.initialize();
   }
 
-  await initializeUserDatabase();
+  
+  JsonldLoader.initialize();
+
+  await initializeUserDatabase(indexer);
 
   // await initializeShacl();
   await initializeContext();

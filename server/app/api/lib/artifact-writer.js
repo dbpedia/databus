@@ -1,4 +1,5 @@
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const DatabusUtils = require('../../../../public/js/utils/databus-utils.js');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
 const ResourceWriter = require('./resource-writer.js');
 
@@ -22,11 +23,14 @@ class ArtifactWriter extends ResourceWriter {
       artifactGraph[DatabusUris.DCT_TITLE] = inputArtifactGraph[DatabusUris.DCT_TITLE];
     }
 
-    if(inputArtifactGraph[DatabusUris.DCT_ABSTRACT] != null) {
-      artifactGraph[DatabusUris.DCT_ABSTRACT] = inputArtifactGraph[DatabusUris.DCT_ABSTRACT];
-    }
     if(inputArtifactGraph[DatabusUris.DCT_DESCRIPTION] != null) {
       artifactGraph[DatabusUris.DCT_DESCRIPTION] = inputArtifactGraph[DatabusUris.DCT_DESCRIPTION];
+    }
+
+    if(inputArtifactGraph[DatabusUris.DCT_ABSTRACT] != null) {
+      artifactGraph[DatabusUris.DCT_ABSTRACT] = inputArtifactGraph[DatabusUris.DCT_ABSTRACT];
+    } else if (groupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+      artifactGraph[DatabusUris.DCT_DESCRIPTION] = DatabusUtils.createAbstractFromDescription(artifactGraph[DatabusUris.DCT_DESCRIPTION]);
     }
 
     var groupGraph = {};
@@ -34,7 +38,8 @@ class ArtifactWriter extends ResourceWriter {
     groupGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_GROUP;
 
     return [
-      artifactGraph
+      artifactGraph,
+      groupGraph
     ];
   }
 

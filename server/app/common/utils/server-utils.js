@@ -2,7 +2,7 @@ var ASN1 = require('asn1js');
 
 class ServerUtils {
 
-  
+
 
   static getRSAModulusAndExponent(pubkey) {
     var unarmor = /-----BEGIN PUBLIC KEY-----([A-Za-z0-9+\/=\s]+)-----END PUBLIC KEY-----/;
@@ -98,7 +98,7 @@ class ServerUtils {
     var result = {};
     result.authenticated = false;
 
-    if(req.databus != undefined) {
+    if (req.databus != undefined) {
       result.authenticated = req.databus.authenticated; //.isAuthenticated();
     }
 
@@ -147,11 +147,11 @@ class ServerUtils {
   static NOT_HTML_ACCEPTED(req, res, next) {
     var acceptHeader = req.get('Accept');
 
-    if(acceptHeader == undefined) {
+    if (acceptHeader == undefined) {
       return next();
     }
 
-    if(acceptHeader.includes('html')) {
+    if (acceptHeader.includes('html')) {
       return next("route");
     }
 
@@ -161,7 +161,7 @@ class ServerUtils {
   static HTML_ACCEPTED(req, res, next) {
     var acceptHeader = req.get('Accept');
 
-    if(acceptHeader == undefined) {
+    if (acceptHeader == undefined) {
       return next("route");
     }
 
@@ -187,6 +187,5 @@ class ServerUtils {
 
   }
 }
-
 
 module.exports = ServerUtils

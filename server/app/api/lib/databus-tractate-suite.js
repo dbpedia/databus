@@ -8,6 +8,7 @@ const Constants = require('../../common/constants');
 var fileAnalyzer = require('../../common/file-analyzer');
 var GstoreHelper = require('../../common/utils/gstore-helper');
 var requestRdf = require('../../common/request-rdf');
+const GstoreResource = require('./gstore-resource');
 const pem2jwk = require('pem-jwk').pem2jwk;
 
 var tractateConfig = {
@@ -140,8 +141,10 @@ signer.validate = async function (canonicalized, proof) {
       var repo = webIdURL.pathname.substring(1);
       // Read the WebId directly from the Gstore to avoid access problems in private mode
 
-      var webIdJsonLd = await GstoreHelper.read(repo, Constants.DATABUS_FILE_WEBID);
-      var flattenedGraphs = await jsonld.flatten(webIdJsonLd);
+      var gstoreResource = new GstoreResource(publisherUri);
+      await gstoreResource.read();
+
+      var flattenedGraphs = await jsonld.flatten(gstoreResource.content);
 
       quads = await requestRdf.parseRdf(Constants.HTTP_CONTENT_TYPE_JSONLD, JSON.stringify(flattenedGraphs))
 

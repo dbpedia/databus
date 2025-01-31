@@ -20,6 +20,7 @@ const Constants = require("./common/constants");
 const defaultContext  = require("./common/res/context.jsonld");
 const jsonld = require('jsonld');
 const axios = require('axios');
+const JsonldLoader = require("./common/utils/jsonld-loader");
 
 // Creation of the mighty server app
 var app = express();
@@ -124,56 +125,14 @@ initialize(app, memoryStore).then(function () {
 
 });
 
-
-function initializeJsonLd() {
-  // how to override the default document loader with a custom one -- for
-  // example, one that uses pre-loaded contexts:
-  var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
-  
-  // define a mapping of context URL => context doc
-  const CONTEXTS = {}
-  CONTEXTS[defaultContextUrl] = defaultContext;
-
-  // change the default document loader
-  const customLoader = async (url, options) => {
-    
-    if(url in CONTEXTS) {
-      return {
-        contextUrl: null, 
-        document: CONTEXTS[url], 
-        documentUrl: url 
-      };
-    }
-
-    try {
-      // Use axios to fetch the document
-      const response = await axios.get(url, {
-        headers: { Accept: 'application/ld+json, application/json' },
-        responseType: 'json',
-        timeout: 5000, 
-      });
-
-      return {
-        contextUrl: null,
-        document: response.data,
-        documentUrl: url
-      };
-    } catch (error) {
-      throw new Error(`Failed to load document from ${url}: ${error.message}`);
-    }
-  };
-
-  jsonld.documentLoader = customLoader;
-}
-
 /**
  * Express app initialization
  * @param {the express app} app 
  */
 async function initialize(app, memoryStore) {
 
-  initializeJsonLd();
-
+  JsonldLoader.initialize();
+  
   try {
     app.set('trust proxy', 'loopback');
     app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));

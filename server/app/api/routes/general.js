@@ -3,12 +3,12 @@ var request = require('request');
 const jsonld = require('jsonld');
 var cors = require('cors');
 const publishVersion = require('../lib/publish-version');
-const publishArtifact = require('../lib/publish-artifact');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusLogger = require('../../common/databus-logger');
 const AccountWriter = require('../lib/account-writer');
 const GroupWriter = require('../lib/group-writer');
+const ArtifactWriter = require('../lib/artifact-writer');
 var SparqlParser = require('sparqljs').Parser;
 
 const ALLOWED_QUERY_TYPES = [
@@ -123,37 +123,42 @@ module.exports = function (router, protector, webdav) {
       var processedResources = 0;
       var expandedGraphs = await jsonld.flatten(req.body);
      
-      var accountGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ACCOUNT);
+      try {
+        var accountGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ACCOUNT);
 
-      for (var accountGraph of accountGraphs) {
-        processedResources++;
-        var accountWriter = new AccountWriter(createUser, logger);
-        await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
-      }
+        for (var accountGraph of accountGraphs) {
+          processedResources++;
 
-      // Publish groups
-      var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_GROUP);
-      logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
-
-      for (var groupGraph of groupGraphs) {
-        processedResources++;
-        
-        var groupWriter = new GroupWriter(logger);
-        await groupWriter.writeResource(userData, expandedGraphs, groupGraph[DatabusUris.JSONLD_ID]);
-      }
-
-      // Publish artifacts
-      var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ARTIFACT);
-      logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
-      processedResources += artifactGraphs.length;
-
-      for (var artifactGraph of artifactGraphs) {
-        var resultCode = await publishArtifact(accountName, artifactGraph, logger);
-
-        if (resultCode != 200) {
-          res.status(resultCode).json(logger.getReport());
-          return;
+          var accountWriter = new AccountWriter(createUser, logger);
+          await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
         }
+
+        // Publish groups
+        var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_GROUP);
+        logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
+
+        for (var groupGraph of groupGraphs) {
+          processedResources++;
+          
+          var groupWriter = new GroupWriter(logger);
+          await groupWriter.writeResource(userData, expandedGraphs, groupGraph[DatabusUris.JSONLD_ID]);
+        }
+
+        // Publish artifacts
+        var artifactGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ARTIFACT);
+        logger.debug(null, `Found ${artifactGraphs.length} artifact graphs.`, null);
+
+        for (var artifactGraph of artifactGraphs) {
+          processedResources++;
+
+          var artifactWriter = new ArtifactWriter(logger);
+          await artifactWriter.writeResource(userData, expandedGraphs, artifactGraph[DatabusUris.JSONLD_ID]);
+        }
+      }
+      catch(apiError) {
+        logger.error(apiError.resource, apiError.message, apiError.body);
+        res.status(apiError.statusCode).json(logger.getReport());
+        return;
       }
 
       // Publish versions

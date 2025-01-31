@@ -1,10 +1,10 @@
-const defaultContext = require('./res/context.jsonld');
 const axios = require('axios');
 const jsonld = require('jsonld');
 const exec = require('./execute-query');
 const ServerUtils = require('./utils/server-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
 const HttpStrings = require('./http-strings');
+const JsonldLoader = require('./utils/jsonld-loader');
 
 module.exports = async function getJsonLd(resourceUri, template, formatting) {
 
@@ -43,10 +43,7 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
     // Format the result based on the requested formatting
     if (formatting === undefined || formatting === 'compacted' || formatting === 'compact') {
       // Compact the result with the Databus context
-      result = await jsonld.compact(result, defaultContext);
-      if (process.env.DATABUS_CONTEXT_URL !== undefined) {
-        result[DatabusUris.JSONLD_CONTEXT] = process.env.DATABUS_CONTEXT_URL;
-      }
+      result = await jsonld.compact(result, JsonldLoader.DEFAULT_CONTEXT_URL);
     } else if (formatting === 'flatten') {
       // Flatten the result
       result = await jsonld.flatten(result);

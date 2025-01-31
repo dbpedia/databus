@@ -59,7 +59,7 @@ class GstoreResource {
     try {
       var url = this.getRequestURL('Write');
 
-      console.log(JSON.stringify(this.content, null, 3));
+      // console.log(JSON.stringify(this.content, null, 3));
       
       const response = await axios.post(url, this.content, {
         headers: { 'Content-Type': Constants.HTTP_CONTENT_TYPE_JSONLD }
@@ -75,6 +75,7 @@ class GstoreResource {
   async read() {
     try {
       const response = await axios.get(this.getRequestURL('Read'), { headers: { 'Accept': 'application/ld+json' } });
+      this.content = response.data;
       return response.data;
     } catch (error) {
       console.error('Error reading document:', error);

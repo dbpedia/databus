@@ -24,8 +24,9 @@ function ProfileController($scope, $http) {
 
   $scope.putProfile = function (accountName) {
 
-    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
-      accountName,
+    var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+    var accountJsonLd = AppJsonFormatter.createAccountData(
+      accountUri,
       accountName, 
       null, 
       null);
@@ -183,8 +184,9 @@ function ProfileController($scope, $http) {
       return;
     }
 
-    var accountJsonLd = AppJsonFormatter.createAccountData(DATABUS_RESOURCE_BASE_URL, 
-      $scope.auth.info.accountName,
+    var accountUri = `${DATABUS_RESOURCE_BASE_URL}/${$scope.auth.info.accountName}`;
+    var accountJsonLd = AppJsonFormatter.createAccountData(
+      accountUri,
       $scope.editData.label, 
       $scope.editData.about, 
       $scope.editData.imageUrl);

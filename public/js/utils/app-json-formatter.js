@@ -8,10 +8,9 @@ const JsonldUtils = require("./jsonld-utils");
  */
 class AppJsonFormatter {
 
-  static createAccountData(resourceBaseUrl, accountName, accountLabel, accountStatus, accountImage) {
+  static createAccountData(accountUri, accountLabel, accountStatus, accountImage) {
 
-    var accountUri = `${resourceBaseUrl}/${accountName}`;
-    var personUri = `${resourceBaseUrl}/${accountName}${DatabusConstants.WEBID_THIS}`;
+    var personUri = `${accountUri}${DatabusConstants.WEBID_THIS}`;
 
     var accountJsonLd = {};
 
@@ -34,12 +33,10 @@ class AppJsonFormatter {
     }
 
 
-    accountJsonLd[DatabusUris.JSONLD_GRAPH] = [
+    return [
       accountGraph,
       personGraph
     ];
-
-    return accountJsonLd;
   }
 
   static formatGroupData(graphs) {
@@ -74,12 +71,13 @@ class AppJsonFormatter {
   static formatAccountData(graphs) {
     var result = {};
 
-    var profileGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT);
+    var accountGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_ACCOUNT);
     var personGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.FOAF_PERSON);
 
-    result.uri = profileGraph[DatabusUris.JSONLD_ID];
+    result.uri = accountGraph[DatabusUris.JSONLD_ID];
     result.accountName = DatabusUtils.uriToResourceName(result.uri);
     result.label = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_NAME);
+    result.about = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_STATUS);
     result.webIds = [];
     result.searchExtensions = [];
 

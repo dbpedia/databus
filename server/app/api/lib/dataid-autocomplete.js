@@ -220,58 +220,5 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 }
 
 
-autocompleter.autocompleteArtifact = function (expandedGraphs) {
-
-  var artifactGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_ARTIFACT);
-  var artifactUri = artifactGraph[DatabusUris.JSONLD_ID];
-  var groupUri = UriUtils.navigateUp(artifactUri, 1);
-  var accountUri = UriUtils.navigateUp(artifactUri, 2);
-  var artifactName = UriUtils.uriToName(artifactUri);
-
-  var groupGraph = {};
-  groupGraph[DatabusUris.JSONLD_ID] = groupUri;
-  groupGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_GROUP;
-  expandedGraphs.push(groupGraph);
-
-  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = [{}];
-  artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY][0][DatabusUris.JSONLD_ID] = groupUri;
-
-  artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
-  artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
-  
-  artifactGraph[DatabusUris.DATABUS_NAME] = [{}];
-  artifactGraph[DatabusUris.DATABUS_NAME][0][DatabusUris.JSONLD_VALUE] = artifactName;
-
-  if (artifactGraph[DatabusUris.DCT_ABSTRACT] == undefined
-    && artifactGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
-    var description = artifactGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
-    artifactGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    artifactGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
-      DatabusUtils.createAbstractFromDescription(description);
-  }
-}
-
-autocompleter.autocompleteGroup = function (expandedGraphs) {
-
-  var groupGraph = JsonldUtils.getTypedGraph(expandedGraphs, DatabusUris.DATABUS_GROUP);
-  var groupUri = groupGraph[DatabusUris.JSONLD_ID];
-  var accountUri = UriUtils.navigateUp(groupUri, 1);
-  var groupName = UriUtils.uriToName(groupUri);
-
-  groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = [{}];
-  groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0][DatabusUris.JSONLD_ID] = accountUri;
-
-  groupGraph[DatabusUris.DATABUS_NAME] = [{}];
-  groupGraph[DatabusUris.DATABUS_NAME][0][DatabusUris.JSONLD_VALUE] = groupName;
-
-  if (groupGraph[DatabusUris.DCT_ABSTRACT] == undefined
-    && groupGraph[DatabusUris.DCT_DESCRIPTION] != undefined) {
-
-    var description = groupGraph[DatabusUris.DCT_DESCRIPTION][0][DatabusUris.JSONLD_VALUE];
-    groupGraph[DatabusUris.DCT_ABSTRACT] = [{}];
-    groupGraph[DatabusUris.DCT_ABSTRACT][0][JSONLD_VALUE] =
-      DatabusUtils.createAbstractFromDescription(description);
-  }
-}
 
 module.exports = autocompleter;

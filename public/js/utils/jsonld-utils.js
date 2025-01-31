@@ -8,7 +8,7 @@ class JsonldUtils {
     result[DatabusUris.JSONLD_ID] = uri;
     return result;
   }
-  
+
   static getTypedGraph(graphs, graphType) {
 
     for (var g in graphs) {
@@ -139,14 +139,27 @@ class JsonldUtils {
     return obj[0];
   }
 
-  static getFirstObjectUri(graph, key) {
-    var obj = graph[key];
+  static getFirstObjectUri(graph, property) {
+    // Get the object    
+    const obj = graph[property];
 
-    if (obj == undefined || obj.length < 1) {
+    // Not found -> null
+    if (!obj) {
       return null;
     }
+    
+    // If it is an array...
+    if (Array.isArray(obj)) {
+      for (const item of obj) {
+        if (item && typeof item === 'object' && DatabusUris.JSONLD_ID in item) {
+          return item[DatabusUris.JSONLD_ID];
+        }
+      }
+    } else if (typeof obj === 'object' && DatabusUris.JSONLD_ID in obj) {
+      return obj[DatabusUris.JSONLD_ID];
+    }
 
-    return obj[0][DatabusUris.JSONLD_ID];
+    return null;
   }
 }
 
