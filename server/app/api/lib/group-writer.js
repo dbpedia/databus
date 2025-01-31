@@ -16,6 +16,7 @@ class GroupWriter extends ResourceWriter {
     var groupGraph = {};
     groupGraph[DatabusUris.JSONLD_ID] = this.uri;
     groupGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_GROUP;
+    groupGraph[DatabusUris.DATABUS_NAME] = this.resource.getGroup();
     groupGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(this.resource.getAccountURI());
 
     if(inputGroupGraph[DatabusUris.DCT_TITLE] != null) {

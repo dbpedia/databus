@@ -16,6 +16,7 @@ class ArtifactWriter extends ResourceWriter {
     var artifactGraph = {};
     artifactGraph[DatabusUris.JSONLD_ID] = this.uri;
     artifactGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ARTIFACT;
+    artifactGraph[DatabusUris.DATABUS_NAME] = this.resource.getArtifact();
     artifactGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(this.resource.getAccountURI());
     artifactGraph[DatabusUris.DATABUS_GROUP_PROPERTY] = JsonldUtils.refTo(this.resource.getGroupURI());
 
@@ -29,7 +30,7 @@ class ArtifactWriter extends ResourceWriter {
 
     if(inputArtifactGraph[DatabusUris.DCT_ABSTRACT] != null) {
       artifactGraph[DatabusUris.DCT_ABSTRACT] = inputArtifactGraph[DatabusUris.DCT_ABSTRACT];
-    } else if (groupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+    } else if (artifactGraph[DatabusUris.DCT_DESCRIPTION] != null) {
       artifactGraph[DatabusUris.DCT_DESCRIPTION] = DatabusUtils.createAbstractFromDescription(artifactGraph[DatabusUris.DCT_DESCRIPTION]);
     }
 

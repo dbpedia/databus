@@ -48,6 +48,8 @@ module.exports = function (router, protector) {
         res.status(apiError.statusCode).json(logger.getReport());
         return;
       }
+      
+      res.status(200).json(logger.getReport())
 
     } catch (err) {
       console.log(err);

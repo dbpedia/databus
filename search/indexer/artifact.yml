@@ -40,10 +40,10 @@ indexFields:
     documentVariable: artifact
     type: uri
     query: >
-      SELECT ?artifact ?group WHERE {
+      SELECT ?artifact (REPLACE(STR(?groupUri), "(.*)(/)", "") AS ?group) WHERE {
         GRAPH ?g {
           ?artifact a <https://dataid.dbpedia.org/databus#Artifact>.
-          ?artifact <https://dataid.dbpedia.org/databus#group> ?group .
+          ?artifact <https://dataid.dbpedia.org/databus#group> ?groupUri .
         }
         #VALUES#
       }

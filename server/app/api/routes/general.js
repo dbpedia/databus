@@ -76,6 +76,12 @@ module.exports = function (router, protector, webdav) {
   router.post('/api/register', protector.protect(true), registerData);
   router.post('/api/publish', protector.protect(true), registerData);
 
+  /**
+   * Tries to create a new user in the user database
+   * @param {subect of the logged in user} sub 
+   * @param {account name of the logged in user} accountName 
+   * @returns 
+   */
   async function createUser(sub, accountName) {
     var accountExists = await protector.hasUser(accountName);
 

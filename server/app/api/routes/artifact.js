@@ -51,6 +51,8 @@ module.exports = function (router, protector) {
         return;
       }
 
+      res.status(200).json(logger.getReport())
+
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
