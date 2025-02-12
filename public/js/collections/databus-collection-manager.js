@@ -600,8 +600,10 @@ class DatabusCollectionManager {
 
       try {
 
-        var relativeUri = new URL(collectionUri).pathname;
-        response = await this.http.put(relativeUri, collectionJsonLd);
+        // var relativeUri = new URL(collectionUri).pathname;
+        // response = await this.http.put(relativeUri, collectionJsonLd);
+        
+        response = await this.http.post('/api/register', collectionJsonLd);
 
       } catch (errResponse) {
         console.log(errResponse);

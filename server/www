@@ -104,6 +104,7 @@ async function masterProcess() {
     indexGroups.push(new IndexGroup("artifact", ["../search/indexer/artifact.yml" ]));
     indexGroups.push(new IndexGroup("group", ["../search/indexer/group.yml" ]));
     indexGroups.push(new IndexGroup("account", ["../search/indexer/account.yml" ]));
+    indexGroups.push(new IndexGroup("collection", ["../search/indexer/collection.yml" ]));
 
 
     searchIndexer = new IndexManager(indexGroups, 1000);

@@ -1,12 +1,11 @@
 version: "3.8"  # Updated version for Swarm compatibility
 services:
-  ${CLIENT_ID}_databus:
-    image: "docker.io/dbpedia/databus"
-    ports:
-      - ${CLIENT_ID}_3000:3000 # HTTP: Databus web UI
+  ${CLIENT_ID}_server:
+    image: "databus-rc12"
     environment:
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
-      DATABUS_DATABASE_URL: "http://${CLIENT_ID}_gstore:8080"
+      DATABUS_DATABASE_URL: "http://databus_gstore:8080"
+      LOOKUP_BASE_URL: "http://lookup:8082"
       DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
       DATABUS_NAME: ${DATABUS_NAME}
       DATABUS_ORG_ICON: ${DATABUS_ORG_ICON}
@@ -25,20 +24,20 @@ services:
       - ./data/${CLIENT_ID}/keypair/:/databus/server/keypair
       - ./data/${CLIENT_ID}/tls/:/tls:ro
       - ./data/${CLIENT_ID}/tls/caddy:/root/.local/share/caddy/
-
-  ${CLIENT_ID}_gstore:
+    networks:
+      - ${CLIENT_ID}_network
+  databus_gstore:
     image: "docker.io/dbpedia/gstore"
     environment:
       STORAGE_USER: ${VIRTUOSO_USER}
       STORAGE_PASS: ${VIRTUOSO_PASSWORD}
-      STORAGE_SPARQL_ENDPOINT_URI: http://${CLIENT_ID}_virtuoso:8890/sparql
-    ports:
-      - "127.0.0.1:${CLIENT_ID}_3002:8080"
+      STORAGE_SPARQL_ENDPOINT_URI: http://databus_virtuoso:8890/sparql
     volumes:
       - ./data/${CLIENT_ID}/gstore/repo:/gstore/git
       - ./data/${CLIENT_ID}/gstore/logs:/gstore/logs
-
-  ${CLIENT_ID}_virtuoso:
+    networks:
+      - ${CLIENT_ID}_network
+  databus_virtuoso:
     image: "docker.io/openlink/virtuoso-opensource-7"
     environment:
       DBA_PASSWORD: ${VIRTUOSO_PASSWORD}
@@ -53,4 +52,16 @@ services:
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         /virtuoso-entrypoint.sh
-      "
+      ""
+    networks:
+      - ${CLIENT_ID}_network
+  databus_lookup:
+    image: lookup:dev
+    volumes:
+      - ./data/index/:/index
+      - ../search/servlet-config.yml:/resources/config.yml
+    networks:
+      - ${CLIENT_ID}_network
+networks:
+  ${CLIENT_ID}_network:
+    driver: overlay

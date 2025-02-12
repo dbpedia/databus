@@ -2,7 +2,7 @@ version: "3.0"
 name: "databus-nodejs-dockerized"
 services:
   databus:
-    image: "databus-nodejs"
+    image: "databus-rc12"
     ports:
       - 3000:3000 # HTTP:  Databus web UI
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
@@ -10,6 +10,8 @@ services:
     environment:
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
       DATABUS_DATABASE_URL: "http://gstore:8080"
+      LOOKUP_BASE_URL: "http://lookup:8082"
+      METRICS_PORT: "3001"
       DATABUS_OIDC_ISSUER_BASE_URL: ${DATABUS_OIDC_ISSUER_BASE_URL}
       DATABUS_NAME: ${DATABUS_NAME}
       DATABUS_ABSTRACT: ${DATABUS_ABSTRACT}
@@ -38,9 +40,9 @@ services:
       # gstore now is preloading the context for localhost from a configured remote location
       # only needed for dev env with context at localhost
       DEFAULT_JSONLD_LOCALHOST_CONTEXT: http://localhost:3000/res/context.jsonld
-      DEFAULT_JSONLD_LOCALHOST_CONTEXT_LOCATION: https://databus.dbpedia.org/res/context.jsonld
+      DEFAULT_JSONLD_LOCALHOST_CONTEXT_LOCATION: http://databus:3000/res/context.jsonld
     ports:
-      - "127.0.0.1:3002:8080"
+      - 3002:8080
     volumes:
       - ./data/gstore/repo:/gstore/git
       - ./data/gstore/logs:/gstore/logs
@@ -51,12 +53,19 @@ services:
       SPARQL_UPDATE: "true"
       DEFAULT_GRAPH: ${DATABUS_RESOURCE_BASE_URL}
     ports:
-      - "127.0.0.1:3003:8890"
+      - 3003:8890
     volumes:
       - ./data/virtuoso:/database
     entrypoint: /bin/bash -c "
         echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
-        /virtuoso-entrypoint.sh
-      "
+        /virtuoso-entrypoint.sh"
+  lookup:
+    image: lookup:dev
+    container_name: databus_devenv_lookup
+    ports:
+      - 3004:8082
+    volumes:
+      - ./data/index/:/index
+      - ../search/servlet-config.yml:/resources/config.yml

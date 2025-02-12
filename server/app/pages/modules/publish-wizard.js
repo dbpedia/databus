@@ -114,11 +114,11 @@ module.exports = function (router, protector) {
     // Prefer content disposition
     if (header['content-disposition'] != undefined) {
 
-      console.log(header['content-disposition']);
+      // console.log(header['content-disposition']);
 
       var filename = getFileNameFromDisposition(header['content-disposition']);
 
-      console.log(filename);
+      // console.log(filename);
       parseFormatAndCompression(result, filename);
 
       return result;
@@ -136,7 +136,7 @@ module.exports = function (router, protector) {
 
   function getFileNameFromDisposition(disposition) {
 
-    console.log(disposition);
+    // console.log(disposition);
     var entries = disposition.split(' ');
 
     for(var entry of entries) {

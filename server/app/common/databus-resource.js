@@ -80,11 +80,11 @@ class DatabusResource {
     }
 
     isArtifact() {
-        return this.artifact != null && this.version == null && !DatabusResource.DATABUS_COLLECTION_GROUP != this.group;
+        return this.artifact != null && this.version == null && DatabusResource.DATABUS_COLLECTION_GROUP !== this.group;
     }
 
     isCollection() {
-        return this.artifact != null && this.version == null && DatabusResource.DATABUS_COLLECTION_GROUP == this.group;
+        return this.artifact != null && this.version == null && DatabusResource.DATABUS_COLLECTION_GROUP === this.group;
     }
 
     isGroup() {

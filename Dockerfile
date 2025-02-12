@@ -1,28 +1,34 @@
-FROM node:18 AS installer
+# Use a consistent Node.js version across build and release stages
+FROM node:20 AS installer 
 
-COPY ./server/package.json ./server/package-lock.json /server/
-COPY ./public/package.json ./public/package-lock.json /public/
+# Set working directory
+WORKDIR /server
 
-# Set up the NPM projects:
-RUN cd /server && \
-    npm install && \
-    cd ../public && \
-    npm install
+# Copy package.json first to leverage Docker caching
+COPY ./server/package.json ./server/package-lock.json ./
+RUN npm install
 
+WORKDIR /public
+COPY ./public/package.json ./public/package-lock.json ./
+RUN npm install
+
+# Copy the rest of the application source files
+WORKDIR /
+COPY ./server /server
+COPY ./public /public
 
 FROM ubuntu:22.04 AS release
 
-COPY --from=installer /server/node_modules /databus/server/node_modules
-COPY --from=installer /public/node_modules /databus/public/node_modules
+COPY . /databus
 
-# Install node.js, Caddy as proxy server, and java.
+# Install system dependencies, including build tools
 RUN apt-get update && \
-    apt-get -y install curl wget systemctl debian-keyring debian-archive-keyring apt-transport-https && \
+    apt-get -y install curl wget systemctl build-essential python3 && \
     wget https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.deb && \
     dpkg -i ./caddy_2.7.6_linux_amd64.deb && \
     caddy version && \
     systemctl daemon-reload && systemctl enable --now caddy && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \
     apt-get -y install \
       nodejs \
@@ -34,28 +40,24 @@ RUN apt-get update && \
     npm -v && \
     java -version
 
-# Disable the proxy server by default:
-ENV DATABUS_PROXY_SERVER_ENABLE=false
+WORKDIR /databus
 
-# When using the proxy, use ACME by default:
-ENV DATABUS_PROXY_SERVER_USE_ACME=true
+# Copy application source code first
+COPY --from=installer /server /databus/server
+COPY --from=installer /public /databus/public
 
-# When not using ACME, what is the name of the own certificate file?
-ENV DATABUS_PROXY_SERVER_OWN_CERT="cert.pem"
+# Rebuild sqlite3 in the release stage to ensure it's correctly compiled
+RUN cd /databus/server && npm rebuild sqlite3 && npm install --omit=dev
 
-# When not using ACME, what is the name of the own certificate's key file?
-ENV DATABUS_PROXY_SERVER_OWN_CERT_KEY="key.pem"
-
-# What is the hostname of this machine, when using the proxy server?
-# It is necessary to know this, in order to set up ACME etc.
-# Note: the host name should be identical to DATABUS_RESOURCE_BASE_URL,
-# but without specifying a port, protocol i.e. HTTP(S) etc.
-ENV DATABUS_PROXY_SERVER_HOSTNAME="my-databus.org"
-
-# Define the volume for the TLS certificate:
+# Define the volume for the TLS certificate
 VOLUME /tls
 
-COPY . /databus
+# Set environment variables
+ENV DATABUS_PROXY_SERVER_ENABLE=false
+ENV DATABUS_PROXY_SERVER_USE_ACME=true
+ENV DATABUS_PROXY_SERVER_OWN_CERT="cert.pem"
+ENV DATABUS_PROXY_SERVER_OWN_CERT_KEY="key.pem"
+ENV DATABUS_PROXY_SERVER_HOSTNAME="my-databus.org"
 
-WORKDIR /databus
+# Set up entrypoint
 ENTRYPOINT [ "/bin/bash", "./setup.sh" ]

@@ -7,6 +7,9 @@
         "name": "Start Databus With AUTH0",
         "program": "${workspaceFolder}/server/www",
         "cwd": "${workspaceFolder}/server",
+        "runtimeArgs": [
+          "--trace-warnings"
+        ],
         "env": {
           "DATABUS_RESOURCE_BASE_URL": "http://localhost:3000",
           "DATABUS_NAME": "Local Databus",

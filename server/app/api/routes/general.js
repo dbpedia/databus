@@ -9,6 +9,7 @@ const DatabusLogger = require('../../common/databus-logger');
 const AccountWriter = require('../lib/account-writer');
 const GroupWriter = require('../lib/group-writer');
 const ArtifactWriter = require('../lib/artifact-writer');
+const CollectionWriter = require('../lib/collection-writer');
 var SparqlParser = require('sparqljs').Parser;
 
 const ALLOWED_QUERY_TYPES = [
@@ -139,15 +140,26 @@ module.exports = function (router, protector, webdav) {
           await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
         }
 
+        // Publish collections
+        var collectionGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_COLLECTION);
+        logger.debug(null, `Found ${collectionGraphs.length} collection graphs.`, null);
+
+        for (var collectionGraph of collectionGraphs) {
+          processedResources++;
+          
+          var collectionWriter = new CollectionWriter(logger);
+          await collectionWriter.writeResource(userData, expandedGraphs, collectionGraph[DatabusUris.JSONLD_ID]);
+        }
+
         // Publish groups
         var groupGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_GROUP);
         logger.debug(null, `Found ${groupGraphs.length} group graphs.`, null);
 
-        for (var groupGraph of groupGraphs) {
+        for (var collectionGraph of groupGraphs) {
           processedResources++;
           
-          var groupWriter = new GroupWriter(logger);
-          await groupWriter.writeResource(userData, expandedGraphs, groupGraph[DatabusUris.JSONLD_ID]);
+          var collectionWriter = new GroupWriter(logger);
+          await collectionWriter.writeResource(userData, expandedGraphs, collectionGraph[DatabusUris.JSONLD_ID]);
         }
 
         // Publish artifacts

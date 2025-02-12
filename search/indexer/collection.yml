@@ -1,0 +1,64 @@
+version: "1.0"
+indexMode: INDEX_SPARQL_ENDPOINT
+sparqlEndpoint: http://virtuoso:8890/sparql
+indexFields:
+  # COLLECTION LABEL
+  - fieldName: label
+    documentVariable: collection
+    query: >
+      SELECT DISTINCT ?collection ?label WHERE {
+        GRAPH ?g {
+          ?collection a <https://dataid.dbpedia.org/databus#Collection>.
+          ?collection <http://purl.org/dc/terms/title> ?label.
+        }
+        #VALUES#
+      }
+  # COLLECTION ABSTRACT
+  - fieldName: abstract
+    documentVariable: collection
+    query: >
+      SELECT DISTINCT ?collection ?abstract WHERE {
+        GRAPH ?g {
+          ?collection a <https://dataid.dbpedia.org/databus#Collection>.
+          ?collection <http://purl.org/dc/terms/abstract> ?abstract.
+        }
+        #VALUES#
+      }
+      
+  # COLLECTION NAME
+  - fieldName: part
+    documentVariable: collection
+    query: >
+      SELECT ?collection ?part WHERE {
+        GRAPH ?g {
+          ?collection a <https://dataid.dbpedia.org/databus#Collection>.
+          ?collection <https://dataid.dbpedia.org/databus#name> ?part .
+        }
+        #VALUES#
+      }
+  # PUBLISHER ACCOUNT NAME
+  - fieldName: publisher
+    documentVariable: collection
+    query: >
+      SELECT ?collection ?publisher WHERE {
+        GRAPH ?g1 {
+          ?collection a <https://dataid.dbpedia.org/databus#Collection> .
+          ?collection <https://dataid.dbpedia.org/databus#account> ?account .
+        }
+        GRAPH ?g2 {
+          ?account <http://xmlns.com/foaf/0.1/accountName> ?publisher .
+        }
+        #VALUES#   
+      }
+  # COLLECTIOn TYPE NAME
+  - fieldName: typeName
+    type: string
+    documentVariable: collection
+    query: >
+      SELECT DISTINCT ?collection ?typeName WHERE {
+        GRAPH ?g {
+          ?collection a <https://dataid.dbpedia.org/databus#Collection> .
+          BIND("Collection" AS ?typeName)
+        }
+        #VALUES#
+      }

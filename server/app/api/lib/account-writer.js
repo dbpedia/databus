@@ -28,7 +28,7 @@ class AccountWriter extends ResourceWriter {
         throw new ApiError(400, this.uri, `Specified account name ('${accountName}') must be at least 4 characters long.`, null);
       }
 
-      this.userData = await this.createUserCallback(this.userData);
+      this.userData = await this.createUserCallback(this.userData.sub, accountName);
     }
 
     super.onValidateUser();
