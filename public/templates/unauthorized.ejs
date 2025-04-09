@@ -1,9 +1,9 @@
 <%- include('header') -%>
   <div>
-    <section class="hero is-medium-small databus-banner is-none">
+    <section class="hero databus-banner is-none">
       <div class="hero-body">
         <div class="container has-text-left">
-          <div style="display: flex; align-items: center; height: 160px;">
+          <div style="display: flex; align-items: center; ">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" height="20mm"
               viewBox="0 0 40.326191 46.198502" version="1.1" id="svg5" style="margin-right: 1.5em; margin-top: 7px">
               <defs id="defs2" />
@@ -14,7 +14,7 @@
               </g>
             </svg>
             <div style="margin-left: 24px;">
-              <h1 class="title is-1 has-text-left is-marginless">401: Unauthorized</h1>
+              <h1 class="title is-1 has-text-left is-marginless"><%= data.code %>: <%= data.message %></h1>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
           <div class="section" ng-if="!authenticated" style="min-height: 500px;">
             <div class="container">
               <br /> <br />
-              <p style="text-align: center; font-size: 1.1em">You are not allowed to view this page. Please log in to your Databus account.</p>
+              <p style="text-align: center; font-size: 1.1em"><%= data.description %></p>
             </div>
           </div>
 

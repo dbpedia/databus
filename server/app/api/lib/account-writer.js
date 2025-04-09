@@ -16,6 +16,7 @@ class AccountWriter extends ResourceWriter {
   }
 
   async onValidateUser() {
+
     if(this.userData.accountName == null) {
       
       if(!this.resource.isAccount()) { 

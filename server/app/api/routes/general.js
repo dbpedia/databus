@@ -10,6 +10,7 @@ const AccountWriter = require('../lib/account-writer');
 const GroupWriter = require('../lib/group-writer');
 const ArtifactWriter = require('../lib/artifact-writer');
 const CollectionWriter = require('../lib/collection-writer');
+const ApiError = require('../../common/utils/api-error');
 var SparqlParser = require('sparqljs').Parser;
 
 const ALLOWED_QUERY_TYPES = [
@@ -84,21 +85,24 @@ module.exports = function (router, protector, webdav) {
    * @returns 
    */
   async function createUser(sub, accountName) {
+
+    
     var accountExists = await protector.hasUser(accountName);
 
     if(accountExists) {
-      throw new ApiError(`Account <${accountName}> already exists.`, 401);
+      throw new ApiError(401, accountName, `Account <${accountName}> already exists.`, null);
     }
 
     try {
       await protector.addUser(sub, accountName, accountName);
+      
 
       return {
         sub: sub,
         accountName: accountName
       };
     } catch(err) {
-      throw new ApiError(`Failed to write to user database`, 500);
+      throw new ApiError(500, accountName, `Failed to write to user database`, null);
     }
   }
 
@@ -136,8 +140,12 @@ module.exports = function (router, protector, webdav) {
         for (var accountGraph of accountGraphs) {
           processedResources++;
 
+          console.log(accountGraph);
+          
+
           var accountWriter = new AccountWriter(createUser, logger);
           await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
+
         }
 
         // Publish collections

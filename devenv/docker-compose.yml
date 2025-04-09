@@ -1,6 +1,6 @@
 # Starts everything except the databus
 version: "3.0"
-name: databus_nodejs_devenv
+name: databus_devenv
 services:
   gstore:
     restart: unless-stopped

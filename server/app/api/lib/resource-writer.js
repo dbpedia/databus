@@ -33,6 +33,8 @@ class ResourceWriter {
     this.inputGraphs = inputGraphs;
     this.uri = uri;
 
+    
+
     // Create Databus resource object for segment parsing
     this.resource = new DatabusResource(uri);
 
@@ -52,6 +54,7 @@ class ResourceWriter {
     // Create the graphs - abstract method implemented by the different writers
     var graphs = await this.onCreateGraphs();
 
+    
     // Do SHACL validation - calls abstract getSHACLFilePath()
     var shaclResult = await shaclTester.validateJsonld(graphs, this.getSHACLFilePath());
 
@@ -73,6 +76,8 @@ class ResourceWriter {
       // Save the compacted graph to the gstore
       this.logger.debug(this.uri, `Saving to gstore.`);
       var gstoreResource = new GstoreResource(this.uri, compactedGraph);
+      
+
       await gstoreResource.save();
 
       this.logger.info(this.uri, `Successfully published ${this.resource.getTypeName()} <${this.uri}>.`, compactedGraph);
@@ -109,6 +114,8 @@ class ResourceWriter {
       let message = `The user has not yet claimed an account namespace. Please finish registering your account.`;
       throw new ApiError(403, this.uri, message, null);
     }
+
+    
 
     var namespacePrefix = `${process.env.DATABUS_RESOURCE_BASE_URL}/${this.userData.accountName}/`;
     if (!`${this.uri}/`.startsWith(namespacePrefix)) {

@@ -33,7 +33,7 @@ module.exports = function (router, protector) {
     }
   });
 
-  router.get('/app/publish-wizard', protector.checkSso(), async function (req, res, next) {
+  router.get('/app/publish-wizard',  protector.protect(), async function (req, res, next) {
 
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);

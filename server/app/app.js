@@ -73,6 +73,10 @@ initialize(app, memoryStore).then(function () {
     if (process.env.DATABUS_PRIVATE_MODE == "true") {
       console.log(`Started cluster node in private mode`);
       app.all('*', protector.protect(true, function (req, res) {
+
+        protector.sendError(req, res, 401, 'Unauthorized', "This Databus is private. Please log in.");
+        
+        /*
         if (protector.isBrowserRequest(req)) {
           var data = {}
           data.auth = ServerUtils.getAuthInfoFromRequest(req);
@@ -82,7 +86,7 @@ initialize(app, memoryStore).then(function () {
           });
         } else {
           res.status(401).send();
-        }
+        }*/
       }));
     }
 

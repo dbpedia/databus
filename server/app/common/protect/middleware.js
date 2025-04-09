@@ -4,6 +4,7 @@
 
 const COOKIES = require('express-openid-connect/lib/cookies');
 const COOKIE_NAME = 'skipSilentLogin';
+const jwt = require('jsonwebtoken');
 
 var oidc = require('express-openid-connect');
 var oidcConfig = require('./oidc.json');
@@ -14,6 +15,7 @@ var getRandomValues = require('get-random-values');
 var fs = require('fs');
 const Constants = require('../constants');
 const DatabusUserDatabase = require('../../../userdb');
+const ServerUtils = require('../utils/server-utils');
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -143,10 +145,29 @@ class DatabusProtect {
     return await this.userdb.getUser(entry.sub);
   }
 
+  sendError(req, res, code, message, description) {
+    if (this.isBrowserRequest(req)) {
+      var data = {}
+      data.auth = ServerUtils.getAuthInfoFromRequest(req);
+      data.code = code; 
+      data.message = message; 
+      data.description = description; 
+
+      return res.status(401).render('unauthorized', {
+        title: 'Unauthorized',
+        data: data,
+      });
+    } else {
+      return res.status(401).send();
+    }
+  }
+
+
   auth() {
 
     oidcConfig.issuerBaseURL = process.env.DATABUS_OIDC_ISSUER_BASE_URL;
     oidcConfig.clientID = process.env.DATABUS_OIDC_CLIENT_ID;
+    oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.baseURL = 'http://localhost:3000';
 
@@ -162,6 +183,11 @@ class DatabusProtect {
 
     oidcConfig.session = {
       rollingDuration: 60 * 24,
+    };
+
+    oidcConfig.authorizationParams = {
+      response_type: "code",
+      scope: "openid profile email roles"
     };
 
     return oidc.auth(oidcConfig);
@@ -216,6 +242,33 @@ class DatabusProtect {
       req.databus.oidc_name = req.oidc.user.name;
       req.databus.oidc_email = req.oidc.user.email;
       req.databus.sub = req.oidc.user.sub;
+
+      if (req.oidc.accessToken) {
+        req.databus.accessToken = req.oidc.accessToken;
+        
+        try {
+            // Decode the access token WITHOUT verifying the signature
+            const decodedToken = jwt.decode(req.oidc.accessToken["access_token"]);
+    
+            if (decodedToken && decodedToken.resource_access) {
+                let access = decodedToken.resource_access
+                let clientAccess = access[oidcConfig.clientID];
+
+                if(clientAccess && clientAccess.roles) {
+                  req.databus.roles = clientAccess.roles;
+                }
+
+            } else {
+                console.warn("Failed to decode access token.");
+            }
+        } catch (error) {
+            console.error("Error decoding access token:", error);
+        }
+      } else {
+          console.warn("No access token received.");
+      }
+
+     
 
       // Looking up the user...
       var user = await this.userdb.getUser(req.oidc.user.sub);
@@ -281,17 +334,44 @@ class DatabusProtect {
     }, this.fetchUser()];
   }
 
+  checkRequiredRole() {
+    return (req, res, next) => {
+
+      let requiredRole = process.env.DATABUS_OIDC_REQUIRED_ROLE;
+
+      if(requiredRole == undefined || requiredRole === "") {
+        next();
+        return;
+      }
+
+      if (!req.databus || !req.databus.authenticated) {
+        return this.sendError(req, res, 401, 'Authentication required.');
+      }
+  
+      if (!req.databus.roles.includes(requiredRole)) {
+        return this.sendError(req, res, 403, 'Forbidden', 'You do not have the required roles to access this resource');
+      }
+  
+      next();
+    };
+  }
+
+  
   async authenticate(request, response, next, noRedirect, responseHandler) {
 
     // Consider doing webid tls here 
     var apiTokenUser = await this.getApiKeyUser(request);
 
     if (apiTokenUser != null) {
+
+      let requiredRole = process.env.DATABUS_OIDC_REQUIRED_ROLE;
+
       // Api token has been found
       request.databus = {};
       request.databus.sub = apiTokenUser.sub;
       request.databus.authenticated = true;
       request.databus.accountName = apiTokenUser.accountName;
+      request.databus.roles = [ requiredRole ];
       request.databus.apiKeys = await this.userdb.getApiKeys(apiTokenUser.sub);
       return next();
     }
@@ -336,7 +416,7 @@ class DatabusProtect {
     var self = this;
     return [async function (request, response, next) {
       await self.authenticate(request, response, next, noRedirect, responseHandler);
-    }, this.fetchUser()];
+    }, this.fetchUser(), this.checkRequiredRole(), ];
   }
 
   protectAccount(noRedirect) {
@@ -348,7 +428,7 @@ class DatabusProtect {
     var self = this;
     return [async function (request, response, next) {
       await self.authenticate(request, response, next, noRedirect);
-    }, this.fetchUser(), this.checkAccount()];
+    }, this.fetchUser(), this.checkRequiredRole(), this.checkAccount()];
   }
 }
 
