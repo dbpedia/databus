@@ -15,6 +15,7 @@ const AccountWriter = require('./app/api/lib/account-writer.js');
 const DatabusLogger = require('./app/common/databus-logger.js');
 const DatabusLogLevel = require('./app/common/databus-log-level.js');
 const JsonldLoader = require('./app/common/utils/jsonld-loader.js');
+const { log } = require('console');
 
 function writeManifest() {
 
@@ -193,34 +194,43 @@ async function initializeUserDatabase(indexer) {
   console.log(`Verifying user account integrity`);
 
   for (var user of await userDatabase.getUsers()) {
-    var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
-    var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
 
-    if (!exists) {
-      // Redirect to the specific account page
-      console.log(`No profile found for user ${user.accountName}. Creating profile...`);
+    var logger = new DatabusLogger(DatabusLogLevel.DEBUG);
+        
+    try {
+      var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
+      var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
 
-      var userData = {
-        accountName: user.accountName,
-        sub: user.sub
-      };
+      if (!exists) {
+        // Redirect to the specific account page
+        console.log(`No profile found for user ${user.accountName}. Creating profile...`);
+
+        var userData = {
+          accountName: user.accountName,
+          sub: user.sub
+        };
 
 
-      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+        var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
 
-      var accountJsonLd = AppJsonFormatter.createAccountData(
-        accountUri,
-        user.accountName,
-        null,
-        null);
+        var accountJsonLd = AppJsonFormatter.createAccountData(
+          accountUri,
+          user.accountName,
+          null,
+          null);
 
       
-      var accountWriter = new AccountWriter(null, new DatabusLogger(DatabusLogLevel.ERROR));
-      await accountWriter.writeResource(userData, accountJsonLd, accountUri);
-      // await publishAccount(user.accountName, accountJsonLd);
+        var accountWriter = new AccountWriter(null, logger);
+        await accountWriter.writeResource(userData, accountJsonLd, accountUri);
+        // await publishAccount(user.accountName, accountJsonLd);
 
-      indexer.updateResource(accountWriter.uri, accountWriter.resource.getTypeName());
-      console.log(`Created new default profile for user ${user.accountName}`);
+        indexer.updateResource(accountWriter.uri, accountWriter.resource.getTypeName());
+        console.log(`Created new default profile for user ${user.accountName}`);
+      }
+    }
+    catch(error) {
+      console.log(logger.getReport());
+      console.log(error);
     }
   }
 
