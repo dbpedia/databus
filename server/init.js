@@ -160,6 +160,28 @@ async function initializeContext() {
   */
 }
 
+async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      if (response.ok) {
+        console.log(`Service is online at ${url} (attempt ${attempt})`);
+        return true;
+      }
+    } catch (err) {
+      // Could log or ignore depending on use case
+    }
+
+    console.log(`Attempt ${attempt} failed. Retrying in ${delayMs}ms...`);
+    await delay(delayMs);
+  }
+
+  console.error(`Service at ${url} did not come online after ${maxAttempts} attempts.`);
+  return false;
+}
+
 
 async function initializeUserDatabase(indexer) {
 
@@ -209,6 +231,12 @@ module.exports = async function (indexer) {
 
   console.log(`Initializing...`);
   console.log(config);
+
+
+  console.log(`Waiting for gstore service...`);
+
+  // Ping process.env.DATABUS_DATABASE_URL
+  await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
 
   if (process.env.METRICS_PORT != undefined) {
     console.log(`Settings up Prometheus metrics...`);

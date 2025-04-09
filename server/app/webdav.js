@@ -101,7 +101,8 @@ class DatabusWebDAV {
     var self = this;
     return async function (req, res, next) {
       if (req.method == "GET" || req.method == "HEAD") {
-        next("route");
+        console.log('got the get!');
+        next();
         return;
       }
 
