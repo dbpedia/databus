@@ -82,6 +82,9 @@ class ResourceWriter {
 
       this.logger.info(this.uri, `Successfully published ${this.resource.getTypeName()} <${this.uri}>.`, compactedGraph);
     } catch (err) {
+
+      console.log(JSON.stringify(err, null, 3));
+      console.log(JSON.stringify(compactedGraph, null, 3));
       let message = `Failed to save to gstore: ${err.message}`;
       throw new ApiError(500, this.uri, message, compactedGraph);
     }

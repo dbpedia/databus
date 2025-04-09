@@ -105,6 +105,10 @@ async function initializeContext() {
   console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
   process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
 
+  await waitForService(defaultContextUrl, 50, 1000);
+
+  console.log(`Self hosted service available at ${defaultContextUrl}!`);
+
   /*
   // Load the internal default context
   var context = require('../model/generated/context.json');
@@ -245,6 +249,10 @@ module.exports = async function (indexer) {
 
   console.log(`Waiting for gstore service...`);
 
+
+  await initializeContext();
+
+
   // Ping process.env.DATABUS_DATABASE_URL
   await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
 
@@ -259,7 +267,6 @@ module.exports = async function (indexer) {
   await initializeUserDatabase(indexer);
 
   // await initializeShacl();
-  await initializeContext();
 
   // initializeJsonLd();
 
