@@ -29,7 +29,6 @@ async function verifyAccountIntegrity(indexer) {
         sub: user.sub
       };
 
-
       var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
 
       var accountJsonLd = AppJsonFormatter.createAccountData(
@@ -56,7 +55,6 @@ async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
     try {
       const response = await fetch(url, { method: 'HEAD' });
       if (response.ok) {
-        console.log(`Service is online at ${url} (attempt ${attempt})`);
         return true;
       }
     } catch (err) {
@@ -74,10 +72,14 @@ async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
 module.exports = async function (indexer) {
 
   try {
+
+    console.log("================================================");
+    
     console.log(`Waiting for context...`);
     var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
     await waitForService(defaultContextUrl, 10, 1000);
 
+    console.log(`Context available at ${defaultContextUrl}`);
     await verifyAccountIntegrity(indexer);
 
     // TODO: Check availability of manifest

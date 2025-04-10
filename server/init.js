@@ -95,9 +95,6 @@ async function initializeContext() {
   console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
   process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
 
-  await waitForService(defaultContextUrl, 50, 1000);
-
-  console.log(`Self hosted service available at ${defaultContextUrl}!`);
 
   /*
   // Load the internal default context
@@ -198,7 +195,7 @@ module.exports = async function (indexer) {
 
 
   // Ping process.env.DATABUS_DATABASE_URL
-  await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
+  // await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
 
   if (process.env.METRICS_PORT != undefined) {
     console.log(`Settings up Prometheus metrics...`);
