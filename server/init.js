@@ -1,19 +1,10 @@
 // External includes
 var fs = require('fs');
-const jsonld = require('jsonld');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
 const DatabusUserDatabase = require('./userdb.js');
-const DatabusConstants = require('../public/js/utils/databus-constants.js');
-const UriUtils = require('./app/common/utils/uri-utils.js');
-const { executeAsk } = require('./app/common/execute-query.js');
-const AppJsonFormatter = require('../public/js/utils/app-json-formatter.js');
 const MetricsManager = require('./app/api/statistics/metrics-manager.js');
-var defaultContext = require('./app/common/res/context.jsonld');
-const AccountWriter = require('./app/api/lib/account-writer.js');
-const DatabusLogger = require('./app/common/databus-logger.js');
-const DatabusLogLevel = require('./app/common/databus-log-level.js');
 const JsonldLoader = require('./app/common/utils/jsonld-loader.js');
 
 function writeManifest() {
@@ -103,6 +94,10 @@ async function initializeContext() {
 
   console.log(`Using self-hosted jsonld context at ${defaultContextUrl}...`);
   process.env.DATABUS_CONTEXT_URL = defaultContextUrl;
+
+  await waitForService(defaultContextUrl, 50, 1000);
+
+  console.log(`Self hosted service available at ${defaultContextUrl}!`);
 
   /*
   // Load the internal default context
@@ -198,6 +193,10 @@ module.exports = async function (indexer) {
 
   console.log(`Waiting for gstore service...`);
 
+
+  await initializeContext();
+
+
   // Ping process.env.DATABUS_DATABASE_URL
   await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
 
@@ -212,7 +211,6 @@ module.exports = async function (indexer) {
   await initializeUserDatabase(indexer);
 
   // await initializeShacl();
-  await initializeContext();
 
   // initializeJsonLd();
 
