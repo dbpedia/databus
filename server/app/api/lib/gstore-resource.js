@@ -1,6 +1,8 @@
 const axios = require('axios');
 const { URL, URLSearchParams } = require('url');
 const Constants = require('../../common/constants');
+const http = require('http');
+const https = require('https');
 
 class GstoreResource {
   static DOCUMENT_READ_ENDPOINT = '/document/read';
@@ -62,7 +64,9 @@ class GstoreResource {
       // console.log(JSON.stringify(this.content, null, 3));
       
       const response = await axios.post(url, this.content, {
-        headers: { 'Content-Type': Constants.HTTP_CONTENT_TYPE_JSONLD }
+        headers: { 'Content-Type': Constants.HTTP_CONTENT_TYPE_JSONLD },
+        httpAgent: new http.Agent({ keepAlive: false }),
+        httpsAgent: new https.Agent({ keepAlive: false }),
       });
       return response.status;
     } catch (error) {

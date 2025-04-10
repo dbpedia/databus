@@ -160,6 +160,48 @@ async function initializeContext() {
   */
 }
 
+
+
+
+async function verifyAccountIntegrity(indexer) {
+
+  console.log(`Verifying user account integrity`);
+  var userDatabase = new DatabusUserDatabase();
+  await userDatabase.connect();
+
+  for (var user of await userDatabase.getUsers()) {
+    var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
+    var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
+
+    if (!exists) {
+      // Redirect to the specific account page
+      console.log(`No profile found for user ${user.accountName}. Creating profile...`);
+
+      var userData = {
+        accountName: user.accountName,
+        sub: user.sub
+      };
+
+
+      var accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${user.accountName}`;
+
+      var accountJsonLd = AppJsonFormatter.createAccountData(
+        accountUri,
+        user.accountName,
+        null,
+        null);
+
+      
+      var accountWriter = new AccountWriter(null, new DatabusLogger(DatabusLogLevel.ERROR));
+      await accountWriter.writeResource(userData, accountJsonLd, accountUri);
+      // await publishAccount(user.accountName, accountJsonLd);
+
+      indexer.updateResource(accountWriter.uri, accountWriter.resource.getTypeName());
+      console.log(`Created new default profile for user ${user.accountName}`);
+    }
+  }
+}
+
 async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -182,45 +224,21 @@ async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
   return false;
 }
 
-
-async function initializeUserDatabase(indexer) {
-  console.log(`Connecting to User Databse...`);
-  var userDatabase = new DatabusUserDatabase();
-  await userDatabase.connect();
-}
-
-
 module.exports = async function (indexer) {
 
-  console.log(`Initializing...`);
-  console.log(config);
+  try {
+    console.log(`Waiting for context...`);
+    var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
+    await waitForService(defaultContextUrl, 10, 1000);
 
+    await verifyAccountIntegrity(indexer);
 
-  console.log(`Waiting for gstore service...`);
+    // TODO: Check availability of manifest
 
-  // Ping process.env.DATABUS_DATABASE_URL
-  await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
-
-  if (process.env.METRICS_PORT != undefined) {
-    console.log(`Settings up Prometheus metrics...`);
-    MetricsManager.initialize();
+    console.log(`Databus is running!...`);
   }
-
-  
-  JsonldLoader.initialize();
-
-  await initializeUserDatabase(indexer);
-
-  // await initializeShacl();
-  await initializeContext();
-
-  // initializeJsonLd();
-
-  writeManifest();
-
-  tryCreateKeyPair();
-  console.log(`Done initializing.`);
-  console.log(`================================================`);
-
-
+  catch(error) {
+    console.log(`There was an issue during Databus startup!`);
+    console.log(error);
+  }
 }
