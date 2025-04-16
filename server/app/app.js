@@ -138,7 +138,7 @@ async function initialize(app, memoryStore) {
   JsonldLoader.initialize();
   
   try {
-    app.set('trust proxy', 'loopback');
+    app.set('trust proxy', true);
     app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
     app.use(bodyParser.json({ limit: '50mb', type: ['application/json', 'application/ld+json'] }));
 

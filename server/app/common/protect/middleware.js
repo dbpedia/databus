@@ -175,7 +175,7 @@ class DatabusProtect {
     oidcConfig.clientID = process.env.DATABUS_OIDC_CLIENT_ID;
     oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
-    oidcConfig.baseURL = process.env.DATABUS_RESOURCE_BASE_URL; 
+    oidcConfig.baseURL = "http://localhost:3002"; // process.env.DATABUS_RESOURCE_BASE_URL; 
 
     oidcConfig.routes = {
       "login": false,
@@ -316,6 +316,8 @@ class DatabusProtect {
       }
 
       res.oidc.getRedirectUri = function () {
+        console.log("WHATDUP");
+        
         return getRequestUri(req) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
       }
 
