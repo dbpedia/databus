@@ -27,13 +27,17 @@ function forceLogin(request, response) {
 
   response.oidc.getRedirectUri = function () {
     let redirect_uri = getRequestUri(request) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
-    // console.log("Sending auth request with redirect_uri: " + redirect_uri);
+    console.log("Sending auth request with redirect_uri: " + redirect_uri);
     return redirect_uri;
   }
+
 
   if (request.query.redirectUrl == undefined) {
     response.oidc.login();
   } else {
+
+    console.log("Logging in with redirect: " + request.query.redirectUrl);
+    
     response.oidc.login({
       returnTo: decodeURIComponent(request.query.redirectUrl),
       authorizationParams: {
