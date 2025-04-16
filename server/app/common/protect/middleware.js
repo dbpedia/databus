@@ -170,12 +170,12 @@ class DatabusProtect {
 
 
   auth() {
-
+    
     oidcConfig.issuerBaseURL = process.env.DATABUS_OIDC_ISSUER_BASE_URL;
     oidcConfig.clientID = process.env.DATABUS_OIDC_CLIENT_ID;
     oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
-    oidcConfig.baseURL = "http://localhost:3002"; // process.env.DATABUS_RESOURCE_BASE_URL; 
+    oidcConfig.baseURL = process.env.DATABUS_RESOURCE_BASE_URL; 
 
     oidcConfig.routes = {
       "login": false,
