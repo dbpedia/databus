@@ -26,7 +26,9 @@ function uuidv4() {
 function forceLogin(request, response) {
 
   response.oidc.getRedirectUri = function () {
-    return getRequestUri(request) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
+    let redirect_uri = getRequestUri(request) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
+    // console.log("Sending auth request with redirect_uri: " + redirect_uri);
+    return redirect_uri;
   }
 
   if (request.query.redirectUrl == undefined) {
@@ -169,7 +171,7 @@ class DatabusProtect {
     oidcConfig.clientID = process.env.DATABUS_OIDC_CLIENT_ID;
     oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
-    oidcConfig.baseURL = 'http://localhost:3000';
+    oidcConfig.baseURL = process.env.DATABUS_RESOURCE_BASE_URL; 
 
     oidcConfig.routes = {
       "login": false,
