@@ -263,9 +263,8 @@ class DatabusProtect {
                 let access = decodedToken.resource_access;
                 let clientAccess = access[oidcConfig.clientID];
 
-                console.log("Access: " + access);
+                console.log("Access: " + JSON.stringify(access, null, 3));
                 console.log("Client access: " + clientAccess);
-                
 
                 if(clientAccess && clientAccess.roles) {
                   req.databus.roles = clientAccess.roles;
