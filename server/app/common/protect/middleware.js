@@ -250,6 +250,9 @@ class DatabusProtect {
       req.databus.sub = req.oidc.user.sub;
 
       if (req.oidc.accessToken) {
+
+        console.log("Got an access token!");
+        
         req.databus.accessToken = req.oidc.accessToken;
         
         try {
@@ -257,8 +260,12 @@ class DatabusProtect {
             const decodedToken = jwt.decode(req.oidc.accessToken["access_token"]);
     
             if (decodedToken && decodedToken.resource_access) {
-                let access = decodedToken.resource_access
+                let access = decodedToken.resource_access;
                 let clientAccess = access[oidcConfig.clientID];
+
+                console.log("Access: " + access);
+                console.log("Client access: " + clientAccess);
+                
 
                 if(clientAccess && clientAccess.roles) {
                   req.databus.roles = clientAccess.roles;
@@ -356,7 +363,7 @@ class DatabusProtect {
         return this.sendError(req, res, 401, 'Authentication required.');
       }
   
-      if (!req.databus.roles.includes(requiredRole)) {
+      if (req.databus.roles == undefined || !req.databus.roles.includes(requiredRole)) {
         return this.sendError(req, res, 403, 'Forbidden', 'You do not have the required roles to access this resource');
       }
   
