@@ -1,63 +1,49 @@
 # Use a consistent Node.js version across build and release stages
-FROM node:20 AS installer 
+FROM node:23-slim AS builder
+
+# Install Python for node-gyp (required for sqlite3 build)
+RUN apt-get update && apt-get install -y python3 build-essential && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
-WORKDIR /server
+WORKDIR /databus/server
 
-# Copy package.json first to leverage Docker caching
-COPY ./server/package.json ./server/package-lock.json ./
-RUN npm install
+RUN --mount=type=bind,source=server/package.json,target=package.json \
+    --mount=type=bind,source=server/package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
 
-WORKDIR /public
-COPY ./public/package.json ./public/package-lock.json ./
-RUN npm install
 
-# Copy the rest of the application source files
+WORKDIR /databus/public
+
+RUN --mount=type=bind,source=public/package.json,target=package.json \
+    --mount=type=bind,source=public/package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
+
 WORKDIR /
-COPY ./server /server
-COPY ./public /public
 
-FROM ubuntu:22.04 AS release
+# Copy source code
+COPY server ./databus/server
+COPY public ./databus/public
 
-COPY . /databus
+# Rebuild sqlite3 in case it's a native module
+RUN cd databus/server && npm rebuild sqlite3
 
-# Install system dependencies, including build tools
-RUN apt-get update && \
-    apt-get -y install curl wget systemctl build-essential python3 && \
-    wget https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.deb && \
-    dpkg -i ./caddy_2.7.6_linux_amd64.deb && \
-    caddy version && \
-    systemctl daemon-reload && systemctl enable --now caddy && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get update && \
-    apt-get -y install \
-      nodejs \
-      ca-certificates-java \
-      openjdk-17-jdk \
-      openjdk-17-jre && \
-    rm -rf /var/lib/apt/lists/* && \
-    node -v && \
-    npm -v && \
-    java -version
+FROM node:23-slim AS runtime
 
 WORKDIR /databus
 
-# Copy application source code first
-COPY --from=installer /server /databus/server
-COPY --from=installer /public /databus/public
+# Install only necessary system packages
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-# Rebuild sqlite3 in the release stage to ensure it's correctly compiled
-RUN cd /databus/server && npm rebuild sqlite3 && npm install --omit=dev
+# Copy app from build stage
+COPY --from=builder /databus .
 
-# Define the volume for the TLS certificate
-VOLUME /tls
-
-# Set environment variables
-ENV DATABUS_PROXY_SERVER_ENABLE=false
-ENV DATABUS_PROXY_SERVER_USE_ACME=true
-ENV DATABUS_PROXY_SERVER_OWN_CERT="cert.pem"
-ENV DATABUS_PROXY_SERVER_OWN_CERT_KEY="key.pem"
-ENV DATABUS_PROXY_SERVER_HOSTNAME="my-databus.org"
-
-# Set up entrypoint
-ENTRYPOINT [ "/bin/bash", "./setup.sh" ]
+# Entrypoint
+ENTRYPOINT [ "/bin/bash", "./server/setup.sh" ]
