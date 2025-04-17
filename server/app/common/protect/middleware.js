@@ -240,6 +240,10 @@ class DatabusProtect {
 
       req.databus.authenticated = true;
 
+      if (req.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
+        return next();
+      }
+
       if (req.oidc.user == undefined) {
         return next();
       }
@@ -264,7 +268,6 @@ class DatabusProtect {
                 let clientAccess = access[oidcConfig.clientID];
 
                 console.log("Access: " + JSON.stringify(access, null, 3));
-                console.log("Client access: " + clientAccess);
 
                 if(clientAccess && clientAccess.roles) {
                   req.databus.roles = clientAccess.roles;
@@ -322,8 +325,6 @@ class DatabusProtect {
       }
 
       res.oidc.getRedirectUri = function () {
-        console.log("WHATDUP");
-        
         return getRequestUri(req) + Constants.DATABUS_OIDC_CALLBACK_ROUTE;
       }
 
@@ -350,6 +351,11 @@ class DatabusProtect {
 
   checkRequiredRole() {
     return (req, res, next) => {
+      
+      if (req.path == Constants.DATABUS_OIDC_LOGOUT_ROUTE) {
+        next();
+        return;
+      }
 
       let requiredRole = process.env.DATABUS_OIDC_REQUIRED_ROLE;
 
