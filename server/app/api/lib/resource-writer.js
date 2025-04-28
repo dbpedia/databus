@@ -54,10 +54,16 @@ class ResourceWriter {
     // Create the graphs - abstract method implemented by the different writers
     var graphs = await this.onCreateGraphs();
 
+    console.log("INPUT FOR SHACL TEST");
+    console.log(JSON.stringify(graphs, null, 3));
+    
     
     // Do SHACL validation - calls abstract getSHACLFilePath()
     var shaclResult = await shaclTester.validateJsonld(graphs, this.getSHACLFilePath());
 
+    console.log("SHACL RESULT");
+    console.log(JSON.stringify(shaclResult, null, 3));
+    
     if (!shaclResult.isSuccess) {
       var message = 'SHACL validation error:\n';
       for (var m in shaclResult.messages) {

@@ -7,3 +7,5 @@ server/keypair
 server/sqlite
 .git
 node_modules
+server/node_modules
+

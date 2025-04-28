@@ -79,7 +79,7 @@ module.exports = async function (indexer) {
     var defaultContextUrl = `${process.env.DATABUS_RESOURCE_BASE_URL}${Constants.DATABUS_DEFAULT_CONTEXT_PATH}`
     await waitForService(defaultContextUrl, 10, 1000);
 
-    console.log(`Context available at ${defaultContextUrl}`);
+    // console.log(`Context available at ${defaultContextUrl}`);
     await verifyAccountIntegrity(indexer);
 
     // TODO: Check availability of manifest

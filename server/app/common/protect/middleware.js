@@ -176,6 +176,7 @@ class DatabusProtect {
     oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.baseURL = process.env.DATABUS_RESOURCE_BASE_URL; 
+    oidcConfig.httpAgent = { "http": new ProxyAgent(), "https": new ProxyAgent() };
 
     oidcConfig.routes = {
       "login": false,
@@ -255,8 +256,6 @@ class DatabusProtect {
 
       if (req.oidc.accessToken) {
 
-        console.log("Got an access token!");
-        
         req.databus.accessToken = req.oidc.accessToken;
         
         try {
@@ -267,7 +266,7 @@ class DatabusProtect {
                 let access = decodedToken.resource_access;
                 let clientAccess = access[oidcConfig.clientID];
 
-                console.log("Access: " + JSON.stringify(access, null, 3));
+                // console.log("Access: " + JSON.stringify(access, null, 3));
 
                 if(clientAccess && clientAccess.roles) {
                   req.databus.roles = clientAccess.roles;

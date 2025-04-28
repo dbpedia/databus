@@ -14,6 +14,23 @@ class DatabusUtils {
     return fallback;
   }
 
+  static resemblesTrue(value) {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+  
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      return ['true', '1', 'yes', 'on'].includes(normalized);
+    }
+  
+    if (typeof value === 'number') {
+      return value === 1;
+    }
+  
+    return false;
+  }
+
   static isValidResourceIdentifier(identifier, min) {
     var identifierRegex = /^[a-z-]+$/;
     return this.checkField(identifier, identifierRegex, min, 50);

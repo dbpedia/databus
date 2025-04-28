@@ -11,6 +11,7 @@ const path = require("path");
 var jsonld = require('jsonld');
 const JsonldUtils = require('../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
+const DatabusUtils = require('../../../public/js/utils/databus-utils');
 
 var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;
 
@@ -45,7 +46,7 @@ instance.validateJsonld = async function(rdf, shaclFile) {
     var conforms = validationReport[DatabusUris.SHACL_CONFORMS][0][DatabusUris.JSONLD_VALUE];
     var messages = [];
 
-    var conforms = conforms === 'true';
+    var conforms = DatabusUtils.resemblesTrue(conforms);
 
     if(!conforms) {
       var validationResults = JsonldUtils.getTypedGraphs(expandedRes, DatabusUris.SHACL_VALIDATION_RESULT);

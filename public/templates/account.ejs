@@ -82,7 +82,7 @@
                 placeholder="Enter a username...">
             </div>
             <div class="control">
-              <a class="button is-info" ng-click="createProfile()">
+              <a class="button is-info" ng-click="createProfile()" ng-disabled="isSubmitting" ng-class="{'is-loading': isSubmitting}">
                 Unlock Account
               </a>
             </div>

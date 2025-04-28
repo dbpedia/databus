@@ -43,6 +43,14 @@ function ProfileController($scope, $http) {
   if ($scope.profileData == undefined) {
 
     $scope.createProfile = function () {
+
+      if ($scope.isSubmitting) 
+      {
+        return;
+      } 
+
+      $scope.isSubmitting = true;
+
       if (!$scope.auth.authenticated) {
         return;
       }
