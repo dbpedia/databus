@@ -8,7 +8,7 @@ const prefix = encodeURIComponent(`${process.env.DATABUS_RESOURCE_BASE_URL}/`);
 // Helper functions for URL building
 const buildReadUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/document/read?repo=${repo}&path=${path}`;
 const buildSaveUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/document/save?repo=${repo}&prefix=${prefix}&path=${path}`;
-const buildDeleteUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/graph/delete?repo=${repo}&prefix=${prefix}&path=${path}`;
+const buildDeleteUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/document/delete?repo=${repo}&prefix=${prefix}&path=${path}`;
 
 class GstoreHelper {
 
@@ -53,8 +53,9 @@ class GstoreHelper {
       });
       return { isSuccess: true };
     } catch (err) {
+
       console.log(err);
-      return { isSuccess: false };
+      return { error: err, isSuccess: false };
     }
   }
 

@@ -96,11 +96,11 @@ module.exports = function (router, protector) {
     }
 
     // Delete from gstore and return result
-    var gstorePath = `${req.params.group}/${req.params.artifact}/${Constants.DATABUS_FILE_ARTIFACT}`;
+    var gstorePath = `${req.params.group}/${req.params.artifact}/metadata.jsonld`;
     var result = await GstoreHelper.delete(req.params.account, gstorePath);
 
     if (!result.isSuccess) {
-      res.status(500).send(`Internal database error. Failed to delete artifact <${artifactUri}>.`);
+      res.status(result.error.status).send(`Failed to delete artifact <${artifactUri}>: ${result.error.message}`);
       return;
     }
 

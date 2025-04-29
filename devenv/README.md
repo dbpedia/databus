@@ -1,5 +1,12 @@
 # Development Environment
 
+## Orientation
+
+The Databus is implemented in Javascript using Nodejs+Express for the Server and Angularjs for the client-side webapp.
+The nodejs server is providing both the API and the webapp resources. The webapp does not have its own server and runs only in the browser.
+
+The Databus is best developed using Visual Studio Code to use the startup scripts in the `.vscode` folder.
+
 ## Requirements
 
 * `node.js`: v16.13.0 or higher

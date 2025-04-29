@@ -94,7 +94,7 @@ module.exports = function (router, protector) {
     }
 
     // Delete from gstore and return result
-    var gstorePath = `${req.params.group}/${Constants.DATABUS_FILE_GROUP}`;
+    var gstorePath = `${req.params.group}/metadata.jsonld`;
     var result = await GstoreHelper.delete(req.params.account, gstorePath);
 
     if (!result.isSuccess) {

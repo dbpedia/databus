@@ -135,17 +135,13 @@ module.exports = function (router, protector, webdav) {
       var expandedGraphs = await jsonld.flatten(req.body);
      
       try {
+        // Publish accounts
         var accountGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ACCOUNT);
 
         for (var accountGraph of accountGraphs) {
           processedResources++;
-
-          console.log(accountGraph);
-          
-
           var accountWriter = new AccountWriter(createUser, logger);
           await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
-
         }
 
         // Publish collections
@@ -154,7 +150,6 @@ module.exports = function (router, protector, webdav) {
 
         for (var collectionGraph of collectionGraphs) {
           processedResources++;
-          
           var collectionWriter = new CollectionWriter(logger);
           await collectionWriter.writeResource(userData, expandedGraphs, collectionGraph[DatabusUris.JSONLD_ID]);
         }
@@ -165,9 +160,8 @@ module.exports = function (router, protector, webdav) {
 
         for (var collectionGraph of groupGraphs) {
           processedResources++;
-          
-          var collectionWriter = new GroupWriter(logger);
-          await collectionWriter.writeResource(userData, expandedGraphs, collectionGraph[DatabusUris.JSONLD_ID]);
+          var groupWriter = new GroupWriter(logger);
+          await groupWriter.writeResource(userData, expandedGraphs, collectionGraph[DatabusUris.JSONLD_ID]);
         }
 
         // Publish artifacts
@@ -180,6 +174,10 @@ module.exports = function (router, protector, webdav) {
           var artifactWriter = new ArtifactWriter(logger);
           await artifactWriter.writeResource(userData, expandedGraphs, artifactGraph[DatabusUris.JSONLD_ID]);
         }
+
+        // Publish version
+
+        
       }
       catch(apiError) {
         logger.error(apiError.resource, apiError.message, apiError.body);

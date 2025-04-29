@@ -1,5 +1,6 @@
 // This is the main application
 
+
 // External includes
 var bodyParser = require("body-parser");
 var path = require('path');
@@ -90,12 +91,13 @@ initialize(app, memoryStore).then(function () {
       }));
     }
 
-
-
     // Attach modules to router
-    require('./api/module')(router, protector, app.locals); // API handlers
-    require('./pages/module')(router, protector);// Web App handlers
 
+    // API "SERVER"
+    require('./api/module')(router, protector, app.locals); // API handlers
+
+    // HTML & WEBAPP "SERVER"
+    require('./pages/module')(router, protector);// Web App handlers
 
     // Attach router
     app.use('/', router);

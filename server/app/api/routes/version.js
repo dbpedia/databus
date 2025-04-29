@@ -165,7 +165,7 @@ module.exports = function (router, protector) {
     var result = await GstoreHelper.delete(req.params.account, gstorePath);
 
     if (!result.isSuccess) {
-      res.status(500).send(`Internal database error. Failed to delete version <${versionUri}>.`);
+      res.status(result.error.status).send(`Failed to delete version <${versionUri}>: ${result.error.message}`);
       return;
     }
 

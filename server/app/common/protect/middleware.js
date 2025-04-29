@@ -11,6 +11,7 @@ var oidcConfig = require('./oidc.json');
 
 const weakRef = require('express-openid-connect/lib/weakCache');
 var getRandomValues = require('get-random-values');
+const { ProxyAgent } = require('proxy-agent');
 
 var fs = require('fs');
 const Constants = require('../constants');
@@ -176,7 +177,10 @@ class DatabusProtect {
     oidcConfig.clientSecret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.secret = process.env.DATABUS_OIDC_SECRET;
     oidcConfig.baseURL = process.env.DATABUS_RESOURCE_BASE_URL; 
-    oidcConfig.httpAgent = { "http": new ProxyAgent(), "https": new ProxyAgent() };
+    oidcConfig.httpAgent = {
+      http: new ProxyAgent(process.env.HTTP_PROXY),
+      https: new ProxyAgent(process.env.HTTPS_PROXY),
+    };
 
     oidcConfig.routes = {
       "login": false,

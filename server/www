@@ -6,7 +6,7 @@
 
 
 
- initializeExtensions();
+initializeExtensions();
 
 let numCPUs = require('os').cpus().length;
 const fs = require('fs');
