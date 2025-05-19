@@ -13,7 +13,7 @@ This site describes the minimal required metadata for publishing a dataset (meta
 
 ```json
 {
-  "@context": "https://downloads.dbpedia.org/databus/context.jsonld",
+  "@context": "https://dev.databus.dbpedia.org/res/context.jsonld",
   "@graph": [
     {
       "@type": [
@@ -111,7 +111,7 @@ In the minimal example metadata for the group is missing and the artifact is ini
 
 ```javascript
 {
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
+	"@context": "https://dev.databus.dbpedia.org/res/context.jsonld",
 	"@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx",
 	"@type": "Group",
 	"title": "Ontologies used in Project X" ,
@@ -125,7 +125,7 @@ In the minimal example metadata for the group is missing and the artifact is ini
 
 ```json
 {
-	"@context": "http://downloads.dbpedia.org/databus/context.jsonld",
+	"@context": "https://dev.databus.dbpedia.org/res/context.jsonld",
 	"@id": "https://dev.databus.dbpedia.org/denis/onto_dep_projectx/dbpedia-ontology",
 	"@type": "Artifact",
 	"title": "The DBpedia Ontology" ,
