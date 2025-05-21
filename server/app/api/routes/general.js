@@ -115,12 +115,11 @@ module.exports = function (router, protector, webdav) {
     try {
 
       // Get the account namespace
-      var accountName = req.databus.accountName;
-
+      var accounts = req.databus.accounts;
 
       var userData = {
         sub: req.databus.sub,
-        accountName: req.databus.accountName
+        accounts: req.databus.accounts
       };
 
       var verifyParts = null;
@@ -139,6 +138,8 @@ module.exports = function (router, protector, webdav) {
      
       try {
         // Publish accounts
+
+        /*
         var accountGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_ACCOUNT);
 
         for (var accountGraph of accountGraphs) {
@@ -146,6 +147,7 @@ module.exports = function (router, protector, webdav) {
           var accountWriter = new AccountWriter(createUser, logger);
           await accountWriter.writeResource(userData, expandedGraphs, accountGraph[DatabusUris.JSONLD_ID]);
         }
+        */
 
         // Publish collections
         var collectionGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_COLLECTION);
@@ -195,7 +197,7 @@ module.exports = function (router, protector, webdav) {
 
       for (var datasetGraph of datasetGraphs) {
         var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
-        var resultCode = await publishVersion(accountName, expandedGraphs, datasetGraphUri, verifyParts, logger);
+        var resultCode = await publishVersion(accounts, expandedGraphs, datasetGraphUri, verifyParts, logger);
 
         if (resultCode != 200) {
           res.status(resultCode).json(logger.getReport());

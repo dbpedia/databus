@@ -141,7 +141,7 @@ async function constructInput(expandedGraph, versionGraphUri, logger) {
   }
 }
 
-function validateDatasetUri(dataidGraphs, accountUri, logger) {
+function validateDatasetUri(dataidGraphs, accounts, logger) {
 
   var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
   var versionGraphUri = versionGraph[DatabusUris.JSONLD_ID];
@@ -242,7 +242,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
   return 200;
 }
 
-module.exports = async function publishVersion(accountName, expandedGraph, versionGraphUri, fetchFileProperties, logger) {
+module.exports = async function publishVersion(accounts, expandedGraph, versionGraphUri, fetchFileProperties, logger) {
 
   try {
 
