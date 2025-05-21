@@ -31,7 +31,7 @@ Databus is designed as a lightweight and agile solution and fits seamlessly into
 ## Deployment Levels
 We identified these deployment levels with our partners:
 1. **Open community**: Set up a data space in the Databus Network and jointly curate it with community contributions spanning across several organisations (see DBpedia and Open Energy) 
-2. **Organisation**: Implement your enterprise’s data strategy and optimise efficiency, integration of external data and re-use; manage research data university-wide for scientific sustainability and FAIR. Databus hooks into single sign-on authentication like Siemens ID or DLR ID
+2. **Organisation**: Implement your enterprise’s data strategy and optimise efficiency, integration of external data and reuse; manage research data university-wide for scientific sustainability and FAIR. Databus hooks into single sign-on authentication like Siemens ID or DLR ID
 3. **Department, group or team**: Systematise data workflows internally; transparently record scientific results from beginning to end.  
 4. **Collaborative projects**: Efficiently coordinate data with partners in large projects or in multi-project environments. 
 5. **Application, Product or Pipeline**: Streamline and automate data flow and data dependencies within a target application, product or pipeline. It's an essential tool for agile and data-driven decision making and shines in managing input/output for data-intensive applications such as: Search, AI, Deep Learning, Natural Language Processing (NLP), Knowledge Graph Construction and Evolution, Databases, Continuous Integration and Microservice Orchestration.  

@@ -214,7 +214,7 @@ async function createOrValidateSignature(dataidGraphs, accountUri, logger) {
 
   // Validate the used proof type
   if (proofType != DatabusUris.DATABUS_TRACTATE_V1) {
-    logger.error(versionGraphUri, `Unkown proof type <${proofType}>.`, proofType);
+    logger.error(versionGraphUri, `Unknown proof type <${proofType}>.`, proofType);
     return 400;
   }
 

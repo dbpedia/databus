@@ -25,7 +25,7 @@ The URIs in your input have to follow a specific pattern in order to be accepted
 ### Artifact URI Rules *(databus:Artifact)*
 
 * An artifact URI has exactly three path segments.
-* The first path segment identifiees the publisher, the second segment the group, while the third segment the published artifact.  
+* The first path segment identifies the publisher, the second segment the group, while the third segment the published artifact.  
 
 * An example of a valid artifact URI:* https://databus.example.org/john/animals/cats
 

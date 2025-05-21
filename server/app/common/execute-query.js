@@ -137,7 +137,7 @@ sparql.executeUpdate = async function(query, username, password) {
 
 /**
  * placeHolderMappings is a map string => string. This function replaces all
- * occurrances of %key% in query with value.
+ * occurrences of %key% in query with value.
  */
 sparql.formatQuery = function (query, placeholderMappings) {
 
