@@ -27,9 +27,10 @@ WORKDIR /
 # Copy source code
 COPY server ./databus/server
 COPY public ./databus/public
+COPY search ./databus/search
 
 # Rebuild sqlite3 in case it's a native module
-RUN cd databus/server && npm rebuild sqlite3
+# RUN cd databus/server && npm rebuild sqlite3
 
 FROM node:23-slim AS runtime
 

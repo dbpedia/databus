@@ -11,7 +11,7 @@ class GstoreResource {
   static REQ_PARAM_PREFIX = "prefix";
   static METADATA_FILENAME = '/metadata.jsonld';
   static GSTORE_BASE_URL = process.env.DATABUS_DATABASE_URL || 'http://localhost:8080';
-  static PREFIX = `/${process.env.DATABUS_RESOURCE_BASE_URL}`;
+  static PREFIX = `${process.env.DATABUS_RESOURCE_BASE_URL}/`;
 
   constructor(uriString, content = null) {
     this.initialize(uriString);

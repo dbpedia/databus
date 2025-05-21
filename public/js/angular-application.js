@@ -8,6 +8,7 @@ const GroupPageController = require("./page-controller/group-controller");
 const ProfileController = require("./page-controller/profile-controller");
 const PublishWizardController = require("./page-controller/publish-wizard-controller");
 const VersionPageController = require("./page-controller/version-controller");
+const UserSettingsController = require("./page-controller/user-settings-controller");
 const DatabusCollectionManager = require("./collections/databus-collection-manager");
 const SearchManager = require("./search/search-manager");
 const SearchController = require("./components/search/search-controller");
@@ -50,6 +51,7 @@ var databusApplication = angular.module("databusApplication", [])
       });
     };
   }])
+  .controller("UserSettingsController", [ "$scope", "$http", "$sce", "$location", UserSettingsController])
   .controller("HeaderController", ["$scope", "$http", "collectionManager", "searchManager", HeaderController])
   .controller("AccountPageController", ["$scope", "$http", "$location", "collectionManager", AccountPageController])
   .controller("FrontPageController", ["$scope", "$sce", "$http", FrontPageController])

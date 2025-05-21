@@ -14,59 +14,165 @@ const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 var cors = require('cors');
+const GstoreResource = require('../lib/gstore-resource');
+
+var signer = require('../lib/databus-tractate-suite.js');
 
 module.exports = function (router, protector) {
 
-  /*
-  router.put('/:account', protector.protect(), async function (req, res, next) {
 
+  function createAccountGraphs (uri, name, label, img, grants) {
+    var name = UriUtils.uriToName(uri);
+  
+    var rsaKeyGraph = {};
+    rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
+    rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
+    rsaKeyGraph[DatabusUris.CERT_MODULUS] = signer.getModulus();
+    rsaKeyGraph[DatabusUris.CERT_EXPONENT] = 65537;
+  
+    var personUri = `${uri}${DatabusConstants.WEBID_THIS}`;
 
-    // requesting user does not have an account yet
-    if (req.databus.accountName == undefined) {
+    var personGraph = {};
+    personGraph[DatabusUris.JSONLD_ID] = personUri;
+    personGraph[DatabusUris.JSONLD_TYPE] = [ DatabusUris.FOAF_PERSON, DatabusUris.DBP_DBPEDIAN ];
+    personGraph[DatabusUris.FOAF_ACCOUNT] = JsonldUtils.refTo(uri);
+    personGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = uri;
+    personGraph[DatabusUris.CERT_KEY] = [ rsaKeyGraph ];
+    personGraph[DatabusUris.FOAF_NAME] = label;
 
-      // oidc not set correctly?
-      if (req.oidc.user == undefined) {
-        res.status(403).send(`Forbidden.\n`);
-        return;
-      }
+    if(img != null) {
+      personGraph[DatabusUris.FOAF_IMG] = img;
+    }
 
-      // trying to be that guy?
-      if (req.params.account == `sparql`) {
-        res.status(403).send(`Forbidden.\n`);
-        return;
-      }
+    var profileUri = `${uri}${DatabusConstants.WEBID_DOCUMENT}`;
+  
+    var profileDocumentGraph = {};
+    profileDocumentGraph[DatabusUris.JSONLD_ID] = profileUri;
+    profileDocumentGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
+    profileDocumentGraph[DatabusUris.FOAF_MAKER] = JsonldUtils.refTo(personUri);
+    profileDocumentGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = JsonldUtils.refTo(personUri);
+  
+    var accountGraph = {}
+    accountGraph[DatabusUris.JSONLD_ID] = uri;
+    accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
+    accountGraph[DatabusUris.FOAF_ACCOUNT_NAME] = name;
+    accountGraph[DatabusUris.DATABUS_NAME] = name;
 
-      // account taken?
-      var accountExists = await protector.hasUser(req.params.account);
+    if(grants != null) {
+      accountGraph[DatabusUris.DATABUS_GRANTS_WRITE_ACCESS_TO] = [];
 
-      if (accountExists) {
-        // deny, this account name is taken
-        res.status(401).send(`This account name is taken.\n`);
-        return;
-      } else {
-        // allow write to the account namespace
-        req.databus.accountName = req.params.account;
-
-        try {
-          await protector.addUser(req.oidc.user.sub, req.params.account, req.params.account);
-        } catch(err) {
-          res.status(500).send(`Failed to write to user database`);
-          return;
-        }
+      for(var grant of grants) {
+        accountGraph[DatabusUris.DATABUS_GRANTS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(grant));
       }
     }
 
-    if(req.databus.accountName != req.params.account) {
-      res.status(403).send(`Trying to write to an unowned account namespace.\n`);
+    return [
+      accountGraph,
+      personGraph,
+      profileDocumentGraph,
+      rsaKeyGraph
+    ]
+  }
+
+  router.post('/api/account/save', protector.protect(), async function (req, res, next) {
+
+    let sub = req.oidc.user.sub;
+    let userdb = protector.userdb;
+
+    if(sub == undefined) {
+      res.status(401).send('No Subject!');
       return;
     }
 
-    var result = await publishAccount(req.databus.accountName, req.body);
-    res.status(result.statusCode).send(result.message);
-  });
-  */
-  
+    console.log(req.body);
+    
+    const accountName = req.body.accountName;
+    var existingAccount = await userdb.getAccount(accountName);
+    
+    if(existingAccount == null) {
+      res.status(400).send('Account does not exist.');
+      return;
+    }
 
+    if(existingAccount.sub != sub) {
+      res.status(403).send('You do not own this account.');
+      return;
+    }
+
+    let input = req.body;
+
+    try {
+      var accountLabel = req.body.label;
+      let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+      let content = createAccountGraphs(accountUri, accountName, accountLabel, null, null);
+
+      let gstoreResource = new GstoreResource(accountUri, content);
+      let status = await gstoreResource.save();
+
+      console.log(status);
+      res.status(200).send('Account created.');
+      return;
+      
+    } catch(err) {
+      res.status(500).send('Failed to write to gstore.');
+      return;
+    }
+
+    res.status(200).send('OKIDOKI.');
+
+  
+  });
+
+  router.post('/api/account/create', protector.protect(), async function (req, res, next) {
+
+    
+    let sub = req.oidc.user.sub;
+    let userdb = protector.userdb;
+
+    if(sub == undefined) {
+      return res.status(401).send('No Subject!');
+    }
+
+    let accountName = req.body.name;
+    let accountLabel = req.body.label;
+
+    if (!accountName) {
+      return res.status(400).send('Missing account name or label.');
+    }
+
+    if(!accountLabel) {
+      accountLabel = accountName;
+    }
+
+    var accountExists = await userdb.hasAccount(accountName);
+    
+    if(accountExists) {
+      res.status(403).send('Account name taken.');
+      return;
+    }
+
+    if(!await userdb.addAccount(sub, accountLabel, accountName)) {
+      res.status(500).send('Failed to write to user database.');
+      return;
+    }
+
+    
+    try {
+      let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+      let content = createAccountGraphs(accountUri, accountName, accountLabel, null, null);
+
+      let gstoreResource = new GstoreResource(accountUri, content);
+      let status = await gstoreResource.save();
+
+      console.log(status);
+      res.status(200).send('Account created.');
+      
+    } catch(err) {
+      await userdb.deleteAccount(accountName);
+      res.status(500).send('Failed to write to gstore.');
+    }
+  });
+  
   router.post('/api/account/webid/remove', protector.protect(), async function (req, res, next) {
     try {
 

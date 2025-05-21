@@ -19,12 +19,15 @@ class AccountWriter extends ResourceWriter {
 
     if(this.userData.accountName == null) {
       
+      console.log("Account name is not set, creating user");
+      
       if(!this.resource.isAccount()) { 
         throw new ApiError(400, this.uri, `Identifier <${this.uri}> is not a valid account URI.`, null);
       }
 
       var accountName = this.resource.getAccount();
-
+      console.log(`Desired account name is ${accountName}`);
+      
       if(accountName.length < 4) {
         throw new ApiError(400, this.uri, `Specified account name ('${accountName}') must be at least 4 characters long.`, null);
       }

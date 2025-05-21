@@ -16,7 +16,7 @@ async function verifyAccountIntegrity(indexer) {
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
 
-  for (var user of await userDatabase.getUsers()) {
+  for (var user of await userDatabase.getAllUsers()) {
     var profileUri = `${UriUtils.createResourceUri([user.accountName])}${DatabusConstants.WEBID_DOCUMENT}`;
     var exists = await executeAsk(`ASK { <${profileUri}> ?p ?o }`);
 

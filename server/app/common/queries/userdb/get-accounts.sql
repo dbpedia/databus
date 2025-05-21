@@ -1,0 +1,1 @@
+SELECT * FROM accounts WHERE sub="%SUB%"

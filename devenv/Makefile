@@ -10,7 +10,7 @@ webpack:
 
 env-clean:
 	sudo rm -r data/; \
-	sudo rm -r ../server/users; \
+	sudo rm -r ../server/users	
 	docker rm -f devenv_lookup; \
 	docker rm -f devenv_virtuoso; \
 	docker rm -f devenv_gstore;

@@ -1,0 +1,1 @@
+DELETE FROM accounts WHERE accountName="%ACCOUNT_NAME%"

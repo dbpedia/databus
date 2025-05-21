@@ -57,8 +57,13 @@ function createFork(onListening) {
     }
 
     if (message.id == DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD) {
-      let databusResource = new DatabusResource(message.resource);
-      searchIndexer.updateResource(message.resource, databusResource.getTypeName());
+      try {
+        let databusResource = new DatabusResource(message.resource);
+        searchIndexer.updateResource(message.resource, databusResource.getTypeName());
+      } catch(e) {
+        console.log("Error rebuilding the search index:");
+        console.log(e);
+      }
     }
   });
 }
@@ -74,6 +79,7 @@ async function masterProcess() {
   console.log(`######  #    #   #   #    # #####   ####   ####`);
   console.log(``)
 
+  console.log(`==== 2 ====`)
   console.log(`================================================`);
   console.log(``);
   console.log(`Environment Variables:`);

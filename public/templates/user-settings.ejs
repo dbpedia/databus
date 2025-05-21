@@ -1,0 +1,118 @@
+<%- include('header') -%>
+
+<div ng-controller="UserSettingsController">
+  <databus-alert></databus-alert>
+
+    <!-- Banner Section-->
+    <section class="hero databus-banner is-consumer">
+      <div class="hero-body">
+        <div class="container has-text-left">
+          <div style="display: flex; align-items: center;">
+            <h1 class="title is-2 has-text-left is-marginless">User Settings</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding-top: 3em; padding-bottom: 3em;">
+      <div class="container mt-5">
+        <h2 class="title is-4">Accounts</h2>
+      
+        <div ng-repeat="account in accounts track by $index" class="box">
+          <div class="field">
+            <label class="label">Account Name</label>
+            <input class="input" type="text" ng-model="account.accountName" disabled>
+          </div>
+      
+          <div class="field">
+            <label class="label">Label</label>
+            <input class="input" type="text" ng-model="account.label">
+          </div>
+      
+          <div class="field">
+            <label class="label">Image URL</label>
+            <input class="input" type="text" ng-model="account.imageUrl">
+          </div>
+      
+          <div class="field">
+            <label class="label">Write Access Grants</label>
+            <div>
+              <div ng-repeat="(index, url) in account.writeAccess track by $index" style="margin-bottom: 0.2em"
+                   class="is-flex is-align-items-center mb-1">
+                  <input class="input mr-2" type="text" ng-model="account.writeAccess[index]" placeholder="https://...">
+                <button class="button has-text-danger"
+                        ng-click="removeWriteAccessUrl(account, index)">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+          
+              <button class="button has-text-success mt-1"
+                      ng-click="addWriteAccessUrl(account)">
+                <i class="fas fa-plus"></i> Add URL
+              </button>
+            </div>
+          </div>
+
+          <br/>
+      
+          <div class="buttons mt-3">
+            <button class="button is-primary" ng-click="saveAccount(account)">Save</button>
+            <button class="button is-danger" ng-click="deleteAccount($index)">Delete</button>
+          </div>
+        </div>
+      
+        <div class="field">
+          <label class="label">Name</label>
+          <input class="input" type="text" ng-model="newAccountName" placeholder="Key name">
+        </div>
+
+        <div class="field">
+          <label class="label">Label</label>
+          <input class="input is-family-monospace" type="text" ng-model="newAccountLabel" placeholder="label">
+        </div>
+
+        
+        <button class="button is-success mt-3" ng-click="addAccount()">Add Account</button>
+
+        <hr class="my-6">
+
+        <h2 class="title is-4">API Keys</h2>
+
+        <div class="box" ng-repeat="(index, keyObj) in apiKeys track by $index">
+          <div class="field">
+            <label class="label">Name</label>
+            <input class="input" type="text" ng-model="keyObj.name" disabled>
+          </div>
+
+          <div class="field">
+            <label class="label">Key</label>
+            <input class="input is-family-monospace" type="text" ng-model="keyObj.key" disabled>
+          </div>
+
+          <div class="buttons mt-2">
+            <button class="button is-danger" ng-click="deleteApiKey(index)">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Add API Key Section -->
+          <div class="field">
+            <label class="label">Name</label>
+            <input class="input" type="text" ng-model="newApiKeyName" placeholder="Key name">
+          </div>
+
+          <div class="field">
+            <label class="label">Key</label>
+            <input class="input is-family-monospace" type="text" ng-model="newApiKeyValue" placeholder="Key value">
+          </div>
+
+          <button class="button is-success mt-2" ng-click="addApiKey()">
+            <i class="fas fa-plus"></i> Add Key
+          </button>
+      </div>
+
+    </section>
+  </div>
+
+  <%- include('footer') -%>

@@ -5,6 +5,8 @@ const Constants = require('../constants');
 // Constants for URLs and headers
 const prefix = encodeURIComponent(`${process.env.DATABUS_RESOURCE_BASE_URL}/`);
 
+// asdf 
+
 // Helper functions for URL building
 const buildReadUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/document/read?repo=${repo}&path=${path}`;
 const buildSaveUrl = (repo, path) => `${process.env.DATABUS_DATABASE_URL}/document/save?repo=${repo}&prefix=${prefix}&path=${path}`;
@@ -46,11 +48,23 @@ class GstoreHelper {
   static async delete(repo, path) {
     const url = buildDeleteUrl(repo, path);
 
+    console.log(url);
+    
     try {
       await axios.delete(url);
-      process.send({
-        id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD
-      });
+
+      console.log("Resource deleted");
+      
+      // TODO handle drop from index on delete!
+      /**
+      if (process.send != undefined) {
+        process.send({
+          id: DatabusMessage.REQUEST_SEARCH_INDEX_REBUILD,
+          resource: versionGraphUri
+        });
+      } */
+
+      
       return { isSuccess: true };
     } catch (err) {
 

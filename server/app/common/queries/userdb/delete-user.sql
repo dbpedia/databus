@@ -1,1 +1,1 @@
-DELETE FROM users WHERE sub="%SUB%"
+DELETE FROM users WHERE sub="%SUB%" AND accountName="%NAME%"

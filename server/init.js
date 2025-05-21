@@ -176,7 +176,7 @@ async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
 
 
 async function initializeUserDatabase(indexer) {
-  console.log(`Connecting to User Databse...`);
+  console.log(`Connecting to User Database...`);
   var userDatabase = new DatabusUserDatabase();
   await userDatabase.connect();
 }

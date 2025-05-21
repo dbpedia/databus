@@ -20,6 +20,7 @@ class DatabusUris {
   static DATABUS_GROUP_PROPERTY = 'https://dataid.dbpedia.org/databus#group';
   static DATABUS_ACCOUNT_PROPERTY = 'https://dataid.dbpedia.org/databus#account';
   static DATABUS_NAME = 'https://dataid.dbpedia.org/databus#name';
+  static DATABUS_GRANTS_WRITE_ACCESS_TO = 'https://dataid.dbpedia.org/databus#grantsWriteAccessTo';
   static DATABUS_ARTIFACT_PROPERTY = 'https://dataid.dbpedia.org/databus#artifact';
   static DATABUS_FORMAT = 'https://dataid.dbpedia.org/databus#format';
   static DATABUS_FORMAT_EXTENSION = 'https://dataid.dbpedia.org/databus#formatExtension';

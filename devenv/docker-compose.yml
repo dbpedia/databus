@@ -4,7 +4,7 @@ name: databus_devenv
 services:
   gstore:
     restart: unless-stopped
-    image: dbpedia/gstore:dev
+    image: dbpedia/gstore:chk
     container_name: databus_devenv_gstore
     environment: 
       STORAGE_USER: "dba"
@@ -13,7 +13,7 @@ services:
       DEFAULT_JSONLD_LOCALHOST_CONTEXT: http://localhost:3000/res/context.jsonld
       DEFAULT_JSONLD_LOCALHOST_CONTEXT_LOCATION: http://host.docker.internal:3000/res/context.jsonld
     ports:
-      - "3002:8080"
+      - "3002:8080" 
     volumes:
       - ./data/gstore/git:/gstore/git
       - ./data/gstore/logs:/gstore/logs
