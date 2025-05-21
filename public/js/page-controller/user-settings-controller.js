@@ -5,6 +5,7 @@ const JsonldUtils = require("../utils/jsonld-utils");
 function UserSettingsController($scope, $http, $sce, $location) {
   $scope.auth = data.auth;
   $scope.accounts = data.accounts;
+  $scope.apiKeys = data.apiKeys;
 
   // Iterate over each account
   $scope.accounts.forEach(function(account) {
@@ -31,11 +32,6 @@ function UserSettingsController($scope, $http, $sce, $location) {
         var personGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.FOAF_PERSON);
 
         account.label = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_NAME);
-        console.log(personGraph);
-        
-
-        // Optionally, parse specific properties from JSON-LD if needed
-        // Example: account.description = response.data['@graph'][0].description;
       })
       .catch(function(error) {
         // Handle error and set loading to false
@@ -44,8 +40,6 @@ function UserSettingsController($scope, $http, $sce, $location) {
       });
   });
 
-  console.log($scope.accounts);
-  
   $scope.addAccount = async function () {
 
     try {
@@ -96,26 +90,40 @@ function UserSettingsController($scope, $http, $sce, $location) {
     account.writeAccess.splice(index, 1);
   };
 
-  $scope.apiKeys = [
-    // Example entry
-    { name: 'default', key: '1234-5678-ABCD-EFGH' }
-  ];
-  
+   
   $scope.addApiKey = function () {
-    if (!$scope.newApiKeyName || !$scope.newApiKeyValue) {
-      DatabusAlert.alert("Both name and key must be filled out.");
+    // Validate the name input only
+    if (!$scope.newApiKeyName) {
+      DatabusAlert.alert("API key name must be provided.");
       return;
     }
-  
-    $scope.apiKeys.push({
-      name: $scope.newApiKeyName,
-      key: $scope.newApiKeyValue
-    });
-  
-    // Clear input fields
-    $scope.newApiKeyName = '';
-    $scope.newApiKeyValue = '';
+
+    const postData = {
+      name: $scope.newApiKeyName
+    };
+
+    // Send POST request to create the API key
+    $http.post('/api/account/api-key/create', postData)
+      .then(function(response) {
+        if (response.data && response.data.key && response.data.name) {
+          // Append new key to the list
+          $scope.apiKeys.push({
+            name: response.data.name,
+            key: response.data.key
+          });
+
+          // Clear the name input field
+          $scope.newApiKeyName = '';
+        } else {
+          DatabusAlert.alert("Invalid response from server.");
+        }
+      })
+      .catch(function(error) {
+        console.error('Error creating API key:', error);
+        DatabusAlert.alert("Failed to create API key.");
+      });
   };
+  
   
   $scope.deleteApiKey = function (index) {
     console.log("Deleting API key:", $scope.apiKeys[index]);

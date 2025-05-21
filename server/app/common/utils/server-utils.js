@@ -109,7 +109,7 @@ class ServerUtils {
       // result.info.name = req.oidc.user.name;
 
       if (req.databus != undefined) {
-        result.info.accountName = req.databus.accountName;
+        result.info.accounts = req.databus.accounts;
         result.info.oidc_name = req.databus.oidc_name;
         result.info.oidc_email = req.databus.oidc_email;
         result.info.apiKeys = req.databus.apiKeys;

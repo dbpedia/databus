@@ -19,6 +19,7 @@ module.exports = function (router, protector) {
     var auth = ServerUtils.getAuthInfoFromRequest(req);
 
     let accounts = await userdb.getAccountsBySub(sub);
+    let apiKeys = await userdb.getApiKeys(sub);
 
     console.log(accounts);
 
@@ -26,7 +27,8 @@ module.exports = function (router, protector) {
       title: 'User Settings',
       data: {
         auth: auth,
-        accounts: accounts
+        accounts: accounts,
+        apiKeys: apiKeys,
       }
     });
   });

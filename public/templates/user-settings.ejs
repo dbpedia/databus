@@ -23,7 +23,9 @@
             <label class="label">Account Name</label>
             <input class="input" type="text" ng-model="account.accountName" disabled>
           </div>
-      
+
+          <div>Go to account page: <a ng-href="/{{account.accountName}}" target="_blank">/{{account.accountName}}</a></div>
+          <br/>
           <div class="field">
             <label class="label">Label</label>
             <input class="input" type="text" ng-model="account.label">
@@ -81,12 +83,12 @@
         <div class="box" ng-repeat="(index, keyObj) in apiKeys track by $index">
           <div class="field">
             <label class="label">Name</label>
-            <input class="input" type="text" ng-model="keyObj.name" disabled>
+            <input class="input" type="text" ng-model="keyObj.keyname" disabled>
           </div>
 
           <div class="field">
             <label class="label">Key</label>
-            <input class="input is-family-monospace" type="text" ng-model="keyObj.key" disabled>
+            <input class="input is-family-monospace" type="text" ng-model="keyObj.apikey" disabled>
           </div>
 
           <div class="buttons mt-2">
@@ -100,11 +102,6 @@
           <div class="field">
             <label class="label">Name</label>
             <input class="input" type="text" ng-model="newApiKeyName" placeholder="Key name">
-          </div>
-
-          <div class="field">
-            <label class="label">Key</label>
-            <input class="input is-family-monospace" type="text" ng-model="newApiKeyValue" placeholder="Key value">
           </div>
 
           <button class="button is-success mt-2" ng-click="addApiKey()">

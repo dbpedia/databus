@@ -303,14 +303,14 @@ class DatabusProtect {
 
       // Looking up the user...
 
-      /*
-      var user = await this.userdb.getUsersBySub(req.oidc.user.sub);
+      var sub = req.oidc.user.sub;
+      var accounts = await this.userdb.getAccountsBySub(sub);
 
-      if (user != undefined) {
-        req.databus.sub = user.sub;
-        req.databus.accountName = user.accountName;
-        req.databus.apiKeys = await this.userdb.getApiKeys(user.sub);
-      }*/
+      if (accounts != undefined) {
+        req.databus.sub = sub;
+        req.databus.accounts = accounts;
+        req.databus.apiKeys = await this.userdb.getApiKeys(sub);
+      }
 
       console.log(`PROTECT Authenticated request by \x1b[32m${req.databus.accountName}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
       return next();
