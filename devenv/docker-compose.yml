@@ -1,35 +1,113 @@
-# Starts everything except the databus
-version: "3.0"
+# Development environment for DBpedia Databus
+# This setup provides all required services for local development
+version: "3.8"
+
 services:
-  gstore:
-    image: docker.io/dbpedia/gstore:dev
-    container_name: devenv_gstore
-    environment: 
-      STORAGE_USER: "dba"
-      STORAGE_PASS: "everyoneknows"
-      STORAGE_SPARQL_ENDPOINT_URI: http://virtuoso:8890/sparql
-      GSTORE_LOCALHOST_CONTEXT_FALLBACK_URL: http://172.17.0.1
-    ports:
-      - "3002:8080"
-    volumes:
-      - ./data/gstore/git:/gstore/git
-      - ./data/gstore/logs:/gstore/logs
+  # Virtuoso Triple Store - RDF database
   virtuoso:
     image: "docker.io/openlink/virtuoso-opensource-7:latest"
-    container_name: devenv_virtuoso
+    container_name: databus_dev_virtuoso
     environment:
-      DBA_PASSWORD: "everyoneknows"
+      DBA_PASSWORD: "databus_dev_password"
       SPARQL_UPDATE: "true"
       DEFAULT_GRAPH: "http://localhost:3000"
+      VIRT_PARAMETERS:
+        - "NumberOfBuffers=1000"
+        - "MaxDirtyBuffers=600"
+        - "MaxCheckpointRemap=2000"
+        - "UnremapQuota=0"
+        - "DirsAllowed=/tmp"
     ports:
-      - "3003:8890"
-    volumes: 
+      - "3003:8890"  # SPARQL endpoint
+      - "3004:1111"  # Virtuoso admin interface
+    volumes:
       - ./data/virtuoso:/database
+      - ./data/virtuoso/backup:/backup
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8890/sparql"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     entrypoint: /bin/bash -c "
         echo 'grant SPARQL_LOAD_SERVICE_DATA to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         echo 'grant SPARQL_SPONGE to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
-        echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
+        echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' >> /opt/virtuoso-opensource/initdb.d/ini.sql &&
         /virtuoso-entrypoint.sh
       "
+    networks:
+      - databus_dev
+
+  # GStore - Git-based storage for version control
+  gstore:
+    image: "docker.io/dbpedia/gstore:dev"
+    container_name: databus_dev_gstore
+    environment:
+      STORAGE_USER: "dba"
+      STORAGE_PASS: "databus_dev_password"
+      STORAGE_SPARQL_ENDPOINT_URI: "http://virtuoso:8890/sparql"
+      GSTORE_LOCALHOST_CONTEXT_FALLBACK_URL: "http://host.docker.internal:3000"
+    ports:
+      - "3002:8080"  # GStore API
+    volumes:
+      - ./data/gstore/git:/gstore/git
+      - ./data/gstore/logs:/gstore/logs
+    depends_on:
+      virtuoso:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - databus_dev
+
+  # Search Indexer - Full-text search functionality
+  search-indexer:
+    build:
+      context: ../search
+      dockerfile: Dockerfile
+    container_name: databus_dev_search
+    environment:
+      - JAVA_OPTS=-Xmx2g
+    ports:
+      - "3005:8080"  # Search API
+    volumes:
+      - ./data/search/index:/databus/search/index
+      - ./search/index-config.yml:/root/app-config.yml:ro
+    depends_on:
+      gstore:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - databus_dev
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: "redis:7-alpine"
+  #   container_name: databus_dev_redis
+  #   ports:
+  #     - "3006:6379"
+  #   volumes:
+  #     - ./data/redis:/data
+  #   networks:
+  #     - databus_dev
+
+networks:
+  databus_dev:
+    driver: bridge
+    name: databus_dev_network
+
+volumes:
+  virtuoso_data:
+  gstore_data:
+  search_data:
       
   
