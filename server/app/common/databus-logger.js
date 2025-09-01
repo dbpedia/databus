@@ -44,7 +44,14 @@ class DatabusLogger {
   }
 
   error(resource, message, payload) {
-    this.entries.push({ resource: resource, msg: message, payload: payload, level: DatabusLogLevel.ERROR });
+    // Ensure message is properly formatted for display
+    // The message already contains \n characters, so we don't need to replace them
+    this.entries.push({ 
+      resource: resource, 
+      msg: message, 
+      payload: payload, 
+      level: DatabusLogLevel.ERROR 
+    });
   }
 
   debug(resource, message, payload) {
