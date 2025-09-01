@@ -43,7 +43,23 @@ module.exports = function (router, protector) {
       var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionUri);
 
       if (versionGraph == null) {
-        res.status(400).send(`Graph with id ${versionUri} not found in input.`);
+        // Enhanced error message with more context
+        const availableGraphs = expandedGraph.map(g => g[DatabusUris.JSONLD_ID]).filter(id => id);
+        const errorMessage = `PUT request validation failed:\n\n` +
+          `Expected graph with ID: ${versionUri}\n\n` +
+          `Available graphs in request body:\n` +
+          (availableGraphs.length > 0 ? 
+            availableGraphs.map(id => `  - ${id}`).join('\n') : 
+            '  (none found)') + '\n\n' +
+          `Please ensure your request body contains a graph with @id matching the PUT URL path.`;
+        
+        logger.error(null, errorMessage, {
+          expectedGraphId: versionUri,
+          availableGraphIds: availableGraphs,
+          requestUrl: req.originalUrl,
+          requestMethod: req.method
+        });
+        res.status(400).json(logger.getReport());
         return;
       }
 
