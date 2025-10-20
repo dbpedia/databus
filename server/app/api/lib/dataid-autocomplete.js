@@ -22,11 +22,11 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
     }
   }
 
-  var segment = artifactName;
+  var segment = encodeURIComponent(artifactName);
   for (var cv of contentVariants) {
     var facet = UriUtils.uriToName(cv.key);
     var value = cv.value;
-    segment += `_${facet}=${value}`;
+    segment += `_${encodeURIComponent(facet)}=${encodeURIComponent(value)}`;
   }
 
   var format = undefined;
@@ -41,7 +41,7 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
   }
 
   if (format != undefined && format != 'none' && format != '') {
-    segment += `.${format}`;
+    segment += `.${encodeURIComponent(format)}`;
   }
 
   if (compression != undefined && compression != 'none' && compression != '') {
@@ -50,7 +50,7 @@ function autofillFileIdentifiers(datasetUri, fileGraph) {
       compression = knownCompressionExtensions[compression]
     }
 
-    segment += `.${compression}`;
+    segment += `.${encodeURIComponent(compression)}`;
   }
 
   fileGraph[DatabusUris.DATABUS_FILE] = [{}];
