@@ -23,7 +23,6 @@ function ArtifactPageController($scope, $http, $sce, $location, collectionManage
 
   $scope.versions = data.versions;
   $scope.artifact = data.artifact;
-  $scope.accountName = DatabusUtils.uriToName(DatabusUtils.navigateUp($scope.artifact.uri, 2));
   $scope.canEdit = $scope.accountName != null;
   $scope.pageTitle = DatabusUtils.stringOrFallback($scope.artifact.title,
     DatabusUtils.uriToTitle($scope.artifact.uri));
