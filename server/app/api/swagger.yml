@@ -87,16 +87,9 @@ paths:
                   "@graph": [
                     {
                       "@type": "Version",
-<<<<<<< HEAD
                       "@id": "%DATABUS_RESOURCE_BASE_URL%/[YOUR_ACCOUNT_NAME]/test_group/test_artifact/0.0.1",
                       "title": "Test Data",
                       "description": "Test data from the swagger API. This can probably be deleted.",
-=======
-                      "@id": "https://dev.databus.dbpedia.org/<your username>/test_group/test_artifact/2022-02-09",
-                      "hasVersion": "2022-02-09",
-                      "title": "test_group test_artifact",
-                      "description": "version of the test_artifact dataset from DBpedia",
->>>>>>> master
                       "license": "https://dalicc.net/licenselibrary/Apache-2.0",
                       "distribution": [
                         {

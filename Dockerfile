@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 # Use a consistent Node.js version across build and release stages
 FROM node:23-slim AS builder
-=======
-FROM docker.io/ubuntu:22.04
->>>>>>> master
 
 # Install Python for node-gyp (required for sqlite3 build)
 RUN apt-get update && apt-get install -y python3 build-essential && \

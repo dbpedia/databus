@@ -2,14 +2,9 @@
 name: databus_devenv
 services:
   gstore:
-<<<<<<< HEAD
     restart: unless-stopped
     image: dbpedia/gstore:dev
     container_name: databus_devenv_gstore
-=======
-    image: docker.io/dbpedia/gstore:dev
-    container_name: devenv_gstore
->>>>>>> master
     environment: 
       STORAGE_USER: "dba"
       STORAGE_PASS: "everyoneknows"
@@ -31,14 +26,9 @@ services:
       - ./data/index/:/index
       - ../search/servlet-config.yml:/resources/config.yml
   virtuoso:
-<<<<<<< HEAD
     restart: unless-stopped
     image: "openlink/virtuoso-opensource-7:latest"
     container_name: databus_devenv_virtuoso
-=======
-    image: "docker.io/openlink/virtuoso-opensource-7:latest"
-    container_name: devenv_virtuoso
->>>>>>> master
     environment:
       DBA_PASSWORD: "everyoneknows"
       SPARQL_UPDATE: "true"
