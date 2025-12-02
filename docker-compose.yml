@@ -1,8 +1,12 @@
 version: "3.0"
 name: "databus-nodejs-dockerized"
+
 services:
   databus:
-    image: "databus-rc12"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: databus-local
     ports:
       - 3000:3000 # HTTP:  Databus web UI
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
