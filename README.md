@@ -85,10 +85,14 @@ https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd58
 ### Requirements
 
 In order to run the Databus on-premise you will need `docker` and `docker-compose` 
-installed on your machine.&#x20;
+installed on your machine. 
 
 * `docker`: 20.10.2 or higher
 * `docker-compose`: 1.25.0 or higher
+* (Optional) **MongoDB:** Ensure you have MongoDB installed. You can check the server version with:
+  ```bash
+  mongod --version
+  ```
 
 ### Starting the Databus Server
 
