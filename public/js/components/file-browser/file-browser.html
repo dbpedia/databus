@@ -40,17 +40,17 @@
 
     <!-- Table view tab ng-style="{ 'width' : column.width }" -->
     <div ng-if="$ctrl.activeTab == 0">
-      <table class="table is-fullwidth" >
+      <table class="table is-fullwidth">
         <tr style="cursor:pointer;">
-          <th ng-repeat='column in $ctrl.config.columns' 
-            ng-click="$ctrl.sortBy(column.field + '.value')">{{ column.label }}</th>
+          <th ng-repeat='column in $ctrl.config.columns' ng-click="$ctrl.sortBy(column.field + '.value')">{{
+            column.label }}</th>
           <th ng-click="$ctrl.sortBy('size.numericalValue')" style="text-align: right;">Download</th>
         </tr>
         <tr style="position:relative;"
           ng-repeat-start="binding in $ctrl.queryResult.bindings | limitTo:$ctrl.tableLimit | orderBy:$ctrl.sortProperty:$ctrl.sortReverse">
 
-          <td ng-repeat='column in $ctrl.config.columns' style="cursor:pointer;"
-            ng-click="binding.epxanded = !binding.epxanded">
+          <td ng-repeat="column in $ctrl.config.columns" style="cursor:pointer;"
+            ng-click="binding.epxanded = !binding.epxanded; $ctrl.loadPreview(binding)">
             <div ng-if="$first" style="margin-right:1em;  cursor:pointer;"
               ng-class="{ right : !binding.epxanded, down : binding.epxanded }" class="arrow"></div>{{
             $ctrl.getCellValues(binding, column); }}
@@ -68,8 +68,17 @@
         <tr ng-repeat-end ng-if="binding.epxanded">
           <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0; max-width: 0px;">
             <div>
-              <pre ng-if="binding.preview.value != null">{{ binding.preview.value }}</pre>
-              <pre ng-if="binding.preview.value == null">Preview could not be loaded</pre>
+              <div ng-if="binding.preview.state == 'loading'">
+                <pre>Loading preview…</pre>
+              </div>
+
+              <pre ng-if="binding.preview.state == 'success'">
+{{ binding.preview.value }}
+  </pre>
+
+              <div ng-if="binding.preview.state == 'error'">
+                <pre>Preview could not be loaded</pre>
+              </div>
             </div>
           </td>
         </tr>

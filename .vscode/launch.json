@@ -50,7 +50,7 @@
         "DATABUS_OIDC_REQUIRED_ROLE": "",
         "LOOKUP_BASE_URL": "http://localhost:3004",
         "MAX_WORKERS": "1",
-        "METRICS_PORT": "3001"
+        "METRICS_PORT": "3001",
       }
     },
     {
