@@ -151,6 +151,7 @@ analyzer.analyzeFile = async function (url) {
       responseType: 'stream',
       httpAgent: agent,
       httpsAgent: agent,
+      proxy: false
     });
 
     var bytesRead = 0;
