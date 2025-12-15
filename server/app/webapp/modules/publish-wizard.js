@@ -5,13 +5,23 @@ const ServerUtils = require('../../common/utils/server-utils.js');
 module.exports = function (router, protector) {
   require('../../common/file-analyzer').route(router, protector);
 
-  router.get('/app/publish-wizard/licenses', protector.protect(), async function(req, res, next) {
+  router.get('/app/publish-wizard/licenses', protector.protect(), async function (req, res, next) {
     const search = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`).search;
 
+    const url = `https://api.dalicc.net/licenselibrary/list${search}`;
+    const agent = ServerUtils.getProxyAgent(url);
+
     try {
-      const daliccRes = await axios.get(`https://api.dalicc.net/licenselibrary/list${search}`, {
-        headers: { accept: 'application/json' }
+
+      const daliccRes = await axios.request({
+        method: 'GET',
+        url,
+        headers: { accept: 'application/json' },
+        httpAgent: agent,
+        httpsAgent: agent,
+        proxy: false
       });
+
       res.status(200).send(daliccRes.data);
     } catch (err) {
       console.log(err);

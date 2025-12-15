@@ -1,43 +1,9 @@
 const shasum = require('js-sha256');
 const axios = require('axios');
 const UriUtils = require('./utils/uri-utils');
-const { HttpsProxyAgent } = require('https-proxy-agent');
-const { HttpProxyAgent } = require('http-proxy-agent');
+const ServerUtils = require('./utils/server-utils');
 
 var analyzer = {};
-
-function getProxyAgent(url) {
-  const target = new URL(url);
-  const host = target.hostname;
-
-  const noProxyVar =
-    process.env.NO_PROXY || process.env.no_proxy || '';
-  const noProxy = noProxyVar.split(',').map(s => s.trim()).filter(Boolean);
-
-  if (noProxy.some(np => host === np || host.endsWith('.' + np)))
-    return null;
-
-  const httpsProxy =
-    process.env.HTTPS_PROXY || process.env.https_proxy;
-  const httpProxy =
-    process.env.HTTP_PROXY || process.env.http_proxy;
-
-  const proxyUrl = target.protocol === 'https:' ? httpsProxy : httpProxy;
-
-  if (!proxyUrl) return null;
-
-  const agent =
-    target.protocol === 'https:'
-      ? new HttpsProxyAgent(proxyUrl)
-      : new HttpProxyAgent(proxyUrl);
-
-  // Allow MITM proxy certificates (testing only)
-  if (process.env.ALLOW_INSECURE_PROXY === 'true') {
-    agent.options.rejectUnauthorized = false;
-  }
-
-  return agent;
-}
 
 
 analyzer.processFile = async function (fileUri, url, webdav) {
@@ -143,7 +109,7 @@ analyzer.analyzeFile = async function (url) {
 
     var hash = shasum.create();
 
-    const agent = getProxyAgent(url);
+    const agent = ServerUtils.getProxyAgent(url);
 
     const response = await axios.request({
       method: 'GET',
