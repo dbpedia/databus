@@ -5,7 +5,7 @@
 class SearchAdapter {
 
     static list = [
-        { 
+        {
             name: 'lookup',
             label: 'Lookup',
             factory: this.lookup
@@ -29,13 +29,19 @@ class SearchAdapter {
     static inferResourceTypes(docs) {
         // TODO:
     }
-    
+
 
     static lookup($http, endpoint) {
-        return new SearchAdapter($http, endpoint, function(query) {
+        return new SearchAdapter($http, endpoint, function (query) {
             return `?query=${query}&format=json`;
-        }, function(response) {
+        }, function (response) {
             var docs = response.data.docs;
+
+            docs.forEach(d => {
+                if (d.id && !d.title) {
+                    d.title = d.id.split("/")[1];
+                }
+            });
             SearchAdapter.inferResourceTypes(docs);
             return docs;
         });
@@ -53,7 +59,7 @@ class SearchAdapter {
         return virtuosoAdapter;
     }
 
-   
+
 
     async search(query) {
         try {
