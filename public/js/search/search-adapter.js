@@ -39,9 +39,11 @@ class SearchAdapter {
 
             docs.forEach(d => {
                 if (d.id && !d.title) {
-                    d.title = d.id.split("/")[1];
+                    const parts = d.id.split("/").filter(Boolean);
+                    d.title = parts.length > 1 ? parts[parts.length - 1] : d.id;
                 }
             });
+
             SearchAdapter.inferResourceTypes(docs);
             return docs;
         });
