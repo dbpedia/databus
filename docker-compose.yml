@@ -63,7 +63,6 @@ services:
         /virtuoso-entrypoint.sh"
   lookup:
     image: "docker.io/dbpedia/lookup:dev"
-    container_name: databus_devenv_lookup
     ports:
       - 3004:8082
     volumes:
