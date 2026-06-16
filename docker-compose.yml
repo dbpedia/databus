@@ -67,4 +67,4 @@ services:
       - 3004:8082
     volumes:
       - ./data/index/:/index
-      - ../search/servlet-config.yml:/resources/config.yml
+      - ./search/servlet-config.yml:/resources/config.yml
