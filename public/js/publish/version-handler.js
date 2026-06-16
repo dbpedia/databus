@@ -93,7 +93,7 @@ class VersionHandler extends EntityHandler {
       this.errors.push('err_no_artifact_selected');
     }
 
-    if (!DatabusUtils.isValidResourceLabel(this.title)) {
+    if (!DatabusUtils.isValidResourceLabel(this.title, 1)) {
       this.errors.push('err_invalid_version_title');
     }
 

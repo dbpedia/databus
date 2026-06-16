@@ -89,6 +89,9 @@ async function masterProcess() {
   console.log(`DATABUS_ORG_ICON\t\t${process.env.DATABUS_ORG_ICON}`);
   console.log(`DATABUS_BANNER_COLOR\t\t${process.env.DATABUS_BANNER_COLOR}`);
   console.log(`METRICS_PORT\t\t\t${process.env.METRICS_PORT}`);
+  console.log(`HTTP_PROXY\t\t\t${process.env.HTTP_PROXY}`);
+  console.log(`HTTPS_PROXY\t\t\t${process.env.HTTPS_PROXY}`);
+  console.log(`NO_PROXY\t\t\t${process.env.NO_PROXY}`);
   console.log(``);
   console.log(`================================================`);
   console.log(``);

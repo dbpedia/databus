@@ -18,6 +18,7 @@ const versionQueryTemplate = require("../../common/queries/constructs/ld/constru
 const AppJsonFormatter = require('../../../../public/js/utils/app-json-formatter');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusProtect = require('../../common/protect/middleware.js');
+const DecompressUtils = require('../../common/utils/decompress-utils.js');
 
 /**
  * 
@@ -27,6 +28,18 @@ const DatabusProtect = require('../../common/protect/middleware.js');
 module.exports = function (router, protector) {
 
   var cache = new DatabusCache(10);
+
+  router.get('/app/file/preview', protector.checkSso(), async function (req, res) {
+    try {
+      const url = req.query.url;
+      const compression = req.query.compression || null;
+      const preview = await DecompressUtils.decodePreview(url, compression, 4096);
+      res.json({ "preview": preview });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ preview: null });
+    }
+  });
 
   router.get('/:account', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 
@@ -48,9 +61,9 @@ module.exports = function (router, protector) {
         let userId = req.databus.userId;
         let accounts = await protector.userdb.getAccountsById(userId);
         ownerData = accounts.find(a => a.accountName === req.params.account);
-      } catch(err) {
+      } catch (err) {
         console.log(err);
-        
+
       }
 
       res.render('account', {
@@ -247,6 +260,8 @@ module.exports = function (router, protector) {
       res.status(500).send(err);
     }*/
   });
+
+  
 
   router.get('/:account/:group/:artifact/:version', ServerUtils.HTML_ACCEPTED, protector.checkSso(), async function (req, res, next) {
 

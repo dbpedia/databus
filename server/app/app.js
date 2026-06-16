@@ -80,7 +80,7 @@ initialize(app, memoryStore).then(function () {
     // Enable private mode protection if specified in environment variables
     if (process.env.DATABUS_PRIVATE_MODE == "true") {
       console.log(`Started cluster node in private mode`);
-      app.all('*', protector.protect(true, function (req, res) {
+      app.all('/{*path}', protector.protect(true, function (req, res) {
         protector.sendError(req, res, 401, 'Unauthorized', "This Databus is private. Please log in.");
       }));
     }

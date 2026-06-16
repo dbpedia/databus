@@ -1,32 +1,34 @@
 const shasum = require('js-sha256');
 const axios = require('axios');
 const UriUtils = require('./utils/uri-utils');
+const ServerUtils = require('./utils/server-utils');
 
 var analyzer = {};
 
-analyzer.processFile = async function(fileUri, url, webdav) {
+
+analyzer.processFile = async function (fileUri, url, webdav) {
 
   var path = fileUri.replace(`${process.env.DATABUS_RESOURCE_BASE_URL}/`, "");
   var artifactPath = UriUtils.navigateUp(path);
   var groupPath = UriUtils.navigateUp(artifactPath);
   var accountName = UriUtils.navigateUp(groupPath);
-  
+
   console.log(accountName);
 
   var options = {};
 
   options.headers = {
-    'Authorization' : webdav.getBasicAuthToken(accountName),
+    'Authorization': webdav.getBasicAuthToken(accountName),
   }
-  
+
   options.method = "MKCOL";
   options.url = `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${groupPath}`;
 
   try {
     await axios.request(options);
-  } catch(err) {
-    if(err.response.status != 405) {
-      throw(err);
+  } catch (err) {
+    if (err.response.status != 405) {
+      throw (err);
     }
   }
 
@@ -34,19 +36,19 @@ analyzer.processFile = async function(fileUri, url, webdav) {
 
   try {
     await axios.request(options);
-  } catch(err) {
-    if(err.response.status != 405) {
-      throw(err);
+  } catch (err) {
+    if (err.response.status != 405) {
+      throw (err);
     }
   }
 
 }
 
-analyzer.parseFormatAndCompression = function(result, value) {
+analyzer.parseFormatAndCompression = function (result, value) {
 
   result.compression = "none";
   result.formatExtension = "none";
-  if(value == undefined) {
+  if (value == undefined) {
     return;
   }
 
@@ -66,26 +68,26 @@ analyzer.parseFormatAndCompression = function(result, value) {
   }
 }
 
-analyzer.getFileNameFromDisposition = function(disposition) {
+analyzer.getFileNameFromDisposition = function (disposition) {
 
   console.log(disposition);
   var entries = disposition.split(' ');
 
-  for(var entry of entries) {
-    if(entry.startsWith('filename=')) {
-      return entry.split('=')[1].replace(/(^")|("$)|(;$)|(";$)/g, "");        
+  for (var entry of entries) {
+    if (entry.startsWith('filename=')) {
+      return entry.split('=')[1].replace(/(^")|("$)|(;$)|(";$)/g, "");
     }
   }
 
   return undefined;
 }
 
-analyzer.getFormatAndCompression = function(url, headers) {
+analyzer.getFormatAndCompression = function (url, headers) {
 
   var result = {};
 
-   // Prefer content disposition
-   if (headers['content-disposition'] != undefined) {
+  // Prefer content disposition
+  if (headers['content-disposition'] != undefined) {
     var filename = analyzer.getFileNameFromDisposition(headers['content-disposition']);
     analyzer.parseFormatAndCompression(result, filename);
 
@@ -107,14 +109,19 @@ analyzer.analyzeFile = async function (url) {
 
     var hash = shasum.create();
 
-    var response = await axios.request({
-      method: "GET",
-      url: url,
-      responseType: "stream",
+    const agent = ServerUtils.getProxyAgent(url);
+
+    const response = await axios.request({
+      method: 'GET',
+      url,
+      responseType: 'stream',
+      httpAgent: agent,
+      httpsAgent: agent,
+      proxy: false
     });
 
     var bytesRead = 0;
-    
+
     var formatAndCompressionResult = analyzer.getFormatAndCompression(url, response.headers);
 
     for await (data of response.data) {

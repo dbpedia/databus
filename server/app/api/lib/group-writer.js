@@ -30,7 +30,7 @@ class GroupWriter extends ResourceWriter {
     if(inputGroupGraph[DatabusUris.DCT_ABSTRACT] != null) {
       groupGraph[DatabusUris.DCT_ABSTRACT] = inputGroupGraph[DatabusUris.DCT_ABSTRACT];
     } else if (groupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
-      groupGraph[DatabusUris.DCT_DESCRIPTION] = DatabusUtils.createAbstractFromDescription(groupGraph[DatabusUris.DCT_DESCRIPTION]);
+      groupGraph[DatabusUris.DCT_ABSTRACT] = DatabusUtils.createAbstractFromDescription(groupGraph[DatabusUris.DCT_DESCRIPTION]);
     }
 
     return [

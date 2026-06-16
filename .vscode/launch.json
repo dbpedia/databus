@@ -47,10 +47,10 @@
         "DATABUS_OIDC_CLIENT_ID": "databus-dev",
         "DATABUS_OIDC_SECRET": "O55igP05y7iMlZdhweAEUjjhBIkiu0Mq",
         "DATABUS_OIDC_USER_ID_PROPERTY": "sub",
-        "DATABUS_OIDC_REQUIRED_ROLE": "",
+        "DATABUS_OIDC_REQUIRED_ROLE": "ASDF",
         "LOOKUP_BASE_URL": "http://localhost:3004",
         "MAX_WORKERS": "1",
-        "METRICS_PORT": "3001"
+        "METRICS_PORT": "3001",
       }
     },
     {

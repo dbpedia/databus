@@ -2,7 +2,7 @@ version: "3.0"
 name: "databus-nodejs-dockerized"
 services:
   databus:
-    image: "databus-rc12"
+    image: "docker.io/dbpedia/databus"
     ports:
       - 3000:3000 # HTTP:  Databus web UI
 #      - 80:80       # ** uncomment if proxy enabled only** HTTP port of included proxy (caddy) necessary for Auto-HTTPS via ACME and HTTP->HTTPS redirect                                                  
@@ -62,7 +62,7 @@ services:
         echo 'grant SPARQL_SELECT_FED to \"SPARQL\";' > /opt/virtuoso-opensource/initdb.d/ini.sql &&
         /virtuoso-entrypoint.sh"
   lookup:
-    image: lookup:dev
+    image: "docker.io/dbpedia/lookup:dev"
     container_name: databus_devenv_lookup
     ports:
       - 3004:8082

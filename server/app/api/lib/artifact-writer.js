@@ -31,7 +31,7 @@ class ArtifactWriter extends ResourceWriter {
     if(inputArtifactGraph[DatabusUris.DCT_ABSTRACT] != null) {
       artifactGraph[DatabusUris.DCT_ABSTRACT] = inputArtifactGraph[DatabusUris.DCT_ABSTRACT];
     } else if (artifactGraph[DatabusUris.DCT_DESCRIPTION] != null) {
-      artifactGraph[DatabusUris.DCT_DESCRIPTION] = DatabusUtils.createAbstractFromDescription(artifactGraph[DatabusUris.DCT_DESCRIPTION]);
+      artifactGraph[DatabusUris.DCT_ABSTRACT] = DatabusUtils.createAbstractFromDescription(artifactGraph[DatabusUris.DCT_DESCRIPTION]);
     }
 
     var groupGraph = {};

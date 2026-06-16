@@ -2,9 +2,43 @@ var ASN1 = require('asn1js');
 const fs = require('fs');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+const { HttpsProxyAgent } = require('https-proxy-agent');
+const { HttpProxyAgent } = require('http-proxy-agent');
 
 class ServerUtils {
 
+  static getProxyAgent(url) {
+    const target = new URL(url);
+    const host = target.hostname;
+
+    const noProxyVar =
+      process.env.NO_PROXY || process.env.no_proxy || '';
+    const noProxy = noProxyVar.split(',').map(s => s.trim()).filter(Boolean);
+
+    if (noProxy.some(np => host === np || host.endsWith('.' + np)))
+      return null;
+
+    const httpsProxy =
+      process.env.HTTPS_PROXY || process.env.https_proxy;
+    const httpProxy =
+      process.env.HTTP_PROXY || process.env.http_proxy;
+
+    const proxyUrl = target.protocol === 'https:' ? httpsProxy : httpProxy;
+
+    if (!proxyUrl) return null;
+
+    const agent =
+      target.protocol === 'https:'
+        ? new HttpsProxyAgent(proxyUrl)
+        : new HttpProxyAgent(proxyUrl);
+
+    // Allow MITM proxy certificates (testing only)
+    if (process.env.ALLOW_INSECURE_PROXY === 'true') {
+      agent.options.rejectUnauthorized = false;
+    }
+
+    return agent;
+  }
 
   static setupRequireExtensions() {
     // add a sparql file loading extension (simply read the file as a string)
