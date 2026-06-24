@@ -176,3 +176,11 @@ This work was partially supported by grants from
 the German Federal Ministry for Economic Affairs 
 and Climate Action (BMWK) to the projects 
 LOD-GEOSS (03EI1005E) and  PLASS (01MD19003D)
+> **If you face dependency-install issues, try**:
+> ```bash
+> npm install --legacy-peer-deps
+> ```
+> **Check MongoDB version (for troubleshooting)**
+> ```bash
+> mongod --version
+> ```
