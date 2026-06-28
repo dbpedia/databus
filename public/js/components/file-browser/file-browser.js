@@ -105,55 +105,62 @@ function FileBrowserController($http, $scope) {
   ctrl.querySparql = async function (query) {
 
     ctrl.isLoading = true;
-    ctrl.totalSize = 0;
-    ctrl.numFiles = 0;
+    const revision = ++ctrl.lastRequestRevision;
 
     try {
-
-      var req = {
-        method: 'POST',
+      const req = {
+        method: "POST",
         url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
         data: "format=json&query=" + encodeURIComponent(query),
         headers: {
           "Content-type": "application/x-www-form-urlencoded"
-        },
+        }
+      };
+
+      const updateResponse = await ctrl.$http(req);
+
+      if (revision !== ctrl.lastRequestRevision) {
+        return;
       }
 
-      var updateResponse = await ctrl.$http(req);
+      const bindings = updateResponse.data.results.bindings;
 
-      var data = updateResponse.data;
+      let totalSize = 0;
+      let numFiles = 0;
+      let uriList = "";
 
-      ctrl.isLoading = false;
+      for (const binding of bindings) {
+        binding.size.numericalValue = parseInt(binding.size.value, 10);
+        uriList += binding.file.value + "\n";
 
-
-      ctrl.queryResult.bindings = data.results.bindings;
-
-      ctrl.queryResult.uriList = "";
-
-      for (var b in ctrl.queryResult.bindings) {
-        var binding = ctrl.queryResult.bindings[b];
-        binding.size.numericalValue = parseInt(binding.size.value);
-        ctrl.queryResult.uriList += binding.file.value + "\n";
-
-        if (binding.variant != undefined) {
+        if (binding.variant) {
           binding.variant.value = ctrl.formatVariant(binding.variant.value);
         }
 
-
-
-
-        ctrl.totalSize += binding.size.numericalValue;
-        ctrl.numFiles++;
+        totalSize += binding.size.numericalValue;
+        numFiles++;
       }
 
-      ctrl.totalSize = ctrl.formatUploadSize(ctrl.totalSize);
+      ctrl.queryResult.bindings = bindings;
+      ctrl.queryResult.uriList = uriList;
 
-      if (!$scope.$root.$$phase) {
+      ctrl.totalSize = ctrl.formatUploadSize(totalSize);
+      ctrl.numFiles = numFiles;
+
+      ctrl.isLoading = false;
+
+      if (!ctrl.$scope.$root.$$phase) {
         ctrl.$scope.$apply();
       }
 
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      if (revision === ctrl.lastRequestRevision) {
+        ctrl.isLoading = false;
+        if (!ctrl.$scope.$root.$$phase) {
+          ctrl.$scope.$apply();
+        }
+      }
     }
   }
 
