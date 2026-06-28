@@ -155,7 +155,12 @@ function FileBrowserController($http, $scope) {
 
     } catch (e) {
       console.error(e);
-      ctrl.isLoading = false;
+      if (revision === ctrl.lastRequestRevision) {
+        ctrl.isLoading = false;
+        if (!ctrl.$scope.$root.$$phase) {
+          ctrl.$scope.$apply();
+        }
+      }
     }
   }
 
