@@ -142,7 +142,7 @@ function FileBrowserController($http, $scope) {
 
 
 
-        ctrl.totalSize += binding.size.numericalValue;
+        ctrl.totalSize += binding.size?binding.size.numericalValue:0;
         ctrl.numFiles++;
       }
 
