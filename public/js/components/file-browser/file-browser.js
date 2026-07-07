@@ -132,7 +132,7 @@ function FileBrowserController($http, $scope) {
 
       for (var b in ctrl.queryResult.bindings) {
         var binding = ctrl.queryResult.bindings[b];
-        binding.size.numericalValue = parseInt(binding.size.value);
+        binding.size.numericalValue = binding.size? parseInt(binding.size.value):0;
         ctrl.queryResult.uriList += binding.file.value + "\n";
 
         if (binding.variant != undefined) {
