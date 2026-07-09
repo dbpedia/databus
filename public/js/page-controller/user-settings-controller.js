@@ -76,6 +76,8 @@ function UserSettingsController($scope, $http, $sce, $location) {
           account.secretaries.push(secretary);
         }
 
+        account.secretaries = DatabusUtils.secretariesForEdit(account.secretaries, account.accountName);
+
       })
       .catch(function (error) {
         // Handle error and set loading to false
@@ -111,7 +113,9 @@ function UserSettingsController($scope, $http, $sce, $location) {
   // Button click handler to save account
   $scope.saveAccount = async function (account) {
     try {
-      await $http.post(`/api/account/update`, account);
+      var payload = DatabusUtils.createCleanCopy(account);
+      payload.secretaries = DatabusUtils.secretariesForSave(payload.secretaries, account.accountName);
+      await $http.post(`/api/account/update`, payload);
       DatabusAlert.alert($scope, true, "Account saved.");
 
     } catch (err) {
@@ -119,6 +123,10 @@ function UserSettingsController($scope, $http, $sce, $location) {
       DatabusAlert.alert($scope, false, err.data);
     }
 
+  };
+
+  $scope.getWriteAccessPrefix = function (accountName) {
+    return DatabusUtils.getAccountNamespacePrefix(accountName);
   };
 
   // Button click handler to delete account

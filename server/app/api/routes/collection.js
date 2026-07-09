@@ -158,7 +158,7 @@ module.exports = function (router, protector) {
   router.delete('/:account/collections/:collection', protector.protect(), async function (req, res, next) {
     try {
 
-      if (!ServerUtils.hasWriteAccess(req, req.params.account)) {
+      if (!(await ServerUtils.hasWriteAccess(req, req.params.account))) {
         res.status(403).send('You cannot edit collections in a foreign namespace.\n');
         return;
       }

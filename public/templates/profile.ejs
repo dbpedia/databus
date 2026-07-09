@@ -60,13 +60,13 @@
               No secretaries defined.
             </div>
 
-            <div ng-repeat="secretary in editData.secretaries track by $index" class="settings-entity">
+            <div ng-repeat="(secIndex, secretary) in editData.secretaries track by secIndex" class="settings-entity">
               <div style="width: 100%;">
                 <div class="field">
                   <div
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5em;">
                     <label class="label">Secretary</label>
-                    <a ng-click="removeSecretary(account, $index)" class="button is-error">
+                    <a ng-click="removeSecretary(account, secIndex)" class="button is-error">
                       Delete
                     </a>
                   </div>
@@ -78,19 +78,22 @@
 
                 <div class="field" style="margin-bottom: 0.5em;">
                   <label class="label">Write Access</label>
-                  <div ng-repeat="ns in secretary.hasWriteAccessTo track by $index" class="field has-addons mb-2">
+                  <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons mb-2">
+                    <div class="control">
+                      <span class="button is-static databus-uri-prefix">{{ getWriteAccessPrefix(editData.accountName) }}</span>
+                    </div>
                     <div class="control is-expanded">
-                      <input class="input" type="text" placeholder="Namespace IRI"
-                        ng-model="secretary.hasWriteAccessTo[$index]">
+                      <input class="input" type="text" placeholder="e.g. datasets"
+                        ng-model="secretary.hasWriteAccessTo[nsIndex]">
                     </div>
                     <div class="control">
-                      <button class="button is-danger" ng-click="removeNamespace(account, $index, $index)">
+                      <button class="button is-danger" ng-click="removeNamespace(account, secIndex, nsIndex)">
                         <span class="icon"><i class="fas fa-times"></i></span>
                       </button>
                     </div>
                   </div>
 
-                  <button class="button" ng-click="addNamespace(account, $index)">
+                  <button class="button" ng-click="addNamespace(account, secIndex)">
                     <span class="icon"><i class="fas fa-plus"></i></span>
                     <span>Add Namespace</span>
                   </button>

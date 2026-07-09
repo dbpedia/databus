@@ -288,7 +288,10 @@ function ProfileController($scope, $http) {
     account.label = $scope.editData.label;
     account.status = $scope.editData.about;
     account.imageUrl = $scope.editData.imageUrl;
-    account.secretaries = $scope.editData.secretaries;
+    account.secretaries = DatabusUtils.secretariesForSave(
+      $scope.editData.secretaries,
+      account.accountName
+    );
 
 
     try {
@@ -312,11 +315,20 @@ function ProfileController($scope, $http) {
   $scope.modsSettings.searchExtensionURI = "";
   $scope.modsSettings.searchExtensionAdapter = $scope.adapters[0];
 
+  $scope.getWriteAccessPrefix = function (accountName) {
+    return DatabusUtils.getAccountNamespacePrefix(accountName);
+  };
 
-  $scope.editData = DatabusUtils.createCleanCopy($scope.account);
+  function initEditData() {
+    var copy = DatabusUtils.createCleanCopy($scope.account);
+    copy.secretaries = DatabusUtils.secretariesForEdit(copy.secretaries, copy.accountName);
+    return copy;
+  }
+
+  $scope.editData = initEditData();
 
   $scope.resetEdits = function () {
-    $scope.editData = DatabusUtils.createCleanCopy($scope.account);
+    $scope.editData = initEditData();
   }
 
 }

@@ -275,6 +275,87 @@ class DatabusUtils {
     return data;
   }
 
+  static getAccountNamespacePrefix(accountName) {
+    return `${DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
+  }
+
+  static toRelativeWriteAccessUri(absoluteUri, accountName) {
+    if (absoluteUri == null || absoluteUri === '') {
+      return '';
+    }
+
+    const prefix = DatabusUtils.getAccountNamespacePrefix(accountName);
+    if (absoluteUri.startsWith(prefix)) {
+      return absoluteUri.slice(prefix.length);
+    }
+
+    const accountUri = `${DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+    if (absoluteUri === accountUri) {
+      return '';
+    }
+
+    const basePrefix = `${DATABUS_RESOURCE_BASE_URL}/`;
+    if (absoluteUri.startsWith(basePrefix)) {
+      const remainder = absoluteUri.slice(basePrefix.length);
+      const accountPrefix = `${accountName}/`;
+      if (remainder.startsWith(accountPrefix)) {
+        return remainder.slice(accountPrefix.length);
+      }
+      if (remainder === accountName) {
+        return '';
+      }
+    }
+
+    return absoluteUri;
+  }
+
+  static toAbsoluteWriteAccessUri(relativeUri, accountName) {
+    if (relativeUri == null) {
+      return null;
+    }
+
+    const trimmed = relativeUri.trim();
+    if (trimmed === '') {
+      return null;
+    }
+
+    return DatabusUtils.getAccountNamespacePrefix(accountName) + trimmed.replace(/^\/+/, '');
+  }
+
+  static secretariesForEdit(secretaries, accountName) {
+    if (secretaries == null) {
+      return [];
+    }
+
+    return secretaries.map(function (secretary) {
+      return {
+        accountName: secretary.accountName,
+        hasWriteAccessTo: (secretary.hasWriteAccessTo || []).map(function (uri) {
+          return DatabusUtils.toRelativeWriteAccessUri(uri, accountName);
+        })
+      };
+    });
+  }
+
+  static secretariesForSave(secretaries, accountName) {
+    if (secretaries == null) {
+      return [];
+    }
+
+    return secretaries.map(function (secretary) {
+      return {
+        accountName: secretary.accountName,
+        hasWriteAccessTo: (secretary.hasWriteAccessTo || [])
+          .map(function (uri) {
+            return DatabusUtils.toAbsoluteWriteAccessUri(uri, accountName);
+          })
+          .filter(function (uri) {
+            return uri != null;
+          })
+      };
+    });
+  }
+
   static lineCount(text) {
     return (text.match(/^\s*\S/gm) || "").length
   }
@@ -529,6 +610,16 @@ class DatabusUtils {
     return errorList;
   }
 
+}
+
+if (typeof process !== 'undefined' && require.main === module) {
+  global.DATABUS_RESOURCE_BASE_URL = 'https://databus.example.org';
+  console.assert(
+    DatabusUtils.toRelativeWriteAccessUri('https://databus.example.org/myorg/datasets', 'myorg') === 'datasets'
+  );
+  console.assert(
+    DatabusUtils.toAbsoluteWriteAccessUri('datasets', 'myorg') === 'https://databus.example.org/myorg/datasets'
+  );
 }
 
 module.exports = DatabusUtils;

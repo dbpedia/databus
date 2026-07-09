@@ -293,7 +293,7 @@ class ServerUtils {
 
           let secretaryName = accountResource.getAccount();
 
-          if (this.userData.accounts && this.userData.accounts.some(acc => acc.accountName == secretaryName)) {
+          if (accounts != null && accounts.some(acc => acc.accountName == secretaryName)) {
             return true;
           }
         }

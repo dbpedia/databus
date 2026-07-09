@@ -12251,6 +12251,16 @@ databus-icon {
   border-radius: 4px 0px 0px 4px;
 }
 
+.databus-uri-prefix.button.is-static {
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: hsl(0, 0%, 62%);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
 .error-notification-box {
   background-color: #fdf2f2; /* very light red/pink background */
   border-left: 3px solid #f14668; /* Bulma 'danger' color */
@@ -12287,3 +12297,5 @@ databus-icon {
   margin-top: 0.75em;
   font-size: 0.9em;
 }
+
+/*# sourceMappingURL=website.css.map */
