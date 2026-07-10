@@ -111,13 +111,13 @@ class DatabusUtils {
 
   static formatFileSize(size) {
     if (size == undefined) {
-      return '0 KB'
+      return '0 KiB'
     }
 
     if (size < 1024) return size + " B";
-    else if (size < 1048576) return Math.round(size / 1024) + " KB";
-    else if (size < 1073741824) return (Math.round(10 * size / 1048576) / 10) + " MB";
-    else return (Math.round(100 * size / 1073741824) / 100) + " GB";
+    else if (size < 1048576) return Math.round(size / 1024) + " KiB";
+    else if (size < 1073741824) return (Math.round(10 * size / 1048576) / 10) + " MiB";
+    else return (Math.round(100 * size / 1073741824) / 100) + " GiB";
   };
 
   static checkField(value, regex, min, max) {
