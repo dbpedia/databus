@@ -181,16 +181,21 @@
           <div class="box" ng-repeat="(secIndex, secretary) in activeAccount.secretaries track by secIndex">
             <div class="field">
               <label class="label">Account</label>
-              <div class="control">
-                <input class="input" type="text" ng-model="secretary.accountName" placeholder="e.g. dbpedia">
+              <div class="field has-addons databus-write-access-row">
+                <div class="control databus-uri-prefix-control">
+                  <span class="databus-uri-prefix" ng-attr-title="{{ getSecretaryAccountPrefix() }}">{{ getSecretaryAccountPrefix() }}</span>
+                </div>
+                <div class="control is-expanded">
+                  <input class="input" type="text" ng-model="secretary.accountName" placeholder="e.g. dbpedia">
+                </div>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Write Access</label>
-              <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons mb-2">
-                <div class="control">
-                  <span class="button is-static databus-uri-prefix">{{ getWriteAccessPrefix(activeAccount.accountName) }}</span>
+              <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons databus-write-access-row mb-2">
+                <div class="control databus-uri-prefix-control">
+                  <span class="databus-uri-prefix" ng-attr-title="{{ getWriteAccessPrefix(activeAccount.accountName) }}">{{ getWriteAccessPrefix(activeAccount.accountName) }}</span>
                 </div>
                 <div class="control is-expanded">
                   <input class="input" type="text" ng-model="secretary.hasWriteAccessTo[nsIndex]"

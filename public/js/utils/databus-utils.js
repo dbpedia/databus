@@ -279,6 +279,45 @@ class DatabusUtils {
     return `${DATABUS_RESOURCE_BASE_URL}/${accountName}/`;
   }
 
+  static getDatabusAccountPrefix() {
+    return `${DATABUS_RESOURCE_BASE_URL}/`;
+  }
+
+  static toRelativeAccountName(accountUri) {
+    if (accountUri == null || accountUri === '') {
+      return '';
+    }
+
+    const trimmed = accountUri.trim();
+    const prefix = DatabusUtils.getDatabusAccountPrefix();
+    if (trimmed.startsWith(prefix)) {
+      return trimmed.slice(prefix.length).replace(/\/+$/, '');
+    }
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return DatabusUtils.uriToName(trimmed);
+    }
+
+    return trimmed;
+  }
+
+  static toAbsoluteAccountUri(accountName) {
+    if (accountName == null) {
+      return null;
+    }
+
+    const trimmed = accountName.trim();
+    if (trimmed === '') {
+      return null;
+    }
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed.replace(/\/+$/, '');
+    }
+
+    return `${DATABUS_RESOURCE_BASE_URL}/${trimmed.replace(/^\/+/, '').replace(/\/+$/, '')}`;
+  }
+
   static toRelativeWriteAccessUri(absoluteUri, accountName) {
     if (absoluteUri == null || absoluteUri === '') {
       return '';
@@ -329,7 +368,7 @@ class DatabusUtils {
 
     return secretaries.map(function (secretary) {
       return {
-        accountName: secretary.accountName,
+        accountName: DatabusUtils.toRelativeAccountName(secretary.accountName),
         hasWriteAccessTo: (secretary.hasWriteAccessTo || []).map(function (uri) {
           return DatabusUtils.toRelativeWriteAccessUri(uri, accountName);
         })
@@ -344,7 +383,7 @@ class DatabusUtils {
 
     return secretaries.map(function (secretary) {
       return {
-        accountName: secretary.accountName,
+        accountName: DatabusUtils.toAbsoluteAccountUri(secretary.accountName),
         hasWriteAccessTo: (secretary.hasWriteAccessTo || [])
           .map(function (uri) {
             return DatabusUtils.toAbsoluteWriteAccessUri(uri, accountName);
@@ -619,6 +658,12 @@ if (typeof process !== 'undefined' && require.main === module) {
   );
   console.assert(
     DatabusUtils.toAbsoluteWriteAccessUri('datasets', 'myorg') === 'https://databus.example.org/myorg/datasets'
+  );
+  console.assert(
+    DatabusUtils.toRelativeAccountName('https://databus.example.org/alice') === 'alice'
+  );
+  console.assert(
+    DatabusUtils.toAbsoluteAccountUri('alice') === 'https://databus.example.org/alice'
   );
 }
 

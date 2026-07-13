@@ -70,7 +70,7 @@ function UserSettingsController($scope, $http, $sce, $location) {
           let secretaryGraph = JsonldUtils.getGraphById(graphs, secretaryId);
 
           let secretary = {};
-          secretary.accountName = DatabusUtils.uriToName(JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY));
+          secretary.accountName = JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY);
           secretary.hasWriteAccessTo = JsonldUtils.getRefArrayProperty(secretaryGraph, DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO);
 
           account.secretaries.push(secretary);
@@ -127,6 +127,10 @@ function UserSettingsController($scope, $http, $sce, $location) {
 
   $scope.getWriteAccessPrefix = function (accountName) {
     return DatabusUtils.getAccountNamespacePrefix(accountName);
+  };
+
+  $scope.getSecretaryAccountPrefix = function () {
+    return DatabusUtils.getDatabusAccountPrefix();
   };
 
   // Button click handler to delete account

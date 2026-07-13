@@ -1356,14 +1356,57 @@ databus-icon {
   border-radius: 4px 0px 0px 4px;
 }
 
-.databus-uri-prefix.button.is-static {
-  max-width: 55%;
+.settings-entity.settings-entity-block {
+  align-items: stretch;
+  min-height: 0;
+}
+
+.field.has-addons.databus-write-access-row {
+  width: 100%;
+  align-items: stretch;
+
+  .control {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .control.databus-uri-prefix-control {
+    flex: 0 1 auto;
+    max-width: 55%;
+    min-width: 0;
+  }
+
+  .control.is-expanded {
+    flex: 1 1 0;
+    min-width: 6em;
+  }
+
+  .control:first-child:not(:only-child) .databus-uri-prefix {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+
+.databus-uri-prefix {
+  display: inline-flex;
+  align-items: center;
+  height: 2.25em;
+  padding: calc(0.375em - 1px) calc(0.625em - 1px);
+  border: 1px solid hsl(0, 0%, 86%);
+  border-radius: 4px;
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background-color: hsl(0, 0%, 96%);
   color: hsl(0, 0%, 62%);
   font-family: monospace;
-  font-size: 0.9em;
+  box-shadow: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 .error-notification-box {

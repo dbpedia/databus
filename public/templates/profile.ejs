@@ -60,7 +60,7 @@
               No secretaries defined.
             </div>
 
-            <div ng-repeat="(secIndex, secretary) in editData.secretaries track by secIndex" class="settings-entity">
+            <div ng-repeat="(secIndex, secretary) in editData.secretaries track by secIndex" class="settings-entity settings-entity-block">
               <div style="width: 100%;">
                 <div class="field">
                   <div
@@ -71,16 +71,21 @@
                     </a>
                   </div>
 
-                  <div class="control">
-                    <input class="input" type="text" placeholder="e.g. dbpedia" ng-model="secretary.accountName">
+                  <div class="field has-addons databus-write-access-row">
+                    <div class="control databus-uri-prefix-control">
+                      <span class="databus-uri-prefix" ng-attr-title="{{ getSecretaryAccountPrefix() }}">{{ getSecretaryAccountPrefix() }}</span>
+                    </div>
+                    <div class="control is-expanded">
+                      <input class="input" type="text" placeholder="e.g. dbpedia" ng-model="secretary.accountName">
+                    </div>
                   </div>
                 </div>
 
                 <div class="field" style="margin-bottom: 0.5em;">
                   <label class="label">Write Access</label>
-                  <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons mb-2">
-                    <div class="control">
-                      <span class="button is-static databus-uri-prefix">{{ getWriteAccessPrefix(editData.accountName) }}</span>
+                  <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons databus-write-access-row mb-2">
+                    <div class="control databus-uri-prefix-control">
+                      <span class="databus-uri-prefix" ng-attr-title="{{ getWriteAccessPrefix(editData.accountName) }}">{{ getWriteAccessPrefix(editData.accountName) }}</span>
                     </div>
                     <div class="control is-expanded">
                       <input class="input" type="text" placeholder="e.g. datasets"

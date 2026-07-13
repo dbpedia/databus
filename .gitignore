@@ -16,6 +16,7 @@ start_azure.sh
 examples/example-metadata.jsonld
 model-docu/myold_files
 .idea/
+.cursor/
 dav/
 server/manifest.ttl
 server/sqlite/
