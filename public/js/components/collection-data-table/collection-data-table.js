@@ -97,10 +97,7 @@ function CollectionDataTableController($http, $scope, $location, $sce) {
   }
 
   ctrl.formatUploadSize = function(size) {
-    if(size < 1024) return size + " B";
-    else if (size < 1048576) return Math.round(size / 1024) + " KiB";
-    else if (size < 1073741824) return (Math.round(10 * size / 1048576) / 10) + " MiB";
-    else return (Math.round(100 * size / 1073741824) / 100) + " GiB";
+    return DatabusUtils.formatFileSize(size);
   }
 }
 
