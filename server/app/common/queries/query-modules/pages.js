@@ -107,7 +107,7 @@ function createActivityChartData(bindings) {
     // Create datestring for entry and map lookup (YYYY-MM)
     let dateString = date.toISOString().substring(0, 7);
 
-    // Create the entry with datestring and scaled value (GB)
+    // Create the entry with datestring and scaled value (GiB)
     result.push({
       date: dateString,
       value: totalSize / (1024 * 1024 * 1024)

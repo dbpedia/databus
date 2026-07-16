@@ -633,7 +633,7 @@ databusApplication.directive('activityChart', function () {
         .attr("dy", "1em")
         .attr("font-size", "1.1em")
         .attr("text-anchor", "end")
-        .text("Uploaded Data (GByte)");
+        .text("Uploaded Data (GiByte)");
 
       var path = g.append("path")
         .datum(scope.data)
