@@ -130,6 +130,95 @@ paths:
                       }
                     ]
                   }
+  /api/publish:
+    post:
+      summary: "Publish Metadata"
+      description: |
+        Publish metadata on the Databus. This endpoint is an alias for `/api/register` and accepts the same input.
+        The metadata must be sent as the request body in RDF JSON-LD format. The RDF may contain one or more Databus entities:
+
+        * **Group** — validated against the SHACL shape: [group.shacl](/res/shacl/group.shacl)
+        * **Artifact** — validated against the SHACL shape: [artifact.shacl](/res/shacl/artifact.shacl)
+        * **Version** — validated against the SHACL shape: [version.shacl](/res/shacl/version.shacl)
+        * **Collection** — validated against the SHACL shape: [collection.shacl](/res/shacl/collection.shacl)
+
+        **Hint:** Replace `[YOUR_ACCOUNT_NAME]` in the example body with your actual Databus account name.
+      operationId: "publish"
+      tags:
+        - Main API
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: fetch-file-properties
+          in: query
+          schema:
+            type: boolean
+          description: "If set to false, the server will not verify the *sha256sum* and *byteSize* properties of any *databus:Part*. Default value is *true*."
+          required: false
+          example: "true"
+        - name: log-level
+          in: query
+          schema:
+            type: string
+          description: "Desired detail of the publish report. Can be set to either 'error', 'info' or 'debug'."
+          required: false
+          example: "error"
+      requestBody:
+        description: "Metadata in JSONLD. May contain any number of groups, artifacts and datasets"
+        required: true
+        content:
+          application/ld+json:
+            schema:
+              type: object
+              example: |
+                {
+                  "@context": "%DATABUS_RESOURCE_BASE_URL%/res/context.jsonld",
+                  "@graph": [
+                    {
+                      "@type": "Version",
+                      "@id": "%DATABUS_RESOURCE_BASE_URL%/[YOUR_ACCOUNT_NAME]/test_group/test_artifact/0.0.1",
+                      "title": "Test Data",
+                      "description": "Test data from the swagger API. This can probably be deleted.",
+                      "license": "https://dalicc.net/licenselibrary/Apache-2.0",
+                      "distribution": [
+                        {
+                          "@type": "Part",
+                          "formatExtension": "md",
+                          "compression": "none",
+                          "downloadURL": "https://raw.githubusercontent.com/dbpedia/databus/68f976e29e2db15472f1b664a6fd5807b88d1370/README.md"
+                        }
+                      ]
+                    }
+                  ]
+                }
+      responses:
+        "200":
+          description: "Accepted"
+          content:
+            application/json:
+              schema:
+                type: object
+                example: |
+                  {
+                    "log": []
+                  }
+        "403":
+          description: "Error: Forbidden. The account failed to authenticate."
+          content:
+            application/json:
+              schema:
+                type: object
+                example: |
+                  {
+                    "logLevel": "info",
+                    "log": [
+                      {
+                        "resource": "%DATABUS_RESOURCE_BASE_URL%/[MY_ACCOUNT_NAME]/%GROUP%",
+                        "msg": "Not allowed to access namespace of group identifier <%DATABUS_RESOURCE_BASE_URL%/[MY_ACCOUNT_NAME]/%GROUP%>.",
+                        "level": "error"
+                      }
+                    ]
+                  }
   /sparql:
     post:
       summary: "Send SPARQL Query"
