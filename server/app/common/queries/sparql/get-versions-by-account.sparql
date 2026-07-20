@@ -12,3 +12,4 @@ SELECT DISTINCT ?version WHERE
     ?version databus:account <%ACCOUNT_URI%> .
   }
 }
+ORDER BY DESC(?version)
