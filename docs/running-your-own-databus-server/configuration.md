@@ -27,7 +27,10 @@ The Databus container accepts the following environment variables:
 * **DATABUS\_OIDC\_ISSUER\_BASE\_URL**: Base URL of your OIDC provider
 * **DATABUS\_OIDC\_CLIENT\_ID**: Client Id of your OIDC client
 * **DATABUS\_OIDC\_SECRET**: Client Secret of your OIDC client
-* **DATABUS_PRIVATE_MODE**: Default is *false*. If set to *true* this will return an HTTP status code of **401** when trying to access the Databus without authentication.
+* **DATABUS\_PRIVATE\_MODE**: Default is *false*. If set to *true* this will return an HTTP status code of **401** when trying to access the Databus without authentication.
+    * When set to *true*, the Databus will only allow access to users that have the required OIDC role. Therefore you need to configure additionally:
+    * **DATABUS\_OIDC\_REQUIRED\_ROLE**: The required role of your OIDC provider that is needed to access the Databus. The role needs to be configured in your OIDC provider and assigned to the users that should have access to the Databus
+	* **DATABUS\_OIDC\_RESPONSE\_TYPE=code**: The response type of the OIDC provider. Default is *code*. Change this only if you know what you are doing.
 
 The volumes of the Databus container are best left unchanged. The internal path of the volumes should not be altered. The ourside paths may be changed to any desired path. The keypair folder will store the private and public key of your Databus deployment. The users folder will hold a mini-database associating your OIDC users with Databus users.
 
