@@ -32,7 +32,7 @@ services:
       - ./data/tls/:/tls:ro # path for TLS (HTTPS) certs when using integrated caddy proxy                                                                                                                 
       - ./data/tls/caddy:/root/.local/share/caddy/ # path for caddy settings esp. automatic TLS certificates
   gstore:
-    image: "docker.io/dbpedia/gstore"
+    image: "ghcr.io/dbpedia/gstore:dev"
     environment:
       STORAGE_USER: ${VIRTUOSO_USER}
       STORAGE_PASS:  ${VIRTUOSO_PASSWORD}

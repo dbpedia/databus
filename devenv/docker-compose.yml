@@ -3,7 +3,7 @@ name: databus_devenv
 services:
   gstore:
     restart: unless-stopped
-    image: ghcr.io/dbpedia/gstore:dev
+    image: dbpedia/gstore:dev
     container_name: databus_devenv_gstore
     environment: 
       STORAGE_USER: "dba"

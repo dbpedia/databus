@@ -1,6 +1,7 @@
 const axios = require('axios');
 const DatabusMessage = require('../databus-message');
 const Constants = require('../constants');
+const GstoreResource = require('../../api/lib/gstore-resource');
 
 // Constants for URLs and headers
 const prefix = encodeURIComponent(`${process.env.DATABUS_RESOURCE_BASE_URL}/`);

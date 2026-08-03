@@ -74,7 +74,11 @@ module.exports = async function getLinkedData(req, res, next, resourceUri, templ
       body += '\n';
     }
 
-    res.set(response.headers);
+    var contentType = response.headers[HttpStrings.HEADER_CONTENT_TYPE]
+      || response.headers['content-type'];
+    if (contentType) {
+      res.set(HttpStrings.HEADER_CONTENT_TYPE, contentType);
+    }
     res.send(body);
   });
 }

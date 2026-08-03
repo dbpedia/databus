@@ -95,3 +95,27 @@ make srv-start_dbpedia_keycloak
 Each script contains a different configuration for a specific OIDC provider (Auth0 with Google Auth *or* DBpedia Login)
 
 **PLEASE NOTE:** The sample OIDC providers are a development setup and should never be used in production. Please use your own OIDC provider for authentication in production.
+
+## Running integration tests
+
+Integration tests require the backing services (gstore, Virtuoso, lookup). Start them first:
+
+```
+make env-start
+```
+
+Ensure the repo root [`.env`](../.env) contains your OIDC settings (copied from `.vscode/launch.json` is fine). The test runner loads that file and expects:
+
+- `DATABUS_RESOURCE_BASE_URL` (default `http://localhost:3000`)
+- `DATABUS_DATABASE_URL` (default `http://localhost:3002`)
+- `LOOKUP_BASE_URL` (default `http://localhost:3004`)
+- `DATABUS_OIDC_ISSUER_BASE_URL`, `DATABUS_OIDC_CLIENT_ID`, `DATABUS_OIDC_SECRET`
+
+Then run the suite from the server directory:
+
+```
+cd ../server
+npm test
+```
+
+Or use the **Run Tests** launch configuration in VS Code, which sets the same variables.

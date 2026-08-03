@@ -14,6 +14,8 @@ test.before(async () => {
   db.debug = false;
   const connected = await db.connect();
   assert.ok(connected);
+  await db.deleteAccount(masterAccount.ACCOUNT_NAME);
+  await db.deleteUser(masterAccount.ID);
 });
 
 test('getAllUsers does not throw', async () => {

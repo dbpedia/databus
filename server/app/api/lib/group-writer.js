@@ -23,14 +23,17 @@ class GroupWriter extends ResourceWriter {
       groupGraph[DatabusUris.DCT_TITLE] = inputGroupGraph[DatabusUris.DCT_TITLE];
     }
 
-    if(inputGroupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+    var description = JsonldUtils.getFirstProperty(inputGroupGraph, DatabusUris.DCT_DESCRIPTION);
+    if (description != null) {
       groupGraph[DatabusUris.DCT_DESCRIPTION] = inputGroupGraph[DatabusUris.DCT_DESCRIPTION];
     }
 
-    if(inputGroupGraph[DatabusUris.DCT_ABSTRACT] != null) {
+    var abstract = JsonldUtils.getFirstProperty(inputGroupGraph, DatabusUris.DCT_ABSTRACT);
+    if (abstract != null) {
       groupGraph[DatabusUris.DCT_ABSTRACT] = inputGroupGraph[DatabusUris.DCT_ABSTRACT];
-    } else if (groupGraph[DatabusUris.DCT_DESCRIPTION] != null) {
-      groupGraph[DatabusUris.DCT_ABSTRACT] = DatabusUtils.createAbstractFromDescription(groupGraph[DatabusUris.DCT_DESCRIPTION]);
+    } else if (description != null) {
+      JsonldUtils.setLiteral(groupGraph, DatabusUris.DCT_ABSTRACT, null,
+        DatabusUtils.createAbstractFromDescription(description));
     }
 
     return [

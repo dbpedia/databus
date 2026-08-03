@@ -12,6 +12,7 @@ var jsonld = require('jsonld');
 const JsonldUtils = require('../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
 const DatabusUtils = require('../../../public/js/utils/databus-utils');
+const Constants = require('./constants');
 
 var databaseUri = process.env.DATABUS_DATABASE_URL || Constants.DEFAULT_DATABASE_URL;
 

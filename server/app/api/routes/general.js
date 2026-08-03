@@ -2,13 +2,13 @@ var http = require('http');
 var request = require('request');
 const jsonld = require('jsonld');
 var cors = require('cors');
-const publishVersion = require('../lib/publish-version');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusLogger = require('../../common/databus-logger');
 const GroupWriter = require('../lib/group-writer');
 const ArtifactWriter = require('../lib/artifact-writer');
 const CollectionWriter = require('../lib/collection-writer');
+const VersionWriter = require('../lib/version-writer');
 const ApiError = require('../../common/utils/api-error');
 var SparqlParser = require('sparqljs').Parser;
 
@@ -112,9 +112,6 @@ module.exports = function (router, protector, webdav) {
 
     try {
 
-      // Get the account namespace
-      var accounts = req.databus.accounts;
-
       var userData = {
         sub: req.databus.sub,
         accounts: req.databus.accounts
@@ -166,7 +163,15 @@ module.exports = function (router, protector, webdav) {
           await artifactWriter.writeResource(req, userData, expandedGraphs, artifactGraph[DatabusUris.JSONLD_ID]);
         }
 
-        // Publish version
+        // Publish versions
+        var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_VERSION);
+        logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
+
+        for (var datasetGraph of datasetGraphs) {
+          processedResources++;
+          var versionWriter = new VersionWriter(logger, verifyParts);
+          await versionWriter.writeResource(req, userData, expandedGraphs, datasetGraph[DatabusUris.JSONLD_ID]);
+        }
 
         
       }
@@ -174,21 +179,6 @@ module.exports = function (router, protector, webdav) {
         logger.error(apiError.resource, apiError.message, apiError.body);
         res.status(apiError.statusCode).json(logger.getReport());
         return;
-      }
-
-      // Publish versions
-      var datasetGraphs = JsonldUtils.getTypedGraphs(expandedGraphs, DatabusUris.DATABUS_VERSION);
-      logger.debug(null, `Found ${datasetGraphs.length} version graphs.`, null);
-      processedResources += datasetGraphs.length;
-
-      for (var datasetGraph of datasetGraphs) {
-        var datasetGraphUri = datasetGraph[DatabusUris.JSONLD_ID];
-        var resultCode = await publishVersion(accounts, expandedGraphs, datasetGraphUri, verifyParts, logger);
-
-        if (resultCode != 200) {
-          res.status(resultCode).json(logger.getReport());
-          return;
-        }
       }
 
       if(processedResources == 0) {

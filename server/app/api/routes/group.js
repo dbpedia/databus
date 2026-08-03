@@ -11,52 +11,26 @@ var cors = require('cors');
 
 const sparql = require("../../common/queries/sparql");
 const GroupWriter = require("../lib/group-writer");
+const publishResource = require("../lib/publish-resource");
 
 
 module.exports = function (router, protector) {
 
-  /**
-  * Publishing of groups via PUT request
- 
   router.put('/:account/:group', protector.protectAccount(true), async function (req, res, next) {
 
     try {
-
       var groupUri = UriUtils.createResourceUri([
         req.params.account,
         req.params.group
       ]);
 
-      var logger = new DatabusLogger(req.query['log-level']);
-      var graph = req.body;
-
-      let expandedGraph = await jsonld.expand(graph);
-      var groupGraph = JsonldUtils.getGraphById(expandedGraph, groupUri);
-
-      if (groupGraph == null) {
-        logger.error(null, `No graph ${groupUri} found in the input.`, null);
-        res.status(400).json(logger.getReport());
-        return;
-      }
-
-      try {
-        var groupWriter = new GroupWriter(logger);
-        await groupWriter.writeResource(req.databus, expandedGraph, groupUri);
-      }
-        
-      catch (apiError) {
-        logger.error(apiError.resource, apiError.message, apiError.body);
-        res.status(apiError.statusCode).json(logger.getReport());
-        return;
-      }
-      
-      res.status(200).json(logger.getReport())
+      await publishResource(req, res, GroupWriter, groupUri);
 
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
     }
-  }); */
+  });
 
   router.get('/:account/:group', ServerUtils.NOT_HTML_ACCEPTED, cors(), async function (req, res, next) {
 

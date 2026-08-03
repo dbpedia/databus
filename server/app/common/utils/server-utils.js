@@ -1,7 +1,12 @@
 var ASN1 = require('asn1js');
 const fs = require('fs');
+const axios = require('axios');
+const jsonld = require('jsonld');
+const DatabusResource = require('../databus-resource');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
+const UriUtils = require('./uri-utils');
+const Constants = require('../constants');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const { HttpProxyAgent } = require('http-proxy-agent');
 
@@ -258,10 +263,60 @@ class ServerUtils {
   }
 
 
-  static async hasWriteAccess(req, accountName) {
+  static isUriUnderPrefix(resourceUri, prefixUri) {
+    return resourceUri === prefixUri || resourceUri.startsWith(`${prefixUri}/`);
+  }
 
+  static getWriteAccessUris(secretaryGraph) {
+    const entries = secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO];
+    if (entries == null || entries.length === 0) {
+      return [];
+    }
+
+    return entries.map(entry => entry[DatabusUris.JSONLD_ID] || entry).filter(Boolean);
+  }
+
+  static isResourceUnderWriteAccess(resourceUri, writeAccessUris) {
+    if (writeAccessUris.length === 0) {
+      return true;
+    }
+
+    return writeAccessUris.some(prefix => ServerUtils.isUriUnderPrefix(resourceUri, prefix));
+  }
+
+  static secretaryAllowsWrite(accounts, secretaryGraph, resourceUri) {
+    const accountNode = secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY]?.[0];
+    if (accountNode == null) {
+      return false;
+    }
+
+    const accountResource = new DatabusResource(accountNode[DatabusUris.JSONLD_ID]);
+    if (!accountResource.isAccount()) {
+      return false;
+    }
+
+    const secretaryName = accountResource.getAccount();
+    if (accounts == null || !accounts.some(acc => acc.accountName == secretaryName)) {
+      return false;
+    }
+
+    return ServerUtils.isResourceUnderWriteAccess(resourceUri, ServerUtils.getWriteAccessUris(secretaryGraph));
+  }
+
+  static resourceUriFromRequest(req) {
+    if (req.params.collection != null) {
+      return UriUtils.createResourceUri([
+        req.params.account,
+        Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER,
+        req.params.collection,
+      ]);
+    }
+
+    return UriUtils.fromRequest(req);
+  }
+
+  static async hasWriteAccess(req, accountName, resourceUri) {
     var accounts = req.databus.accounts;
-
     let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
 
     if (accounts != null && accounts.some(acc => acc.accountName == accountName)) {
@@ -269,6 +324,7 @@ class ServerUtils {
     }
 
     const onBehalfOf = req.headers['x-on-behalf-of'];
+    const targetUri = resourceUri || accountUri;
 
     if (onBehalfOf && onBehalfOf == accountUri) {
       try {
@@ -280,20 +336,10 @@ class ServerUtils {
         });
 
         const expanded = await jsonld.expand(response.data);
-        const secretaries = expanded.flatMap(e =>
-          e[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []
-        ).map(a => a[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0]);
+        const secretaryGraphs = expanded.flatMap(e => e[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []);
 
-        for (var secretary of secretaries) {
-          var accountResource = new DatabusResource(secretary[DatabusUris.JSONLD_ID]);
-
-          if (!accountResource.isAccount()) {
-            continue;
-          }
-
-          let secretaryName = accountResource.getAccount();
-
-          if (accounts != null && accounts.some(acc => acc.accountName == secretaryName)) {
+        for (var secretaryGraph of secretaryGraphs) {
+          if (ServerUtils.secretaryAllowsWrite(accounts, secretaryGraph, targetUri)) {
             return true;
           }
         }
@@ -387,6 +433,15 @@ class ServerUtils {
 
     return await jsonld.compact(expandedGraphs, JsonldLoader.DEFAULT_CONTEXT_URL);
   }
+}
+
+if (typeof process !== 'undefined' && require.main === module) {
+  const base = 'https://databus.example.org/myorg';
+  console.assert(ServerUtils.isUriUnderPrefix(`${base}/datasets`, `${base}/datasets`));
+  console.assert(ServerUtils.isUriUnderPrefix(`${base}/datasets/artifact/1.0.0`, `${base}/datasets`));
+  console.assert(!ServerUtils.isUriUnderPrefix(`${base}/other`, `${base}/datasets`));
+  console.assert(ServerUtils.isResourceUnderWriteAccess(`${base}/datasets/x`, []));
+  console.assert(!ServerUtils.isResourceUnderWriteAccess(`${base}/other`, [`${base}/datasets`]));
 }
 
 module.exports = ServerUtils

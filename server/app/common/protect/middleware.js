@@ -226,7 +226,7 @@ class DatabusProtect {
         return;
       }
 
-      if(!req.databus.accounts.some(a => a.accountName == req.params.account)) {
+      if (!(await ServerUtils.hasWriteAccess(req, req.params.account, ServerUtils.resourceUriFromRequest(req)))) {
         res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
         return;
       }

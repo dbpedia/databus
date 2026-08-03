@@ -13,12 +13,12 @@ class GstoreResource {
   static GSTORE_BASE_URL = process.env.DATABUS_DATABASE_URL || 'http://localhost:8080';
   static PREFIX = `${process.env.DATABUS_RESOURCE_BASE_URL}/`;
 
-  constructor(uriString, content = null) {
-    this.initialize(uriString);
+  constructor(uriString, content = null, filename = GstoreResource.METADATA_FILENAME) {
+    this.initialize(uriString, filename);
     this.content = content;
   }
 
-  initialize(uriString) {
+  initialize(uriString, filename = GstoreResource.METADATA_FILENAME) {
     const uri = new URL(uriString);
     let relativePath = uri.pathname.replace(/^\/+|\/+$/g, '');
     if (!relativePath) throw new Error('URI path is empty.');
@@ -29,7 +29,7 @@ class GstoreResource {
     this.repo = parts.shift();
     if (!this.repo) throw new Error('Repo is null or empty.');
 
-    parts.push(GstoreResource.METADATA_FILENAME);
+    parts.push(filename);
 
     this.path = parts.join('/');
   }
@@ -61,7 +61,6 @@ class GstoreResource {
     try {
       var url = this.getRequestURL('Write');
       const formattedContent = JSON.stringify(this.content, null, 2);
-
       const response = await axios.post(url, formattedContent, {
         headers: { 'Content-Type': Constants.HTTP_CONTENT_TYPE_JSONLD }
       });

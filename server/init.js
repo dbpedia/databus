@@ -3,9 +3,12 @@ var fs = require('fs');
 const crypto = require("crypto");
 const Constants = require('./app/common/constants.js');
 var config = require('./config.json');
+const packageVersion = require('./version');
 const DatabusUserDatabase = require('./userdb.js');
 const MetricsManager = require('./app/api/statistics/metrics-manager.js');
 const JsonldLoader = require('./app/common/utils/jsonld-loader.js');
+const waitForService = require('./app/common/utils/wait-for-service.js');
+const { waitForLookup } = require('./app/common/utils/wait-for-service.js');
 
 function writeManifest() {
 
@@ -18,7 +21,7 @@ function writeManifest() {
 
   var placeholderMappings = {
     DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
-    DATABUS_VERSION: config.version
+    DATABUS_VERSION: packageVersion
   };
 
 
@@ -152,29 +155,6 @@ async function initializeContext() {
   */
 }
 
-async function waitForService(url, maxAttempts = 10, delayMs = 1000) {
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      if (response.ok) {
-        console.log(`Service is online at ${url} (attempt ${attempt})`);
-        return true;
-      }
-    } catch (err) {
-      // Could log or ignore depending on use case
-    }
-
-    console.log(`Attempt ${attempt} failed. Retrying in ${delayMs}ms...`);
-    await delay(delayMs);
-  }
-
-  console.error(`Service at ${url} did not come online after ${maxAttempts} attempts.`);
-  return false;
-}
-
-
 async function initializeUserDatabase(indexer) {
   console.log(`Connecting to User Database...`);
   var userDatabase = new DatabusUserDatabase();
@@ -190,12 +170,18 @@ module.exports = async function (indexer) {
 
   console.log(`Waiting for gstore service...`);
 
+  if (!await waitForService(process.env.DATABUS_DATABASE_URL, 30, 1000)) {
+    throw new Error(`gstore not reachable at ${process.env.DATABUS_DATABASE_URL}. Start with: docker compose up -d gstore virtuoso lookup`);
+  }
+
+  if (process.env.LOOKUP_BASE_URL != null) {
+    console.log(`Waiting for lookup service...`);
+    if (!await waitForLookup(process.env.LOOKUP_BASE_URL, 30, 1000)) {
+      throw new Error(`lookup not reachable at ${process.env.LOOKUP_BASE_URL}. Start with: docker compose up -d lookup`);
+    }
+  }
 
   await initializeContext();
-
-
-  // Ping process.env.DATABUS_DATABASE_URL
-  // await waitForService(process.env.DATABUS_DATABASE_URL, 50, 1000);
 
   if (process.env.METRICS_PORT != undefined) {
     console.log(`Settings up Prometheus metrics...`);

@@ -4,218 +4,76 @@ const rp = require('request-promise');
 const N3 = require('n3');
 const { Parser } = N3;
 
-const ServerUtils = require('../common/utils/server-utils');
+const TestHarness = require('./utils/test-harness');
 const UriUtils = require('../common/utils/uri-utils');
-const DatabusUserDatabase = require('../../userdb');
-const DatabusUserTestUtils = require('./utils/userdb-utils');
-
-const test_account = require('./templates/test-account.json');
-const master_account = require('./templates/master-account.json');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
+const test_account = require('./templates/test-account.json');
 
 const test = suite('artifact-crud');
 
-/** @type {DatabusUserDatabase} */
+/** @type {import('../../userdb')} */
 let db;
 
-const getArtifact = async (expectedCode) => {
-  const options = {
-    method: 'GET',
-    uri: UriUtils.createResourceUri([
-      test_account.ACCOUNT_NAME,
-      test_account.GROUP_NAME,
-      test_account.ARTIFACT_NAME,
-    ]),
-    headers: { Accept: 'application/ld+json' },
-    resolveWithFullResponse: true,
-  };
+const artifactUri = () => UriUtils.createResourceUri([
+  test_account.ACCOUNT_NAME,
+  test_account.GROUP_NAME,
+  test_account.ARTIFACT_NAME,
+]);
 
-  try {
-    const res = await rp(options);
-    assert.is(res.statusCode, expectedCode);
-  } catch (err) {
-    assert.is(err.response.statusCode, expectedCode);
-  }
-};
+const groupUri = () => UriUtils.createResourceUri([test_account.ACCOUNT_NAME, test_account.GROUP_NAME]);
 
 test.before(async () => {
-  ServerUtils.setupRequireExtensions();
-
-  db = new DatabusUserDatabase();
-  await db.connect();
-
-  await DatabusUserTestUtils.insertAccount(db, master_account);
-
-  const createAccountOptions = {
-    method: 'POST',
-    uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/api/account/create`,
-    headers: { 'x-api-key': master_account.APIKEY },
-    json: true,
-    resolveWithFullResponse: true,
-    body: {
-      name: test_account.ACCOUNT_NAME,
-      label: 'Test Label',
-    },
-  };
-
-  await rp(createAccountOptions);
-
-  await DatabusUserTestUtils.insertApiKey(db, test_account);
+  db = await TestHarness.standardBefore();
 });
 
 test('READ: artifact should not exist initially', async () => {
-  await getArtifact(404);
+  await TestHarness.assertStatus(TestHarness.getOptions(artifactUri()), 404);
 });
 
+// ArtifactWriter emits a stub group graph when no group was registered first
 test('CREATE: artifact can be created', async () => {
-  const options = {
-    method: 'POST',
-    uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/api/register`,
-    headers: { 'x-api-key': test_account.APIKEY },
-    json: true,
-    resolveWithFullResponse: true,
-    body: ServerUtils.formatJsonTemplate(require('./templates/artifact.json'), {
-      DATABUS_RESOURCE_BASE_URL: process.env.DATABUS_RESOURCE_BASE_URL,
-      ACCOUNT: test_account.ACCOUNT_NAME,
-      GROUP: test_account.GROUP_NAME,
-      ARTIFACT: test_account.ARTIFACT_NAME,
-    }),
-  };
-
-  const res = await rp(options);
+  const res = await rp(TestHarness.registerOptions(TestHarness.loadTemplate('artifact.json')));
   assert.is(res.statusCode, 200);
 });
 
 test('READ: artifact exists after creation', async () => {
-  await getArtifact(200);
+  await TestHarness.assertStatus(TestHarness.getOptions(artifactUri()), 200);
 });
 
 test('READ GROUP TURTLE: group can be read as turtle and turtle contains link to artifact', async () => {
-  const options = {
-    method: 'GET',
-    uri: UriUtils.createResourceUri([
-      test_account.ACCOUNT_NAME,
-      test_account.GROUP_NAME,
-    ]),
-    headers: { Accept: 'text/turtle' },
-    resolveWithFullResponse: true,
-    simple: false,
-  };
+  const res = await rp(TestHarness.getOptions(groupUri(), 'text/turtle'));
+  assert.is(res.statusCode, 200);
 
-  const expectedCode = 200;
-
-  try {
-    const res = await rp(options);
-    assert.is(res.statusCode, expectedCode);
-
-    const parser = new Parser();
-    let quads;
-    try {
-      quads = parser.parse(res.body);
-    } catch (parseError) {
-      assert.fail(`Turtle parsing failed: ${parseError.message}`);
-    }
-
-    assert.ok(quads.length > 0, 'Turtle should contain at least one triple');
-
-    const hasArtifactLink = quads.some(
-      q => q.predicate.value === DatabusUris.DATABUS_HAS_ARTIFACT
-    );
-
-    assert.ok(
-      hasArtifactLink,
-      'Turtle should contain at least one databus:hasArtifact link'
-    );
-  } catch (err) {
-    assert.is(err.response.statusCode, expectedCode);
-  }
+  const quads = new Parser().parse(res.body);
+  assert.ok(quads.length > 0);
+  assert.ok(
+    quads.some(q => q.predicate.value === DatabusUris.DATABUS_HAS_ARTIFACT),
+    'Turtle should contain databus:hasArtifact'
+  );
 });
 
-
 test('DELETE: deleting non-empty group returns conflict', async () => {
-  const options = {
-    method: 'DELETE',
-    uri: UriUtils.createResourceUri([
-      test_account.ACCOUNT_NAME,
-      test_account.GROUP_NAME,
-    ]),
-    headers: { 'x-api-key': test_account.APIKEY },
-    resolveWithFullResponse: true,
-  };
-
-  let statusCode = 0;
-  try {
-    await rp(options);
-  } catch (err) {
-    statusCode = err.statusCode || err.response?.statusCode;
-  }
-  assert.is(statusCode, 409);
+  await TestHarness.assertStatus(TestHarness.deleteOptions(groupUri()), 409);
 });
 
 test('DELETE: artifact can be deleted', async () => {
-  const options = {
-    method: 'DELETE',
-    uri: UriUtils.createResourceUri([
-      test_account.ACCOUNT_NAME,
-      test_account.GROUP_NAME,
-      test_account.ARTIFACT_NAME,
-    ]),
-    headers: { 'x-api-key': test_account.APIKEY },
-    resolveWithFullResponse: true,
-  };
-
-  const res = await rp(options);
+  const res = await rp(TestHarness.deleteOptions(artifactUri()));
   assert.is(res.statusCode, 204);
 });
 
 test('READ: artifact is gone after deletion', async () => {
-  await getArtifact(404);
+  await TestHarness.assertStatus(TestHarness.getOptions(artifactUri()), 404);
 });
 
 test.after(async () => {
-  try {
-    await rp({
-      method: 'DELETE',
-      uri: UriUtils.createResourceUri([
-        test_account.ACCOUNT_NAME,
-        test_account.GROUP_NAME,
-        test_account.ARTIFACT_NAME,
-      ]),
-      headers: { 'x-api-key': test_account.APIKEY },
-      resolveWithFullResponse: true,
-    });
-  } catch (err) {
-    if (![204, 404].includes(err.response?.statusCode)) throw err;
+  for (const uri of [artifactUri(), groupUri()]) {
+    try {
+      await rp(TestHarness.deleteOptions(uri));
+    } catch (err) {
+      if (![204, 404, 409].includes(err.response?.statusCode)) throw err;
+    }
   }
-
-  try {
-    await rp({
-      method: 'DELETE',
-      uri: UriUtils.createResourceUri([
-        test_account.ACCOUNT_NAME,
-        test_account.GROUP_NAME,
-      ]),
-      headers: { 'x-api-key': test_account.APIKEY },
-      resolveWithFullResponse: true,
-    });
-  } catch (err) {
-    if (![204, 404].includes(err.response?.statusCode)) throw err;
-  }
-
-  try {
-    await rp({
-      method: 'POST',
-      uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/api/account/delete`,
-      headers: { 'x-api-key': master_account.APIKEY },
-      json: true,
-      resolveWithFullResponse: true,
-      body: { accountName: test_account.ACCOUNT_NAME },
-    });
-  } catch (err) {
-    assert.is(err.response?.statusCode, 404);
-  }
-
-  await DatabusUserTestUtils.deleteUser(db, master_account);
+  await TestHarness.standardAfter(db);
 });
 
 test.run();

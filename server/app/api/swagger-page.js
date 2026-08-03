@@ -21,6 +21,7 @@ module.exports = function(router, protector, locals) {
   const swaggerDocument = YAML.parse(
     swaggerYaml.replace(/%DATABUS_RESOURCE_BASE_URL%/g, process.env.DATABUS_RESOURCE_BASE_URL)
   );
+  swaggerDocument.info.version = require('../../version');
 
   const swaggerCss = `<link rel="stylesheet" type="text/css" href="./swagger-ui.css">`;
   const customJs = fs.readFileSync(__dirname + '/swagger-client.js', 'utf8').toString();

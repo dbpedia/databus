@@ -127,7 +127,7 @@ You never share your API key or password with the owner. The owner only adds you
 ## Important notes
 
 - **`x-on-behalf-of` must be the full account URI**, not just the account name. Example: `https://databus.dbpedia.org/dbpedia`, not `dbpedia`.
-- **Write Access namespaces** (`hasWriteAccessTo`) are stored as absolute IRIs. The UI accepts relative paths under your account and expands them on save. Prefix matching is the intended model (a group IRI covers artifacts and versions under it), but the server does not enforce these IRIs yet.
+- **Write Access namespaces** (`hasWriteAccessTo`) are stored as absolute IRIs. The UI accepts relative paths under your account and expands them on save. Prefix matching applies: a group IRI covers artifacts and versions under it. An empty list grants write access to the full account namespace.
 - **Only owners** can add or remove secretaries via `/api/account/update`.
 - Secretary access applies to write operations that check authorization (e.g. `/api/register`, collection delete). Read access is unchanged.
 
