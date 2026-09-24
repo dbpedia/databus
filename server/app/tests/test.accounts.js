@@ -28,8 +28,29 @@ test('GET non-existing account returns 404', async () => {
 });
 
 test('CREATE account returns 200', async () => {
-  await TestHarness.createTestAccount();
-  await DatabusUserTestUtils.insertApiKey(db, test_account);
+  const options = {
+    headers: { 'x-api-key': master_account.APIKEY },
+    resolveWithFullResponse: true,
+    uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/api/account/create`,
+    method: 'POST',
+    json: true,
+    body: {
+      name: test_account.ACCOUNT_NAME,
+      label: 'Test Label',
+    },
+  };
+
+  try {
+    const response = await rp(options);
+    assert.is(response.statusCode, 200);
+  } catch (err) {
+    console.error('Request failed:', {
+      statusCode: err.statusCode,
+      message: err.message,
+      body: err.error
+    });
+    throw err;
+  }
 });
 
 test('SEARCH account by label returns 200', async () => {
