@@ -35,6 +35,29 @@ class AppJsonFormatter {
       personGraph[DatabusUris.FOAF_STATUS] = status;
     }
 
+    if(secretaries != null) {
+      personGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
+
+      for(var secretary of secretaries) {
+        let secretaryGraph = {};
+        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
+        const agentUri = String(secretary.accountName).endsWith(DatabusConstants.WEBID_THIS)
+          ? secretary.accountName
+          : `${secretary.accountName}${DatabusConstants.WEBID_THIS}`;
+        secretaryGraph[DatabusUris.DATABUS_AGENT] = JsonldUtils.refTo(agentUri);
+
+        if(secretary.hasWriteAccessTo != undefined) {
+          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
+
+          for(var writeAccess of secretary.hasWriteAccessTo) {
+            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
+          }
+        }
+
+        personGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
+      }
+    }
+
     var profileUri = `${uri}${DatabusConstants.WEBID_DOCUMENT}`;
   
     var profileDocumentGraph = {};
@@ -48,30 +71,6 @@ class AppJsonFormatter {
     accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
     accountGraph[DatabusUris.FOAF_ACCOUNT_NAME] = name;
     accountGraph[DatabusUris.DATABUS_NAME] = name;
-
-    if(secretaries != null) {
-
-      accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
-
-      for(var secretary of secretaries) {
-
-        let secretaryAccountUri = `${secretary.accountName}`;
-
-        let secretaryGraph = {};
-        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
-        secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(secretaryAccountUri);
-
-        if(secretary.hasWriteAccessTo != undefined) {
-          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
-
-          for(var writeAccess of secretary.hasWriteAccessTo) {
-            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
-          }
-        }
-
-        accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
-      }
-    }
 
     let expandedGraphs = [
       accountGraph,
@@ -177,11 +176,14 @@ class AppJsonFormatter {
     }
 
     result.secretaries = [];
-    var secretaryGraphs = JsonldUtils.getTypedGraphs(graphs, DatabusUris.DATABUS_SECRETARY);
+    var secretaryIds = JsonldUtils.getRefArrayProperty(personGraph, DatabusUris.DATABUS_SECRETARY_PROPERTY);
 
-    for (var secretaryGraph of secretaryGraphs) {
+    for (var secretaryId of secretaryIds) {
+      var secretaryGraph = JsonldUtils.getGraphById(graphs, secretaryId);
+      if (secretaryGraph == null) continue;
+
       var secretaryData = {
-        accountName: JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY),
+        accountName: JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_AGENT),
         hasWriteAccessTo: []
       };
 

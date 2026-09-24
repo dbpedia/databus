@@ -1,4 +1,4 @@
-# WebID Identity & Delegation (Design)
+# WebID Identity & Delegation
 
 Target model. Today’s secretary feature is wrong in places called out below.
 

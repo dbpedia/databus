@@ -90,6 +90,33 @@ $shacl='<#person-exists>
 	sh:severity sh:Violation ;
 	sh:message "Property foaf:img MUST be an IRI."@en ;
 	sh:path foaf:img ;
+	sh:nodeKind sh:IRI .
+
+<#person-secretary>
+	a sh:PropertyShape ;
+	sh:targetClass foaf:Person ;
+	sh:severity sh:Violation ;
+	sh:message "databus:secretary must point at a databus:Secretary."@en ;
+	sh:path databus:secretary ;
+	sh:class databus:Secretary ;
+	sh:nodeKind sh:BlankNodeOrIRI .
+
+<#secretary-agent>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Secretary ;
+	sh:severity sh:Violation ;
+	sh:message "databus:agent MUST occur exactly once on databus:Secretary and target an IRI."@en ;
+	sh:path databus:agent ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:IRI .
+
+<#secretary-write-access>
+	a sh:PropertyShape ;
+	sh:targetClass databus:Secretary ;
+	sh:severity sh:Violation ;
+	sh:message "databus:hasWriteAccessTo must target an IRI."@en ;
+	sh:path databus:hasWriteAccessTo ;
 	sh:nodeKind sh:IRI .';
 
 $example='"@type": "Person",';
@@ -111,6 +138,19 @@ $context='"maker": {
     "@id": "foaf:img",
     "@type": "@id"
   },
+  "secretary": {
+    "@id": "databus:secretary",
+    "@type": "@id"
+  },
+  "agent": {
+    "@id": "databus:agent",
+    "@type": "@id"
+  },
+  "hasWriteAccessTo": {
+    "@id": "databus:hasWriteAccessTo",
+    "@type": "@id"
+  },
+  "Secretary": "databus:Secretary",
 "Person": "foaf:Person",
 "PersonalProfileDocument": "foaf:PersonalProfileDocument",
 "DBpedian": "dbo:DBpedian"';

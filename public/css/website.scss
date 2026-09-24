@@ -1409,6 +1409,43 @@ databus-icon {
   pointer-events: none;
 }
 
+.secretary-lookup {
+  position: relative;
+}
+
+.secretary-matches {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid hsl(0, 0%, 86%);
+  border-radius: 4px;
+  max-height: 16em;
+  overflow: auto;
+}
+
+.secretary-match {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+}
+
+.secretary-match:hover {
+  background: hsl(0, 0%, 96%);
+}
+
+.secretary-match-name {
+  display: block;
+  color: hsl(0, 0%, 45%);
+  font-size: 0.85em;
+}
+
 .error-notification-box {
   background-color: #fdf2f2; /* very light red/pink background */
   border-left: 3px solid #f14668; /* Bulma 'danger' color */

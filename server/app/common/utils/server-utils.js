@@ -2,26 +2,12 @@ var ASN1 = require('asn1js');
 const fs = require('fs');
 const axios = require('axios');
 const jsonld = require('jsonld');
-const DatabusResource = require('../databus-resource');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const UriUtils = require('./uri-utils');
 const Constants = require('../constants');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const { HttpProxyAgent } = require('http-proxy-agent');
-
-function secretaryLog(step, details) {
-  const extra = details === undefined ? '' : ' ' + JSON.stringify(details);
-  console.log(`[SECRETARY ${new Date().toISOString()}] ${step}${extra}`);
-}
-
-function authenticatedAccountNames(accounts) {
-  if (!Array.isArray(accounts)) {
-    return [];
-  }
-
-  return accounts.map(account => account && account.accountName);
-}
 
 class ServerUtils {
 
@@ -198,6 +184,7 @@ class ServerUtils {
 
       if (req.databus != undefined) {
         result.info.accounts = req.databus.accounts;
+        result.info.webIds = req.databus.webIds;
         result.info.oidc_name = req.databus.oidc_name;
         result.info.oidc_email = req.databus.oidc_email;
         result.info.apiKeys = req.databus.apiKeys;
@@ -277,86 +264,55 @@ class ServerUtils {
 
 
   static isUriUnderPrefix(resourceUri, prefixUri) {
-    const match = resourceUri === prefixUri || resourceUri.startsWith(`${prefixUri}/`);
-    secretaryLog('prefix check', { resourceUri: resourceUri, prefixUri: prefixUri, match: match });
-    return match;
+    return resourceUri === prefixUri || resourceUri.startsWith(`${prefixUri}/`);
   }
 
   static getWriteAccessUris(secretaryGraph) {
     const entries = secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO];
     if (entries == null || entries.length === 0) {
-      secretaryLog('write-access list empty or missing; unrestricted if identity matches', {
-        present: entries != null,
-        length: entries && entries.length,
-      });
       return [];
     }
 
-    const uris = entries.map(entry => entry[DatabusUris.JSONLD_ID] || entry).filter(Boolean);
-    secretaryLog('write-access uris', { uris: uris, raw: entries });
-    return uris;
+    return entries.map(entry => entry[DatabusUris.JSONLD_ID] || entry).filter(Boolean);
   }
 
   static isResourceUnderWriteAccess(resourceUri, writeAccessUris) {
     if (writeAccessUris.length === 0) {
-      secretaryLog('no write-access restriction, resource allowed', { resourceUri: resourceUri });
       return true;
     }
 
-    const allowed = writeAccessUris.some(prefix => ServerUtils.isUriUnderPrefix(resourceUri, prefix));
-    secretaryLog('write-access prefix result', {
-      resourceUri: resourceUri,
-      writeAccessUris: writeAccessUris,
-      allowed: allowed,
-    });
-    return allowed;
+    return writeAccessUris.some(prefix => ServerUtils.isUriUnderPrefix(resourceUri, prefix));
   }
 
-  static secretaryAllowsWrite(accounts, secretaryGraph, resourceUri) {
-    const accountNode = secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY]?.[0];
-    secretaryLog('secretary graph', {
-      accountNode: accountNode || null,
-      graphKeys: secretaryGraph && Object.keys(secretaryGraph),
-      resourceUri: resourceUri,
-      authenticatedAccounts: authenticatedAccountNames(accounts),
-    });
+  static toPersonWebId(accountOrWebId) {
+    if (accountOrWebId == null) return null;
+    const trimmed = String(accountOrWebId).trim().replace(/\/+$/, '');
+    if (trimmed.includes('#')) return trimmed;
+    const base = process.env.DATABUS_RESOURCE_BASE_URL;
+    if (base && /^https?:\/\//i.test(trimmed)) {
+      try {
+        if (new URL(trimmed).host !== new URL(base).host) return trimmed;
+      } catch {
+        // not a URL; append #this below
+      }
+    }
+    return `${trimmed}${DatabusConstants.WEBID_THIS}`;
+  }
 
-    if (accountNode == null) {
-      secretaryLog('secretary rejected: account property missing');
+  static agentUri(secretaryGraph) {
+    const agentNode = secretaryGraph[DatabusUris.DATABUS_AGENT]?.[0];
+    if (agentNode == null) return null;
+    return agentNode[DatabusUris.JSONLD_ID] || agentNode;
+  }
+
+  static secretaryAllowsWrite(req, secretaryGraph, resourceUri) {
+    const agentUri = ServerUtils.agentUri(secretaryGraph);
+    const webIds = req.databus?.webIds || [];
+    if (agentUri == null || !webIds.includes(agentUri)) {
       return false;
     }
 
-    const accountId = accountNode[DatabusUris.JSONLD_ID];
-    const accountResource = new DatabusResource(accountId);
-    if (!accountResource.isAccount()) {
-      secretaryLog('secretary rejected: account property is not an account uri', { accountId: accountId });
-      return false;
-    }
-
-    const secretaryName = accountResource.getAccount();
-    const names = authenticatedAccountNames(accounts);
-    const identityMatch = accounts != null && accounts.some(acc => acc.accountName == secretaryName);
-    secretaryLog('secretary identity check', {
-      secretaryName: secretaryName,
-      accountId: accountId,
-      authenticatedAccounts: names,
-      identityMatch: identityMatch,
-    });
-
-    if (!identityMatch) {
-      secretaryLog('secretary rejected: authenticated accounts do not include secretary', {
-        secretaryName: secretaryName,
-        authenticatedAccounts: names,
-      });
-      return false;
-    }
-
-    const allowed = ServerUtils.isResourceUnderWriteAccess(resourceUri, ServerUtils.getWriteAccessUris(secretaryGraph));
-    secretaryLog(allowed ? 'secretary allows write' : 'secretary rejected: resource outside write-access prefixes', {
-      secretaryName: secretaryName,
-      resourceUri: resourceUri,
-    });
-    return allowed;
+    return ServerUtils.isResourceUnderWriteAccess(resourceUri, ServerUtils.getWriteAccessUris(secretaryGraph));
   }
 
   static resourceUriFromRequest(req) {
@@ -371,122 +327,133 @@ class ServerUtils {
     return UriUtils.fromRequest(req);
   }
 
+  static sameHost(left, right) {
+    try {
+      return new URL(left).host === new URL(right).host;
+    } catch {
+      return false;
+    }
+  }
+
+  static accountUriForName(accountName) {
+    if (accountName == null) return null;
+    if (/^https?:\/\//i.test(accountName)) return accountName;
+    return `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
+  }
+
+  static sharesHostWithCaller(accountUri, accounts) {
+    if (!Array.isArray(accounts) || !ServerUtils.sameHost(accountUri, process.env.DATABUS_RESOURCE_BASE_URL)) {
+      return false;
+    }
+
+    return accounts.some(acc => ServerUtils.sameHost(ServerUtils.accountUriForName(acc.accountName), accountUri));
+  }
+
+  static async secretaryGraphsFromSparql(accountUri) {
+    if (/[<>"\s{}]/.test(accountUri)) return null;
+
+    const exec = require('../execute-query');
+    const query = ServerUtils.formatQuery(require('../queries/sparql/get-account-secretaries.sparql'), {
+      ACCOUNT_URI: accountUri,
+    });
+    const bindings = await exec.executeSelect(query);
+    if (bindings == null) return null;
+
+    const graphs = new Map();
+    for (const row of bindings) {
+      let graph = graphs.get(row.secretary);
+      if (graph == null) {
+        graph = {
+          [DatabusUris.DATABUS_AGENT]: [{ [DatabusUris.JSONLD_ID]: row.agent }],
+        };
+        graphs.set(row.secretary, graph);
+      }
+      if (row.writeAccess) {
+        const list = graph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] || [];
+        list.push({ [DatabusUris.JSONLD_ID]: row.writeAccess });
+        graph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = list;
+      }
+    }
+
+    return [...graphs.values()];
+  }
+
+  static async secretaryGraphsFromUrl(accountUri) {
+    const response = await axios.get(accountUri, {
+      headers: {
+        'Content-Type': 'application/ld+json',
+        'Accept': 'application/ld+json'
+      }
+    });
+    const expanded = await jsonld.expand(response.data);
+    const personId = ServerUtils.toPersonWebId(accountUri);
+    return expanded
+      .filter(node => node['@id'] === personId)
+      .flatMap(node => node[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []);
+  }
+
+  static async loadSecretaryGraphs(accountUri, accounts) {
+    let secretaryGraphs = null;
+    if (ServerUtils.sharesHostWithCaller(accountUri, accounts)) {
+      try {
+        secretaryGraphs = await ServerUtils.secretaryGraphsFromSparql(accountUri);
+      } catch (_) {
+        secretaryGraphs = null;
+      }
+    }
+
+    if (secretaryGraphs == null) {
+      try {
+        secretaryGraphs = await ServerUtils.secretaryGraphsFromUrl(accountUri);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    return secretaryGraphs;
+  }
+
+  static async actorWebId(req, accountUri, resourceUri) {
+    const ownerWebId = ServerUtils.toPersonWebId(accountUri);
+    const webIds = req.databus?.webIds || [];
+    if (webIds.includes(ownerWebId)) return ownerWebId;
+
+    const secretaryGraphs = await ServerUtils.loadSecretaryGraphs(accountUri, req.databus?.accounts);
+    if (secretaryGraphs == null) return null;
+
+    for (const secretaryGraph of secretaryGraphs) {
+      if (ServerUtils.secretaryAllowsWrite(req, secretaryGraph, resourceUri || accountUri)) {
+        return ServerUtils.agentUri(secretaryGraph);
+      }
+    }
+
+    return null;
+  }
+
   static async hasWriteAccess(req, accountName, resourceUri) {
     var accounts = req.databus.accounts;
     let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-    const onBehalfOf = req.headers['x-on-behalf-of'];
-    const targetUri = resourceUri || accountUri;
-    const names = authenticatedAccountNames(accounts);
-
-    secretaryLog('hasWriteAccess enter', {
-      method: req.method,
-      url: req.originalUrl || req.url,
-      userId: req.databus && req.databus.userId,
-      oidcName: req.databus && req.databus.oidc_name,
-      oidcEmail: req.databus && req.databus.oidc_email,
-      authenticatedAccounts: names,
-      targetAccount: accountName,
-      accountUri: accountUri,
-      resourceUri: resourceUri || null,
-      targetUri: targetUri,
-      resourceBaseUrl: process.env.DATABUS_RESOURCE_BASE_URL,
-      onBehalfOf: onBehalfOf || null,
-    });
 
     if (accounts != null && accounts.some(acc => acc.accountName == accountName)) {
-      secretaryLog('hasWriteAccess allowed: caller owns target account', {
-        userId: req.databus && req.databus.userId,
-        oidcName: req.databus && req.databus.oidc_name,
-        accountName: accountName,
-        authenticatedAccounts: names,
-      });
       return true;
     }
 
-    if (!onBehalfOf) {
-      secretaryLog('hasWriteAccess denied: not owner and no x-on-behalf-of header', {
-        userId: req.databus && req.databus.userId,
-        oidcName: req.databus && req.databus.oidc_name,
-        authenticatedAccounts: names,
-        targetAccount: accountName,
-      });
+    const onBehalfOf = req.headers['x-on-behalf-of'];
+    const principalWebId = ServerUtils.toPersonWebId(accountUri);
+    if (onBehalfOf && onBehalfOf !== principalWebId) {
       return false;
     }
 
-    if (onBehalfOf != accountUri) {
-      secretaryLog('hasWriteAccess denied: x-on-behalf-of does not match target account uri', {
-        userId: req.databus && req.databus.userId,
-        oidcName: req.databus && req.databus.oidc_name,
-        onBehalfOf: onBehalfOf,
-        accountUri: accountUri,
-        onBehalfOfLength: onBehalfOf.length,
-        accountUriLength: accountUri.length,
-      });
+    const targetUri = resourceUri || accountUri;
+    const secretaryGraphs = await ServerUtils.loadSecretaryGraphs(accountUri, accounts);
+    if (secretaryGraphs == null) {
       return false;
     }
 
-    secretaryLog('fetching owner account document for secretary list', { url: onBehalfOf });
-
-    try {
-      const response = await axios.get(onBehalfOf, {
-        headers: {
-          'Content-Type': 'application/ld+json',
-          'Accept': 'application/ld+json'
-        }
-      });
-
-      secretaryLog('owner account document fetched', {
-        url: onBehalfOf,
-        status: response.status,
-        contentType: response.headers && response.headers['content-type'],
-      });
-
-      const expanded = await jsonld.expand(response.data);
-      const secretaryGraphs = expanded.flatMap(e => e[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []);
-
-      secretaryLog('expanded owner account', {
-        nodeCount: expanded.length,
-        nodes: expanded.map(node => ({
-          id: node['@id'],
-          type: node['@type'],
-          secretaryCount: (node[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []).length,
-          keys: Object.keys(node),
-        })),
-        secretaryGraphCount: secretaryGraphs.length,
-      });
-
-      for (var i = 0; i < secretaryGraphs.length; i++) {
-        secretaryLog('checking secretary graph', { index: i, count: secretaryGraphs.length });
-        if (ServerUtils.secretaryAllowsWrite(accounts, secretaryGraphs[i], targetUri)) {
-          secretaryLog('hasWriteAccess allowed: secretary match', {
-            userId: req.databus && req.databus.userId,
-            oidcName: req.databus && req.databus.oidc_name,
-            authenticatedAccounts: names,
-            targetAccount: accountName,
-            targetUri: targetUri,
-            secretaryIndex: i,
-          });
-          return true;
-        }
+    for (var secretaryGraph of secretaryGraphs) {
+      if (ServerUtils.secretaryAllowsWrite(req, secretaryGraph, targetUri)) {
+        return true;
       }
-
-      secretaryLog('hasWriteAccess denied: no secretary graph granted write', {
-        userId: req.databus && req.databus.userId,
-        oidcName: req.databus && req.databus.oidc_name,
-        authenticatedAccounts: names,
-        targetAccount: accountName,
-        targetUri: targetUri,
-        secretaryGraphCount: secretaryGraphs.length,
-      });
-
-    } catch (err) {
-      const data = err && err.response && err.response.data;
-      secretaryLog('hasWriteAccess denied: account fetch or expand failed', {
-        url: onBehalfOf,
-        message: err && err.message,
-        status: err && err.response && err.response.status,
-        data: typeof data === 'string' ? data.slice(0, 500) : data,
-      });
     }
 
     return false;
@@ -527,6 +494,28 @@ class ServerUtils {
       personGraph[DatabusUris.FOAF_STATUS] = status;
     }
 
+    if (secretaries != null) {
+      personGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
+
+      for (var secretary of secretaries) {
+        let secretaryGraph = {};
+        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
+        secretaryGraph[DatabusUris.DATABUS_AGENT] = JsonldUtils.refTo(
+          ServerUtils.toPersonWebId(secretary.accountName)
+        );
+
+        if (secretary.hasWriteAccessTo != undefined) {
+          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
+
+          for (var writeAccess of secretary.hasWriteAccessTo) {
+            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
+          }
+        }
+
+        personGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
+      }
+    }
+
     var profileUri = `${uri}${DatabusConstants.WEBID_DOCUMENT}`;
 
     var profileDocumentGraph = {};
@@ -540,30 +529,6 @@ class ServerUtils {
     accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
     accountGraph[DatabusUris.FOAF_ACCOUNT_NAME] = name;
     accountGraph[DatabusUris.DATABUS_NAME] = name;
-
-    if (secretaries != null) {
-
-      accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
-
-      for (var secretary of secretaries) {
-
-        let secretaryAccountUri = `${secretary.accountName}`;
-
-        let secretaryGraph = {};
-        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
-        secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(secretaryAccountUri);
-
-        if (secretary.hasWriteAccessTo != undefined) {
-          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
-
-          for (var writeAccess of secretary.hasWriteAccessTo) {
-            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
-          }
-        }
-
-        accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
-      }
-    }
 
     let expandedGraphs = [
       accountGraph,
@@ -582,6 +547,14 @@ if (typeof process !== 'undefined' && require.main === module) {
   console.assert(!ServerUtils.isUriUnderPrefix(`${base}/other`, `${base}/datasets`));
   console.assert(ServerUtils.isResourceUnderWriteAccess(`${base}/datasets/x`, []));
   console.assert(!ServerUtils.isResourceUnderWriteAccess(`${base}/other`, [`${base}/datasets`]));
+  console.assert(ServerUtils.toPersonWebId(`${base}`) === `${base}#this`);
+  console.assert(ServerUtils.toPersonWebId(`${base}#this`) === `${base}#this`);
+  const prevBase = process.env.DATABUS_RESOURCE_BASE_URL;
+  process.env.DATABUS_RESOURCE_BASE_URL = 'https://databus.example.org';
+  console.assert(ServerUtils.toPersonWebId('https://other.example/alice#me') === 'https://other.example/alice#me');
+  console.assert(ServerUtils.toPersonWebId('https://other.example/alice') === 'https://other.example/alice');
+  console.assert(ServerUtils.toPersonWebId('https://databus.example.org/mike') === 'https://databus.example.org/mike#this');
+  process.env.DATABUS_RESOURCE_BASE_URL = prevBase;
 }
 
 module.exports = ServerUtils

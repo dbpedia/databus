@@ -25,6 +25,7 @@ class DatabusUris {
   
   static DATABUS_SECRETARY_PROPERTY = 'https://dataid.dbpedia.org/databus#secretary';
   static DATABUS_SECRETARY = 'https://dataid.dbpedia.org/databus#Secretary';
+  static DATABUS_AGENT = 'https://dataid.dbpedia.org/databus#agent';
   static DATABUS_HAS_WRITE_ACCESS_TO = 'https://dataid.dbpedia.org/databus#hasWriteAccessTo';
 
   static DATABUS_ARTIFACT_PROPERTY = 'https://dataid.dbpedia.org/databus#artifact';

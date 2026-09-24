@@ -217,7 +217,11 @@ class TestHarness {
     return `${baseUrl()}/${test_account.ACCOUNT_NAME}`;
   }
 
-  static secretaryHeaders(onBehalfOf = this.ownerAccountUri()) {
+  static ownerWebId() {
+    return `${this.ownerAccountUri()}#this`;
+  }
+
+  static secretaryHeaders(onBehalfOf = this.ownerWebId()) {
     return {
       'x-api-key': master_account.APIKEY,
       'x-on-behalf-of': onBehalfOf,
@@ -280,7 +284,7 @@ class TestHarness {
       label: 'Test Label',
       status: 'active',
       secretaries: [{
-        accountName: `${baseUrl()}/${master_account.ACCOUNT_NAME}`,
+        accountName: `${baseUrl()}/${master_account.ACCOUNT_NAME}#this`,
         hasWriteAccessTo: writeAccessPaths.map(toAbsolute),
       }],
     };

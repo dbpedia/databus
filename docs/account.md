@@ -88,6 +88,13 @@ Spec (OWL, SHACL, JSON-LD Context)
 	sh:message "Property foaf:img MUST be an IRI."@en ;
 	sh:path foaf:img ;
 	sh:nodeKind sh:IRI .
+
+<#person-secretary>
+	a sh:PropertyShape ;
+	sh:targetClass foaf:Person ;
+	sh:message "databus:secretary lives on foaf:Person and points at databus:Secretary."@en ;
+	sh:path databus:secretary ;
+	sh:class databus:Secretary .
 ```
 ```javascript
 "maker": {
@@ -107,6 +114,9 @@ Spec (OWL, SHACL, JSON-LD Context)
     "@id": "foaf:img",
     "@type": "@id"
   },
+  "secretary": { "@id": "databus:secretary", "@type": "@id" },
+  "agent": { "@id": "databus:agent", "@type": "@id" },
+  "Secretary": "databus:Secretary",
 "Person": "foaf:Person",
 "PersonalProfileDocument": "foaf:PersonalProfileDocument",
 "DBpedian": "dbo:DBpedian"

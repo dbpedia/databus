@@ -30,6 +30,7 @@ class ResourceWriter {
    * @param {uri of the resource to write} uri 
    */
   async writeResource(req, userData, inputGraphs, uri) {
+    this.req = req;
     this.userData = userData;
     this.inputGraphs = inputGraphs;
     this.uri = uri;
@@ -135,14 +136,6 @@ class ResourceWriter {
     }
 
     const message = `Authenticated user does not have write access to the account <${this.resource.account}>.`;
-    console.log(`[SECRETARY ${new Date().toISOString()}] resource writer denied write ${JSON.stringify({
-      userId: req.databus && req.databus.userId,
-      oidcName: req.databus && req.databus.oidc_name,
-      accounts: req.databus && req.databus.accounts && req.databus.accounts.map(account => account.accountName),
-      targetAccount: this.resource.account,
-      uri: this.uri,
-      onBehalfOf: req.headers['x-on-behalf-of'] || null,
-    })}`);
     throw new ApiError(403, this.uri, message, null);
   }
 

@@ -63,14 +63,14 @@ function UserSettingsController($scope, $http, $sce, $location) {
         account.imageUrl = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_IMG);
         account.secretaries = [];
 
-        let accountGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_ACCOUNT);
-        let secretaryIds = JsonldUtils.getRefArrayProperty(accountGraph, DatabusUris.DATABUS_SECRETARY_PROPERTY);
+        let secretaryIds = JsonldUtils.getRefArrayProperty(personGraph, DatabusUris.DATABUS_SECRETARY_PROPERTY);
 
         for (let secretaryId of secretaryIds) {
           let secretaryGraph = JsonldUtils.getGraphById(graphs, secretaryId);
+          if (secretaryGraph == null) continue;
 
           let secretary = {};
-          secretary.accountName = JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY);
+          secretary.accountName = JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_AGENT);
           secretary.hasWriteAccessTo = JsonldUtils.getRefArrayProperty(secretaryGraph, DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO);
 
           account.secretaries.push(secretary);
@@ -129,9 +129,7 @@ function UserSettingsController($scope, $http, $sce, $location) {
     return DatabusUtils.getAccountNamespacePrefix(accountName);
   };
 
-  $scope.getSecretaryAccountPrefix = function () {
-    return DatabusUtils.getDatabusAccountPrefix();
-  };
+  DatabusUtils.bindSecretarySearch($scope, $http);
 
   // Button click handler to delete account
   $scope.deleteAccount = async function (account) {
