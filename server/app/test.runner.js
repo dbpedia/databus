@@ -4,7 +4,7 @@ const http = require('http');
 const path = require('path');
 
 const TestHarness = require('./tests/utils/test-harness');
-const { preflightServices } = require('./tests/utils/preflight');
+const { startEmbeddedStore } = require('./tests/utils/embedded-store');
 
 let server;
 let serverOutput = '';
@@ -72,14 +72,11 @@ async function runUvu() {
 }
 
 async function run() {
+  let embedded;
   Object.assign(process.env, testEnv());
-
-  try {
-    await preflightServices();
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
+  embedded = await startEmbeddedStore();
+  process.env.DATABUS_DATABASE_URL = embedded.url;
+  process.env.LOOKUP_BASE_URL = embedded.url;
 
   serverOutput = '';
   server = spawn('node', ['--trace-warnings', 'www'], {
@@ -114,9 +111,10 @@ async function run() {
       console.error('\n--- server output ---\n' + serverOutput);
     }
     console.error(err);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
     if (server) server.kill();
+    if (embedded) await embedded.close();
   }
 }
 

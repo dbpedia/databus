@@ -45,6 +45,9 @@ class TestHarness {
     process.env.DATABUS_ABSTRACT = process.env.DATABUS_ABSTRACT || 'Test instance';
     process.env.DATABUS_PRIVATE_MODE = process.env.DATABUS_PRIVATE_MODE || 'false';
     process.env.MAX_WORKERS = process.env.MAX_WORKERS || '1';
+    process.env.DATABUS_OIDC_ISSUER_BASE_URL = process.env.DATABUS_OIDC_ISSUER_BASE_URL || 'https://example.invalid';
+    process.env.DATABUS_OIDC_CLIENT_ID = process.env.DATABUS_OIDC_CLIENT_ID || 'test';
+    process.env.DATABUS_OIDC_SECRET = process.env.DATABUS_OIDC_SECRET || 'test';
   }
 
   static contextUrl() {
