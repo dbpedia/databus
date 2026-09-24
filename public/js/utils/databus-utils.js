@@ -621,8 +621,19 @@ class DatabusUtils {
       return null;
     }
 
-    var markdownParser = markdownit();
-    return markdownParser.render(markdown);
+    if (Array.isArray(markdown)) {
+      return markdown.map(item => this.renderMarkdown(item)).filter(html => html != null).join('');
+    }
+
+    try {
+      return markdownit().render(markdown);
+    } catch (err) {
+      return String(markdown)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+    }
   }
 
   /**
