@@ -50,15 +50,19 @@
         <!--Tabs-->
         <div class="collection-editor-tabs">
           <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 0 }"
-            ng-click="tabNavigation.navigateTo('data');">
-            <div class="section-label">Data</div>
+            ng-click="tabNavigation.navigateTo('home');">
+            <div class="section-label">Home</div>
           </div>
-          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+          <div ng-if="false" class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 1 }"
+            ng-click="tabNavigation.navigateTo('groups');">
+            <div class="section-label">Groups</div>
+          </div>
+          <div class="collection-editor-tab" ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }"
             ng-click="tabNavigation.navigateTo('collections');">
             <div class="section-label">Collections</div>
           </div>
           <div ng-if="account.isOwn" class="collection-editor-tab"
-            ng-class="{ 'is-active' : tabNavigation.activeTab == 2 }" ng-click="tabNavigation.navigateTo('settings')">
+            ng-class="{ 'is-active' : tabNavigation.activeTab == 3 }" ng-click="tabNavigation.navigateTo('settings')">
             <div class="section-label">
               <databus-icon style="margin-right:12px;" shape="'settings'" size="24">
               </databus-icon>Settings
@@ -139,6 +143,10 @@
         margin-right: .5em;
       }
 
+      .ce-collection-list-item h1 a {
+        color: inherit;
+      }
+
       .ce-collection-list-item .ce-tool-icons {
         display: flex;
         margin-right: 2em;
@@ -170,6 +178,65 @@
         min-height: 800px;
       }
 
+      .account-resource-tree .resource-row {
+        display: flex;
+        align-items: center;
+        border: 1px solid #dbdbdb;
+        border-radius: 8px;
+        padding: 0.75em;
+        margin-bottom: 0.45em;
+        background-color: white;
+      }
+
+      .account-resource-tree .resource-children {
+        margin-left: 1.75em;
+      }
+
+      .account-resource-tree .resource-text {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .account-resource-tree .resource-label {
+        color: hsl(0, 0%, 21%);
+        font-size: 1em;
+        font-weight: 600;
+        line-height: 1.125;
+        margin-bottom: 2px;
+      }
+
+      .account-resource-tree .resource-segment {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 400;
+        line-height: 1.25;
+      }
+
+      .account-resource-tree type-tag {
+        margin-right: 12px;
+      }
+
+      .account-resource-tree type-tag svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .account-resource-tree .resource-version {
+        margin-left: auto;
+        padding: 0.3em 0.75em;
+        border-radius: 999px;
+        background-color: #f0f0f0;
+        color: #6b6b6b;
+        font-size: 0.8em;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .account-resource-tree .resource-version:hover {
+        background-color: #e6e6e6;
+        color: #4a4a4a;
+      }
+
       .settings-entity {
         border: 1px solid #dbdbdb;
         padding: 0.5em;
@@ -198,9 +265,12 @@
             <account-history account-name="account.accountName"></account-history>
           </div>
           <div class="column" style="padding: 0">
-            <div class="field is-grouped" style="margin-bottom: 1em;">
-              <search style="flex: 1" search-input="dataSearchInput" settings="dataSearchSettings">
-              </search>
+            <div class="control has-icons-left" style="margin-bottom: 1em;">
+              <input class="input" type="text" ng-model="homeSearch.input" ng-change="filterHome()"
+                placeholder="Search groups and artifacts...">
+              <span class="icon is-left">
+                <i class="fas fa-search"></i>
+              </span>
             </div>
             <div ng-if="publishedData.isLoading">
               <div class="databus-no-content placeholder-medium">
@@ -212,26 +282,100 @@
                 </div>
               </div>
             </div>
-            <div ng-if="!publishedData.isLoading && dataSearchInput == ''" ng-repeat="group in publishedData.groups">
-              <div style="display: flex; align-items: center; margin-bottom: 1em;">
-                <expandable-arrow ng-if="group.artifacts.length > 0" expanded="group.isExpanded"></expandable-arrow>
-                <entity-card label="group.title" uri="group.uri" type="'Group'" style="width: 100%">
-                </entity-card>
-              </div>
-              <div ng-if="group.isExpanded && group.artifacts.length > 0"
-                style="margin-left: 74px; padding-left: 24px; margin-bottom: 1em;">
-                <div ng-repeat="artifact in group.artifacts" style="margin-bottom: 1em;">
-                  <entity-card label="artifact.title" uri="artifact.uri" type="'Artifact'" desc="artifact.abstract">
-                  </entity-card>
+            <div class="account-resource-tree" ng-if="!publishedData.isLoading">
+              <div ng-repeat="node in homeTree track by node.group.uri">
+                <div class="resource-row">
+                  <type-tag width="40" height="40" type="'Group'"></type-tag>
+                  <div class="resource-text">
+                    <div class="resource-label search-result" ng-bind-html="node.labelHtml"></div>
+                    <a class="resource-segment search-result" ng-href="{{ node.group.uri }}" ng-bind-html="node.segmentHtml"></a>
+                  </div>
+                </div>
+                <div class="resource-children" ng-if="node.artifacts.length > 0">
+                  <div class="resource-row" ng-repeat="artifact in node.artifacts track by artifact.uri">
+                    <type-tag width="40" height="40" type="'Artifact'"></type-tag>
+                    <div class="resource-text">
+                      <div class="resource-label search-result" ng-bind-html="artifact.labelHtml"></div>
+                      <a class="resource-segment search-result" ng-href="{{ artifact.uri }}" ng-bind-html="artifact.segmentHtml"></a>
+                    </div>
+                    <a class="resource-version" ng-if="artifact.latestVersionUri" ng-href="{{ artifact.latestVersionUri }}">To latest version</a>
+                  </div>
                 </div>
               </div>
+              <div class="ce-placeholder-text" ng-if="homeTree.length == 0">No resources found.</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- COLLECTIONS -->
+      <!-- GROUPS -->
       <div class="container account-page-tab" ng-if="tabNavigation.activeTab == 1">
+        <div class="ce-collection-list-header">
+          <div class="search-input control has-icons-left">
+            <input class="input" type="text" ng-model="groupSearch.input" ng-change="filterGroups()"
+              placeholder="Search groups...">
+            <span class="icon is-left">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
+          <div class="ce-flex-filler"></div>
+          <div ng-if="account.isOwn" class="button is-collection" ng-click="toggleNewGroupForm()">Create New</div>
+        </div>
+
+        <div ng-if="groupForm.open" class="ce-collection-list-item" style="display: block;">
+          <h1 style="margin-bottom: 0.75em;">New Group</h1>
+          <div class="field">
+            <label class="label">Name</label>
+            <input class="input" type="text" ng-model="groupForm.name" placeholder="group-name">
+            <p class="help is-danger" ng-if="groupForm.error">{{ groupForm.error }}</p>
+          </div>
+          <div class="field">
+            <label class="label">Title</label>
+            <input class="input" type="text" ng-model="groupForm.title">
+          </div>
+          <div class="field">
+            <label class="label">Abstract</label>
+            <textarea class="input" style="height: 80px;" ng-model="groupForm.abstract"></textarea>
+          </div>
+          <div class="field">
+            <label class="label">Description</label>
+            <textarea class="input" style="height: 80px;" ng-model="groupForm.description"></textarea>
+          </div>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-collection" ng-click="submitNewGroup()" ng-disabled="groupForm.saving">Create</button>
+            </div>
+            <div class="control">
+              <button class="button" ng-click="groupForm.open = false">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="publishedData.isLoading">
+          <div class="databus-no-content placeholder-medium">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="!publishedData.isLoading">
+          <div ng-repeat="item in groupSearch.results" style="margin-bottom: 1em;">
+            <entity-card style="flex: 1;" type="'Group'" uri="item.group.uri" label="item.titleHtml"
+              desc="item.abstractHtml">
+            </entity-card>
+          </div>
+          <div class="ce-placeholder-text" ng-if="groupSearch.results.length == 0">
+            No groups found.
+          </div>
+        </div>
+      </div>
+
+      <!-- COLLECTIONS -->
+      <div class="container account-page-tab" ng-if="tabNavigation.activeTab == 2">
         <div class="ce-collection-list-header">
           <div class="search-input control has-icons-left">
             <input class="input" type="text" ng-model="collectionSearch.input" placeholder="Search collections...">
@@ -334,7 +478,7 @@
       </div>
 
 
-      <div class="container" ng-if="tabNavigation.activeTab == 2">
+      <div class="container" ng-if="tabNavigation.activeTab == 3">
         <%- include('profile') -%>
       </div>
 
