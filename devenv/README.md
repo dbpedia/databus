@@ -71,7 +71,7 @@ Merging into `main` without a new version is a no-op for images. Bump `version` 
 
 To rebuild an existing version and move its git tag onto the current `main` commit, open Actions → **Release Docker image** → **Run workflow** (branch `main`).
 
-Docker Hub publishes need repo secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`. The release job force-updates the version tag, so a ruleset must allow the Actions token to do that.
+Docker Hub publishes need repo secrets `DBP_DOCKERHUB_CREDENTIAL_USERNAME` and `DBP_DOCKERHUB_CREDENTIAL_TOKEN_PUSHIMAGES`. The release job force-updates the version tag, so a ruleset must allow the Actions token to do that.
 
 The GitHub default branch is still `master`. Release publishing starts once `main` exists.
 
