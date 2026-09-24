@@ -397,15 +397,6 @@ class DatabusUtils {
     return DatabusUtils.getAccountNamespacePrefix(accountName) + trimmed.replace(/^\/+/, '');
   }
 
-  static secretaryDisplayName(value) {
-    if (value == null) return '';
-    const trimmed = String(value).trim();
-    if (trimmed.startsWith(DATABUS_RESOURCE_BASE_URL)) {
-      return DatabusUtils.toRelativeAccountName(trimmed);
-    }
-    return trimmed;
-  }
-
   static toSecretaryUri(value) {
     if (value == null) return null;
     const trimmed = String(value).trim();
@@ -468,7 +459,7 @@ class DatabusUtils {
 
     return secretaries.map(function (secretary) {
       return {
-        accountName: DatabusUtils.secretaryDisplayName(secretary.accountName),
+        accountName: secretary.accountName == null ? '' : String(secretary.accountName).trim(),
         hasWriteAccessTo: (secretary.hasWriteAccessTo || []).map(function (uri) {
           return DatabusUtils.toRelativeWriteAccessUri(uri, accountName);
         })
@@ -775,6 +766,12 @@ if (typeof process !== 'undefined' && require.main === module) {
   );
   console.assert(
     DatabusUtils.toAbsoluteAccountUri('alice') === 'https://databus.example.org/alice'
+  );
+  console.assert(
+    DatabusUtils.secretariesForEdit(
+      [{ accountName: 'https://databus.example.org/alice#this', hasWriteAccessTo: [] }],
+      'myorg'
+    )[0].accountName === 'https://databus.example.org/alice#this'
   );
 }
 
