@@ -25,6 +25,10 @@ jobs:
         working-directory: server
         run: npm install
 
+      - name: Install public dependencies
+        working-directory: public
+        run: npm install
+
       - name: Run integration tests
         working-directory: server
         env:
