@@ -5,10 +5,9 @@ const ApiError = require('../../common/utils/api-error');
 const GstoreResource = require('./gstore-resource');
 const shaclTester = require('../../common/shacl-tester');
 const jsonld = require('jsonld');
-const axios = require('axios');
 const JsonldLoader = require('../../common/utils/jsonld-loader');
 const DatabusResource = require('../../common/databus-resource');
-const DatabusUris = require('../../../../public/js/utils/databus-uris');
+const AccountUtils = require('../../common/utils/account-utils');
 
 /**
  * Base class for all writers:
@@ -16,7 +15,7 @@ const DatabusUris = require('../../../../public/js/utils/databus-uris');
  * GroupWriter
  * AccountWriter
  * ArtifactWriter
- * TODO: VersionWriter
+ * VersionWriter
  */
 class ResourceWriter {
 
@@ -31,6 +30,7 @@ class ResourceWriter {
    * @param {uri of the resource to write} uri 
    */
   async writeResource(req, userData, inputGraphs, uri) {
+    this.req = req;
     this.userData = userData;
     this.inputGraphs = inputGraphs;
     this.uri = uri;
@@ -54,15 +54,12 @@ class ResourceWriter {
     // Create the graphs - abstract method implemented by the different writers
     var graphs = await this.onCreateGraphs();
 
-    console.log("INPUT FOR SHACL TEST");
-    console.log(JSON.stringify(graphs, null, 3));
+    if (graphs == null || graphs.length === 0) {
+      this.logger.debug(this.uri, `Nothing to publish.`, null);
+      return;
+    }
 
-
-    // Do SHACL validation - calls abstract getSHACLFilePath()
     var shaclResult = await shaclTester.validateJsonld(graphs, this.getSHACLFilePath());
-
-    console.log("SHACL RESULT");
-    console.log(JSON.stringify(shaclResult, null, 3));
 
     if (!shaclResult.isSuccess) {
       var message = 'SHACL validation error:\n';
@@ -81,16 +78,13 @@ class ResourceWriter {
 
       // Save the compacted graph to the gstore
       this.logger.debug(this.uri, `Saving to gstore.`);
-      var gstoreResource = new GstoreResource(this.uri, compactedGraph);
+      var gstoreResource = new GstoreResource(this.uri, compactedGraph, this.getDocumentFilename());
 
 
       await gstoreResource.save();
 
       this.logger.info(this.uri, `Successfully published ${this.resource.getTypeName()} <${this.uri}>.`, compactedGraph);
     } catch (err) {
-
-      console.log(JSON.stringify(err, null, 3));
-      console.log(JSON.stringify(compactedGraph, null, 3));
       let message = `Failed to save to gstore: ${err.message}`;
       throw new ApiError(500, this.uri, message, compactedGraph);
     }
@@ -106,6 +100,14 @@ class ResourceWriter {
   }
 
   /**
+   * VIRTUAL - overriden in VersionWriter for dataid.jsonld
+   * @returns gstore document filename relative to the resource path
+   */
+  getDocumentFilename() {
+    return GstoreResource.METADATA_FILENAME;
+  }
+
+  /**
    * ABSTRACT - implemented in the different writers
    * @returns the file path of the SHACL file for graph validation
    */
@@ -118,51 +120,11 @@ class ResourceWriter {
    * Validates user account name against the resource identifiers
    */
   async onValidateUser(req) {
-    var accountName = this.resource.account;
-    var accountUri = this.resource.getAccountURI();
-
-
-    if (this.userData.accounts && this.userData.accounts.some(acc => acc.accountName == accountName)) {
+    if (await AccountUtils.hasWriteAccess(req, this.resource.account, this.uri)) {
       return;
     }
 
-    const onBehalfOf = req.headers['x-on-behalf-of'];
-
-    if (onBehalfOf && onBehalfOf == accountUri) {
-      try {
-        const response = await axios.get(onBehalfOf, {
-          headers: {
-            'Content-Type': 'application/ld+json',
-            'Accept': 'application/ld+json'
-          }
-        });
-
-        const expanded = await jsonld.expand(response.data);
-
-        const secretaries = expanded.flatMap(e =>
-          e[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []
-        ).map(a => a[DatabusUris.DATABUS_ACCOUNT_PROPERTY][0]);
-
-        for(var secretary of secretaries) {
-          var accountResource = new DatabusResource(secretary[DatabusUris.JSONLD_ID]);
-
-          if(!accountResource.isAccount()) {
-            continue;
-          }
-
-          let secretaryName = accountResource.getAccount();
-
-          if (this.userData.accounts && this.userData.accounts.some(acc => acc.accountName == secretaryName)) {
-            return;
-          }
-        }
-
-      } catch (_) {
-        // fall through to error below
-      }
-    }
-
-    const message = `Authenticated user does not have write access to the account <${accountName}>.`;
+    const message = `Authenticated user does not have write access to the account <${this.resource.account}>.`;
     throw new ApiError(403, this.uri, message, null);
   }
 

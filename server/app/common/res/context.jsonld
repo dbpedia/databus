@@ -138,6 +138,19 @@
          "@id": "foaf:img",
          "@type": "@id"
       },
+      "secretary": {
+         "@id": "databus:secretary",
+         "@type": "@id"
+      },
+      "agent": {
+         "@id": "databus:agent",
+         "@type": "@id"
+      },
+      "hasWriteAccessTo": {
+         "@id": "databus:hasWriteAccessTo",
+         "@type": "@id"
+      },
+      "Secretary": "databus:Secretary",
       "Person": "foaf:Person",
       "PersonalProfileDocument": "foaf:PersonalProfileDocument",
       "DBpedian": "dbo:DBpedian"

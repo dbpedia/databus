@@ -253,9 +253,8 @@ function GroupPageController($scope, $http, $sce, $interval, $location, collecti
   }
 
   $scope.markdownToHtml = function (markdown) {
-
-    var converter = window.markdownit();
-    return $sce.trustAsHtml(converter.render(markdown));
+    var html = DatabusUtils.renderMarkdown(markdown);
+    return $sce.trustAsHtml(html == null ? '' : html);
   };
 
 

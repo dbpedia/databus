@@ -2,20 +2,16 @@ const Constants = require('../../common/constants.js');
 const ServerUtils = require('../../common/utils/server-utils.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris.js');
 
-const publishVersion = require('../lib/publish-version.js');
+const VersionWriter = require('../lib/version-writer.js');
+const publishResource = require('../lib/publish-resource.js');
 
 var sparql = require('../../common/queries/sparql.js');
 const axios = require('axios');
 var GstoreHelper = require('../../common/utils/gstore-helper.js');
-var defaultContext = require('../../common/res/context.jsonld');
 const UriUtils = require('../../common/utils/uri-utils.js');
 const getLinkedData = require('../../common/get-linked-data.js');
-const DatabusLogger = require('../../common/databus-logger.js');
-const JsonldUtils = require('../../../../public/js/utils/jsonld-utils.js');
-const jsonld = require('jsonld');
 var cors = require('cors');
 const DatabusMessage = require('../../common/databus-message.js');
-const DatabusResource = require('../../common/databus-resource.js');
 
 
 module.exports = function (router, protector) {
@@ -34,27 +30,15 @@ module.exports = function (router, protector) {
         req.params.version
       ]);
 
-      var logger = new DatabusLogger(req.query['log-level']);
-      var graph = req.body;
-
-      if (graph[DatabusUris.JSONLD_CONTEXT] == process.env.DATABUS_DEFAULT_CONTEXT_URL) {
-        graph[DatabusUris.JSONLD_CONTEXT] = defaultContext;
-        logger.debug(null, `Context "${graph[DatabusUris.JSONLD_CONTEXT]}" replaced with cached resolved context`, defaultContext);
+      var fetchFileProperties = null;
+      if (req.query['fetch-file-properties'] == 'false') {
+        fetchFileProperties = false;
+      }
+      if (req.query['fetch-file-properties'] == 'true') {
+        fetchFileProperties = true;
       }
 
-      // Expand JSONLD!
-      var expandedGraph = await jsonld.flatten(graph);
-      var versionGraph = JsonldUtils.getGraphById(expandedGraph, versionUri);
-
-      if (versionGraph == null) {
-        res.status(400).send(`Graph with id ${versionUri} not found in input.`);
-        return;
-      }
-
-      logger.debug(null, `Found graph ${versionUri} in input`, versionGraph);
-      
-      var code = await publishVersion(req.params.account, expandedGraph, versionUri, null, logger);
-      res.status(code).json(logger.getReport());
+      await publishResource(req, res, VersionWriter, versionUri, { fetchFileProperties });
 
     } catch (err) {
       console.log(err);

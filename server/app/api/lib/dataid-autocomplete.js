@@ -6,7 +6,6 @@ const ArrayUtils = require('../../common/utils/array-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 const { JSONLD_VALUE } = require('../../../../public/js/utils/databus-uris');
 const knownCompressionExtensions = require('../../common/config/compression-extensions.json');
-const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 
 var autocompleter = {};
 
@@ -81,14 +80,6 @@ autocompleter.autocomplete = function (expandedGraph, logger) {
 
   versionGraph[DatabusUris.DATABUS_ARTIFACT_PROPERTY] = [{}];
   versionGraph[DatabusUris.DATABUS_ARTIFACT_PROPERTY][0][DatabusUris.JSONLD_ID] = artifactUri;
-
-  // Auto-generate publisher entry
-  var publisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
-
-  if (publisherUri == null) {
-    versionGraph[DatabusUris.DCT_PUBLISHER] = [{}];
-    versionGraph[DatabusUris.DCT_PUBLISHER][0][DatabusUris.JSONLD_ID] = `${accountUri}${DatabusConstants.WEBID_THIS}`;
-  }
 
   var timeString = DatabusUtils.timeStringNow();
 

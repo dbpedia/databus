@@ -1,7 +1,42 @@
+const fuzzysort = require("fuzzysort");
 const DatabusCollectionManager = require("../collections/databus-collection-manager");
+const DatabusAlert = require("../components/databus-alert/databus-alert");
+const DataIdCreator = require("../publish/dataid-creator");
 const DatabusUtils = require("../utils/databus-utils");
 const DatabusWebappUtils = require("../utils/databus-webapp-utils");
 const TabNavigation = require("../utils/tab-navigation");
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function highlightHtml(result, fallback) {
+  if (!result || typeof result.target !== 'string' || !result.indexes || result.indexes.length === 0) {
+    return escapeHtml(fallback || '');
+  }
+
+  var text = result.target;
+  var indexes = result.indexes;
+  var html = '';
+  var last = 0;
+
+  for (var i = 0; i < indexes.length;) {
+    var start = indexes[i++];
+    var end = start + 1;
+    while (indexes[i] === end) {
+      i++;
+      end++;
+    }
+    html += escapeHtml(text.slice(last, start)) + '<b>' + escapeHtml(text.slice(start, end)) + '</b>';
+    last = end;
+  }
+
+  return html + escapeHtml(text.slice(last));
+}
 
 var DEFAULT_IMAGE = "https://picsum.photos/id/223/320/320";
 
@@ -15,7 +50,7 @@ var DEFAULT_IMAGE = "https://picsum.photos/id/223/320/320";
  * @param {DatabusCollectionManager} collectionManager 
  * @returns 
  */
-function AccountPageController($scope, $http, $location, collectionManager) {
+function AccountPageController($scope, $http, $location, collectionManager, $sce) {
 
   $scope.collectionManager = collectionManager;
 
@@ -33,7 +68,7 @@ function AccountPageController($scope, $http, $location, collectionManager) {
 
   // Create a tab navigation object for the tab navigation with locato
   $scope.tabNavigation = new TabNavigation($scope, $location, [
-    'data', 'collections', 'settings'
+    'home', 'groups', 'collections', 'settings'
   ]);
 
   // Make some util functions available in the template
@@ -42,14 +77,7 @@ function AccountPageController($scope, $http, $location, collectionManager) {
   $scope.account.isOwn = $scope.accountName != null; //.auth.authenticated && $scope.auth.info.accountName == $scope.account.accountName;
 
 
-  $scope.dataSearchInput = '';
-  $scope.dataSearchSettings = {
-    minRelevance: 0.01,
-    maxResults: 10,
-    placeholder: `Search ${$scope.account.accountName}'s data...`,
-    resourceTypes: ['Group', 'Artifact'],
-    filter: `&publisher=${$scope.account.accountName}&typeNameWeight=0`
-  };
+  $scope.homeSearch = { input: '' };
 
   $scope.collectionSearchInput = '';
   $scope.collectionSearchSettings = {
@@ -72,18 +100,36 @@ function AccountPageController($scope, $http, $location, collectionManager) {
       $scope.publishedData.groups = response.data.groups;
       $scope.publishedData.artifacts = response.data.artifacts;
 
+      var latestByArtifact = {};
+      (response.data.versions || []).forEach(function (versionUri) {
+        var artifactUri = DatabusUtils.navigateUp(versionUri, 1);
+        var name = DatabusUtils.uriToResourceName(versionUri);
+        var current = latestByArtifact[artifactUri];
+        if (!current || name > current.name) latestByArtifact[artifactUri] = { name: name, uri: versionUri };
+      });
+
       for (var artifact of $scope.publishedData.artifacts) {
+        var latest = latestByArtifact[artifact.uri];
+        if (latest) {
+          artifact.latestVersion = latest.name;
+          artifact.latestVersionUri = latest.uri;
+        }
         artifact.group = DatabusUtils.navigateUp(artifact.uri, 1);
+        artifact.name = DatabusUtils.uriToName(artifact.uri);
         artifact.title = DatabusUtils.stringOrFallback(artifact.title, artifact.latestVersionTitle);
         artifact.abstract = DatabusUtils.stringOrFallback(artifact.abstract, artifact.latestVersionAbstract);
         artifact.description = DatabusUtils.stringOrFallback(artifact.description, artifact.latestVersionDescription);
       }
 
       for (var group of $scope.publishedData.groups) {
+        group.title = DatabusUtils.stringOrFallback(group.title, group.name);
         group.artifacts = $scope.publishedData.artifacts.filter(function (a) {
           return a.group == group.uri;
         });
       }
+
+      $scope.filterGroups();
+      $scope.filterHome();
 
       // Order by latest version date
       $scope.recentUploads = $scope.publishedData.artifacts.filter(function (v) {
@@ -190,6 +236,133 @@ function AccountPageController($scope, $http, $location, collectionManager) {
     } else {
       $scope.collectionSearch.sortProperty = value;
     }
+  }
+
+  $scope.homeTree = [];
+
+  $scope.filterHome = function () {
+    var groups = $scope.publishedData.groups || [];
+    var query = ($scope.homeSearch.input || '').trim();
+    var groupHits = {};
+    var artifactHits = {};
+
+    if (query) {
+      fuzzysort.go(query, groups, { keys: ['title', 'name'], threshold: 0, limit: 0 }).forEach(function (hit) {
+        groupHits[hit.obj.uri] = hit;
+      });
+      var artifacts = [];
+      groups.forEach(function (group) {
+        (group.artifacts || []).forEach(function (artifact) { artifacts.push(artifact); });
+      });
+      fuzzysort.go(query, artifacts, { keys: ['title', 'name', 'abstract'], threshold: 0, limit: 0 }).forEach(function (hit) {
+        if (!artifactHits[hit.obj.group]) artifactHits[hit.obj.group] = [];
+        artifactHits[hit.obj.group].push(hit);
+      });
+    }
+
+    $scope.homeTree = groups.filter(function (group) {
+      return !query || groupHits[group.uri] || artifactHits[group.uri];
+    }).map(function (group) {
+      var childHits = artifactHits[group.uri] || [];
+      var groupHit = groupHits[group.uri];
+      var segment = group.name || DatabusUtils.uriToResourceName(group.uri);
+      var artifacts = (query && childHits.length ? childHits : (group.artifacts || []).map(function (artifact) {
+        return { obj: artifact };
+      })).map(function (hit) {
+        var artifactSegment = hit.obj.name || DatabusUtils.uriToResourceName(hit.obj.uri);
+        var artifactTitle = hit.obj.title || artifactSegment;
+        return {
+          uri: hit.obj.uri,
+          latestVersion: hit.obj.latestVersion,
+          latestVersionUri: hit.obj.latestVersionUri,
+          labelHtml: $sce.trustAsHtml(highlightHtml(hit[0], artifactTitle)),
+          segmentHtml: $sce.trustAsHtml(highlightHtml(hit[1] || hit[0], artifactSegment))
+        };
+      });
+      return {
+        group: group,
+        labelHtml: $sce.trustAsHtml(highlightHtml(groupHit && groupHit[0], group.title)),
+        segmentHtml: $sce.trustAsHtml(highlightHtml(groupHit && (groupHit[1] || groupHit[0]), segment)),
+        artifacts: artifacts
+      };
+    });
+  }
+
+  $scope.groupSearch = { input: '', results: [] };
+
+  $scope.filterGroups = function () {
+    var groups = $scope.publishedData.groups || [];
+    var query = ($scope.groupSearch.input || '').trim();
+    var hits = query
+      ? fuzzysort.go(query, groups, { keys: ['title', 'name', 'abstract'], threshold: 0, limit: 0 })
+      : groups.map(function (group) { return { obj: group }; });
+
+    $scope.groupSearch.results = hits.map(function (hit) {
+      var group = hit.obj;
+      return {
+        group: group,
+        titleHtml: highlightHtml(hit[0], group.title),
+        abstractHtml: group.abstract ? highlightHtml(hit[2], group.abstract) : ''
+      };
+    });
+  }
+
+  $scope.groupForm = { open: false, saving: false, name: '', title: '', abstract: '', description: '', error: '' };
+
+  $scope.toggleNewGroupForm = function () {
+    $scope.groupForm.open = !$scope.groupForm.open;
+    $scope.groupForm.error = '';
+  }
+
+  $scope.submitNewGroup = async function () {
+    var name = ($scope.groupForm.name || '').trim();
+    $scope.groupForm.error = '';
+
+    if (!DatabusUtils.isValidGroupName(name)) {
+      $scope.groupForm.error = 'Name must be 3–50 characters: letters, numbers, _, -, or .';
+      return;
+    }
+
+    if (!$scope.publishedData.groups) {
+      $scope.publishedData.groups = [];
+    }
+
+    var groups = $scope.publishedData.groups;
+    if (groups.some(function (group) { return group.name === name; })) {
+      $scope.groupForm.error = 'A group with this name already exists.';
+      return;
+    }
+
+    $scope.groupForm.saving = true;
+    $scope.groupForm.name = name;
+
+    try {
+      var creator = new DataIdCreator({ group: $scope.groupForm }, $scope.account.accountName);
+      var response = await $http.post('/api/register', creator.createGroupUpdate());
+
+      if (response.status == 200) {
+        $scope.publishedData.groups.push({
+          uri: DATABUS_RESOURCE_BASE_URL + '/' + $scope.account.accountName + '/' + name,
+          name: name,
+          title: DatabusUtils.stringOrFallback($scope.groupForm.title, name),
+          abstract: $scope.groupForm.abstract,
+          description: $scope.groupForm.description,
+          artifacts: []
+        });
+        $scope.groupForm = { open: false, saving: false, name: '', title: '', abstract: '', description: '', error: '' };
+        $scope.filterGroups();
+        $scope.filterHome();
+        DatabusAlert.alert($scope, true, 'Group created');
+      }
+    } catch (err) {
+      var log = err && err.data && err.data.log;
+      var entry = Array.isArray(log) ? log.find(function (item) { return item.msg; }) : null;
+      $scope.groupForm.error = entry ? entry.msg : 'Could not create group.';
+      $scope.groupForm.saving = false;
+      DatabusAlert.alert($scope, false, $scope.groupForm.error);
+    }
+
+    $scope.$applyAsync();
   }
 
   /**

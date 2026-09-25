@@ -1,5 +1,5 @@
 {
-  "@context": "http://localhost:3000/res/context.jsonld",
+  "@context": "%DATABUS_RESOURCE_BASE_URL%/res/context.jsonld",
   "@graph": {
     "@id": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%/%GROUP%",
     "@type": "Group",

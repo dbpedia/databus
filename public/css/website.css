@@ -10839,6 +10839,11 @@ template {
   border-radius: 20px;
   padding: 0px;
   box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.18s ease;
+}
+
+.frontpage-box-frame:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .frontpage-box {
@@ -10859,18 +10864,6 @@ template {
 
 .frontpage-box.center {
   background-color: #47b49f;
-}
-
-.frontpage-box:hover {
-  -moz-transform: translateY(-4px);
-  -webkit-transform: translateY(-4px);
-  -o-transform: translateY(-4px);
-  -ms-transform: translateY(-4px);
-  -webkit-transform: translateY(-4px);
-  transform: translateY(-4px);
-  -webkit-transition: transform 0.4s ease-out;
-  -moz-transition: transform 0.4s ease-out;
-  -ms-transition: transform 0.4s ease-out;
 }
 
 .frontpage-box-arrow {
@@ -12251,6 +12244,92 @@ databus-icon {
   border-radius: 4px 0px 0px 4px;
 }
 
+.settings-entity.settings-entity-block {
+  align-items: stretch;
+  min-height: 0;
+}
+
+.field.has-addons.databus-write-access-row {
+  width: 100%;
+  align-items: stretch;
+}
+.field.has-addons.databus-write-access-row .control {
+  display: flex;
+  align-items: stretch;
+}
+.field.has-addons.databus-write-access-row .control.databus-uri-prefix-control {
+  flex: 0 1 auto;
+  max-width: 55%;
+  min-width: 0;
+}
+.field.has-addons.databus-write-access-row .control.is-expanded {
+  flex: 1 1 0;
+  min-width: 6em;
+}
+.field.has-addons.databus-write-access-row .control:first-child:not(:only-child) .databus-uri-prefix {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.databus-uri-prefix {
+  display: inline-flex;
+  align-items: center;
+  height: 2.25em;
+  padding: calc(0.375em - 1px) calc(0.625em - 1px);
+  border: 1px solid hsl(0, 0%, 86%);
+  border-radius: 4px;
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: hsl(0, 0%, 96%);
+  color: hsl(0, 0%, 62%);
+  font-family: monospace;
+  box-shadow: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.secretary-lookup {
+  position: relative;
+}
+
+.secretary-matches {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid hsl(0, 0%, 86%);
+  border-radius: 4px;
+  max-height: 16em;
+  overflow: auto;
+}
+
+.secretary-match {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+}
+
+.secretary-match:hover {
+  background: hsl(0, 0%, 96%);
+}
+
+.secretary-match-name {
+  display: block;
+  color: hsl(0, 0%, 45%);
+  font-size: 0.85em;
+}
+
 .error-notification-box {
   background-color: #fdf2f2; /* very light red/pink background */
   border-left: 3px solid #f14668; /* Bulma 'danger' color */
@@ -12287,3 +12366,5 @@ databus-icon {
   margin-top: 0.75em;
   font-size: 0.9em;
 }
+
+/*# sourceMappingURL=website.css.map */

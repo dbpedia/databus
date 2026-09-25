@@ -22,7 +22,7 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
       RESOURCE_URI: resourceUri
     });
 
-    console.log(query);
+    // console.log(query);
     
 
     const headers = {

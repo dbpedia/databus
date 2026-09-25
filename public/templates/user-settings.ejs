@@ -178,29 +178,43 @@
         <div class="field">
           <label class="label">Secretaries</label>
 
-          <div class="box" ng-repeat="secretary in activeAccount.secretaries track by $index">
+          <div class="box" ng-repeat="(secIndex, secretary) in activeAccount.secretaries track by secIndex">
             <div class="field">
               <label class="label">Account</label>
-              <div class="control">
-                <input class="input" type="text" ng-model="secretary.accountName" placeholder="e.g. dbpedia">
+              <div class="secretary-lookup">
+                <input class="input" type="text" placeholder="Account name"
+                  ng-model="secretary.accountName"
+                  ng-change="onSecretaryInput(secretary)"
+                  ng-blur="hideSecretaryMatches(secretary)">
+                <div class="secretary-matches" ng-if="secretary.matches.length">
+                  <button type="button" class="secretary-match" ng-repeat="match in secretary.matches"
+                    ng-mousedown="$event.preventDefault()"
+                    ng-click="pickSecretary(secretary, match)">
+                    {{ match.name }}
+                    <span class="secretary-match-name" ng-if="match.label !== match.name">{{ match.label }}</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Write Access</label>
-              <div ng-repeat="ns in secretary.hasWriteAccessTo track by $index" class="field has-addons mb-2">
+              <div ng-repeat="(nsIndex, ns) in secretary.hasWriteAccessTo track by nsIndex" class="field has-addons databus-write-access-row mb-2">
+                <div class="control databus-uri-prefix-control">
+                  <span class="databus-uri-prefix" ng-attr-title="{{ getWriteAccessPrefix(activeAccount.accountName) }}">{{ getWriteAccessPrefix(activeAccount.accountName) }}</span>
+                </div>
                 <div class="control is-expanded">
-                  <input class="input" type="text" ng-model="secretary.hasWriteAccessTo[$index]"
-                    placeholder="Namespace IRI">
+                  <input class="input" type="text" ng-model="secretary.hasWriteAccessTo[nsIndex]"
+                    placeholder="e.g. datasets">
                 </div>
                 <div class="control">
-                  <button class="button is-danger" ng-click="removeNamespace(activeAccount, $index, $index)">
+                  <button class="button is-danger" ng-click="removeNamespace(activeAccount, secIndex, nsIndex)">
                     <span class="icon"><i class="fas fa-times"></i></span>
                   </button>
                 </div>
               </div>
               <div class="control">
-                <button class="button is-link" ng-click="addNamespace(activeAccount, $index)">
+                <button class="button is-link" ng-click="addNamespace(activeAccount, secIndex)">
                   <span class="icon"><i class="fas fa-plus"></i></span>
                   <span>Add Namespace</span>
                 </button>
@@ -209,7 +223,7 @@
 
             <div class="field is-grouped is-justify-content-flex-end">
               <div class="control">
-                <button class="button is-danger" ng-click="removeSecretary(activeAccount, $index)">Remove
+                <button class="button is-danger" ng-click="removeSecretary(activeAccount, secIndex)">Remove
                   Secretary</button>
               </div>
             </div>

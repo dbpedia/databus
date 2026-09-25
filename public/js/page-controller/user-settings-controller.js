@@ -63,18 +63,20 @@ function UserSettingsController($scope, $http, $sce, $location) {
         account.imageUrl = JsonldUtils.getProperty(personGraph, DatabusUris.FOAF_IMG);
         account.secretaries = [];
 
-        let accountGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_ACCOUNT);
-        let secretaryIds = JsonldUtils.getRefArrayProperty(accountGraph, DatabusUris.DATABUS_SECRETARY_PROPERTY);
+        let secretaryIds = JsonldUtils.getRefArrayProperty(personGraph, DatabusUris.DATABUS_SECRETARY_PROPERTY);
 
         for (let secretaryId of secretaryIds) {
           let secretaryGraph = JsonldUtils.getGraphById(graphs, secretaryId);
+          if (secretaryGraph == null) continue;
 
           let secretary = {};
-          secretary.accountName = DatabusUtils.uriToName(JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_ACCOUNT_PROPERTY));
+          secretary.accountName = JsonldUtils.getProperty(secretaryGraph, DatabusUris.DATABUS_AGENT);
           secretary.hasWriteAccessTo = JsonldUtils.getRefArrayProperty(secretaryGraph, DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO);
 
           account.secretaries.push(secretary);
         }
+
+        account.secretaries = DatabusUtils.secretariesForEdit(account.secretaries, account.accountName);
 
       })
       .catch(function (error) {
@@ -111,7 +113,9 @@ function UserSettingsController($scope, $http, $sce, $location) {
   // Button click handler to save account
   $scope.saveAccount = async function (account) {
     try {
-      await $http.post(`/api/account/update`, account);
+      var payload = DatabusUtils.createCleanCopy(account);
+      payload.secretaries = DatabusUtils.secretariesForSave(payload.secretaries, account.accountName);
+      await $http.post(`/api/account/update`, payload);
       DatabusAlert.alert($scope, true, "Account saved.");
 
     } catch (err) {
@@ -120,6 +124,12 @@ function UserSettingsController($scope, $http, $sce, $location) {
     }
 
   };
+
+  $scope.getWriteAccessPrefix = function (accountName) {
+    return DatabusUtils.getAccountNamespacePrefix(accountName);
+  };
+
+  DatabusUtils.bindSecretarySearch($scope, $http);
 
   // Button click handler to delete account
   $scope.deleteAccount = async function (account) {

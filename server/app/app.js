@@ -12,6 +12,7 @@ const ServerUtils = require('./common/utils/server-utils');
 const webdav = require('webdav-server').v2;
 const DatabusUtils = require("../../public/js/utils/databus-utils");
 var config = require("../config.json");
+const packageVersion = require("../version");
 const DatabusWebDAV = require("./api/webdav");
 var DatabusProtect = require('./common/protect/middleware');
 var serveIndex = require('serve-index');
@@ -31,7 +32,7 @@ var bannerColor = DatabusUtils.stringOrFallback(process.env.DATABUS_BANNER_COLOR
 // Set global app variables accessible in views and throughout the application
 app.locals = {
   databus: {
-    version: config.version,
+    version: packageVersion,
     colors: {
       banner: bannerColor
     },

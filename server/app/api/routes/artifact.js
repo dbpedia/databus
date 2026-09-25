@@ -6,59 +6,29 @@ const DatabusLogger = require("../../common/databus-logger");
 const UriUtils = require("../../common/utils/uri-utils");
 const getLinkedData = require("../../common/get-linked-data");
 const ArtifactWriter = require("../lib/artifact-writer");
+const publishResource = require("../lib/publish-resource");
 const jsonld = require('jsonld');
 var cors = require('cors');
 const sparql = require("../../common/queries/sparql");
 
 module.exports = function (router, protector) {
 
-  /**
-  * Publishing of artifacts via PUT request
- 
   router.put('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
 
     try {
-
       var artifactUri = UriUtils.createResourceUri([
         req.params.account,
         req.params.group,
         req.params.artifact
       ]);
 
-
-      var logger = new DatabusLogger(req.query['log-level']);
-      var graph = req.body;
-
-      // Expand JSONLD!
-      var expandedGraph = await jsonld.flatten(graph);
-
-      // Publish artifacts
-      var artifactGraph = JsonldUtils.getGraphById(expandedGraph, artifactUri);
-
-      if (artifactGraph == null) {
-        logger.error(null, `No graph ${artifactUri} found in the input.`, null);
-        res.status(400).json(logger.getReport());
-        return;
-      }
-
-      try {
-        var artifactWriter = new ArtifactWriter(logger);
-        await artifactWriter.writeResource(req.databus, expandedGraph, artifactUri);
-      }
-      catch (apiError) {
-        logger.error(apiError.resource, apiError.message, apiError.body);
-        res.status(apiError.statusCode).json(logger.getReport());
-        return;
-      }
-
-      res.status(200).json(logger.getReport())
+      await publishResource(req, res, ArtifactWriter, artifactUri);
 
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
     }
   });
- */
 
   router.get('/:account/:group/:artifact', ServerUtils.NOT_HTML_ACCEPTED, cors(), async function (req, res, next) {
 

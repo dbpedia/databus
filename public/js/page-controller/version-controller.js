@@ -120,6 +120,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
         }
       });
 
+
       var graphs = response.data;
       var versionGraph = JsonldUtils.getTypedGraph(graphs, DatabusUris.DATABUS_VERSION);
 
@@ -138,7 +139,7 @@ function VersionPageController($scope, $http, $sce, $location, collectionManager
           $scope.formData.version.wasDerivedFrom);
       }
 
-      var response = await $http.put(`/api/register`, graphs);
+      var response = await $http.post(`/api/register`, graphs);
 
       if (response.status == 200) {
         $scope.version.title = $scope.formData.version.title;

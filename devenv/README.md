@@ -50,6 +50,31 @@ ln -s ../../.githooks/pre-commit pre-commit
 cd ../..
 ```
 
+## Git workflow
+
+Feature work happens on a branch that is merged into `dev`. Small fixes are committed on `dev` directly.
+
+`server/package.json` field `version` is the release version. The web UI shows that string in the banner (top right).
+
+### Dev image
+
+A push to `dev` builds and pushes:
+
+- `ghcr.io/dbpedia/databus:dev`
+- `docker.io/dbpedia/databus:dev`
+
+### Release image
+
+A push to `main` reads `server/package.json` `version`. If no git tag with that name exists, the workflow builds `<version>` and `latest` on both `docker.io/dbpedia/databus` and `ghcr.io/dbpedia/databus`, and tags that commit with the same version. If the tag already exists, it does not build.
+
+Merging into `main` without a new version is a no-op for images. Bump `version` in `server/package.json` on the commit that should be released.
+
+To rebuild an existing version and move its git tag onto the current `main` commit, open Actions → **Release Docker image** → **Run workflow** (branch `main`).
+
+Docker Hub publishes need repo secrets `DBP_DOCKERHUB_CREDENTIAL_USERNAME` and `DBP_DOCKERHUB_CREDENTIAL_TOKEN_PUSHIMAGES`. The release job force-updates the version tag, so a ruleset must allow the Actions token to do that.
+
+The GitHub default branch is `main`. Updates to `main` go through a pull request. `dev` is still the integration branch.
+
 ## Building the Databus Docker Image
 
 The following instructions will build the docker image for the Databus Server. Only do this if you want to run the Databus as a dockerized application. If you want to run the Databus without docker, you can skip this section.
@@ -95,3 +120,14 @@ make srv-start_dbpedia_keycloak
 Each script contains a different configuration for a specific OIDC provider (Auth0 with Google Auth *or* DBpedia Login)
 
 **PLEASE NOTE:** The sample OIDC providers are a development setup and should never be used in production. Please use your own OIDC provider for authentication in production.
+
+## Running integration tests
+
+`npm test` starts an embedded Oxigraph store (gstore document API, SPARQL, SHACL, account search) and the databus server. No gstore, Virtuoso, or lookup containers.
+
+```
+cd ../server
+npm test
+```
+
+Optional repo-root [`.env`](../.env) OIDC settings are picked up when present. Otherwise the runner uses placeholders. `DATABUS_RESOURCE_BASE_URL` defaults to `http://localhost:3000`.

@@ -24,7 +24,8 @@ class CollectionWriter extends ResourceWriter {
       collectionGraph[DatabusUris.DCT_TITLE] = inputCollectionGraph[DatabusUris.DCT_TITLE];
     }
 
-    if(inputCollectionGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+    var description = JsonldUtils.getFirstProperty(inputCollectionGraph, DatabusUris.DCT_DESCRIPTION);
+    if (description != null) {
       collectionGraph[DatabusUris.DCT_DESCRIPTION] = inputCollectionGraph[DatabusUris.DCT_DESCRIPTION];
     }
 
@@ -34,7 +35,6 @@ class CollectionWriter extends ResourceWriter {
 
     var timeString = DatabusUtils.timeStringNow();
 
-    // Set times
     if (collectionGraph[DatabusUris.DCT_CREATED] == undefined) {
       collectionGraph[DatabusUris.DCT_CREATED] = [{}];
       collectionGraph[DatabusUris.DCT_CREATED][0][DatabusUris.JSONLD_TYPE] = DatabusUris.XSD_DATE_TIME;
@@ -49,10 +49,12 @@ class CollectionWriter extends ResourceWriter {
 
     collectionGraph[DatabusUris.DCT_MODIFIED] = inputCollectionGraph[DatabusUris.DCT_ISSUED];
 
-    if(inputCollectionGraph[DatabusUris.DCT_ABSTRACT] != null) {
+    var abstract = JsonldUtils.getFirstProperty(inputCollectionGraph, DatabusUris.DCT_ABSTRACT);
+    if (abstract != null) {
       collectionGraph[DatabusUris.DCT_ABSTRACT] = inputCollectionGraph[DatabusUris.DCT_ABSTRACT];
-    } else if (collectionGraph[DatabusUris.DCT_DESCRIPTION] != null) {
-      collectionGraph[DatabusUris.DCT_ABSTRACT] = DatabusUtils.createAbstractFromDescription(collectionGraph[DatabusUris.DCT_DESCRIPTION]);
+    } else if (description != null) {
+      JsonldUtils.setLiteral(collectionGraph, DatabusUris.DCT_ABSTRACT, null,
+        DatabusUtils.createAbstractFromDescription(description));
     }
 
     return [

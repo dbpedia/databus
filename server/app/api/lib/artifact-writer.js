@@ -24,14 +24,17 @@ class ArtifactWriter extends ResourceWriter {
       artifactGraph[DatabusUris.DCT_TITLE] = inputArtifactGraph[DatabusUris.DCT_TITLE];
     }
 
-    if(inputArtifactGraph[DatabusUris.DCT_DESCRIPTION] != null) {
+    var description = JsonldUtils.getFirstProperty(inputArtifactGraph, DatabusUris.DCT_DESCRIPTION);
+    if (description != null) {
       artifactGraph[DatabusUris.DCT_DESCRIPTION] = inputArtifactGraph[DatabusUris.DCT_DESCRIPTION];
     }
 
-    if(inputArtifactGraph[DatabusUris.DCT_ABSTRACT] != null) {
+    var abstract = JsonldUtils.getFirstProperty(inputArtifactGraph, DatabusUris.DCT_ABSTRACT);
+    if (abstract != null) {
       artifactGraph[DatabusUris.DCT_ABSTRACT] = inputArtifactGraph[DatabusUris.DCT_ABSTRACT];
-    } else if (artifactGraph[DatabusUris.DCT_DESCRIPTION] != null) {
-      artifactGraph[DatabusUris.DCT_ABSTRACT] = DatabusUtils.createAbstractFromDescription(artifactGraph[DatabusUris.DCT_DESCRIPTION]);
+    } else if (description != null) {
+      JsonldUtils.setLiteral(artifactGraph, DatabusUris.DCT_ABSTRACT, null,
+        DatabusUtils.createAbstractFromDescription(description));
     }
 
     var groupGraph = {};

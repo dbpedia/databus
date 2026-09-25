@@ -26,7 +26,9 @@ class JsonldUtils {
     graph[property] = [];
 
     var entry = {};
-    entry[DatabusUris.JSONLD_TYPE] = type;
+    if (type != null) {
+      entry[DatabusUris.JSONLD_TYPE] = type;
+    }
     entry[DatabusUris.JSONLD_VALUE] = value;
 
     graph[property].push(entry);

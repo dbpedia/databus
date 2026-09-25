@@ -3,31 +3,26 @@ const assert = require('uvu/assert');
 const rp = require('request-promise');
 const fs = require('fs');
 
-const test = suite('webDAV');
-
+const TestHarness = require('./utils/test-harness');
 const DatabusUserTestUtils = require('./utils/userdb-utils');
-const DatabusUserDatabase = require('../../userdb');
 const DatabusWebDAV = require('../api/webdav');
 const test_account = require('./templates/test-account.json');
-const ServerUtils = require('../common/utils/server-utils');
 
-/** @type {DatabusUserDatabase} */
+const test = suite('webDAV');
+
+/** @type {import('../../userdb')} */
 let db;
-
-/** @type {import('../api/webdav')} */
+/** @type {DatabusWebDAV} */
 let dav;
-
 /** @type {string} */
 let userDavDirectory;
 
 test.before(async () => {
-
-  ServerUtils.setupRequireExtensions();
-
-  db = new DatabusUserDatabase();
-  await db.connect();
-
-  await DatabusUserTestUtils.insertAccount(db, test_account);
+  db = await TestHarness.connectDb();
+  await TestHarness.setupMaster(db);
+  await TestHarness.deleteTestAccountIfExists();
+  await TestHarness.createTestAccount();
+  await DatabusUserTestUtils.insertApiKey(db, test_account);
 
   dav = new DatabusWebDAV();
   userDavDirectory = `${dav.directory}${test_account.ACCOUNT_NAME}`;
@@ -38,55 +33,40 @@ test.before(async () => {
 });
 
 test('MKCOL creates directory', async () => {
-  const options = {
+  const response = await rp({
     method: 'MKCOL',
     uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${test_account.ACCOUNT_NAME}/test/`,
-    headers: {
-      'x-api-key': test_account.APIKEY,
-    },
-  };
-
-  const response = await rp(options);
+    headers: { 'x-api-key': test_account.APIKEY },
+  });
   assert.is(response, '');
   assert.ok(fs.existsSync(userDavDirectory));
 });
 
 test('PUT uploads a file', async () => {
   const payload = JSON.stringify({ success: true });
-
-  const options = {
+  const response = await rp({
     method: 'PUT',
     uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${test_account.ACCOUNT_NAME}/test/upload.json`,
-    headers: {
-      'x-api-key': test_account.APIKEY,
-    },
+    headers: { 'x-api-key': test_account.APIKEY },
     body: payload,
-  };
-
-  const response = await rp(options);
+  });
   assert.is(response, '');
-
   assert.ok(fs.existsSync(`${userDavDirectory}/test/upload.json`));
 });
 
 test('DELETE empties directory', async () => {
-  const options = {
+  const response = await rp({
     method: 'DELETE',
     uri: `${process.env.DATABUS_RESOURCE_BASE_URL}/dav/${test_account.ACCOUNT_NAME}/test/`,
-    headers: {
-      'x-api-key': test_account.APIKEY,
-    },
-  };
-
-  const response = await rp(options);
+    headers: { 'x-api-key': test_account.APIKEY },
+  });
   assert.is(response, '');
-
   const files = fs.existsSync(userDavDirectory) ? fs.readdirSync(userDavDirectory) : [];
   assert.is(files.length, 0);
 });
 
 test.after(async () => {
-  await DatabusUserTestUtils.deleteUser(db, test_account);
+  await TestHarness.standardAfter(db);
   if (fs.existsSync(userDavDirectory)) {
     fs.rmSync(userDavDirectory, { recursive: true, force: true });
   }

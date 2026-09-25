@@ -1,6 +1,6 @@
 {
   "name": "databus-server",
-  "version": "0.0.0",
+  "version": "2.1.4",
   "private": true,
   "scripts": {
     "start": "node ./www",
@@ -65,6 +65,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "oxigraph": "^0.5.11",
     "uvu": "^0.5.6"
   }
 }
