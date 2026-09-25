@@ -78,6 +78,15 @@ class TestHarness {
 
   static async setupMaster(db) {
     await DatabusUserTestUtils.insertAccount(db, master_account);
+    const JsonldLoader = require('../../common/utils/jsonld-loader');
+    const AccountUtils = require('../../common/utils/account-utils');
+    const GstoreResource = require('../../api/lib/gstore-resource');
+    JsonldLoader.initialize();
+    const uri = `${baseUrl()}/${master_account.ACCOUNT_NAME}`;
+    const content = await AccountUtils.createAccountGraphs(
+      uri, master_account.ACCOUNT_NAME, master_account.DISPLAYNAME, null, null, null,
+    );
+    await new GstoreResource(uri, content).save();
   }
 
   static async deleteTestAccountIfExists() {

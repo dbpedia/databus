@@ -58,9 +58,7 @@ module.exports = function (router, protector) {
       let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, null, null, null);
 
       let gstoreResource = new GstoreResource(accountUri, content);
-      let status = await gstoreResource.save();
-
-      console.log(status);
+      await gstoreResource.save();
       res.status(200).send('Account created.');
 
       if (process.send != undefined) {
@@ -110,9 +108,7 @@ module.exports = function (router, protector) {
       let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, imageUrl, secretaries, accountStatus);
 
       let gstoreResource = new GstoreResource(accountUri, content);
-      let status = await gstoreResource.save();
-
-      console.log(status);
+      await gstoreResource.save();
       res.status(200).send('Account saved.');
 
       if (process.send != undefined) {

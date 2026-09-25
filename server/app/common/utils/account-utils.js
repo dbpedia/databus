@@ -8,7 +8,7 @@ const ServerUtils = require('./server-utils');
 
 class AccountUtils {
 
-  static isUriUnderPrefix(resourceUri, prefixUri) {
+  static hasPrefix(resourceUri, prefixUri) {
     return resourceUri === prefixUri || resourceUri.startsWith(`${prefixUri}/`);
   }
 
@@ -21,12 +21,16 @@ class AccountUtils {
     return entries.map(entry => entry[DatabusUris.JSONLD_ID] || entry).filter(Boolean);
   }
 
-  static isResourceUnderWriteAccess(resourceUri, writeAccessUris) {
-    if (writeAccessUris.length === 0) {
+  static hasWriteAccess(resourceOrReq, writeAccessOrAccount, resourceUri) {
+    if (typeof resourceOrReq !== 'string') {
+      return AccountUtils.requestHasWriteAccess(resourceOrReq, writeAccessOrAccount, resourceUri);
+    }
+
+    if (writeAccessOrAccount.length === 0) {
       return true;
     }
 
-    return writeAccessUris.some(prefix => AccountUtils.isUriUnderPrefix(resourceUri, prefix));
+    return writeAccessOrAccount.some(prefix => AccountUtils.hasPrefix(resourceOrReq, prefix));
   }
 
   static toPersonWebId(accountOrWebId) {
@@ -57,7 +61,7 @@ class AccountUtils {
       return false;
     }
 
-    return AccountUtils.isResourceUnderWriteAccess(resourceUri, AccountUtils.getWriteAccessUris(secretaryGraph));
+    return AccountUtils.hasWriteAccess(resourceUri, AccountUtils.getWriteAccessUris(secretaryGraph));
   }
 
   static resourceUriFromRequest(req) {
@@ -175,7 +179,7 @@ class AccountUtils {
     return null;
   }
 
-  static async hasWriteAccess(req, accountName, resourceUri) {
+  static async requestHasWriteAccess(req, accountName, resourceUri) {
     var accounts = req.databus.accounts;
     let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
 
@@ -185,7 +189,7 @@ class AccountUtils {
 
     const onBehalfOf = req.headers['x-on-behalf-of'];
     const principalWebId = AccountUtils.toPersonWebId(accountUri);
-    if (onBehalfOf && onBehalfOf !== principalWebId) {
+    if (onBehalfOf && AccountUtils.toPersonWebId(onBehalfOf) !== principalWebId) {
       return false;
     }
 
@@ -283,11 +287,11 @@ class AccountUtils {
 
 if (typeof process !== 'undefined' && require.main === module) {
   const base = 'https://databus.example.org/myorg';
-  console.assert(AccountUtils.isUriUnderPrefix(`${base}/datasets`, `${base}/datasets`));
-  console.assert(AccountUtils.isUriUnderPrefix(`${base}/datasets/artifact/1.0.0`, `${base}/datasets`));
-  console.assert(!AccountUtils.isUriUnderPrefix(`${base}/other`, `${base}/datasets`));
-  console.assert(AccountUtils.isResourceUnderWriteAccess(`${base}/datasets/x`, []));
-  console.assert(!AccountUtils.isResourceUnderWriteAccess(`${base}/other`, [`${base}/datasets`]));
+  console.assert(AccountUtils.hasPrefix(`${base}/datasets`, `${base}/datasets`));
+  console.assert(AccountUtils.hasPrefix(`${base}/datasets/artifact/1.0.0`, `${base}/datasets`));
+  console.assert(!AccountUtils.hasPrefix(`${base}/other`, `${base}/datasets`));
+  console.assert(AccountUtils.hasWriteAccess(`${base}/datasets/x`, []));
+  console.assert(!AccountUtils.hasWriteAccess(`${base}/other`, [`${base}/datasets`]));
   console.assert(AccountUtils.toPersonWebId(`${base}`) === `${base}#this`);
   console.assert(AccountUtils.toPersonWebId(`${base}#this`) === `${base}#this`);
   const prevBase = process.env.DATABUS_RESOURCE_BASE_URL;

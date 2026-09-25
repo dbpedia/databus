@@ -6,6 +6,7 @@
     "hasVersion": "%VERSION%",
     "title": "Test Version",
     "description": "Data for testing purposes.",
+    "publisher": "%DATABUS_RESOURCE_BASE_URL%/%ACCOUNT%#this",
     "license": "http://creativecommons.org/licenses/by/4.0/",
     "distribution": [
       {
