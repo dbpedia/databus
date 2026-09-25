@@ -1,5 +1,6 @@
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 const Constants = require('../../common/constants.js');
 const DatabusUris = require('../../../../public/js/utils/databus-uris');
 var sparql = require('../../common/queries/sparql');
@@ -54,7 +55,7 @@ module.exports = function (router, protector) {
         req.params.collection
       ]);
 
-      if (!(await ServerUtils.hasWriteAccess(req, req.params.account, collectionUri))) {
+      if (!(await AccountUtils.hasWriteAccess(req, req.params.account, collectionUri))) {
         res.status(403).send('You cannot edit collections in a foreign namespace.\n');
         return;
       }

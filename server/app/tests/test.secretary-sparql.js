@@ -3,6 +3,7 @@ const assert = require('uvu/assert');
 const axios = require('axios');
 const exec = require('../common/execute-query');
 const ServerUtils = require('../common/utils/server-utils');
+const AccountUtils = require('../common/utils/account-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
 
 ServerUtils.setupRequireExtensions();
@@ -59,7 +60,7 @@ test('same-host secretary is resolved from sparql when the account url fetch fai
       fetched = true;
       throw new Error('client certificate required');
     },
-    () => ServerUtils.hasWriteAccess(request(), bossName, resourceUri),
+    () => AccountUtils.hasWriteAccess(request(), bossName, resourceUri),
   );
   assert.ok(allowed);
   assert.is(fetched, false);
@@ -79,7 +80,7 @@ test('sparql failure falls back to fetching the account url', async () => {
       fetched = true;
       return { data: expanded };
     },
-    () => ServerUtils.hasWriteAccess(request(), bossName, resourceUri),
+    () => AccountUtils.hasWriteAccess(request(), bossName, resourceUri),
   );
   assert.ok(allowed);
   assert.is(fetched, true);
@@ -96,7 +97,7 @@ test('sparql write-access rows are combined and the account url is not fetched',
       fetched = true;
       throw new Error('should not fetch');
     },
-    () => ServerUtils.hasWriteAccess(request(), bossName, `${resourceUri}/artifact`),
+    () => AccountUtils.hasWriteAccess(request(), bossName, `${resourceUri}/artifact`),
   );
   assert.ok(allowed);
   assert.is(fetched, false);

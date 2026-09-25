@@ -10,7 +10,7 @@ const DatabusLogger = require('./app/common/databus-logger.js');
 const DatabusLogLevel = require('./app/common/databus-log-level.js');
 const DatabusUris = require('../public/js/utils/databus-uris.js');
 const GstoreResource = require('./app/api/lib/gstore-resource.js');
-const ServerUtils = require('./app/common/utils/server-utils.js');
+const AccountUtils = require('./app/common/utils/account-utils.js');
 
 
 async function verifyAccountIntegrity(indexer) {
@@ -53,7 +53,7 @@ async function verifyAccountIntegrity(indexer) {
         }
 
         console.log(`Creating account { name: ${account.accountName}, label: ${accountLabel}, img: ${accountImg} }`);
-        var accountJsonLd = await ServerUtils.createAccountGraphs(
+        var accountJsonLd = await AccountUtils.createAccountGraphs(
           accountUri, account.accountName, accountLabel, accountImg, null, null);
 
         

@@ -5,7 +5,7 @@ const signer = require('./databus-tractate-suite.js');
 const shaclTester = require('../../common/shacl-tester.js');
 const jsonld = require('jsonld');
 const constructor = require('../../common/execute-construct.js');
-const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 const constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
 const autocompleter = require('./dataid-autocomplete.js');
 const fileAnalyzer = require('../../common/file-analyzer.js');
@@ -236,7 +236,7 @@ class VersionWriter extends ResourceWriter {
     var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
     var accountUri = this.resource.getAccountURI();
 
-    var datasetPublisherUri = await ServerUtils.actorWebId(this.req, accountUri, this.uri);
+    var datasetPublisherUri = await AccountUtils.actorWebId(this.req, accountUri, this.uri);
     if (datasetPublisherUri == null) {
       throw new ApiError(403, this.uri,
         `Authenticated user cannot publish for <${accountUri}>.`, null);

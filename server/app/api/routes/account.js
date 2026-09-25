@@ -4,6 +4,7 @@ const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 var cors = require('cors');
 const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var GstoreHelper = require('../../common/utils/gstore-helper');
@@ -54,7 +55,7 @@ module.exports = function (router, protector) {
 
     try {
       let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      let content = await ServerUtils.createAccountGraphs(accountUri, accountName, accountLabel, null, null, null);
+      let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, null, null, null);
 
       let gstoreResource = new GstoreResource(accountUri, content);
       let status = await gstoreResource.save();
@@ -106,7 +107,7 @@ module.exports = function (router, protector) {
       var imageUrl = req.body.imageUrl;
       var secretaries = req.body.secretaries;
       let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      let content = await ServerUtils.createAccountGraphs(accountUri, accountName, accountLabel, imageUrl, secretaries, accountStatus);
+      let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, imageUrl, secretaries, accountStatus);
 
       let gstoreResource = new GstoreResource(accountUri, content);
       let status = await gstoreResource.save();

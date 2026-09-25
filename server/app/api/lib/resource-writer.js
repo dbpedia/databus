@@ -7,7 +7,7 @@ const shaclTester = require('../../common/shacl-tester');
 const jsonld = require('jsonld');
 const JsonldLoader = require('../../common/utils/jsonld-loader');
 const DatabusResource = require('../../common/databus-resource');
-const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 
 /**
  * Base class for all writers:
@@ -131,7 +131,7 @@ class ResourceWriter {
    * Validates user account name against the resource identifiers
    */
   async onValidateUser(req) {
-    if (await ServerUtils.hasWriteAccess(req, this.resource.account, this.uri)) {
+    if (await AccountUtils.hasWriteAccess(req, this.resource.account, this.uri)) {
       return;
     }
 

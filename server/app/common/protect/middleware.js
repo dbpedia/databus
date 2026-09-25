@@ -18,6 +18,7 @@ const Constants = require('../constants');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusUserDatabase = require('../../../userdb');
 const ServerUtils = require('../utils/server-utils');
+const AccountUtils = require('../utils/account-utils');
 
 function webIdsFromAccounts(accounts) {
   if (!Array.isArray(accounts)) return [];
@@ -235,7 +236,7 @@ class DatabusProtect {
         return;
       }
 
-      if (!(await ServerUtils.hasWriteAccess(req, req.params.account, ServerUtils.resourceUriFromRequest(req)))) {
+      if (!(await AccountUtils.hasWriteAccess(req, req.params.account, AccountUtils.resourceUriFromRequest(req)))) {
         res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
         return;
       }
