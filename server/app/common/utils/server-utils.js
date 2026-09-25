@@ -1,12 +1,5 @@
 var ASN1 = require('asn1js');
 const fs = require('fs');
-const axios = require('axios');
-const jsonld = require('jsonld');
-const DatabusResource = require('../databus-resource');
-const DatabusUris = require('../../../../public/js/utils/databus-uris');
-const DatabusConstants = require('../../../../public/js/utils/databus-constants');
-const UriUtils = require('./uri-utils');
-const Constants = require('../constants');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const { HttpProxyAgent } = require('http-proxy-agent');
 
@@ -185,6 +178,7 @@ class ServerUtils {
 
       if (req.databus != undefined) {
         result.info.accounts = req.databus.accounts;
+        result.info.webIds = req.databus.webIds;
         result.info.oidc_name = req.databus.oidc_name;
         result.info.oidc_email = req.databus.oidc_email;
         result.info.apiKeys = req.databus.apiKeys;
@@ -262,186 +256,6 @@ class ServerUtils {
 
   }
 
-
-  static isUriUnderPrefix(resourceUri, prefixUri) {
-    return resourceUri === prefixUri || resourceUri.startsWith(`${prefixUri}/`);
-  }
-
-  static getWriteAccessUris(secretaryGraph) {
-    const entries = secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO];
-    if (entries == null || entries.length === 0) {
-      return [];
-    }
-
-    return entries.map(entry => entry[DatabusUris.JSONLD_ID] || entry).filter(Boolean);
-  }
-
-  static isResourceUnderWriteAccess(resourceUri, writeAccessUris) {
-    if (writeAccessUris.length === 0) {
-      return true;
-    }
-
-    return writeAccessUris.some(prefix => ServerUtils.isUriUnderPrefix(resourceUri, prefix));
-  }
-
-  static secretaryAllowsWrite(accounts, secretaryGraph, resourceUri) {
-    const accountNode = secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY]?.[0];
-    if (accountNode == null) {
-      return false;
-    }
-
-    const accountResource = new DatabusResource(accountNode[DatabusUris.JSONLD_ID]);
-    if (!accountResource.isAccount()) {
-      return false;
-    }
-
-    const secretaryName = accountResource.getAccount();
-    if (accounts == null || !accounts.some(acc => acc.accountName == secretaryName)) {
-      return false;
-    }
-
-    return ServerUtils.isResourceUnderWriteAccess(resourceUri, ServerUtils.getWriteAccessUris(secretaryGraph));
-  }
-
-  static resourceUriFromRequest(req) {
-    if (req.params.collection != null) {
-      return UriUtils.createResourceUri([
-        req.params.account,
-        Constants.DATABUS_COLLECTIONS_GROUP_IDENTIFIER,
-        req.params.collection,
-      ]);
-    }
-
-    return UriUtils.fromRequest(req);
-  }
-
-  static async hasWriteAccess(req, accountName, resourceUri) {
-    var accounts = req.databus.accounts;
-    let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-
-    if (accounts != null && accounts.some(acc => acc.accountName == accountName)) {
-      return true;
-    }
-
-    const onBehalfOf = req.headers['x-on-behalf-of'];
-    const targetUri = resourceUri || accountUri;
-
-    if (onBehalfOf && onBehalfOf == accountUri) {
-      try {
-        const response = await axios.get(onBehalfOf, {
-          headers: {
-            'Content-Type': 'application/ld+json',
-            'Accept': 'application/ld+json'
-          }
-        });
-
-        const expanded = await jsonld.expand(response.data);
-        const secretaryGraphs = expanded.flatMap(e => e[DatabusUris.DATABUS_SECRETARY_PROPERTY] || []);
-
-        for (var secretaryGraph of secretaryGraphs) {
-          if (ServerUtils.secretaryAllowsWrite(accounts, secretaryGraph, targetUri)) {
-            return true;
-          }
-        }
-
-      } catch (_) {
-        // fall through to error below
-      }
-    }
-
-    return false;
-  }
-
-  static async createAccountGraphs(uri, name, label, img, secretaries, status) {
-
-
-    const signer = require('../../api/lib/databus-tractate-suite');
-    const JsonldLoader = require('./jsonld-loader');
-    const jsonld = require('jsonld');
-    const UriUtils = require('./uri-utils');
-    const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
-
-    var name = UriUtils.uriToName(uri);
-
-    var rsaKeyGraph = {};
-    rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
-    rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
-    rsaKeyGraph[DatabusUris.CERT_MODULUS] = signer.getModulus();
-    rsaKeyGraph[DatabusUris.CERT_EXPONENT] = 65537;
-
-    var personUri = `${uri}${DatabusConstants.WEBID_THIS}`;
-
-    var personGraph = {};
-    personGraph[DatabusUris.JSONLD_ID] = personUri;
-    personGraph[DatabusUris.JSONLD_TYPE] = [DatabusUris.FOAF_PERSON, DatabusUris.DBP_DBPEDIAN];
-    personGraph[DatabusUris.FOAF_ACCOUNT] = JsonldUtils.refTo(uri);
-    personGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = uri;
-    personGraph[DatabusUris.CERT_KEY] = [rsaKeyGraph];
-    personGraph[DatabusUris.FOAF_NAME] = label;
-
-    if (img != null) {
-      personGraph[DatabusUris.FOAF_IMG] = img;
-    }
-
-    if (status != null) {
-      personGraph[DatabusUris.FOAF_STATUS] = status;
-    }
-
-    var profileUri = `${uri}${DatabusConstants.WEBID_DOCUMENT}`;
-
-    var profileDocumentGraph = {};
-    profileDocumentGraph[DatabusUris.JSONLD_ID] = profileUri;
-    profileDocumentGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
-    profileDocumentGraph[DatabusUris.FOAF_MAKER] = JsonldUtils.refTo(personUri);
-    profileDocumentGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = JsonldUtils.refTo(personUri);
-
-    var accountGraph = {}
-    accountGraph[DatabusUris.JSONLD_ID] = uri;
-    accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
-    accountGraph[DatabusUris.FOAF_ACCOUNT_NAME] = name;
-    accountGraph[DatabusUris.DATABUS_NAME] = name;
-
-    if (secretaries != null) {
-
-      accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
-
-      for (var secretary of secretaries) {
-
-        let secretaryAccountUri = `${secretary.accountName}`;
-
-        let secretaryGraph = {};
-        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
-        secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(secretaryAccountUri);
-
-        if (secretary.hasWriteAccessTo != undefined) {
-          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
-
-          for (var writeAccess of secretary.hasWriteAccessTo) {
-            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
-          }
-        }
-
-        accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
-      }
-    }
-
-    let expandedGraphs = [
-      accountGraph,
-      personGraph,
-      profileDocumentGraph
-    ];
-
-    return await jsonld.compact(expandedGraphs, JsonldLoader.DEFAULT_CONTEXT_URL);
-  }
-}
-
-if (typeof process !== 'undefined' && require.main === module) {
-  const base = 'https://databus.example.org/myorg';
-  console.assert(ServerUtils.isUriUnderPrefix(`${base}/datasets`, `${base}/datasets`));
-  console.assert(ServerUtils.isUriUnderPrefix(`${base}/datasets/artifact/1.0.0`, `${base}/datasets`));
-  console.assert(!ServerUtils.isUriUnderPrefix(`${base}/other`, `${base}/datasets`));
-  console.assert(ServerUtils.isResourceUnderWriteAccess(`${base}/datasets/x`, []));
-  console.assert(!ServerUtils.isResourceUnderWriteAccess(`${base}/other`, [`${base}/datasets`]));
 }
 
 module.exports = ServerUtils

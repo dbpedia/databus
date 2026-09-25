@@ -1,8 +1,44 @@
 const DatabusCollectionUtils = require("../collections/databus-collection-utils");
 var markdownit = require('markdown-it');
 const moment = require("moment/moment");
+const fuzzysort = require("fuzzysort");
+const DatabusSparqlClient = require("../publish/databus-sparql-client");
 const DatabusUris = require("./databus-uris");
 const ApiError = require("../../../server/app/common/utils/api-error");
+
+let accountIndexPromise = null;
+
+function accountIndex($http) {
+  if (accountIndexPromise) return accountIndexPromise;
+  const client = new DatabusSparqlClient($http);
+  accountIndexPromise = client.runQuery(`
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX databus: <https://dataid.dbpedia.org/databus#>
+    SELECT DISTINCT ?account ?name ?label WHERE {
+      GRAPH ?g {
+        ?account a databus:Account .
+        ?account foaf:accountName ?name .
+        FILTER(STRSTARTS(STR(?account), "${DATABUS_RESOURCE_BASE_URL}/"))
+        OPTIONAL { ?person foaf:account ?account ; foaf:name ?label }
+      }
+    }
+  `).then(function (rows) {
+    const byName = new Map();
+    for (const row of rows) {
+      const name = row.name && row.name.value;
+      const account = row.account && row.account.value;
+      if (!name || !account || byName.has(name)) continue;
+      const label = row.label && row.label.value;
+      byName.set(name, {
+        name: name,
+        label: label && label !== name ? label : name,
+        uri: account.includes('#') ? account : `${account}#this`,
+      });
+    }
+    return Array.from(byName.values());
+  });
+  return accountIndexPromise;
+}
 
 class DatabusUtils {
 
@@ -291,14 +327,14 @@ class DatabusUtils {
     const trimmed = accountUri.trim();
     const prefix = DatabusUtils.getDatabusAccountPrefix();
     if (trimmed.startsWith(prefix)) {
-      return trimmed.slice(prefix.length).replace(/\/+$/, '');
+      return trimmed.slice(prefix.length).replace(/\/+$/, '').replace(/#this$/, '');
     }
 
     if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-      return DatabusUtils.uriToName(trimmed);
+      return DatabusUtils.uriToName(trimmed.replace(/#this$/, ''));
     }
 
-    return trimmed;
+    return trimmed.replace(/#this$/, '');
   }
 
   static toAbsoluteAccountUri(accountName) {
@@ -361,6 +397,61 @@ class DatabusUtils {
     return DatabusUtils.getAccountNamespacePrefix(accountName) + trimmed.replace(/^\/+/, '');
   }
 
+  static toSecretaryUri(value) {
+    if (value == null) return null;
+    const trimmed = String(value).trim();
+    if (trimmed === '') return null;
+    if (/^https?:\/\//i.test(trimmed)) {
+      if (trimmed.includes('#')) return trimmed;
+      if (trimmed.startsWith(DATABUS_RESOURCE_BASE_URL)) {
+        const path = trimmed.slice(DATABUS_RESOURCE_BASE_URL.length).replace(/^\/+|\/+$/g, '');
+        if (path && !path.includes('/')) return `${DATABUS_RESOURCE_BASE_URL}/${path}#this`;
+      }
+      return trimmed;
+    }
+    return `${DATABUS_RESOURCE_BASE_URL}/${trimmed.replace(/^\/+|\/+$/g, '')}#this`;
+  }
+
+  static bindSecretarySearch($scope, $http) {
+    $scope.onSecretaryInput = async function (secretary) {
+      const query = (secretary.accountName || '').trim();
+      if (!query || /^https?:\/\//i.test(query)) {
+        secretary.matches = [];
+        return;
+      }
+      try {
+        const accounts = await accountIndex($http);
+        const q = query.toLowerCase();
+        secretary.matches = fuzzysort.go(query, accounts, {
+          keys: ['name', 'label'],
+          limit: 8,
+          threshold: 0.5,
+          scoreFn: function (hit) {
+            if (q.length >= 3) return hit.score;
+            const name = hit.obj.name.toLowerCase();
+            const label = hit.obj.label.toLowerCase();
+            return name.startsWith(q) || label.startsWith(q) ? hit.score : 0;
+          },
+        }).map(function (hit) { return hit.obj; });
+      } catch (err) {
+        secretary.matches = [];
+      }
+      $scope.$applyAsync();
+    };
+
+    $scope.pickSecretary = function (secretary, match) {
+      secretary.accountName = match.uri;
+      secretary.matches = [];
+    };
+
+    $scope.hideSecretaryMatches = function (secretary) {
+      setTimeout(function () {
+        secretary.matches = [];
+        $scope.$applyAsync();
+      }, 150);
+    };
+  }
+
   static secretariesForEdit(secretaries, accountName) {
     if (secretaries == null) {
       return [];
@@ -368,7 +459,7 @@ class DatabusUtils {
 
     return secretaries.map(function (secretary) {
       return {
-        accountName: DatabusUtils.toRelativeAccountName(secretary.accountName),
+        accountName: secretary.accountName == null ? '' : String(secretary.accountName).trim(),
         hasWriteAccessTo: (secretary.hasWriteAccessTo || []).map(function (uri) {
           return DatabusUtils.toRelativeWriteAccessUri(uri, accountName);
         })
@@ -383,7 +474,7 @@ class DatabusUtils {
 
     return secretaries.map(function (secretary) {
       return {
-        accountName: DatabusUtils.toAbsoluteAccountUri(secretary.accountName),
+        accountName: DatabusUtils.toSecretaryUri(secretary.accountName),
         hasWriteAccessTo: (secretary.hasWriteAccessTo || [])
           .map(function (uri) {
             return DatabusUtils.toAbsoluteWriteAccessUri(uri, accountName);
@@ -521,8 +612,19 @@ class DatabusUtils {
       return null;
     }
 
-    var markdownParser = markdownit();
-    return markdownParser.render(markdown);
+    if (Array.isArray(markdown)) {
+      return markdown.map(item => this.renderMarkdown(item)).filter(html => html != null).join('');
+    }
+
+    try {
+      return markdownit().render(markdown);
+    } catch (err) {
+      return String(markdown)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+    }
   }
 
   /**
@@ -664,6 +766,12 @@ if (typeof process !== 'undefined' && require.main === module) {
   );
   console.assert(
     DatabusUtils.toAbsoluteAccountUri('alice') === 'https://databus.example.org/alice'
+  );
+  console.assert(
+    DatabusUtils.secretariesForEdit(
+      [{ accountName: 'https://databus.example.org/alice#this', hasWriteAccessTo: [] }],
+      'myorg'
+    )[0].accountName === 'https://databus.example.org/alice#this'
   );
 }
 

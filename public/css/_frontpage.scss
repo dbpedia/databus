@@ -10,7 +10,11 @@
     border-radius: 20px;
     padding: 0px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.18s ease;
+}
 
+.frontpage-box-frame:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .frontpage-box {
@@ -34,22 +38,6 @@
     background-color: $entity-version;
 }
 
-
-$frontpage-box-scale-time: 0.4s;
-$frontpage-box-scale-amount: -4px;
-
-.frontpage-box:hover {
-    -moz-transform: translateY($frontpage-box-scale-amount);
-    -webkit-transform: translateY($frontpage-box-scale-amount);
-    -o-transform: translateY($frontpage-box-scale-amount);
-    -ms-transform: translateY($frontpage-box-scale-amount);
-    -webkit-transform: translateY($frontpage-box-scale-amount);
-    transform: translateY($frontpage-box-scale-amount);
-
-    -webkit-transition: transform $frontpage-box-scale-time ease-out;
-    -moz-transition: transform $frontpage-box-scale-time ease-out;
-    -ms-transition: transform $frontpage-box-scale-time ease-out;
-}
 
 .frontpage-box-arrow {
     position: absolute;

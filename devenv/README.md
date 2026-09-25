@@ -65,7 +65,7 @@ A push to `dev` builds and pushes:
 
 ### Release image
 
-A push to `main` reads `server/package.json` `version`. If no git tag with that name exists, the workflow builds `docker.io/dbpedia/databus:<version>` and tags that commit with the same version. If the tag already exists, it does not build.
+A push to `main` reads `server/package.json` `version`. If no git tag with that name exists, the workflow builds `<version>` and `latest` on both `docker.io/dbpedia/databus` and `ghcr.io/dbpedia/databus`, and tags that commit with the same version. If the tag already exists, it does not build.
 
 Merging into `main` without a new version is a no-op for images. Bump `version` in `server/package.json` on the commit that should be released.
 
@@ -73,7 +73,7 @@ To rebuild an existing version and move its git tag onto the current `main` comm
 
 Docker Hub publishes need repo secrets `DBP_DOCKERHUB_CREDENTIAL_USERNAME` and `DBP_DOCKERHUB_CREDENTIAL_TOKEN_PUSHIMAGES`. The release job force-updates the version tag, so a ruleset must allow the Actions token to do that.
 
-The GitHub default branch is still `master`. Release publishing starts once `main` exists.
+The GitHub default branch is `main`. Updates to `main` go through a pull request. `dev` is still the integration branch.
 
 ## Building the Databus Docker Image
 
@@ -123,24 +123,11 @@ Each script contains a different configuration for a specific OIDC provider (Aut
 
 ## Running integration tests
 
-Integration tests require the backing services (gstore, Virtuoso, lookup). Start them first:
-
-```
-make env-start
-```
-
-Ensure the repo root [`.env`](../.env) contains your OIDC settings (copied from `.vscode/launch.json` is fine). The test runner loads that file and expects:
-
-- `DATABUS_RESOURCE_BASE_URL` (default `http://localhost:3000`)
-- `DATABUS_DATABASE_URL` (default `http://localhost:3002`)
-- `LOOKUP_BASE_URL` (default `http://localhost:3004`)
-- `DATABUS_OIDC_ISSUER_BASE_URL`, `DATABUS_OIDC_CLIENT_ID`, `DATABUS_OIDC_SECRET`
-
-Then run the suite from the server directory:
+`npm test` starts an embedded Oxigraph store (gstore document API, SPARQL, SHACL, account search) and the databus server. No gstore, Virtuoso, or lookup containers.
 
 ```
 cd ../server
 npm test
 ```
 
-Or use the **Run Tests** launch configuration in VS Code, which sets the same variables.
+Optional repo-root [`.env`](../.env) OIDC settings are picked up when present. Otherwise the runner uses placeholders. `DATABUS_RESOURCE_BASE_URL` defaults to `http://localhost:3000`.

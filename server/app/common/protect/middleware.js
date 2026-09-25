@@ -15,8 +15,18 @@ const { ProxyAgent } = require('proxy-agent');
 
 var fs = require('fs');
 const Constants = require('../constants');
+const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const DatabusUserDatabase = require('../../../userdb');
 const ServerUtils = require('../utils/server-utils');
+const AccountUtils = require('../utils/account-utils');
+
+function webIdsFromAccounts(accounts) {
+  if (!Array.isArray(accounts)) return [];
+  const base = process.env.DATABUS_RESOURCE_BASE_URL;
+  return accounts
+    .filter(acc => acc && acc.accountName)
+    .map(acc => `${base}/${acc.accountName}${DatabusConstants.WEBID_THIS}`);
+}
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -226,7 +236,7 @@ class DatabusProtect {
         return;
       }
 
-      if (!(await ServerUtils.hasWriteAccess(req, req.params.account, ServerUtils.resourceUriFromRequest(req)))) {
+      if (!(await AccountUtils.hasWriteAccess(req, req.params.account, AccountUtils.resourceUriFromRequest(req)))) {
         res.status(403).send(Constants.MESSAGE_WRONG_NAMESPACE);
         return;
       }
@@ -339,6 +349,7 @@ class DatabusProtect {
       if (accounts != undefined) {
         req.databus.userId = userId;
         req.databus.accounts = accounts;
+        req.databus.webIds = webIdsFromAccounts(accounts);
       }
 
       console.log(`PROTECT Authenticated request by \x1b[32m${userId}\x1b[0m: \x1b[36m${req.url}\x1b[0m`);
@@ -365,6 +376,7 @@ class DatabusProtect {
           req.databus.userId = apiTokenUser.userId;
           req.databus.authenticated = true;
           req.databus.accounts = apiTokenUser.accounts;
+          req.databus.webIds = webIdsFromAccounts(apiTokenUser.accounts);
 
           return next();
         }
@@ -450,6 +462,7 @@ class DatabusProtect {
       request.databus.userId = apiTokenUser.userId;
       request.databus.authenticated = true;
       request.databus.accounts = apiTokenUser.accounts;
+      request.databus.webIds = webIdsFromAccounts(apiTokenUser.accounts);
       request.databus.roles = [ requiredRole ];
       return next();
     }

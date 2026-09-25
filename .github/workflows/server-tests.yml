@@ -4,13 +4,11 @@ on:
   push:
     paths:
       - 'server/**'
-      - 'docker-compose.yml'
       - 'search/**'
       - '.github/workflows/server-tests.yml'
   pull_request:
     paths:
       - 'server/**'
-      - 'docker-compose.yml'
       - 'search/**'
 
 jobs:
@@ -25,33 +23,16 @@ jobs:
 
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: npm install
 
-      - name: Start backing services
-        run: docker compose up -d gstore virtuoso lookup
-
-      - name: Wait for gstore
-        run: |
-          for i in $(seq 1 60); do
-            curl -sf -o /dev/null http://localhost:3002/ && exit 0
-            sleep 2
-          done
-          exit 1
-
-      - name: Wait for lookup
-        run: |
-          for i in $(seq 1 60); do
-            curl -sf "http://localhost:3004/api/search?query=health" && exit 0
-            sleep 2
-          done
-          exit 1
+      - name: Install public dependencies
+        working-directory: public
+        run: npm install
 
       - name: Run integration tests
         working-directory: server
         env:
           DATABUS_RESOURCE_BASE_URL: http://localhost:3000
-          DATABUS_DATABASE_URL: http://localhost:3002
-          LOOKUP_BASE_URL: http://localhost:3004
           DATABUS_NAME: CI Test Databus
           DATABUS_ABSTRACT: CI
           DATABUS_PRIVATE_MODE: 'false'

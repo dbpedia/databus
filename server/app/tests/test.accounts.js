@@ -43,6 +43,7 @@ test('CREATE account returns 200', async () => {
   try {
     const response = await rp(options);
     assert.is(response.statusCode, 200);
+    await DatabusUserTestUtils.insertApiKey(db, test_account);
   } catch (err) {
     console.error('Request failed:', {
       statusCode: err.statusCode,

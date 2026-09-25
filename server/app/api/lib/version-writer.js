@@ -4,8 +4,8 @@ const Constants = require('../../common/constants.js');
 const signer = require('./databus-tractate-suite.js');
 const shaclTester = require('../../common/shacl-tester.js');
 const jsonld = require('jsonld');
-const sparql = require('../../common/queries/sparql.js');
 const constructor = require('../../common/execute-construct.js');
+const AccountUtils = require('../../common/utils/account-utils');
 const constructVersionQuery = require('../../common/queries/constructs/construct-version.sparql');
 const autocompleter = require('./dataid-autocomplete.js');
 const fileAnalyzer = require('../../common/file-analyzer.js');
@@ -226,27 +226,24 @@ class VersionWriter extends ResourceWriter {
   }
 
   /**
-   * Authorize the publisher and attach a valid databus tractate proof.
+   * Set dct:publisher to the authenticated person and attach a tractate proof.
    *
-   * - Publisher must be linked to the publishing account (SPARQL check).
-   * - External publishers (not on this Databus) must supply sec:proof in the input.
-   * - Local publishers get a proof auto-generated when none is present.
+   * Publisher is the account owner's WebID, or the secretary's WebID when acting
+   * for that person. Local publishers get a proof when none is present.
    */
   async createOrValidateSignature(dataidGraphs) {
 
     var versionGraph = JsonldUtils.getTypedGraph(dataidGraphs, DatabusUris.DATABUS_VERSION);
     var accountUri = this.resource.getAccountURI();
 
-    var datasetPublisherUri = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.DCT_PUBLISHER);
-    this.logger.debug(this.uri, `Publishing as <${datasetPublisherUri}>.`, null);
-
-    var isPublisherConnectedToAccount = await sparql.accounts
-      .getPublisherHasAccount(datasetPublisherUri, accountUri);
-
-    if (!isPublisherConnectedToAccount) {
+    var datasetPublisherUri = await AccountUtils.actorWebId(this.req, accountUri, this.uri);
+    if (datasetPublisherUri == null) {
       throw new ApiError(403, this.uri,
-        `The specified publisher <${datasetPublisherUri}> is not linked to the account of the request issuer <${accountUri}>.`, null);
+        `Authenticated user cannot publish for <${accountUri}>.`, null);
     }
+
+    versionGraph[DatabusUris.DCT_PUBLISHER] = [{ [DatabusUris.JSONLD_ID]: datasetPublisherUri }];
+    this.logger.debug(this.uri, `Publishing as <${datasetPublisherUri}>.`, null);
 
     var proofId = JsonldUtils.getFirstObjectUri(versionGraph, DatabusUris.SEC_PROOF);
     var proofGraph = JsonldUtils.getGraphById(dataidGraphs, proofId);

@@ -319,9 +319,7 @@ function ProfileController($scope, $http) {
     return DatabusUtils.getAccountNamespacePrefix(accountName);
   };
 
-  $scope.getSecretaryAccountPrefix = function () {
-    return DatabusUtils.getDatabusAccountPrefix();
-  };
+  DatabusUtils.bindSecretarySearch($scope, $http);
 
   function initEditData() {
     var copy = DatabusUtils.createCleanCopy($scope.account);

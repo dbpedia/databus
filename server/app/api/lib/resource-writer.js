@@ -7,7 +7,7 @@ const shaclTester = require('../../common/shacl-tester');
 const jsonld = require('jsonld');
 const JsonldLoader = require('../../common/utils/jsonld-loader');
 const DatabusResource = require('../../common/databus-resource');
-const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 
 /**
  * Base class for all writers:
@@ -30,6 +30,7 @@ class ResourceWriter {
    * @param {uri of the resource to write} uri 
    */
   async writeResource(req, userData, inputGraphs, uri) {
+    this.req = req;
     this.userData = userData;
     this.inputGraphs = inputGraphs;
     this.uri = uri;
@@ -58,15 +59,7 @@ class ResourceWriter {
       return;
     }
 
-    console.log("INPUT FOR SHACL TEST");
-    console.log(JSON.stringify(graphs, null, 3));
-
-
-    // Do SHACL validation - calls abstract getSHACLFilePath()
     var shaclResult = await shaclTester.validateJsonld(graphs, this.getSHACLFilePath());
-
-    console.log("SHACL RESULT");
-    console.log(JSON.stringify(shaclResult, null, 3));
 
     if (!shaclResult.isSuccess) {
       var message = 'SHACL validation error:\n';
@@ -92,9 +85,6 @@ class ResourceWriter {
 
       this.logger.info(this.uri, `Successfully published ${this.resource.getTypeName()} <${this.uri}>.`, compactedGraph);
     } catch (err) {
-
-      console.log(JSON.stringify(err, null, 3));
-      console.log(JSON.stringify(compactedGraph, null, 3));
       let message = `Failed to save to gstore: ${err.message}`;
       throw new ApiError(500, this.uri, message, compactedGraph);
     }
@@ -130,7 +120,7 @@ class ResourceWriter {
    * Validates user account name against the resource identifiers
    */
   async onValidateUser(req) {
-    if (await ServerUtils.hasWriteAccess(req, this.resource.account, this.uri)) {
+    if (await AccountUtils.hasWriteAccess(req, this.resource.account, this.uri)) {
       return;
     }
 

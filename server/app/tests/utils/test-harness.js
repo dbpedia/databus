@@ -45,6 +45,9 @@ class TestHarness {
     process.env.DATABUS_ABSTRACT = process.env.DATABUS_ABSTRACT || 'Test instance';
     process.env.DATABUS_PRIVATE_MODE = process.env.DATABUS_PRIVATE_MODE || 'false';
     process.env.MAX_WORKERS = process.env.MAX_WORKERS || '1';
+    process.env.DATABUS_OIDC_ISSUER_BASE_URL = process.env.DATABUS_OIDC_ISSUER_BASE_URL || 'https://example.invalid';
+    process.env.DATABUS_OIDC_CLIENT_ID = process.env.DATABUS_OIDC_CLIENT_ID || 'test';
+    process.env.DATABUS_OIDC_SECRET = process.env.DATABUS_OIDC_SECRET || 'test';
   }
 
   static contextUrl() {
@@ -75,6 +78,15 @@ class TestHarness {
 
   static async setupMaster(db) {
     await DatabusUserTestUtils.insertAccount(db, master_account);
+    const JsonldLoader = require('../../common/utils/jsonld-loader');
+    const AccountUtils = require('../../common/utils/account-utils');
+    const GstoreResource = require('../../api/lib/gstore-resource');
+    JsonldLoader.initialize();
+    const uri = `${baseUrl()}/${master_account.ACCOUNT_NAME}`;
+    const content = await AccountUtils.createAccountGraphs(
+      uri, master_account.ACCOUNT_NAME, master_account.DISPLAYNAME, null, null, null,
+    );
+    await new GstoreResource(uri, content).save();
   }
 
   static async deleteTestAccountIfExists() {
@@ -214,7 +226,11 @@ class TestHarness {
     return `${baseUrl()}/${test_account.ACCOUNT_NAME}`;
   }
 
-  static secretaryHeaders(onBehalfOf = this.ownerAccountUri()) {
+  static ownerWebId() {
+    return `${this.ownerAccountUri()}#this`;
+  }
+
+  static secretaryHeaders(onBehalfOf = this.ownerWebId()) {
     return {
       'x-api-key': master_account.APIKEY,
       'x-on-behalf-of': onBehalfOf,
@@ -277,7 +293,7 @@ class TestHarness {
       label: 'Test Label',
       status: 'active',
       secretaries: [{
-        accountName: `${baseUrl()}/${master_account.ACCOUNT_NAME}`,
+        accountName: `${baseUrl()}/${master_account.ACCOUNT_NAME}#this`,
         hasWriteAccessTo: writeAccessPaths.map(toAbsolute),
       }],
     };

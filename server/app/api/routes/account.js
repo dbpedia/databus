@@ -3,9 +3,8 @@ const requestRDF = require('../../common/request-rdf');
 const defaultContext = require('../../common/res/context.jsonld');
 const getLinkedData = require("../../common/get-linked-data");
 var cors = require('cors');
-var signer = require('../lib/databus-tractate-suite.js');
-
 const ServerUtils = require('../../common/utils/server-utils');
+const AccountUtils = require('../../common/utils/account-utils');
 const JsonldUtils = require('../../../../public/js/utils/jsonld-utils');
 const DatabusUtils = require('../../../../public/js/utils/databus-utils');
 var GstoreHelper = require('../../common/utils/gstore-helper');
@@ -14,88 +13,11 @@ const Constants = require('../../common/constants');
 const UriUtils = require('../../common/utils/uri-utils');
 const DatabusConstants = require('../../../../public/js/utils/databus-constants');
 const GstoreResource = require('../lib/gstore-resource');
-const JsonldLoader = require('../../common/utils/jsonld-loader.js');
 const DatabusMessage = require('../../common/databus-message.js');
 
 
 
 module.exports = function (router, protector) {
-
-
-  async function createAccountGraphs(uri, name, label, img, secretaries, status) {
-    var name = UriUtils.uriToName(uri);
-
-    var rsaKeyGraph = {};
-    rsaKeyGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.CERT_RSA_PUBLIC_KEY;
-    rsaKeyGraph[DatabusUris.RDFS_LABEL] = DatabusConstants.WEBID_SHARED_PUBLIC_KEY_LABEL;
-    rsaKeyGraph[DatabusUris.CERT_MODULUS] = signer.getModulus();
-    rsaKeyGraph[DatabusUris.CERT_EXPONENT] = 65537;
-
-    var personUri = `${uri}${DatabusConstants.WEBID_THIS}`;
-
-    var personGraph = {};
-    personGraph[DatabusUris.JSONLD_ID] = personUri;
-    personGraph[DatabusUris.JSONLD_TYPE] = [DatabusUris.FOAF_PERSON, DatabusUris.DBP_DBPEDIAN];
-    personGraph[DatabusUris.FOAF_ACCOUNT] = JsonldUtils.refTo(uri);
-    personGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = uri;
-    personGraph[DatabusUris.CERT_KEY] = [rsaKeyGraph];
-    personGraph[DatabusUris.FOAF_NAME] = label;
-
-    if (img != null) {
-      personGraph[DatabusUris.FOAF_IMG] = img;
-    }
-
-    if (status != null) {
-      personGraph[DatabusUris.FOAF_STATUS] = status;
-    }
-
-    var profileUri = `${uri}${DatabusConstants.WEBID_DOCUMENT}`;
-
-    var profileDocumentGraph = {};
-    profileDocumentGraph[DatabusUris.JSONLD_ID] = profileUri;
-    profileDocumentGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.FOAF_PERSONAL_PROFILE_DOCUMENT;
-    profileDocumentGraph[DatabusUris.FOAF_MAKER] = JsonldUtils.refTo(personUri);
-    profileDocumentGraph[DatabusUris.FOAF_PRIMARY_TOPIC] = JsonldUtils.refTo(personUri);
-
-    var accountGraph = {}
-    accountGraph[DatabusUris.JSONLD_ID] = uri;
-    accountGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_ACCOUNT;
-    accountGraph[DatabusUris.FOAF_ACCOUNT_NAME] = name;
-    accountGraph[DatabusUris.DATABUS_NAME] = name;
-
-    if (secretaries != null) {
-
-      accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY] = [];
-
-      for (var secretary of secretaries) {
-
-        let secretaryAccountUri = `${secretary.accountName}`;
-
-        let secretaryGraph = {};
-        secretaryGraph[DatabusUris.JSONLD_TYPE] = DatabusUris.DATABUS_SECRETARY;
-        secretaryGraph[DatabusUris.DATABUS_ACCOUNT_PROPERTY] = JsonldUtils.refTo(secretaryAccountUri);
-
-        if (secretary.hasWriteAccessTo != undefined) {
-          secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO] = [];
-
-          for (var writeAccess of secretary.hasWriteAccessTo) {
-            secretaryGraph[DatabusUris.DATABUS_HAS_WRITE_ACCESS_TO].push(JsonldUtils.refTo(writeAccess));
-          }
-        }
-
-        accountGraph[DatabusUris.DATABUS_SECRETARY_PROPERTY].push(secretaryGraph);
-      }
-    }
-
-    let expandedGraphs = [
-      accountGraph,
-      personGraph,
-      profileDocumentGraph
-    ];
-
-    return await jsonld.compact(expandedGraphs, JsonldLoader.DEFAULT_CONTEXT_URL);
-  }
-
 
 
   router.post('/api/account/create', protector.protect(), async function (req, res, next) {
@@ -133,12 +55,10 @@ module.exports = function (router, protector) {
 
     try {
       let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      let content = await createAccountGraphs(accountUri, accountName, accountLabel, null, null, null);
+      let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, null, null, null);
 
       let gstoreResource = new GstoreResource(accountUri, content);
-      let status = await gstoreResource.save();
-
-      console.log(status);
+      await gstoreResource.save();
       res.status(200).send('Account created.');
 
       if (process.send != undefined) {
@@ -185,12 +105,10 @@ module.exports = function (router, protector) {
       var imageUrl = req.body.imageUrl;
       var secretaries = req.body.secretaries;
       let accountUri = `${process.env.DATABUS_RESOURCE_BASE_URL}/${accountName}`;
-      let content = await createAccountGraphs(accountUri, accountName, accountLabel, imageUrl, secretaries, accountStatus);
+      let content = await AccountUtils.createAccountGraphs(accountUri, accountName, accountLabel, imageUrl, secretaries, accountStatus);
 
       let gstoreResource = new GstoreResource(accountUri, content);
-      let status = await gstoreResource.save();
-
-      console.log(status);
+      await gstoreResource.save();
       res.status(200).send('Account saved.');
 
       if (process.send != undefined) {

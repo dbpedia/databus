@@ -4,21 +4,6 @@ var UriUtils = require('../../utils/uri-utils')
 var instance = {};
 
 
-instance.getPublisherHasAccount = async function (publisherUri, accountUri) {
-
-  var queryOptions = {};
-  queryOptions.PUBLISHER_URI = publisherUri;
-  queryOptions.ACCOUNT_URI = accountUri;
-
-  var query = exec.formatQuery(require('../sparql/get-publisher-has-account.sparql'), queryOptions);
-
-  // console.log(query);
-  
-  var result = await exec.executeAsk(query);
-
-  return result;
-}
-
 instance.getPublishersByAccount = async function (account) {
   var queryOptions = {};
   queryOptions.ACCOUNT_URI = UriUtils.createResourceUri([ account ]);
