@@ -20,14 +20,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            public/package-lock.json
 
       - name: Install server dependencies
         working-directory: server
-        run: npm install
+        run: npm ci --no-audit --no-fund
 
       - name: Install public dependencies
         working-directory: public
-        run: npm install
+        run: npm ci --no-audit --no-fund
 
       - name: Run integration tests
         working-directory: server

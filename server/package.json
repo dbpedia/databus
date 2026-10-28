@@ -1,10 +1,11 @@
 {
   "name": "databus-server",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "private": true,
   "scripts": {
     "start": "node ./www",
-    "test": "node ./app/test.runner.js"
+    "test": "node ./app/test.runner.js",
+    "test:image": "docker build -t databus:smoke .. && node ./app/image-test.runner.js"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.0",
@@ -14,7 +15,6 @@
     "axios": "^1.7.9",
     "body-parser": "^2.2.0",
     "cheerio": "^1.0.0-rc.9",
-    "child-process": "^1.0.2",
     "cookie-parser": "~1.4.4",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
@@ -55,8 +55,6 @@
     "ssh-key-decrypt": "^0.1.2",
     "streamify-string": "^1.0.1",
     "swagger-ui-express": "^4.3.0",
-    "terser": "^5.7.0",
-    "vitest": "^3.2.4",
     "webdav-server": "^2.6.2",
     "yamljs": "^0.3.0"
   },

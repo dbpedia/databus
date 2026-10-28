@@ -5,7 +5,9 @@ server/dav
 server/index
 server/keypair
 server/sqlite
+server/app/tests
+server/app/image-tests
+server/app/*test.runner.js
 .git
-node_modules
-server/node_modules
+**/node_modules
 

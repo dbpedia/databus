@@ -1,46 +1,23 @@
-# Use a consistent Node.js version across build and release stages
-FROM node:23-slim AS builder
-
-# Install Python for node-gyp (required for sqlite3 build)
-RUN apt-get update && apt-get install -y python3 build-essential && \
-    ln -s /usr/bin/python3 /usr/bin/python && \
-    rm -rf /var/lib/apt/lists/*
-
-WORKDIR /databus/server
-COPY server/package*.json . 
-RUN --mount=type=bind,source=server/package.json,target=package.json \
-    --mount=type=cache,target=/root/.npm \
-    bash -c "if [ ! -f package-lock.json ]; then npm install --package-lock-only; fi && npm ci --omit=dev"
-
-WORKDIR /databus/public
-COPY public/package*.json .
-RUN --mount=type=bind,source=public/package.json,target=package.json \
-    --mount=type=cache,target=/root/.npm \
-    bash -c "if [ ! -f package-lock.json ]; then npm install --package-lock-only; fi && npm ci --omit=dev"
-
-WORKDIR /
-
-# Copy source code
-COPY server ./databus/server
-COPY public ./databus/public
-COPY search ./databus/search
-
-# Rebuild sqlite3 in case it's a native module
-# RUN cd databus/server && npm rebuild sqlite3
-
-FROM node:23-slim AS runtime
-
+# syntax=docker/dockerfile:1
+# Dependencies are installed on the native build platform (no QEMU). npm_config_cpu picks the
+# target-arch optional packages, npm_config_arch makes sqlite3 download the target-arch prebuilt binary.
+FROM --platform=$BUILDPLATFORM node:23-slim AS builder
+ARG TARGETARCH
 WORKDIR /databus
 
-# Install only necessary system packages
-RUN apt-get update && \
-    apt-get install -y \
-        curl \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+COPY server/package*.json server/
+COPY public/package*.json public/
+RUN --mount=type=cache,target=/root/.npm \
+    export npm_config_arch=$([ "$TARGETARCH" = amd64 ] && echo x64 || echo "$TARGETARCH") && \
+    export npm_config_cpu=$npm_config_arch && \
+    npm ci --omit=dev --no-audit --no-fund --prefix server && \
+    npm ci --omit=dev --no-audit --no-fund --prefix public
 
-# Copy app from build stage
+COPY server server
+COPY public public
+COPY search search
+
+FROM node:23-slim
+WORKDIR /databus
 COPY --from=builder /databus .
-
-# Entrypoint
 ENTRYPOINT [ "/bin/bash", "./server/setup.sh" ]

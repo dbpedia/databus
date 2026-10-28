@@ -47,9 +47,6 @@ jobs:
             echo "Tag $VERSION already exists. Not building. Run this workflow manually to rebuild and move the tag."
           fi
 
-      - name: Set up QEMU
-        if: steps.ver.outputs.build == 'true'
-        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         if: steps.ver.outputs.build == 'true'
         uses: docker/setup-buildx-action@v3
