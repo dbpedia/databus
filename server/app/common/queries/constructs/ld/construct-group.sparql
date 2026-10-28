@@ -1,19 +1,23 @@
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 
+# UNION, not OPTIONAL: group triples are repeated in every version graph,
+# so a join multiplies them with all group members (millions of rows).
 CONSTRUCT {
   ?group ?p ?o .
   ?group databus:hasArtifact ?artifact .
 }
 WHERE {
   VALUES ?group { <%RESOURCE_URI%> }
-
-  GRAPH ?gGroup {
-    ?group ?p ?o .
+  {
+    GRAPH ?gGroup {
+      ?group ?p ?o .
+    }
   }
-
-  OPTIONAL {
+  UNION
+  {
     GRAPH ?gArtifact {
-      ?artifact databus:group ?group .
+      ?artifact databus:group ?group ;
+        a databus:Artifact .
     }
   }
 }

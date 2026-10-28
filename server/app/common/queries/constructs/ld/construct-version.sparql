@@ -1,25 +1,15 @@
-PREFIX databus: <https://dataid.dbpedia.org/databus#>
-PREFIX dcv: <https://dataid.dbpedia.org/databus-cv#>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-PREFIX sec: <https://w3id.org/security#>
-
 CONSTRUCT
 {
-  ?version ?p ?o .
   ?all ?the ?triples .
 }
 WHERE
 {
-  GRAPH ?g 
+  # Pick the graphs first; joining ?version ?p ?o with all triples is a cross product.
   {
-    VALUES ?version { <%RESOURCE_URI%> }
-    {
-      ?version ?p ?o .
-      ?all ?the ?triples .
-    }
+    SELECT DISTINCT ?g WHERE { GRAPH ?g { <%RESOURCE_URI%> ?p ?o . } }
+  }
+  GRAPH ?g
+  {
+    ?all ?the ?triples .
   }
 }

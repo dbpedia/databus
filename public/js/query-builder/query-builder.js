@@ -196,7 +196,9 @@ class QueryBuilder {
 
       for (var s = 0; s < siblings.length; s += 1000) {
         var chunk = siblings.slice(s, s + 1000);
-        // Virtuoso fails on single-value VALUES lists, so single nodes are not merged
+        // Workaround: Virtuoso's SPARQL compiler crashes on a single-value VALUES combined with an
+        // OPTIONAL elsewhere in the query ("ssg_print_rvr_fixed_val(): no SPART_VARR_FIXED"),
+        // so single nodes are not merged
         childNodes.push(chunk.length == 1 ? chunk[0] : Object.assign({}, chunk[0], { values: chunk.map(c => c.uri) }));
       }
     }
@@ -233,7 +235,9 @@ class QueryBuilder {
    * Restricts ?version to the latest version of the node (or of each node in node.values)
    */
   appendLatestVersionRestriction(node, indent) {
-    // Virtuoso fails on a single-value VALUES here, so single nodes keep the ORDER BY form
+    // Workaround: Virtuoso's SPARQL compiler crashes on a single-value VALUES combined with an
+    // OPTIONAL elsewhere in the query (e.g. NODE_FILE_TEMPLATE), so single nodes keep the
+    // ORDER BY form instead of the grouped sub-select below
     if (node.values == undefined) {
       this.appendLine('{', indent);
       this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);

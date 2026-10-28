@@ -205,7 +205,10 @@ module.exports = function (router, protector) {
     try {
       var auth = ServerUtils.getAuthInfoFromRequest(req);
       var artifactUri = `${UriUtils.createResourceUri([req.params.account, req.params.group, req.params.artifact])}`;
-      var artifactJsonLd = await getJsonLd(artifactUri, artifactQueryTemplate, 'flatten');
+      var [artifactJsonLd, versions] = await Promise.all([
+        getJsonLd(artifactUri, artifactQueryTemplate, 'flatten'),
+        sparql.dataid.getVersionsByArtifact(artifactUri)
+      ]);
 
       if (artifactJsonLd == null) {
         next('route');
@@ -213,7 +216,6 @@ module.exports = function (router, protector) {
       }
 
       var artifactData = AppJsonFormatter.formatArtifactData(artifactJsonLd);
-      var versions = await sparql.dataid.getVersionsByArtifact(artifactUri);
 
       res.render('artifact', {
         title: artifactData.title != undefined ? artifactData.title : artifactData.name,

@@ -10,13 +10,6 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
 
   try {
 
-    // Check if resource exists
-    const exists = await exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`);
-
-    if (!exists) {
-      return null;
-    }
-
     // Format the query
     const query = ServerUtils.formatQuery(template, {
       RESOURCE_URI: resourceUri
@@ -38,8 +31,15 @@ module.exports = async function getJsonLd(resourceUri, template, formatting) {
       data: `query=${encodeURIComponent(query)}`
     };
 
-    // Send the request using axios
-    const response = await axios(options);
+    // Existence check runs alongside the construct query
+    const [exists, response] = await Promise.all([
+      exec.executeAsk(`ASK { <${resourceUri}> ?p ?o }`),
+      axios(options)
+    ]);
+
+    if (!exists) {
+      return null;
+    }
 
     let result = response.data;
 
