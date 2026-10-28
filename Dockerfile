@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Dependencies are installed on the native build platform (no QEMU). npm_config_cpu picks the
 # target-arch optional packages, npm_config_arch makes sqlite3 download the target-arch prebuilt binary.
-FROM --platform=$BUILDPLATFORM node:23-slim AS builder
+FROM --platform=$BUILDPLATFORM node:24.22.1-slim AS builder
 ARG TARGETARCH
 WORKDIR /databus
 
@@ -17,7 +17,7 @@ COPY server server
 COPY public public
 COPY search search
 
-FROM node:23-slim
+FROM node:24.22.1-slim
 WORKDIR /databus
 COPY --from=builder /databus .
 ENTRYPOINT [ "/bin/bash", "./server/setup.sh" ]
