@@ -166,8 +166,8 @@ class QueryBuilder {
       }
     }
 
-    // If a node property was set, add it as a restriction
-    if (node.property != undefined) {
+    // If a node property was set, add it as a restriction (for merged nodes see below)
+    if (node.property != undefined && node.values == undefined) {
       this.appendLine(`?dataset ${node.property} <${node.uri}> .`, indent);
       // If no property was set, we are dealing with a source node
     } else {
@@ -177,28 +177,88 @@ class QueryBuilder {
     // Create the node facets sub query 
     this.createNodeFacetsSubquery(node, indent);
 
+    // A second VALUES list over the same nodes makes Virtuoso very slow
+    if (node.values != undefined && !node.hasLatestRestriction) {
+      this.appendLine(`?dataset ${node.property} ?node${this.cvCounter} .`, indent);
+      this.appendLine(`VALUES ?node${this.cvCounter++} { ${node.values.map(u => `<${u}>`).join(' ')} }`, indent);
+    }
+
     // Call recursively on the children and UNION the results
+
+    // Children without own facets or children share all restrictions, so they are queried in one
+    // branch. One branch per child breaks Virtuoso (stack overflow) for a few hundred children.
+    // Chunks of 1000 because Virtuoso rejects VALUES lists of a few thousand entries
+    var plainChildren = node.childNodes.filter(c => hasService && this.isPlainNode(c));
+    var childNodes = node.childNodes.filter(c => !plainChildren.includes(c));
+
+    for (var property of this.uniqueList(plainChildren.map(c => c.property))) {
+      var siblings = plainChildren.filter(c => c.property == property);
+
+      for (var s = 0; s < siblings.length; s += 1000) {
+        var chunk = siblings.slice(s, s + 1000);
+        // Virtuoso fails on single-value VALUES lists, so single nodes are not merged
+        childNodes.push(chunk.length == 1 ? chunk[0] : Object.assign({}, chunk[0], { values: chunk.map(c => c.uri) }));
+      }
+    }
 
     var k = 0;
 
-    for (var i in node.childNodes) {
+    for (var i in childNodes) {
       if (k > 0) this.appendLine('UNION', indent);
 
-      if (node.childNodes[i].childNodes == null) {
+      if (childNodes[i].childNodes == null) {
         return;
       }
 
-      if (node.childNodes[i].property == undefined && node.childNodes[i].childNodes.length == 0) {
+      if (childNodes[i].property == undefined && childNodes[i].childNodes.length == 0) {
         continue;
       }
 
       this.appendLine('{', indent);
-      this.createNodeSubquery(node.childNodes[i], indent + 1, hasService);
+      this.createNodeSubquery(childNodes[i], indent + 1, hasService);
       this.appendLine('}', indent);
       k++
     }
 
     return this.result;
+  }
+
+  isPlainNode(node) {
+    return node.property != undefined && this.isValidHttpUrl(node.uri)
+      && node.childNodes != null && node.childNodes.length == 0
+      && Object.keys(node.facetSettings || {}).length == 0;
+  }
+
+  /**
+   * Restricts ?version to the latest version of the node (or of each node in node.values)
+   */
+  appendLatestVersionRestriction(node, indent) {
+    // Virtuoso fails on a single-value VALUES here, so single nodes keep the ORDER BY form
+    if (node.values == undefined) {
+      this.appendLine('{', indent);
+      this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);
+      this.appendLine('SELECT (?v as ?version) { ', indent + 2);
+      this.appendLine('GRAPH ?g2 { ', indent + 3);
+      this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
+      this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
+      this.appendLine('}', indent + 3);
+      this.appendLine('} ORDER BY DESC (STR(?version)) LIMIT 1 ', indent + 2);
+      this.appendLine('}', indent + 1);
+      this.appendLine('}', indent);
+      return;
+    }
+
+    var n = this.cvCounter++;
+    var values = node.values.map(u => `<${u}>`).join(' ');
+
+    this.appendLine('{', indent);
+    this.appendLine(`{ SELECT ?latestNode${n} (MAX(?v) AS ?version) WHERE {`, indent + 1);
+    this.appendLine(`GRAPH ?g2 { ?d ${node.property} ?latestNode${n} . ?d dct:hasVersion ?v . }`, indent + 2);
+    this.appendLine(`VALUES ?latestNode${n} { ${values} }`, indent + 2);
+    this.appendLine(`} GROUP BY ?latestNode${n} }`, indent + 1);
+    this.appendLine(`?dataset ${node.property} ?latestNode${n} .`, indent + 1);
+    this.appendLine('?dataset dct:hasVersion ?version .', indent + 1);
+    this.appendLine('}', indent);
   }
 
   findSourceUri(node) {
@@ -295,17 +355,8 @@ class QueryBuilder {
       if (!facetSettingEntry.checked) return;
 
       if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
-        // Add the special latest version facet value restriction.
-        this.appendLine('{', indent);
-        this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);
-        this.appendLine('SELECT (?v as ?version) { ', indent + 2);
-        this.appendLine('GRAPH ?g2 { ', indent + 3);
-        this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
-        this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
-        this.appendLine('}', indent + 3);
-        this.appendLine('} ORDER BY DESC (STR(?version)) LIMIT 1 ', indent + 2);
-        this.appendLine('}', indent + 1);
-        this.appendLine('}', indent);
+        this.appendLatestVersionRestriction(node, indent);
+        if (node.values != undefined) node.hasLatestRestriction = true;
       }
       else {
         // Add the facet value restriction
@@ -327,17 +378,7 @@ class QueryBuilder {
           if (!first) this.appendLine("UNION", indent);
 
           if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
-            // Add the special latest version facet value restriction.
-            this.appendLine('{', indent);
-            this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);
-            this.appendLine('SELECT (?v as ?version) { ', indent + 2);
-            this.appendLine('GRAPH ?g2 { ', indent + 3);
-            this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
-            this.appendLine('?dataset dct:hasVersion ?v . ', indent + 4);
-            this.appendLine('}', indent + 3);
-            this.appendLine('} ORDER BY DESC (STR(?version)) LIMIT 1 ', indent + 2);
-            this.appendLine('}', indent + 1);
-            this.appendLine('}', indent);
+            this.appendLatestVersionRestriction(node, indent);
           }
           else {
             // Add the facet value restriction
