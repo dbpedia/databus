@@ -1,19 +1,23 @@
 PREFIX databus: <https://dataid.dbpedia.org/databus#>
 
+# UNION, not OPTIONAL: artifact triples are repeated in every version graph,
+# so a join multiplies them with all versions.
 CONSTRUCT {
   ?artifact ?p ?o .
   ?artifact databus:hasVersion ?version .
 }
 WHERE {
   VALUES ?artifact { <%RESOURCE_URI%> }
-
-  GRAPH ?gArtifact {
-    ?artifact ?p ?o .
+  {
+    GRAPH ?gArtifact {
+      ?artifact ?p ?o .
+    }
   }
-
-  OPTIONAL {
+  UNION
+  {
     GRAPH ?gVersion {
-      ?version databus:artifact ?artifact .
+      ?version databus:artifact ?artifact ;
+        a databus:Version .
     }
   }
 }

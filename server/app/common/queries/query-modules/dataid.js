@@ -266,15 +266,11 @@ instance.getArtifactsByGroup = async function (account, group) {
     return null;
   }
 
-  var result = [];
+  var result = await Promise.all(bindings.map(b => instance.getArtifactByUri(b.artifact)));
 
-  for (let i in bindings) {
-    let binding = bindings[i];
-    var artifact = await instance.getArtifactByUri(binding.artifact);
-
+  for (let artifact of result) {
     artifact.name = UriUtils.uriToName(artifact.uri);
     artifact.groupName = UriUtils.uriToName(artifact.group);
-    result.push(artifact);
   }
 
 
