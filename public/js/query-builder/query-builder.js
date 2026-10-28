@@ -297,7 +297,7 @@ class QueryBuilder {
       if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
         // Add the special latest version facet value restriction.
         this.appendLine('{', indent);
-        this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
+        this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);
         this.appendLine('SELECT (?v as ?version) { ', indent + 2);
         this.appendLine('GRAPH ?g2 { ', indent + 3);
         this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
@@ -329,7 +329,7 @@ class QueryBuilder {
           if (facetSettingEntry.value == '$latest' && facetUri == 'http://purl.org/dc/terms/hasVersion') {
             // Add the special latest version facet value restriction.
             this.appendLine('{', indent);
-            this.appendLine('?distribution dct:hasVersion ?version {', indent + 1);
+            this.appendLine('?distribution dct:hasVersion ?version . {', indent + 1);
             this.appendLine('SELECT (?v as ?version) { ', indent + 2);
             this.appendLine('GRAPH ?g2 { ', indent + 3);
             this.appendLine(`?dataset ${node.property} <${node.uri}> . `, indent + 4);
