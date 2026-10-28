@@ -1,6 +1,6 @@
 {
   "name": "databus-server",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "private": true,
   "scripts": {
     "start": "node ./www",
