@@ -3,7 +3,6 @@ _site
 .jekyll-metadata
 node_modules
 dependencies
-package-lock.json
 data
 lookup-app/local-files
 mongodb.log

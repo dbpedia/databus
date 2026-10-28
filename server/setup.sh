@@ -2,7 +2,7 @@
 
 # Wait for the database container to be available
 echo "Waiting for database at ${DATABUS_DATABASE_URL}..."
-while ! curl -s -o /dev/null -w '%{http_code}' ${DATABUS_DATABASE_URL}/sparql | grep -q "200"; do
+until node -e "fetch(process.env.DATABUS_DATABASE_URL + '/sparql').then(r => process.exit(r.status === 200 ? 0 : 1), () => process.exit(1))"; do
   sleep 5
 done
 echo "Database is up and running."

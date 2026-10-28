@@ -301,6 +301,10 @@ async function handle(req, res) {
       const raw = (await readBody(req)).toString('utf8');
       query = querystring.parse(raw).query || raw;
     }
+    if (!query) {
+      send(res, 200, 'ok', 'text/plain');
+      return;
+    }
     const result = await locked(() => runSparql(query, req.headers.accept));
     send(res, 200, result.body, result.type);
     return;
@@ -327,16 +331,17 @@ async function handle(req, res) {
   send(res, 404, 'not found', 'text/plain');
 }
 
-function startEmbeddedStore() {
+function startEmbeddedStore(host = '127.0.0.1') {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       handle(req, res).catch((err) => {
         if (!res.headersSent) send(res, 500, err.message || String(err), 'text/plain');
       });
     });
-    server.listen(0, '127.0.0.1', () => {
+    server.listen(0, host, () => {
       const { port } = server.address();
       resolve({
+        port,
         url: `http://127.0.0.1:${port}`,
         close: () => new Promise((done) => server.close(done)),
       });
