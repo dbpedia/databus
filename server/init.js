@@ -183,10 +183,8 @@ module.exports = async function (indexer) {
 
   await initializeContext();
 
-  if (process.env.METRICS_PORT != undefined) {
-    console.log(`Settings up Prometheus metrics...`);
-    MetricsManager.initialize();
-  }
+  console.log(`Setting up download metrics...`);
+  await MetricsManager.initialize();
 
   
   JsonldLoader.initialize();

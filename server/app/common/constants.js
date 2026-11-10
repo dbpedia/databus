@@ -36,6 +36,8 @@ class Constants {
   static DATABUS_FILE_WEBID = 'webid.jsonld';
 
   static DATABUS_FILE_COLLECTION = 'collection.jsonld';
+  static DATABUS_FILE_DOWNLOADS = 'downloads.jsonld';
+  static DATABUS_METRICS_REPO = '__metrics';
   static DATABUS_COLLECTIONS_GROUP_IDENTIFIER = `collections`;
 
   static MESSAGE_WRONG_NAMESPACE = 'You cannot perform this action in a foreign namespace.\n';

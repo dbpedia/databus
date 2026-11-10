@@ -33,7 +33,7 @@
       </div>
       <div style="display: flex; align-items: center;">
         <div ng-if="!$ctrl.isLoading" style="margin-right: 1em;">{{ $ctrl.numFiles }} file(s) / {{
-          $ctrl.totalSize }}</div>
+          $ctrl.totalSize }} / {{ $ctrl.totalDownloads }} download(s)</div>
         <collection-editor-widget ng-if="$ctrl.config.authenticated" selection='$ctrl.node'></collection-editor-widget>
       </div>
     </div>
@@ -44,6 +44,7 @@
         <tr style="cursor:pointer;">
           <th ng-repeat='column in $ctrl.config.columns' ng-click="$ctrl.sortBy(column.field + '.value')">{{
             column.label }}</th>
+          <th ng-click="$ctrl.sortBy('downloads')" style="text-align: right;">Downloads</th>
           <th ng-click="$ctrl.sortBy('size.numericalValue')" style="text-align: right;">Download</th>
         </tr>
         <tr style="position:relative;"
@@ -55,6 +56,7 @@
               ng-class="{ right : !binding.epxanded, down : binding.epxanded }" class="arrow"></div>{{
             $ctrl.getCellValues(binding, column); }}
           </td>
+          <td style="text-align: right;">{{ binding.downloads }}</td>
           <td style="text-align: right;">
             {{ $ctrl.formatUploadSize(binding.size.numericalValue) }}
             <a target="_blank" href="{{ $ctrl.createRelativeUri(binding.file.value) }}"><svg
@@ -66,7 +68,7 @@
           </td>
         </tr>
         <tr ng-repeat-end ng-if="binding.epxanded">
-          <td ng-attr-colspan="{{ $ctrl.config.columns.length + 1 }}" style="padding:0; max-width: 0px;">
+          <td ng-attr-colspan="{{ $ctrl.config.columns.length + 2 }}" style="padding:0; max-width: 0px;">
             <div>
               <div ng-if="binding.preview.state == 'loading'">
                 <pre>Loading preview…</pre>

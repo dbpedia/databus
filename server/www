@@ -162,8 +162,16 @@ async function masterProcess() {
       createFork();
     });
 
+    // Persist download counts before shutting down
+    for (const signal of ['SIGTERM', 'SIGINT']) {
+      process.on(signal, async () => {
+        await MetricsManager.flush();
+        process.exit(0);
+      });
+    }
+
     if(process.env.METRICS_PORT != null) {
-      var port = normalizePort(process.env.METRICS_PORT || '3001');
+      var port = normalizePort(process.env.METRICS_PORT);
       console.log(`Starting Prometheus metrics server (port ${port})...`);
       MetricsManager.startServer(port);
     }

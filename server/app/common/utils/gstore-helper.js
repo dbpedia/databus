@@ -30,8 +30,11 @@ class GstoreHelper {
     }
   }
 
-  static async save(repo, path, content) {
-    const url = buildSaveUrl(repo, path);
+  /**
+   * @param {boolean} commit - false overwrites the document without a git commit (volatile data)
+   */
+  static async save(repo, path, content, commit = true) {
+    const url = buildSaveUrl(repo, path) + (commit ? '' : '&commit=false');
 
     try {
       await axios.post(url, content, {
