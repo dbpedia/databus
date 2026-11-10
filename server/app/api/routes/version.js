@@ -14,6 +14,21 @@ var cors = require('cors');
 const DatabusMessage = require('../../common/databus-message.js');
 
 
+/**
+ * 'ui' if the download was started from a Databus page (same-origin Referer), 'api' otherwise
+ */
+function getDownloadSource(req) {
+  try {
+    const referer = req.get('referer');
+    if (referer && new URL(referer).origin == new URL(process.env.DATABUS_RESOURCE_BASE_URL).origin) {
+      return 'ui';
+    }
+  } catch (err) {
+    // malformed Referer
+  }
+  return 'api';
+}
+
 module.exports = function (router, protector) {
 
 
@@ -104,16 +119,13 @@ module.exports = function (router, protector) {
         return;
       }
 
-      // Send message to master to register metrics
-      if (process.send != undefined) {
-        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+      // Send message to master to register metrics (HEAD requests are no downloads)
+      if (process.send != undefined && req.method == 'GET') {
+        const { account, group, artifact, version, file } = req.params;
 
         process.send({
           id: DatabusMessage.FILE_DOWNLOADED,
-          body: {
-            url : fullUrl,
-            target : result.downloadUrl
-          } 
+          body: { account, group, artifact, version, file, source: getDownloadSource(req) }
         });
       }
 

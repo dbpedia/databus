@@ -4,7 +4,7 @@ services:
     image: "docker.io/dbpedia/databus:dev"
     ports:
       - 3000:3000 
-      - 3001:3001
+      - 127.0.0.1:3001:3001 # Prometheus metrics, keep internal
     environment:
       DATABUS_RESOURCE_BASE_URL: ${DATABUS_RESOURCE_BASE_URL}
       DATABUS_DATABASE_URL: "http://gstore:8080"

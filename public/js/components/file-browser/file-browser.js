@@ -125,7 +125,6 @@ function FileBrowserController($http, $scope) {
 
       ctrl.isLoading = false;
 
-
       ctrl.queryResult.bindings = data.results.bindings;
 
       ctrl.queryResult.uriList = "";
@@ -147,11 +146,52 @@ function FileBrowserController($http, $scope) {
       }
 
       ctrl.totalSize = ctrl.formatUploadSize(ctrl.totalSize);
+      await ctrl.loadDownloadCounts();
 
       if (!$scope.$root.$$phase) {
         ctrl.$scope.$apply();
       }
 
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Fetches the persisted download counts of the listed files (see download-metrics.md)
+   */
+  ctrl.loadDownloadCounts = async function () {
+    ctrl.totalDownloads = 0;
+    var bindings = ctrl.queryResult.bindings;
+
+    for (var binding of bindings) {
+      binding.downloads = 0;
+    }
+
+    if (bindings.length == 0) {
+      return;
+    }
+
+    var query = `SELECT ?file ?count WHERE { VALUES ?file { ${bindings.map(b => `<${b.file.value}>`).join(' ')} } `
+      + `?file <https://dataid.dbpedia.org/databus#downloadCount> ?count }`;
+
+    try {
+      var res = await ctrl.$http({
+        method: 'POST',
+        url: DatabusConstants.DATABUS_SPARQL_ENDPOINT_URL,
+        data: "format=json&query=" + encodeURIComponent(query),
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
+      });
+
+      var counts = {};
+      for (var row of res.data.results.bindings) {
+        counts[row.file.value] = parseInt(row.count.value);
+      }
+
+      for (var binding of bindings) {
+        binding.downloads = counts[binding.file.value] || 0;
+        ctrl.totalDownloads += binding.downloads;
+      }
     } catch (e) {
       console.log(e);
     }
