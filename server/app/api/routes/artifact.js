@@ -42,7 +42,7 @@ module.exports = function (router, protector) {
     getLinkedData(req, res, next, resourceUri, template);
   });
 
-  router.delete('/:account/:group/:artifact', protector.protect(true), async function (req, res, next) {
+  router.delete('/:account/:group/:artifact', protector.protectAccount(true), async function (req, res, next) {
 
     var artifactUri = UriUtils.createResourceUri([
       req.params.account,
