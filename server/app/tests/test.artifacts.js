@@ -8,6 +8,7 @@ const TestHarness = require('./utils/test-harness');
 const UriUtils = require('../common/utils/uri-utils');
 const DatabusUris = require('../../../public/js/utils/databus-uris');
 const test_account = require('./templates/test-account.json');
+const master_account = require('./templates/master-account.json');
 
 const test = suite('artifact-crud');
 
@@ -54,6 +55,14 @@ test('READ GROUP TURTLE: group can be read as turtle and turtle contains link to
 
 test('DELETE: deleting non-empty group returns conflict', async () => {
   await TestHarness.assertStatus(TestHarness.deleteOptions(groupUri()), 409);
+});
+
+test('DELETE: artifact cannot be deleted by a foreign account', async () => {
+  await TestHarness.assertStatus({
+    ...TestHarness.deleteOptions(artifactUri()),
+    headers: { 'x-api-key': master_account.APIKEY },
+  }, 403);
+  await TestHarness.assertStatus(TestHarness.getOptions(artifactUri()), 200);
 });
 
 test('DELETE: artifact can be deleted', async () => {
