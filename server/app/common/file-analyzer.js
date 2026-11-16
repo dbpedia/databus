@@ -71,12 +71,22 @@ analyzer.parseFormatAndCompression = function (result, value) {
 analyzer.getFileNameFromDisposition = function (disposition) {
 
   console.log(disposition);
-  var entries = disposition.split(' ');
 
-  for (var entry of entries) {
-    if (entry.startsWith('filename=')) {
-      return entry.split('=')[1].replace(/(^")|("$)|(;$)|(";$)/g, "");
+  // Prefer the RFC 5987 encoded filename*=charset'lang'value parameter
+  var extended = /filename\*=[^']*'[^']*'([^;\s]+)/i.exec(disposition);
+
+  if (extended != null) {
+    try {
+      return decodeURIComponent(extended[1]);
+    } catch (err) {
+      // Malformed encoding, fall back to the plain filename parameter
     }
+  }
+
+  var plain = /filename=(?:"([^"]*)"|([^;\s]+))/i.exec(disposition);
+
+  if (plain != null) {
+    return plain[1] != undefined ? plain[1] : plain[2];
   }
 
   return undefined;
@@ -94,9 +104,11 @@ analyzer.getFormatAndCompression = function (url, headers) {
     return result;
   }
 
-  // Try to parse from url
-  if (url.lastIndexOf('/') < url.lastIndexOf('.')) {
-    analyzer.parseFormatAndCompression(result, url);
+  // Try to parse from url, ignoring query string and fragment
+  var urlPath = url.split(/[?#]/)[0];
+
+  if (urlPath.lastIndexOf('/') < urlPath.lastIndexOf('.')) {
+    analyzer.parseFormatAndCompression(result, urlPath);
     return result;
   }
 
