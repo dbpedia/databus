@@ -1,9 +1,10 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const ServerUtils = require('../../common/utils/server-utils.js');
+const fileAnalyzer = require('../../common/file-analyzer');
 
 module.exports = function (router, protector) {
-  require('../../common/file-analyzer').route(router, protector);
+  fileAnalyzer.route(router, protector);
 
   router.get('/app/publish-wizard/licenses', protector.protect(), async function (req, res, next) {
     const search = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`).search;
@@ -87,13 +88,15 @@ module.exports = function (router, protector) {
       const result = { url: url };
 
       if (headers['content-disposition']) {
-        const filename = getFileNameFromDisposition(headers['content-disposition']);
+        const filename = fileAnalyzer.getFileNameFromDisposition(headers['content-disposition']);
         parseFormatAndCompression(result, filename);
         return result;
       }
 
-      if (url.lastIndexOf('/') < url.lastIndexOf('.')) {
-        parseFormatAndCompression(result, url);
+      const urlPath = url.split(/[?#]/)[0];
+
+      if (urlPath.lastIndexOf('/') < urlPath.lastIndexOf('.')) {
+        parseFormatAndCompression(result, urlPath);
         return result;
       }
 
@@ -102,16 +105,6 @@ module.exports = function (router, protector) {
       console.log(err);
       return null;
     }
-  }
-
-  function getFileNameFromDisposition(disposition) {
-    const entries = disposition.split(' ');
-    for (let entry of entries) {
-      if (entry.startsWith('filename=')) {
-        return entry.split('=')[1].replace(/(^")|("$)|(;$)|(";$)/g, "");
-      }
-    }
-    return undefined;
   }
 
   function transformGithubUrl(url) {
